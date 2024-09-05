@@ -1,0 +1,19 @@
+<div>
+    @if (menuItem.filler) {
+        <div class="cmp-menu-filler">
+            <hr>
+        </div>
+    }
+    @else {
+        <div class="cmp-menu-item flexbox flexcenter" [ngClass]="{'selected': selected}">
+            <div style="position: relative;">
+                <div>
+                    <span (click)="clicked()">{{menuItem.text}}</span>
+                </div>
+                <div class="cmp-item-indicator">
+                    <i class="fas fa-angle-right"></i>
+                </div>
+            </div>
+        </div>
+    }
+</div>

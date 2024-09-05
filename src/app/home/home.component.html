@@ -1,0 +1,27 @@
+<div>
+    <div class="flexbox flexcenter flexmiddle" style="height: 100vh;">
+        <div>
+            <div style="height: 8px;" class="w3-teal"></div>
+            <div style="padding: 1rem 0;">
+                <div class="flexbox flexmiddle">
+                    <div style="padding-right: 1rem;"><img src="ballen2.jpg" style="height: 5rem;" alt=""></div>
+                    <div>
+                        <div class="w3-text-green" style="font-size: 2.75rem; font-weight: bold; line-height: 1.2;">Biljart Scorebord Systeem</div>
+                        <div style="text-align: right; font-size: .75rem;">&copy; Jan Bart Biemans</div>    
+                    </div>
+                </div>
+            </div>
+            <div style="height: 8px;" class="w3-teal"></div>
+            <div class="flexbox flexcenter" style="margin-top: 3rem;">
+                <div>
+                    <div style="text-align: center; padding-bottom: 1em;">
+                        <span style="color: green;">Maak een keuze</span>
+                    </div>
+                    <div class="flexgrow1 flexbox flexcenter flexmiddle" style="font-size: 1.25em;">
+                        <app-menu [menu]="menu" (menuItemClicked)="menuItemClicked($event)"></app-menu>
+                    </div>   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

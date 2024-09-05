@@ -1,0 +1,40 @@
+.cmp-button-container {
+    position: relative;
+    padding: .125em;
+}
+.cmp-button {
+    color: gray;
+    background-color: #d4ffd4;
+    line-height: 1.5em;
+    border: .0625em solid green;
+    border-radius: .5em;
+    cursor: pointer;
+}
+.cmp-button.disabled {
+    background-color: lightgray;
+    border-color: gray;
+    cursor: not-allowed;
+}
+.cmp-button:not(.disabled):hover, .cmp-button:not(.disabled).selected {
+    color: black;
+    border-color: black;
+    background-color: #84ff84;
+}
+.cmp-button:not(.disabled):hover .cmp-button-key, .cmp-button:not(.disabled).selected .cmp-button-key {
+    color: black;
+    border-color: black;
+}
+.cmp-button-key {
+    padding: 0 .25em;
+    margin-left: 1em;
+    line-height: 1.2;
+    border: .0625em solid gray;
+    border-radius: .25em;
+    color: gray;
+    background-color: lightgray;
+}
+.cmp-button-txt {
+    font-weight: bold;
+    text-align: center;
+    padding: 0 1em;
+}

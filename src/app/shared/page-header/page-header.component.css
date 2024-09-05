@@ -1,0 +1,20 @@
+.header-container {
+    position: relative;
+}
+
+.header-title {
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.header-subtitle {
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+.header-logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+}

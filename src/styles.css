@@ -1,1 +1,55 @@
-/* You can add global styles to this file, and also import other style files */
+* { 
+    box-sizing: border-box;
+    letter-spacing: -.075em;
+    font-weight: bold;
+}
+
+.fullviewheight { height: 100vh; }
+.fullheight { height: 100%; }
+
+.scrollable { overflow-y: scroll; }
+
+/* INPUT */
+
+input[type="text"], select {
+    padding: 0 .25em;
+    border-radius: .25em;
+    border-color: lightgray;
+}
+input[type="text"]:not(:disabled).valid {
+    background-color: #beffbe;
+}
+input[type="text"]:not(:disabled).invalid {
+    background-color: #ffacac;
+}
+input[type="text"]:not(:disabled):hover, input[type="text"]:not(:disabled):focus,
+select:not(:disabled):hover, select:not(:disabled):focus {
+    border-color: grey;
+}
+input[type="text"]:not(:disabled):not(.filter):not(.valid):not(.invalid):focus {
+    background-color: #e0e0e0;
+}
+input[type="text"]:disabled {
+    cursor: not-allowed;
+    color: #bdbdbd;
+}
+input[type="text"].filter {
+    line-height: 1.25em;
+    background-color: lightblue;
+}
+select {
+    border-width: 2px;
+}
+select.filter {
+    background-color: lightblue;
+}
+select>option {
+    font-weight: normal;
+    font-size: .75em;
+}
+
+/* BUTTONS */
+
+.iconbtn { color: gray; cursor: pointer; padding: 0 .25em;}
+.iconbtn:hover, .iconbtn.selected { color: black; }
+.iconbtn:disabled { color: lightgrey; cursor: not-allowed;}

@@ -1,0 +1,88 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="title" [subtitle]="subtitle" [previousUrl]="previousUrl"></app-page-header>
+        </div>
+        <div class="flexbox flexcenter" style="margin-top: .5rem;">
+            @if (spelsoortForm) {
+                <div>
+                    <form [formGroup]="spelsoortForm">
+                        <table class="tbl-spelsoort">
+                            <thead>
+                                <tr>
+                                    <td style="width: 2em;"></td>
+                                    <td class="label" style="width: 5em; overflow: hidden;">ID</td>
+                                    <td class="label" style="width: 10em; overflow: hidden;">Naam</td>
+                                    <td style="width: 4em;"></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="inputrow">
+                                    <td style="width: 2em;"></td>
+                                    <td style="width: 5em;">
+                                        <div>
+                                            <input #spelsoortid type="text" style="width: 4em;" formControlName="spelId" autocomplete="off"
+                                                oninput="this.value = this.value.toUpperCase()"
+                                                [ngClass]="{'invalid': spelId?.invalid && (spelId?.dirty),
+                                                            'valid': spelId?.valid && (spelId?.dirty)}">
+                                        </div>
+                                    </td>
+                                    <td style="width: 10em;">
+                                        <div>
+                                            <input #spelsoortnaam type="text" style="width: 10em;" formControlName="spelNaam" autocomplete="off"
+                                                [ngClass]="{'invalid': spelNaam?.invalid && (spelNaam?.dirty),
+                                                        'valid': spelNaam?.valid && (spelNaam?.dirty)}">
+                                        </div>
+                                    </td>
+                                    <td style="width: 4em; text-align: right;">
+                                        @if (spelId?.value > '' || spelNaam?.value > '') {
+                                            <i class="fas fa-times-circle iconbtn" title="Annuleer" (click)="cancelClicked()"></i>
+                                        }
+                                        @if (spelsoortForm.valid) {
+                                            <i class="fas fa-check-square iconbtn" title="Opslaan" (click)="saveClicked(spelsoortForm.value)"></i>
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>    
+            }
+        </div>
+        <div class="flexgrow1 flexbox flexcenter scrollable">
+            <div style="position: relative; left: .25em;">
+                <table class="tbl-spelsoort">
+                    <tbody>
+                        @for (item of spelsoorten; track $index) {
+                            @if (!item.magWeg) {
+                                <tr>
+                                    <td style="width: 2em;"></td>
+                                    <td style="width: 5em; overflow: hidden;">{{item.spelId}}</td>
+                                    <td style="width: 10em; overflow: hidden;">{{item.spelNaam}}</td>
+                                    <td style="width: 4em;"></td>
+                                </tr>    
+                            }
+                        }
+                        @for (item of editableList.items; track $index) {
+                            <tr class="editable" [ngClass]="{'selected': editableList.selectedIdx == $index}" (click)="spelsoortClicked($index)">
+                                <td class="indicator" style="width: 2em; position: relative;">
+                                    @if (editableList.selectedIdx == $index) {
+                                        <i class="fas fa-angle-right" style="color: green; font-size: 1.25em; position: relative; top: 4px;"></i>
+                                    }
+                                </td>
+                                <td style="width: 5em; overflow: hidden;">{{item.spelId}}</td>
+                                <td style="width: 10em; overflow: hidden;">{{item.spelNaam}}</td>
+                                <td style="width: 4em; text-align: right;">
+                                    @if (item.magWeg) {
+                                        <i class="fas fa-trash-alt iconbtn" [ngClass]="{'selected': editableList.selectedIdx == $index}"
+                                            title="Verwijder" (click)="verwijderSpelsoort($index + nrOfNonEditItems)"></i>
+                                    }
+                                </td>
+                            </tr>    
+                        }
+                    </tbody>
+                </table> 
+            </div>
+        </div>
+    </div>
+</div>

@@ -27,7 +27,12 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+                "src/w3.css",
+                "src/w3-theme-green.css",
+                "src/flex.css",
+                "src/fontawesome/css/all.css",
+                "src/styles.css",
+                "src/tables.css"
             ],
             "scripts": []
           },

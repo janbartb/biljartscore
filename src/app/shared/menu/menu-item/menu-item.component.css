@@ -1,0 +1,23 @@
+.cmp-menu-item {
+    color: grey;
+}
+.cmp-menu-item span {
+    cursor: pointer;
+}
+.cmp-menu-item.selected, .cmp-menu-item span:hover {
+    color: black;
+}
+
+.cmp-item-indicator {
+    position: absolute;
+    top: .125em;
+    left: -1em;
+    color: green;
+    opacity: 0;
+}
+.cmp-item-indicator i {
+    font-size: 1.25em;
+}
+.cmp-menu-item.selected .cmp-item-indicator, .cmp-menu-item:hover .cmp-item-indicator {
+    opacity: 1;
+}

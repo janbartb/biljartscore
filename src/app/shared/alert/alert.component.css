@@ -1,0 +1,14 @@
+.alert-container {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    padding: 5px;
+}
+
+.alert-content {
+    font-size: .75rem;
+    font-weight: bold;
+    cursor: pointer;
+}

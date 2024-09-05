@@ -1,0 +1,37 @@
+/* TABLE */
+
+.tbl-spelsoort {
+    font-size: 1rem;
+}
+.tbl-spelsoort tr {
+    vertical-align: middle;
+    cursor: default;
+}
+.tbl-spelsoort tr.editable {
+    color: gray;
+    cursor: pointer;
+}
+.tbl-spelsoort tr.editable.selected, .tbl-spelsoort tr.editable:hover {
+    color: black;
+}
+.tbl-spelsoort tr.inputrow td div {
+    position: relative;
+    left: -.25em;
+}
+.tbl-spelsoort tbody tr {
+    line-height: 1.5;
+}
+.tbl-spelsoort td.label, .tbl-spelsoort td label {
+    color: green;
+    padding-right: 1rem;
+}
+.tbl-spelsoort td label span {
+    color: red;
+}
+.tbl-spelsoort td span.label {
+    color: green;
+}
+.tbl-spelsoort td.right {
+    text-align: right;
+    padding-right: .5em;
+}

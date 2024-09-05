@@ -1,0 +1,249 @@
+.flexbox {
+    display: flex;
+}
+
+.flexbox.flexcolumn {
+    flex-direction: column;
+}
+
+.flexbox.flexleft {
+    justify-content: flex-start;
+}
+.flexbox.flexcenter {
+    justify-content: center;
+}
+.flexbox.flexright {
+    justify-content: flex-end;
+}
+.flexbox.flexaround {
+    justify-content: space-around;
+}
+.flexbox.flexevenly {
+    justify-content: space-evenly;
+}
+.flexbox.flexbetween {
+    justify-content: space-between;
+}
+
+.flexbox.flexmiddle {
+    align-items: center;
+}
+.flexbox.flexbase {
+    align-items: baseline;
+}
+.flexbox.flexstart {
+    align-items: flex-start;
+}
+.flexbox.flexstretch {
+    align-items: stretch;
+}
+
+.flexbox.nowrap {
+    flex-wrap: nowrap;
+}
+.flexbox.wrap {
+    flex-wrap: wrap;
+}
+
+.flexgrow1 {
+    flex-grow: 1;
+}
+.flexgrow2 {
+    flex-grow: 2;
+}
+.flexgrow3 {
+    flex-grow: 3;
+}
+.flexshrink0 {
+    flex-shrink: 0;
+}
+
+.flex05perc {
+    flex: 0 0 5%;
+}
+.flex10perc {
+    flex: 0 0 10%;
+}
+.flex15perc {
+    flex: 0 0 15%;
+}
+.flex20perc {
+    flex: 0 0 20%;
+}
+.flex25perc {
+    flex: 0 0 25%;
+}
+.flex30perc {
+    flex: 0 0 30%;
+}
+.flex33perc {
+    flex: 0 0 33%;
+}
+.flex35perc {
+    flex: 0 0 35%;
+}
+.flex40perc {
+    flex: 0 0 40%;
+}
+.flex45perc {
+    flex: 0 0 45%;
+}
+.flex50perc {
+    flex: 0 0 50%;
+}
+.flex55perc {
+    flex: 0 0 55%;
+}
+.flex60perc {
+    flex: 0 0 60%;
+}
+.flex65perc {
+    flex: 0 0 65%;
+}
+.flex66perc {
+    flex: 0 0 66%;
+}
+.flex70perc {
+    flex: 0 0 70%;
+}
+.flex75perc {
+    flex: 0 0 75%;
+}
+.flex80perc {
+    flex: 0 0 80%;
+}
+.flex90perc {
+    flex: 0 0 90%;
+}
+
+.flex10 {
+    flex: 0 0 10px;
+}
+.flex15 {
+    flex: 0 0 15px;
+}
+.flex20 {
+    flex: 0 0 20px;
+}
+.flex25 {
+    flex: 0 0 25px;
+}
+.flex30 {
+    flex: 0 0 30px;
+}
+.flex40 {
+    flex: 0 0 40px;
+}
+.flex50 {
+    flex: 0 0 50px;
+}
+.flex60 {
+    flex: 0 0 60px;
+}
+.flex70 {
+    flex: 0 0 70px;
+}
+.flex75 {
+    flex: 0 0 75px;
+}
+.flex80 {
+    flex: 0 0 80px;
+}
+.flex90 {
+    flex: 0 0 90px;
+}
+.flex100 {
+    flex: 0 0 100px;
+}
+.flex110 {
+    flex: 0 0 110px;
+}
+.flex120 {
+    flex: 0 0 120px;
+}
+.flex130 {
+    flex: 0 0 130px;
+}
+.flex140 {
+    flex: 0 0 140px;
+}
+.flex150 {
+    flex: 0 0 150px;
+}
+.flex160 {
+    flex: 0 0 160px;
+}
+.flex170 {
+    flex: 0 0 170px;
+}
+.flex175 {
+    flex: 0 0 175px;
+}
+.flex200 {
+    flex: 0 0 200px;
+}
+.flex250 {
+    flex: 0 0 250px;
+}
+.flex300 {
+    flex: 0 0 300px;
+}
+.flex350 {
+    flex: 0 0 350px;
+}
+.flex400 {
+    flex: 0 0 400px;
+}
+.flex450 {
+    flex: 0 0 450px;
+}
+.flex500 {
+    flex: 0 0 500px;
+}
+.flex600 {
+    flex: 0 0 600px;
+}
+.flex700 {
+    flex: 0 0 700px;
+}
+.flex800 {
+    flex: 0 0 800px;
+}
+
+.fsm-fade-elm.ng-enter {
+    transition: 0.8s linear all;
+    opacity: 0;
+}
+.fsm-fade-elm-init .fsm-fade-elm.ng-enter {
+    opacity: 1;
+}
+.fsm-fade-elm.ng-enter.ng-enter-active {
+    opacity: 1;
+}
+.fsm-fade-elm.ng-leave {
+    transition: 0.1s linear all;
+    opacity: 1;
+}
+.fsm-fade-elm.ng-leave.ng-leave-active {
+    opacity: 0;
+}
+
+.fsm-animate-repeat.ng-move,
+.fsm-animate-repeat.ng-enter,
+.fsm-animate-repeat.ng-leave {
+    transition:all linear .8s;
+}
+
+.fsm-animate-repeat.ng-leave.ng-leave-active,
+.fsm-animate-repeat.ng-move,
+.fsm-animate-repeat.ng-enter {
+    opacity:0;
+    /* max-height:0; */
+}
+
+.fsm-animate-repeat.ng-leave,
+.fsm-animate-repeat.ng-move.ng-move-active,
+.fsm-animate-repeat.ng-enter.ng-enter-active {
+    opacity:1;
+    /* max-height:30px; */
+}
