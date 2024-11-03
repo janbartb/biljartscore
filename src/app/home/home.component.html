@@ -12,10 +12,24 @@
                 </div>
             </div>
             <div style="height: 8px;" class="w3-teal"></div>
+            <div class="flexbox flexcenter" style="margin-top: 2rem;">
+                <div class="flexbox">
+                    <div>
+                        <label for="spelsoort">Kies een spelsoort</label>
+                    </div>
+                    <div>
+                        <select id="spelsoort" [(ngModel)]="spelId" (change)="spelsoortChanged()" (keyup)="keyupSpelsoort($event)">
+                            @for (spel of spelsoorten; track $index) {
+                                <option [ngValue]="spel.spelsoortId">{{spel.spelsoortNaam}}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
             <div class="flexbox flexcenter" style="margin-top: 3rem;">
                 <div>
                     <div style="text-align: center; padding-bottom: 1em;">
-                        <span style="color: green;">Maak een keuze</span>
+                        <span style="color: green;">En maak een keuze</span>
                     </div>
                     <div class="flexgrow1 flexbox flexcenter flexmiddle" style="font-size: 1.25em;">
                         <app-menu [menu]="menu" (menuItemClicked)="menuItemClicked($event)"></app-menu>

@@ -1,0 +1,14 @@
+.team, .team input {
+    color: dodgerblue;
+}
+.team > div {
+    padding-right: .5em;
+}
+.team .num {
+    text-align: right;
+}
+.team .naam {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

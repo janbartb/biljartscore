@@ -1,1 +1,169 @@
-<p>speler works!</p>
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox">
+            <!-- Speler section -->
+            <div class="flex65perc section flexbox flexcolumn" style="border-right: .25rem solid green;">
+                <div class="section-header">
+                    <div class="w3-green-l2">
+                        <span>{{sections[0]}}</span>
+                    </div>
+                </div>
+                <div class="section-body flexgrow1">
+                    <div class="flexbox flexcenter">
+                        <div>
+                            @if (spelerForm) {
+                                <form [formGroup]="spelerForm">
+                                    <table class="tbl-normal tbl-input">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <label for="id">ID<span class="req"> *</span></label>
+                                                </td>
+                                                <td>
+                                                    <input #spelerid type="text" id="id" style="width: 4em;" formControlName="id" autocomplete="off"
+                                                        [ngClass]="{'invalid': id?.invalid && (id?.dirty), 'valid': id?.valid && (id?.dirty)}"
+                                                        (blur)="id?.setValue(id?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            @if (id?.hasError('noDuplicates')) {
+                                                <tr class="input-msg error">
+                                                    <td></td>
+                                                    <td><span>ID wordt al gebruikt</span></td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td>
+                                                    <label for="knbbId">KNBB ID</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="knbbId" style="width: 6em;" formControlName="knbbId" autocomplete="off"
+                                                        [ngClass]="{'invalid': knbbId?.invalid && (knbbId?.dirty), 'valid': knbbId?.valid && (knbbId?.dirty)}"
+                                                        (blur)="knbbId?.setValue(knbbId?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="vnaam">Voornaam<span class="req"> *</span></label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="vnaam" style="width: 10em;" formControlName="vnaam" autocomplete="off"
+                                                        [ngClass]="{'invalid': vnaam?.invalid && (vnaam?.dirty), 'valid': vnaam?.valid && (vnaam?.dirty)}"
+                                                        (blur)="vnaam?.setValue(vnaam?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="tvoeg">Tussenvoegsel</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="tvoeg" style="width: 6em;" formControlName="tvoeg" autocomplete="off"
+                                                        [ngClass]="{'invalid': tvoeg?.invalid && (tvoeg?.dirty), 'valid': tvoeg?.valid && (tvoeg?.dirty)}"
+                                                        (blur)="tvoeg?.setValue(tvoeg?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="anaam">Achternaam<span class="req"> *</span></label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="anaam" style="width: 10em;" formControlName="anaam" autocomplete="off"
+                                                        [ngClass]="{'invalid': anaam?.invalid && (anaam?.dirty), 'valid': anaam?.valid && (anaam?.dirty)}"
+                                                        (blur)="anaam?.setValue(anaam?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="moyenne">Moyenne</label>
+                                                </td>
+                                                <td>
+                                                    <input type="number" id="moyenne" style="width: 5em;" formControlName="moyenne" autocomplete="off"
+                                                        [ngClass]="{'invalid': moyenne?.invalid && (moyenne?.dirty), 'valid': moyenne?.valid && (moyenne?.dirty)}">
+                                                </td>
+                                            </tr>
+                                            <tr><td style="padding: .5em 0;"></td></tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="spreeknaam">Spreeknaam</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="spreeknaam" style="width: 8em;" formControlName="spreeknaam" autocomplete="off"
+                                                        [ngClass]="{'invalid': spreeknaam?.invalid && (spreeknaam?.dirty), 'valid': spreeknaam?.valid && (spreeknaam?.dirty)}"
+                                                        (blur)="spreeknaam?.setValue(spreeknaam?.value.trim())" [placeholder]="vnaam?.value">
+                                                    @if (vnaam?.value.trim().length || spreeknaam?.value.trim().length) {
+                                                        <i class="fas fa-volume-up iconbtn" title="Uitspreken" (click)="naamUitspreken()"></i>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            }        
+                        </div>
+                    </div>
+                </div>
+                <!-- @if (activeSection != 0) {
+                    <div class="section-inactive" (click)="activateSection(0)"></div>    
+                } -->
+            </div>
+            <!-- Lid van section -->
+            <div class="flex35perc section flexbox flexcolumn">
+                <div class="section-header">
+                    <div class="w3-green-l2">
+                        <span>{{sections[2]}}</span>
+                    </div>
+                </div>
+                <div class="section-body flexgrow1">
+                    <div class="flexbox flexcenter">
+                        <div>
+                            <table class="tbl-normal tbl-entries">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2">
+                                            <select [(ngModel)]="vereniging" (change)="addVereniging()">
+                                                <option [ngValue]="undefined"></option>
+                                                @for (ver of verenigingen; track $index) {
+                                                    <option [ngValue]="ver">{{ver.naam}}</option>
+                                                }
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    @if (!spelerVerenigingen.length) {
+                                        <tr>
+                                            <td colspan="2" style="width: 10em;">
+                                                <span style="color: #acacac;">Geen lid</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                    @for (item of spelerVerenigingen; track $index) {
+                                        <tr class="entry">
+                                            <td style="width: 8em; overflow: hidden;" (click)="verenigingClicked(item)">{{item.naam}}</td>
+                                            <td class="entry-button" style="padding-left: 1em;">
+                                                @if (!item.inTeam) {
+                                                    <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="removeVereniging(item)"></i>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- @if (activeSection != 2) {
+                    <div class="section-inactive" (click)="activateSection(2)"></div>    
+                } -->
+            </div>
+
+        </div>
+        @if (spelerForm && spelerForm.valid) {
+            <div class="page-footer flexbox flexcenter">
+                <div style="font-size: 1.25em;">
+                    <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                </div>
+            </div>    
+        }
+    </div>
+</div>

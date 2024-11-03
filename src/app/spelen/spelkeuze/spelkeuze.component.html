@@ -1,0 +1,10 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="'Spelkeuze'" [spel]="appData.getSpelNaam()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox flexcenter flexmiddle" style="font-size: 1.25em;">
+            <app-menu [menu]="menu" (menuItemClicked)="menuItemClicked($event)"></app-menu>
+        </div>
+    </div>
+</div>

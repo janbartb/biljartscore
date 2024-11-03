@@ -1,0 +1,46 @@
+<div class="fullheight flexbox flexstart">
+    @for (panel of [0, 1, 2, 3]; track $index) {
+        <div class="flex25perc fullheight moyenne-kolom flexbox flexcenter flexmiddle" [ngClass]="{'panel-border-right': panel < 3}">
+            <div>
+                <table class="tbl-normal tbl-moyenne">
+                    <tr>
+                        <td style="width: 1em;"></td>
+                        <td class="label num" style="width: 4em;">Vanaf</td>
+                        <td class="label num" style="width: 4em;">Cars</td>
+                        <td style="width: 2em;"></td>
+                    </tr>
+                    @for (entry of tabel.moyennes | slice:(10 * panel):(10 * (panel + 1)); track $index) {
+                        @if (entry.filled) {
+                            <tr class="selectable" [ngClass]="{'selected': toEdit.index == ((10 * panel) + $index)}" 
+                                            (click)="entryClicked((10 * panel) + $index)">
+                                <td class="indicator num">
+                                    <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
+                                </td>
+                                <td class="num">{{entry.vanaf | number:'1.3-3':'nl-NL'}}</td>
+                                @if (toEdit.index == ((10 * panel) + $index)) {
+                                    <td class="num">
+                                        <input #editcars type="text" class="moy-input moy-edit" [(ngModel)]="toEdit.entry.cars"
+                                                [ngClass]="{'valid': toEdit.carsValid, 'invalid': !toEdit.carsValid}"
+                                                (keyup)="validateEditCars()" (keydown)="preventDefaults($event)">
+                                    </td>
+                                }
+                                @else {
+                                    <td class="num">{{entry.cars}}</td>
+                                }
+                                <td class="action"><i class="fa fas fa-trash-alt" (click)="entryVerwijderenClicked($event, (10 * panel) + $index)"></i></td>
+                            </tr>        
+                        }
+                        @else {
+                            <tr style="color: gray;">
+                                <td></td>
+                                <td class="num">-</td>
+                                <td class="num">-</td>
+                                <td></td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+    }
+</div>

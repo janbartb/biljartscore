@@ -1,0 +1,72 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox">
+            <!-- Klassen section -->
+            <div class="fullheight flexbox flexcolumn section" style="border-right: .25em solid green;">
+                <div class="section-header">
+                    <div class="w3-green-l2" style="padding: 0 1em;">
+                        <span>Klassen</span>
+                    </div>
+                </div>
+                <div class="flexgrow1 scrollable" style="padding: .5em;">
+                    <div class="flexbox flexcenter">
+                        <div>
+                            <table class="tbl-normal tbl-list">
+                                <tbody>
+                                    @for (optie of menuLijst.filtered; track $index) {
+                                        <tr class="selectable" [ngClass]="{'selected': menuLijst.selectedIdx == $index}" (click)="menuClicked($index)">
+                                            <td class="indicator" style="width: 1.2em;">
+                                                <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
+                                            </td>
+                                            <td>{{optie}}</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tabel section -->
+            <div class="fullheight flexgrow1 flexbox flexcolumn section">
+                <div class="section-header">
+                    <div class="w3-green-l2">
+                        <span>Moyenne Tabel</span>
+                    </div>
+                </div>
+                <div class="flexgrow1">
+                    @if (menuLijst.selectedIdx < 1) {
+                        <div class="fullheight flexbox flexcenter flexmiddle">
+                            <div style="text-align: center;">
+                                <div class="label" style="text-align: center;">Selecteer een klasse</div>
+                                <div class="label" style="text-align: center;">of</div>
+                                <div class="flexbox flexcenter">
+                                    <div style="font-size: 1.25em;">
+                                        <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @else {
+                        <app-moyenne-tabel [tabel]="moyenneTabel"></app-moyenne-tabel>
+                    }
+                </div>
+                @if (menuLijst.selectedIdx > 0) {
+                    <div class="section-footer flexbox flexcenter" style="border-top: .25em solid #93cf95;">
+                        <div class="flexbox" style="font-size: 1.25em;">
+                            <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                            <app-button [button]="verwijderButton" (buttonClicked)="verwijderenClicked()"></app-button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}

@@ -1,0 +1,27 @@
+.wedteam {
+    margin-top: .5em;
+    padding: 0 .5em .5em .5em;
+    cursor: pointer;
+    border: .125em solid green;
+    border-radius: .5em;
+    background-color: #dbefdc;
+}
+.wedspeler {
+    padding: 0 .5em .5em .5em;
+    cursor: pointer;
+    border: .125em solid #dbefdc;
+    border-radius: .5em;
+    background-color: #dbefdc;
+}
+.wedspeler.active {
+    border-color: red;
+}
+.wedspeler .naam {
+    width: 14em;
+    height: 1.5em;
+    padding: 0 .5em;
+    overflow: hidden;
+    border: 1px solid black;
+    border-radius: .25em;
+    background-color: white;
+}

@@ -1,0 +1,71 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
+        </div>
+        <div class="fullheight flexbox flexcolumn section">
+            <div class="section-header">
+                <div class="w3-green-l2" style="padding: 0 1em;">
+                    <span>{{sectionTitle}}</span>
+                </div>
+            </div>
+            <div class="flexgrow1 flexbox flexcolumn">
+                <div class="flexbox flexmiddle" style="border-bottom: .25rem solid #93cf95; padding: .25em 1.5em;">
+                    <label for="klasse">Klasse</label>
+                    <div>
+                        <input #klasse id="inputKlasse" type="text" class="moy-input" [(ngModel)]="tabel.klasse" 
+                                [ngClass]="{'invalid': !klasseValid, 'valid': klasseValid}" autocomplete="off"
+                                style="width: 3em;" (keyup)="klasseChanged()" (focus)="resetSelectionAndToAdd()">
+                    </div>
+                    <div style="width: 2em;"></div>
+                    <label for="minimum">Minimum</label>
+                    <div>
+                        <input #minimum id="inputMinimum" type="number" class="moy-input" [(ngModel)]="tabel.minimum" 
+                                [ngClass]="{'invalid': !minimumValid, 'valid': minimumValid}"
+                                style="width: 3.5em;" (keyup)="minimumChanged()" (change)="minimumChanged()" (focus)="resetSelectionAndToAdd()">
+                    </div>
+                    <label for="minimum" style="padding-left: .5em;">caramboles</label>
+                    <div style="width: .25em;"></div>
+                </div>
+                <div class="flexbox flexmiddle" style="border-bottom: .25rem solid #93cf95; padding: .25em 1.5em;">
+                    <label>Voeg entry toe:</label>
+                    <label for="vanaf">Vanaf</label>
+                    <div>
+                        <input #vanaf id="inputVanaf" type="number" class="moy-input" style="width: 4.5em;" [(ngModel)]="entryToAdd.entry.vanaf"
+                                [ngClass]="{'empty': entryToAdd.entry.vanaf == 0, 'valid': entryToAdd.vanafValid, 'invalid': !entryToAdd.vanafValid}" 
+                                (keyup)="validateEntryToAdd()" (change)="validateEntryToAdd()" (focus)="resetSelection()">
+                    </div>
+                    <div style="width: 1em;"></div>
+                    <label for="minimum">Cars</label>
+                    <div>
+                        <input #cars id="inputCars" type="number" class="moy-input" style="width: 3.5em;" [(ngModel)]="entryToAdd.entry.cars"
+                                [ngClass]="{'empty': entryToAdd.entry.cars == 0, 'valid': entryToAdd.carsValid, 'invalid': !entryToAdd.carsValid}" 
+                                (keyup)="validateEntryToAdd()" (change)="validateEntryToAdd()" (focus)="resetSelection()">
+                    </div>
+                    <div style="width: .75em;"></div>
+                    @if (entryToAdd.entry.vanaf != 0 || entryToAdd.entry.cars != 0) {
+                        <div style="font-size: .75em;">
+                            <app-button [button]="resetButton" (buttonClicked)="resetAddClicked()"></app-button>
+                        </div>
+                    }
+                </div>
+                <div class="flexgrow1">
+                    <app-moyenne-tabel-entries [tabel]="tabel" [toEdit]="entryToEdit"
+                                (changeSelection)="entryClicked($event)"></app-moyenne-tabel-entries>
+                </div>
+            </div>
+            <div class="section-footer" style="border-top: .25rem solid #93cf95;">
+                <div class="flexbox flexcenter" style="font-size: 1.25em;">
+                    <div class="flexbox">
+                        @if (klasseValid && minimumValid && (idxSelected < 0 || entryToEdit.carsValid)) {
+                            <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                        }
+                        @if (idxSelected >= 0) {
+                            <app-button [button]="deleteButton" (buttonClicked)="deleteClicked()"></app-button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

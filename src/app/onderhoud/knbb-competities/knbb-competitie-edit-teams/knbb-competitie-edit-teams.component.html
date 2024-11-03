@@ -1,0 +1,88 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"></app-page-header>
+        </div>
+        <div class="section-header">
+            <div class="w3-green-l1" style="padding: 0 1em;">
+                <span>{{subtitle2}}</span>
+            </div>
+        </div>
+        <div class="flexgrow1 flexbox">
+            <div class="fullheight flex50perc flexbox flexcolumn" style="border-right: .125em solid #93cf95;">
+                <div class="section-header">
+                    <div class="w3-green-l3" style="padding: 0 1em;">
+                        <span>Teams in competitie</span>
+                    </div>
+                </div>
+                <div class="flexgrow1 scrollable flexbox flexcenter">
+                    <div>
+                        <table class="tbl-normal tbl-list">
+                            <tbody>
+                                @for (compTeam of compTeams; track $index) {
+                                    <tr>
+                                        <td style="padding-right: 2em;">
+                                            <span>{{compTeam.klasse + '-' + compTeam.volgNr}}</span>
+                                        </td>
+                                        <td style="padding-right: 2em;">
+                                            <span>{{compTeam.naam}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{compTeam.spelers.length}} spelers</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @if (compTeamsOrig != compTeamsEdit) {
+                    <div style="border-top: .25em solid #b7dfb8">
+                        <div class="flexbox flexcenter" style="padding: .125em 0;">
+                            <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="fullheight flex50perc flexbox flexcolumn" style="border-left: .125em solid #93cf95;">
+                <div class="section-header">
+                    <div class="w3-green-l3" style="padding: 0 1em;">
+                        <span>Mogelijke teams</span>
+                    </div>
+                </div>
+                <div class="flexgrow1 scrollable flexbox flexcenter">
+                    <div>
+                        <table class="tbl-normal tbl-list">
+                            <tbody>
+                                @for (team of teamLijst.filtered; track $index) {
+                                    <tr class="selectable" [ngClass]="{'selected': teamLijst.selectedIdx == $index}" (click)="teamClicked($index)">
+                                        <td class="indicator" style="width: 2em;">
+                                            <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
+                                        </td>
+                                        <td style="padding-right: 2em;">
+                                            <span>{{team.klasse + '-' + team.volgNr}}</span>
+                                        </td>
+                                        <td style="padding-right: 2em;">
+                                            <span>{{team.naam}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{team.teamLeden.length + ' spelers'}}</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @if (spaceButton.text != '') {
+                    <div style="border-top: .25em solid #b7dfb8">
+                        <div class="flexbox flexcenter" style="padding: .125em 0;">
+                            <app-button [button]="spaceButton" (buttonClicked)="spaceButtonClicked()"></app-button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

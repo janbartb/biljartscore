@@ -1,0 +1,73 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox flexcolumn">
+            <div class="flexbox flexcenter">
+                <div style="padding: .5em 0;">
+                    <table class="tbl-normal tbl-list">
+                        <thead>
+                            <tr>
+                                <td class="label" style="width: 2em;"></td>
+                                <td class="label" style="width: 5em;">Klasse</td>
+                                <td class="label" style="width: 5em;">Volgnr</td>
+                                <td class="label" style="width: 5em;">Poule</td>
+                                <td class="label" style="width: 20em;">Naam</td>
+                                <td class="label" style="width: 5em;">#Teams</td>
+                                <td class="label" style="width: 2em;"></td>
+                            </tr>
+                        </thead>
+                    </table>    
+                </div>
+            </div>
+            <div class="flexgrow1 scrollable">
+                <div class="flexbox flexcenter">
+                    <div style="position: relative; left: .25em">
+                        @if (compLijst.isEmpty()) {
+                            <div style="padding: 2em 0; color: gray;">
+                                <span>Geen competities</span>
+                            </div>
+                        }
+                        @else {
+                            <table class="tbl-normal tbl-list">
+                                <tbody>
+                                    @for (comp of compLijst.filtered; track $index) {
+                                        <tr class="selectable" [ngClass]="{'selected': compLijst.selectedIdx == $index}" (click)="competitieClicked($index)">
+                                            <td class="indicator" style="width: 2em;">
+                                                <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
+                                            </td>
+                                            <td style="width: 5em; overflow: hidden;">{{comp.klasse}}</td>
+                                            <td style="width: 5em; overflow: hidden;">{{comp.volgNr}}</td>
+                                            <td style="width: 5em; overflow: hidden;">{{comp.poule}}</td>
+                                            <td style="width: 20em; overflow: hidden;">{{comp.naam}}</td>
+                                            <td style="width: 5em; overflow: hidden;">{{comp.teams.length}}</td>
+                                            <td class="right" style="width: 2em;">
+                                                <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="verwijderenClicked($index, $event)"></i>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div style="border-top: .25em solid #93cf95">
+                    <div class="flexbox flexcenter" style="padding: .125em 0;">
+                        <app-button [button]="toevoegButton" (buttonClicked)="toevoegenClicked()"></app-button>
+                        @if (compLijst.selectedIdx >= 0) {
+                            <app-button [button]="enterButton" (buttonClicked)="wijzigenClicked(compLijst.selectedIdx)"></app-button>
+                            <app-button [button]="teamsButton" (buttonClicked)="teamsClicked(compLijst.selectedIdx)"></app-button>
+                            <app-button [button]="verwijderButton" (buttonClicked)="verwijderenClicked(compLijst.selectedIdx)"></app-button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}

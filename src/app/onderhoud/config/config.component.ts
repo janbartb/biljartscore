@@ -16,7 +16,6 @@ export class ConfigComponent extends BaseComponent implements OnInit {
     config: Config = new Config();
 
     ngOnInit(): void {
-        this.previousUrl = 'onderhoud';
         this.bssApi.getConfig()
             .then((resp: Config) => {
                 this.config = resp;

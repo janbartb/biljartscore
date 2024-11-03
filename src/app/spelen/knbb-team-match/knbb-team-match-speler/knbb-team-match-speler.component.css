@@ -1,0 +1,29 @@
+.spl-container {
+    height: 2em;
+    line-height: 2em;
+    padding: 0 .5em;
+    background-color: green;
+}
+
+.data-container {
+    line-height: 1.4em;
+    padding: 0 .5em;
+}
+.data-container .data-label {
+    color: green;
+    text-align: right;
+    padding-right: .5em;
+}
+.data-container .data-label span {
+    font-size: 1em;
+}
+.data-container .data-label div {
+    padding-bottom: .125em;
+}
+.data-container .data-num span {
+    font-size: 1.25em;
+}
+.data-container .data-num {
+    color: black;
+    text-align: right;
+}

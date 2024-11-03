@@ -1,0 +1,58 @@
+<div class="fullheight flexbox">
+    @if (teamsMode == 'view') {
+        <div class="flex50perc fullheight flexbox flexcolumn section">
+            <div class="section-header">
+                <div class="w3-green-l2">
+                    <span>Teams</span>
+                </div>
+            </div>
+            <div class="section-body flexgrow1 scrollable">
+                <div class="flexbox flexcenter">
+                    <div>
+                        <table class="tbl-normal tbl-list">
+                            <tbody>
+                                @for (team of teams; track $index) {
+                                    <tr>
+                                        <td>{{team.klasse}}</td>
+                                        <td>{{team.naam}}</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="section-footer">
+                TEAMS VIEW FOOTER
+            </div>
+        </div>
+        <div class="flex50perc fullheight flexbox flexcolumn section" style="border-left: .25rem solid green;">
+            <div class="section-header">
+                <div class="w3-green-l2">
+                    <span>Leden</span>
+                </div>
+            </div>
+            <div class="section-body flexgrow1 scrollable">
+                <div class="flexbox flexcenter">
+                    <div>
+                        <table class="tbl-normal tbl-list">
+                            <tbody>
+                                @for (spl of leden; track $index) {
+                                    <tr>
+                                        <td>{{spl.getNaam()}}</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="section-footer">
+                LEDEN VIEW FOOTER
+            </div>
+        </div>
+    }
+    @else {
+
+    }
+</div>

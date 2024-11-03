@@ -18,6 +18,6 @@
 .cmp-item-indicator i {
     font-size: 1.25em;
 }
-.cmp-menu-item.selected .cmp-item-indicator, .cmp-menu-item:hover .cmp-item-indicator {
+.cmp-menu-item.selected .cmp-item-indicator {
     opacity: 1;
 }

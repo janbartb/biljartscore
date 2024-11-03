@@ -1,5 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { BaseComponent } from '../../base/base.component';
+import { StatusService } from '../../services/status.service';
 
 @Component({
   selector: 'app-page-header',
@@ -9,17 +11,16 @@ import { Router } from '@angular/router';
   styleUrl: './page-header.component.css'
 })
 export class PageHeaderComponent {
-    private router = inject(Router);
+    router = inject(Router);
+    appData = inject(StatusService);
 
     @Input() title: string = '';
     @Input() subtitle: string = '';
-    @Input() previousUrl: string = 'home'
+    @Input() spel: string = this.appData.getSpelNaam();
+    @Input() district: string = '';
 
     gotoHome() {
         this.router.navigate(['home']);
     }
 
-    gotoPrevious() {
-        this.router.navigate([this.previousUrl]);
-    }
 }

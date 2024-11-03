@@ -30,24 +30,40 @@ tr.filterrow td div {
 tbody tr {
     cursor: pointer;
 }
-tr.selectable {
-    color: gray;
+tbody td {
+    white-space: nowrap;
+    overflow: hidden;
 }
-tr.selectable.selected, tr.selectable:hover {
+tr.selectable, div.selectable {
+    cursor: pointer;
     color: black;
+    opacity: .5;
+}
+tr.selectable.invalid {
+    color: red;
+}
+tr.selectable.hovered, tr.selectable:hover, div.selectable.hovered, div.selectable:hover {
+    opacity: 1;
 }
 
-td.indicator {
+td.indicator, div.indicator {
     color: green;
     position: relative;
     opacity: 0;
 }
-tr.selectable.selected td.indicator, tr.selectable:hover td.indicator {
+tr.selectable.selected td.indicator, tr.editable.selected td.indicator {
+    opacity: 1;
+}
+div.selectable.selected div.indicator {
     opacity: 1;
 }
 
 td.label, td label {
     color: green;
+}
+td.label span.req, td label span.req {
+    color: red;
+    font-size: .75em;
 }
 td.right, td.num {
     text-align: right;
@@ -56,5 +72,46 @@ td.center {
     text-align: center;
 }
 
+/* TABLE INPUT */
+
+.tbl-input td.label, .tbl-input td label {
+    padding-right: 1em;
+}
+.tbl-input td.view {
+    overflow: hidden;
+}
+
 /* TABLE LIST */
 
+.tbl-list td {
+    padding-right: .75em;
+}
+.tbl-list tbody tr:not(.selectable) {
+    cursor: default;
+}
+
+/* TABLE WITH ENTRIES */
+
+.tbl-entries tr {
+    color: gray;
+}
+
+.tbl-entries tr:hover {
+    color: black;
+}
+
+/* TABLE MOYENNES */
+
+.tbl-moyenne .action {
+    font-size: .75em;
+    vertical-align: middle;
+    text-align: right;
+}
+.tbl-moyenne .action i {
+    color: #a1a1a1;
+    cursor: pointer;
+}
+.tbl-moyenne .action i:hover {
+    color: green;
+    scale: 1.25;
+}

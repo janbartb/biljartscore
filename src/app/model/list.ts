@@ -2,13 +2,15 @@ export class List<T> {
     items: T[] = [];
     filtered: T[] = [];
     selectedIdx: number = -1;
+    hoveredIdx: number = -1;
 
     clearSelection(): void {
-        this.selectedIdx = -1;
+        this.selectedIdx = this.hoveredIdx = -1;
     }
 
     fillItems(items: T[]): void {
         this.selectedIdx = -1;
+
         this.items = items;
         this.filtered = items.filter(x => true);
     }
@@ -16,7 +18,6 @@ export class List<T> {
     filter(filterFunction: (_: T) => {}) {
         this.selectedIdx = -1;
         this.filtered = this.items.filter(filterFunction);
-        console.log(this.filtered.length);
     }
 
     getItem(idx: number): T | undefined {
@@ -28,7 +29,7 @@ export class List<T> {
     }
 
     selectItem(idx: number) {
-        this.selectedIdx = (idx >= 0 && idx < this.filtered.length) ? idx : -1;
+        this.selectedIdx = this.hoveredIdx = (idx >= 0 && idx < this.filtered.length) ? idx : -1;
     }
 
     selectNextItem(): void {
@@ -43,6 +44,18 @@ export class List<T> {
         this.selectedIdx = idx;
     }
 
+    hoverNextItem(): void {
+        if (!this.filtered.length) {
+            return;
+        }
+        let idx = this.hoveredIdx;
+        idx++;
+        if (idx >= this.filtered.length) {
+            idx = 0;
+        }
+        this.hoveredIdx = idx;
+    }
+
     selectPreviousItem(): void {
         if (!this.filtered.length) {
             return;
@@ -55,11 +68,31 @@ export class List<T> {
         this.selectedIdx = idx;
     }
 
+    hoverPreviousItem(): void {
+        if (!this.filtered.length) {
+            return;
+        }
+        let idx = this.hoveredIdx;
+        idx--;
+        if (idx < 0) {
+            idx = this.filtered.length - 1;
+        }
+        this.hoveredIdx = idx;
+    }
+
+    isIndexWithinRange(idx: number): boolean {
+        return idx >= 0 && idx < this.filtered.length;
+    }
+
     isItemSelected(): boolean {
         return this.selectedIdx >= 0 && this.selectedIdx < this.filtered.length; 
     }
 
     isFilled(): boolean {
         return this.filtered.length > 0;
+    }
+
+    isEmpty(): boolean {
+        return this.items.length == 0;
     }
 }

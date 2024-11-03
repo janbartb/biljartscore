@@ -1,12 +1,12 @@
+import { District } from "./district";
+
 export class Config {
-    maxBeurten: number = 60;
-    bepaalTeSpelenCar: ConfigBepaalTeSpelenCar = new ConfigBepaalTeSpelenCar();
+    spelsoort: string = "3BA";
+    vereniging: string = '';
+    seizoen: string = '';
+    district: District = new District();
+    klasse: string = '';
     playSounds: boolean = true;
     speech: boolean = true;
     voiceName: String = '';
-}
-
-export class ConfigBepaalTeSpelenCar {
-    obvMoyenneTabellen: boolean = true;
-    obvAantalBeurten: number = 50;
 }

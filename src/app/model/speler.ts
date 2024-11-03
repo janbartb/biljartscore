@@ -16,9 +16,13 @@ export class SpelerGemiddelde {
 
 export class SpelerWrapper {
     speler: Speler = new Speler();
+    idxMoyenne = -1;
 
-    constructor(speler: Speler) {
+    constructor(speler: Speler, spelId?: string) {
         this.speler = speler;
+        if (spelId) {
+            this.idxMoyenne = speler.gemiddeldes.findIndex(gem => gem.spelId == spelId);
+        }
     }
 
     getNaam(): string {
@@ -33,8 +37,13 @@ export class SpelerWrapper {
         return this.speler.verenigingIds.some(ver => ver == verenigingId);
     }
 
-    getGemiddeldeVanSpel(spelId: string): number {
-        const found = this.speler.gemiddeldes.find(gem => gem.spelId == spelId);
-        return found ? found.gemiddelde : 0;
+    getGemiddeldeVanSpel(): number {
+        return this.idxMoyenne >= 0 ? this.speler.gemiddeldes[this.idxMoyenne].gemiddelde : 0;
     }
+}
+
+export class SpelerSelectie {
+    spelerId: string = '';
+    spelerNaam: string = '';
+    spelerSelected: boolean = false;
 }

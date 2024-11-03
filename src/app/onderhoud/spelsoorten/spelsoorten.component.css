@@ -14,7 +14,7 @@
 .tbl-spelsoort tr.editable.selected, .tbl-spelsoort tr.editable:hover {
     color: black;
 }
-.tbl-spelsoort tr.inputrow td div {
+.tbl-spelsoort tr.inputrow {
     position: relative;
     left: -.25em;
 }

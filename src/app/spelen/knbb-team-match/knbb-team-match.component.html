@@ -1,0 +1,95 @@
+<div class="fullviewheight">
+    @if (matchRead) {
+        <div class="fullheight flexbox flexcolumn">
+            <div>
+                <app-page-header [title]="'KNBB team match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
+            </div>
+            <div style="height: 25.5em;">
+                <div class="flexbox flexstart">
+                    <div style="flex: 0 0 29em; border-right: .25em solid green; height: 25.5em;">
+                        <app-knbb-team-match-team [match]="match" [idx]="0" [status]="wedStatus" style="color: white;"></app-knbb-team-match-team>
+                    </div>
+                    <div style="flex: 0 0 2em; height: 25.5em;">
+                        <div style="height: 3.5em; background-color: white;"></div>
+                        <div style="height: 5.5em; padding: .25em .5em;">
+                            @switch (wedStatus[0]) {
+                                @case (0) {
+                                    <div class="thermo-start clickable" (click)="wedstrijdClicked(0)"></div>
+                                }
+                                @case (1) {
+                                    <div class="thermo filler filler-lgreen clickable" (click)="wedstrijdClicked(0)" 
+                                            [style.background-size]="'100% ' + voortgang[0]"></div>
+                                }
+                                @case (2) {
+                                    <div class="thermo-end clickable" (click)="wedstrijdClicked(0)"></div>
+                                }
+                            }
+                        </div>
+                        <div style="height: 5.5em; padding: .25em .5em;">
+                            @switch (wedStatus[1]) {
+                                @case (0) {
+                                    <div class="thermo-start clickable" (click)="wedstrijdClicked(1)"></div>
+                                }
+                                @case (1) {
+                                    <div class="thermo filler filler-lgreen clickable" (click)="wedstrijdClicked(1)" 
+                                            [style.background-size]="'100% ' + voortgang[1]"></div>
+                                }
+                                @case (2) {
+                                    <div class="thermo-end clickable" (click)="wedstrijdClicked(1)"></div>
+                                }
+                            }
+                        </div>
+                        <div style="height: 5.5em; padding: .25em .5em;">
+                            @switch (wedStatus[2]) {
+                                @case (0) {
+                                    <div class="thermo-start clickable" (click)="wedstrijdClicked(2)"></div>
+                                }
+                                @case (1) {
+                                    <div class="thermo filler filler-lgreen clickable" (click)="wedstrijdClicked(2)" 
+                                            [style.background-size]="'100% ' + voortgang[2]"></div>
+                                }
+                                @case (2) {
+                                    <div class="thermo-end clickable" (click)="wedstrijdClicked(2)"></div>
+                                }
+                            }
+                        </div>
+                        <div style="height: 5.5em; padding: .25em .5em;">
+                            @switch (wedStatus[3]) {
+                                @case (0) {
+                                    <div class="thermo-start clickable" (click)="wedstrijdClicked(-1)"></div>
+                                }
+                                @case (1) {
+                                    <div class="thermo filler filler-lgreen clickable" (click)="wedstrijdClicked(-1)" 
+                                            [style.background-size]="'100% ' + voortgang[3]"></div>
+                                }
+                                @case (2) {
+                                    <div class="thermo-end clickable" (click)="wedstrijdClicked(-1)"></div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div style="flex: 0 0 29em; border-left: .25em solid green; height: 25.5em; background-color: yellow;">
+                        <app-knbb-team-match-team [match]="match" [idx]="1" [status]="wedStatus" style="color: yellow;"></app-knbb-team-match-team>
+                    </div>
+                </div>
+            </div>
+            <div style="height: .5em; min-height: .5em; background-color: green;">
+            </div>
+            <div class="flexgrow1" style="padding-top: .5em;">
+                <div class="flexbox flexmiddle flexcenter" style="font-size: 1.25em;">
+                    <div class="flexbox flexmiddle">
+                        @for (btn of buttonGroup.buttons; track $index) {
+                            <app-button [button]="btn" (buttonClicked)="buttonClicked($index)"></app-button>
+                            @if ($index == 2) {
+                                <div style="padding: 0 .25em;">=</div>
+                            }
+                            @if ($index == 3) {
+                                <div style="width: 3em;"></div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

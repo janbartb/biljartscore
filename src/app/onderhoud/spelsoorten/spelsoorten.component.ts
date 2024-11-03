@@ -1,17 +1,26 @@
 import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { Spelsoort } from '../../model/spelsoort';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { noDuplicates } from '../../directives/validators.directive';
+import { noDuplicates, notEmpty } from '../../directives/validators.directive';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { NgClass } from '@angular/common';
-import { ApiResponse } from '../../model/api-response';
 import { List } from '../../model/list';
 import { BaseComponent } from '../../base/base.component';
+import { Alinea, ConfirmDialog } from '../../model/confirm-dialog';
+import { Button } from '../../model/button';
+import { ButtonComponent } from '../../shared/button-group/button/button.component';
+import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 
 @Component({
     selector: 'app-spelsoorten',
     standalone: true,
-    imports: [PageHeaderComponent, NgClass, ReactiveFormsModule],
+    imports: [
+        PageHeaderComponent, 
+        ButtonComponent,
+        ConfirmComponent,
+        NgClass, 
+        ReactiveFormsModule
+    ],
     templateUrl: './spelsoorten.component.html',
     styleUrl: './spelsoorten.component.css'
 })
@@ -20,11 +29,18 @@ export class SpelsoortenComponent extends BaseComponent implements OnInit {
 
     title: string = 'Onderhoud gegevens';
     subtitle: string = 'Spelsoorten';
-    mode: string = 'add';
+    sectionTitle: string = ' ';
+    mode: string = 'edit';
     spelsoorten: Spelsoort[] = [];
-    editableList: List<Spelsoort> = new List<Spelsoort>();
-    nrOfNonEditItems: number = 0;
-    editSpelsoort!: Spelsoort;
+    spelsoortLijst: List<Spelsoort> = new List<Spelsoort>();
+    spelsoort: Spelsoort = new Spelsoort('', '');
+    idxToDelete: number = -1;
+    existing: string[] = [];
+    confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
+
+    enterButton: Button = new Button('Enter', 'Opslaan', true);
+    toevoegButton: Button = new Button('Ins', 'Spelsoort toevoegen', true);
+    verwijderButton: Button = new Button('Del', 'Verwijderen', true);
 
     spelsoortForm!: FormGroup;
 
@@ -34,207 +50,233 @@ export class SpelsoortenComponent extends BaseComponent implements OnInit {
     constructor() {
         super();
         effect(() => {
+            this.htmlInputNaam()?.nativeElement.select();
             this.htmlInputId()?.nativeElement.focus();
         });
     }
 
-    enterPressed() {
-        if (this.spelsoortForm.valid) {
-            this.saveClicked(this.spelsoortForm.value);
-        }
-    }
-
-    override escapePressed() {
-        if (this.mode == 'edit' || this.spelsoortForm.dirty || this.spelsoortForm.touched) {
-            this.cancelClicked();
+    override escapePressed(): void {
+        if (this.mode == 'add' || this.spelsoortLijst.selectedIdx >= 0) {
+            this.resetScreen();
             return;
         }
         super.escapePressed();
     }
 
-    deletePressed() {
-        if (this.editableList.selectedIdx >= 0) {
-            this.verwijderSpelsoort(this.editableList.selectedIdx + this.nrOfNonEditItems);
+    buttonPressed(button: Button) {
+        if (button.disabled) {
+            return;
+        }
+        button.selected = true;
+        setTimeout(() => {
+            button.selected = false;
+            if (button.key == 'Enter') {
+                this.enterClicked();
+            }
+            else if (button.key == 'Ins') {
+                this.toevoegenClicked();
+            }
+            else if (button.key == 'Del') {
+                this.verwijderenClicked(this.spelsoortLijst.selectedIdx);
+            }
+        }, 300);
+    }
+
+    enterClicked() {
+        if (this.mode == 'add' || this.spelsoortLijst.isItemSelected()) {
+            if (this.spelsoortForm && this.spelsoortForm.valid) {
+                if (this.mode == 'add') {
+                    this.spelsoortToevoegen();
+                }
+                else {
+                    this.spelsoortWijzigen();
+                }
+            }
         }
     }
 
-    arrowPressed() {
-        if (this.editableList.selectedIdx >= 0) {
-            this.prepareWijzigSpelsoort(this.editableList.selectedIdx + this.nrOfNonEditItems);
-        }
-        else {
-            this.cancelClicked();
-        }
-    }
-
-    prepareWijzigSpelsoort(idx: number) {
-        this.editSpelsoort = JSON.parse(JSON.stringify(this.spelsoorten[idx]));
-        this.spelId?.setValue(this.editSpelsoort.spelId);
-        this.spelNaam?.setValue(this.editSpelsoort.spelNaam);
-        this.spelId?.disable();
-        this.mode = 'edit';
-        this.htmlInputNaam()?.nativeElement.select();
+    toevoegenClicked() {
+        this.spelsoortLijst.clearSelection();
+        this.sectionTitle = 'Spelsoort toevoegen';
+        this.mode = 'add';
+        this.spelsoort = new Spelsoort('', '', true);
+        this.createSpelsoortForm();
+        this.toevoegButton.disable();
     }
 
     spelsoortClicked(idx: number) {
-        this.editableList.selectItem(idx);
-        this.prepareWijzigSpelsoort(this.editableList.selectedIdx + this.nrOfNonEditItems);
-    }
-
-    saveClicked(spelsoortFormData: Spelsoort) {
-        if (!this.spelsoortForm.valid) {
-            return;
-        }
-        console.log('Saving...');
-        console.log(spelsoortFormData);
-        if (this.mode == 'add') {
-            this.addSpelsoort(spelsoortFormData);
+        this.spelsoortLijst.selectItem(idx);
+        this.sectionTitle = 'Spelsoort wijzigen';
+        this.mode = 'edit';
+        let temp = this.spelsoortLijst.getSelectedItem();
+        if (temp) {
+            this.spelsoort = JSON.parse(JSON.stringify(temp));
+            this.createSpelsoortForm();
         }
         else {
-            this.updateSpelsoort(spelsoortFormData);
+            this.spelsoort = new Spelsoort('', '', true);
+            this.alert.showError(`Spelsoort met index '${idx}' niet gevonden.`);
         }
+        this.toevoegButton.disable();
     }
 
-    cancelClicked() {
-        if (this.mode == 'edit') {
-            this.mode = 'add';
-            this.spelId?.enable();
+    verwijderenClicked(idx: number, event?: MouseEvent) {
+        if (event) {
+            event.stopPropagation();
         }
-        this.spelsoortForm.reset();
-        this.editableList.clearSelection();
-        this.blurFields();
-    } 
-
-    private addSpelsoort(spelsoort: Spelsoort) {
-        spelsoort.magWeg = true;
-        this.bssApi.addSpelsoort(spelsoort)
-        .then((resp: ApiResponse) => {
-            this.spelsoorten.push(resp.data);
-            this.fillEditableList();
-            this.spelsoortForm.reset();
-            this.setSpelIdValidators();
-            this.blurFields();
-            this.alert.showAlert(resp.message, 'success');
-        })
-        .catch((err) => {
-            this.alert.showAlert(err, 'error');
-        });
+        this.idxToDelete = idx;
+        this.confirmVerwijderen(this.idxToDelete);
     }
 
-    private updateSpelsoort(spelsoort: Spelsoort) {
-        this.editSpelsoort.spelNaam = spelsoort.spelNaam;
-        let idx = this.spelsoorten.findIndex(spel => spel.spelId == this.editSpelsoort.spelId);
-        if (idx < 0) {
-            this.alert.showAlert(`Vreemd! Kan spelsoort '${this.editSpelsoort.spelId}' niet meer vinden in lijst.`, 'error');
-            return;
+    spelsoortToevoegen() {
+        this.spelsoort = this.spelsoortForm.value;
+        this.bssApi.addSpelsoort(this.spelsoort)
+        .then(resp => {
+            this.alert.showAlert(resp.message, 'success');
+            this.getSpelsoorten();
+            this.toevoegenClicked();
+        })
+        .catch(err => {
+            this.alert.showError(err);
+        })
+    }
+
+    spelsoortWijzigen() {
+        this.spelsoort.spelsoortNaam = this.spelsoortNaam?.value;
+        this.bssApi.updateSpelsoort(this.spelsoort)
+        .then(resp => {
+            this.alert.showAlert(resp.message, 'success');
+            this.resetScreen();
+            this.getSpelsoorten();
+        })
+        .catch(err => {
+            this.alert.showError(err);
+        })
+    }
+
+    private confirmVerwijderen(idx: number) {
+        const toDelete = this.spelsoortLijst.filtered[idx];
+        let inhoud: Alinea[] = [];
+        inhoud.push(new Alinea([`Spelsoort '${toDelete.spelsoortNaam}' verwijderen.`]));
+        inhoud.push(new Alinea([`Weet u het zeker?`]));
+        this.confirmDialog = new ConfirmDialog('verwijderen', inhoud);
+        this.isDialogOpen = true;
+    }
+
+    confirmReplied(confirmed: boolean) {
+        console.log('confirmed : ' + confirmed);
+        if (confirmed) {
+            const soort = this.spelsoortLijst.filtered[this.idxToDelete];
+            this.bssApi.deleteSpelsoort(soort)
+            .then(resp => {
+                this.alert.showAlert(resp.message, 'success');
+                this.resetScreen();
+                this.getSpelsoorten();
+            })
+            .catch(err => {
+                this.alert.showError(err);
+            });
         }
-        this.bssApi.updateSpelsoort(this.editSpelsoort)
-        .then((resp: ApiResponse) => {
-            this.cancelClicked();
-            this.spelsoorten[idx] = resp.data;
-            this.fillEditableList();
-            this.spelsoortForm.reset();
-            this.blurFields();
-            this.alert.showAlert(resp.message, 'success');
-        })
-        .catch((err) => {
-            this.alert.showAlert(err, 'error');
-        });
+        this.isDialogOpen = false;
     }
 
-    verwijderSpelsoort(idx: number) {
-        //TODO check of delete is toegestaan
-        this.bssApi.deleteSpelsoort(this.spelsoorten[idx])
-        .then((resp: ApiResponse) => {
-            let x = this.spelsoorten.findIndex(spel => spel.spelId == resp.data.spelId);
-            if (x < 0) {
-                this.alert.showAlert(`Vreemd! Kan spelsoort '${resp.data.spelId}' niet meer vinden in lijst.`, 'warning');
-                return;
-            }
-            this.spelsoorten.splice(x, 1);
-            this.editableList.clearSelection();
-            this.fillEditableList();
-            this.spelsoortForm.reset();
-            this.setSpelIdValidators();
-            this.alert.showAlert(resp.message, 'success');
-            this.cancelClicked();
-        })
-        .catch((err) => {
-            this.alert.showAlert(err, 'error');
-        });
-    }
-
-    setSpelIdValidators() {
-        this.spelId?.setValidators([Validators.required, noDuplicates(this.spelsoorten.map(x => x.spelId))]);
-    }
-
-    private blurFields() {
-        this.htmlInputNaam()?.nativeElement.blur();
-        this.htmlInputId()?.nativeElement.focus();
+    onKeydownNaam(event: KeyboardEvent) {
+        if (event.key === 'Delete') {
+            event.preventDefault();
+        }
     }
 
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
+        const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
-        if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.editableList.selectPreviousItem();
+                this.spelsoortLijst.selectPreviousItem();
             }
             if (event.key === 'ArrowDown') {
-                this.editableList.selectNextItem();
+                this.spelsoortLijst.selectNextItem();
             }
-            this.arrowPressed()
+            this.spelsoortClicked(this.spelsoortLijst.selectedIdx);
             return false;
         }
         if (event.key === 'Enter') {
-            this.enterPressed();
+            if (this.isDialogOpen) {
+                return true;
+            }
+            this.buttonPressed(this.enterButton);
+            return false;
+        }
+        if (event.key === 'Delete' && this.spelsoortLijst.selectedIdx >= 0) {
+            event.preventDefault();
+            this.buttonPressed(this.verwijderButton);
+            return false;
+        }
+        if (event.key === 'Insert') {
+            this.buttonPressed(this.toevoegButton);
             return false;
         }
         if (event.key === 'Escape') {
+            if (this.isDialogOpen) {
+                return true;
+            }
             this.escapePressed();
-            return false;
-        }
-        if (event.key === 'Delete') {
-            this.deletePressed();
             return false;
         }
         if (event.key === 'Home') {
             this.homePressed();
             return false;
-        }    
+        }
         return true;
     }
 
     ngOnInit(): void {
-        this.previousUrl = 'onderhoud';
+        this.getSpelsoorten();
+    }
+
+    private resetScreen() {
+        this.spelsoortLijst.selectedIdx = -1;
+        this.mode = 'edit';
+        this.sectionTitle = '';
+        this.toevoegButton.enable();
+    }
+
+    private getSpelsoorten() {
         this.bssApi.getSpelsoorten()
-            .then((resp: Spelsoort[]) => {
-                this.spelsoorten = resp;
-                this.createForm();
-                this.fillEditableList();
+            .then(result => {
+                this.spelsoorten = result.filter(srt => !srt.magWeg);
+                this.spelsoortLijst.fillItems(result.filter(srt => srt.magWeg));
+                this.existing = result.map(srt => srt.spelsoortId);
             })
-            .catch((err) => {
-                this.alert.showAlert(err, 'error');
+            .catch(err => {
+                this.alert.showError(err);
             });
     }
 
-    createForm() {
+    createSpelsoortForm() {
         this.spelsoortForm = this.fb.nonNullable.group({
-            spelId: [''],
-            spelNaam: ['', Validators.required]
+            spelsoortId: [this.spelsoort.spelsoortId],
+            spelsoortNaam: [this.spelsoort.spelsoortNaam, [Validators.required, notEmpty()]],
+            magWeg: [true]
         });
-        this.setSpelIdValidators();
+        if (this.mode == 'add') {
+            this.spelsoortId?.setValidators([Validators.required, notEmpty(), noDuplicates(this.existing)]);
+            setTimeout(() => {
+                this.htmlInputId()?.nativeElement.focus();                
+            }, 200);
+        }
+        else {
+            this.spelsoortId?.disable();
+        }
     }
 
-    fillEditableList(): void {
-        this.editableList.items = this.spelsoorten.filter(spel => spel.magWeg);
-        this.nrOfNonEditItems = this.spelsoorten.length - this.editableList.items.length;
+    get spelsoortNaam() {
+        return this.spelsoortForm.get('spelsoortNaam');
     }
-
-    get spelNaam() {
-        return this.spelsoortForm.get('spelNaam');
+    get spelsoortId() {
+        return this.spelsoortForm.get('spelsoortId');
     }
-    get spelId() {
-        return this.spelsoortForm.get('spelId');
+    get magWeg() {
+        return this.spelsoortForm.get('magWeg');
     }
 }

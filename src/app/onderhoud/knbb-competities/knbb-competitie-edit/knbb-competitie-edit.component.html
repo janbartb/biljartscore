@@ -1,0 +1,144 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"></app-page-header>
+        </div>
+        <div class="section-header">
+            <div class="w3-green-l1" style="padding: 0 1em;">
+                <span>{{subtitle2}}</span>
+            </div>
+        </div>
+        <div class="flexgrow1 flexbox">
+            <div class="fullheight flexbox flexcolumn section" style="border-right: .125em solid #93cf95;">
+                <div class="section-header">
+                    <div class="w3-green-l3" style="padding: 0 1em;">
+                        <span>Competitie</span>
+                    </div>
+                </div>
+                <div class="section-status" [ngClass]="{'active': activeSection == 0}"></div>
+                <div class="flexgrow1 flexbox flexcenter" style="padding: 1em;">
+                    <div>
+                        @if (compDataForm) {
+                            <form [formGroup]="compDataForm">
+                                <table class="tbl-normal tbl-input">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <label for="compKlasse">Klasse</label>
+                                            </td>
+                                            <td>
+                                                <span>{{competitie.klasse}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="compVolgnr">Volgnr</label>
+                                            </td>
+                                            <td>
+                                                <span>{{competitie.volgNr}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="compPoule">Poule</label>
+                                            </td>
+                                            <td>
+                                                <span>{{competitie.poule}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="compNaam">Naam<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                <input #compnaam type="text" id="compNaam" style="width: 12em;" formControlName="naam" autocomplete="off"
+                                                        [ngClass]="{'invalid': naam?.invalid && (naam?.dirty), 'valid': naam?.valid && (naam?.dirty)}"
+                                                        (blur)="naam?.setValue(naam?.value.trim())" (keyup)="setDataChanged()" (focus)="activeSection = 0">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="compBeurten">Max. beurten<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                <input #compbeurten type="number" id="compBeurten" style="width: 4em;" formControlName="maxBeurten"
+                                                        [ngClass]="{'invalid': maxBeurten?.invalid && (maxBeurten?.dirty), 'valid': maxBeurten?.valid && (maxBeurten?.dirty)}"
+                                                        (keyup)="setDataChanged()" (change)="setDataChanged()" (focus)="activeSection = 0">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>        
+                            </form>
+                        }
+                    </div>
+                </div>
+                @if (compDataForm && compDataForm.valid && dataChanged && activeSection == 0) {
+                    <div style="border-top: .25em solid #b7dfb8">
+                        <div class="flexbox flexcenter" style="padding: .125em 0;">
+                            <app-button [button]="enterCompButton" (buttonClicked)="enterCompClicked()"></app-button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="fullheight flexgrow1 flexbox flexcolumn" style="border-left: .125em solid #93cf95;">
+                <div class="section-header">
+                    <div class="w3-green-l3" style="padding: 0 1em;">
+                        <span>Teams</span>
+                    </div>
+                </div>
+                <div class="section-status" [ngClass]="{'active': activeSection == 1}"></div>
+                <div class="flexbox flexcenter">
+                    <div style="padding: .5em 0;">
+                        <table class="tbl-normal tbl-list">
+                            <tr>
+                                <td style="width: 2em;"></td>
+                                <td class="label" style="width: 5em;">Klasse</td>
+                                <td class="label" style="width: 14em;">Naam</td>
+                                <td class="label" style="width: 4em;" title="Aantal spelers">#SP</td>
+                                <td class="label" style="width: 4em;" title="Aantal matches gespeeld">#MG</td>
+                                <td class="label" style="width: 4em;" title="Aantal matchpunten">Punt</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="flexgrow1 scrollable flexbox flexcenter">
+                    <div style="position: relative; left: .25em;">
+                        <table class="tbl-normal tbl-list">
+                            <tbody>
+                                @for (team of teamLijst.filtered; track $index) {
+                                    <tr class="selectable" [ngClass]="{'selected': teamLijst.selectedIdx == $index}" (click)="teamClicked($index)">
+                                        <td class="indicator" style="width: 2em;">
+                                            <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
+                                        </td>
+                                        <td style="width: 5em;">
+                                            <span>{{team.klasse + '-' + team.volgNr}}</span>
+                                        </td>
+                                        <td style="width: 14em; overflow: hidden;">
+                                            <span>{{team.naam}}</span>
+                                        </td>
+                                        <td style="width: 4em;">
+                                            <span>{{team.spelers.length}}</span>
+                                        </td>
+                                        <td style="width: 4em;">
+                                            <span>{{team.matches.length}}</span>
+                                        </td>
+                                        <td style="width: 4em;">
+                                            <span>0</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @if (activeSection == 1) {
+                    <div style="border-top: .25em solid #b7dfb8">
+                        <div class="flexbox flexcenter" style="padding: .125em 0;">
+                            <app-button [button]="teamsButton" (buttonClicked)="teamsClicked()"></app-button>
+                        </div>
+                    </div>    
+                }
+            </div>
+        </div>
+    </div>
+</div>

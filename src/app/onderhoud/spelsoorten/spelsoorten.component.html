@@ -1,88 +1,125 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="title" [subtitle]="subtitle" [previousUrl]="previousUrl"></app-page-header>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
         </div>
-        <div class="flexbox flexcenter" style="margin-top: .5rem;">
-            @if (spelsoortForm) {
-                <div>
-                    <form [formGroup]="spelsoortForm">
-                        <table class="tbl-spelsoort">
-                            <thead>
-                                <tr>
-                                    <td style="width: 2em;"></td>
-                                    <td class="label" style="width: 5em; overflow: hidden;">ID</td>
-                                    <td class="label" style="width: 10em; overflow: hidden;">Naam</td>
-                                    <td style="width: 4em;"></td>
-                                </tr>
-                            </thead>
+        <div class="flexgrow1 flexbox">
+            <div class="fullheight flex50perc flexbox flexcolumn section" style="border-right: .25em solid green;">
+                <div class="section-header">
+                    <div class="w3-green-l2" style="padding: 0 1em;">
+                        <span>Spelsoorten</span>
+                    </div>
+                </div>
+                <div class="flexbox flexcenter" style="padding: .25em 0;">
+                    <table class="tbl-normal tbl-list">
+                        <thead>
+                            <tr>
+                                <td style="width: 2em;"></td>
+                                <td class="label" style="width: 5em;">ID</td>
+                                <td class="label" style="width: 12em;">Naam</td>
+                                <td style="width: 2em;"></td>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="flexgrow1 flexbox flexcenter scrollable">
+                    <div style="position: relative; left: .25em;">
+                        <table class="tbl-normal tbl-list">
                             <tbody>
-                                <tr class="inputrow">
-                                    <td style="width: 2em;"></td>
-                                    <td style="width: 5em;">
-                                        <div>
-                                            <input #spelsoortid type="text" style="width: 4em;" formControlName="spelId" autocomplete="off"
-                                                oninput="this.value = this.value.toUpperCase()"
-                                                [ngClass]="{'invalid': spelId?.invalid && (spelId?.dirty),
-                                                            'valid': spelId?.valid && (spelId?.dirty)}">
-                                        </div>
-                                    </td>
-                                    <td style="width: 10em;">
-                                        <div>
-                                            <input #spelsoortnaam type="text" style="width: 10em;" formControlName="spelNaam" autocomplete="off"
-                                                [ngClass]="{'invalid': spelNaam?.invalid && (spelNaam?.dirty),
-                                                        'valid': spelNaam?.valid && (spelNaam?.dirty)}">
-                                        </div>
-                                    </td>
-                                    <td style="width: 4em; text-align: right;">
-                                        @if (spelId?.value > '' || spelNaam?.value > '') {
-                                            <i class="fas fa-times-circle iconbtn" title="Annuleer" (click)="cancelClicked()"></i>
-                                        }
-                                        @if (spelsoortForm.valid) {
-                                            <i class="fas fa-check-square iconbtn" title="Opslaan" (click)="saveClicked(spelsoortForm.value)"></i>
-                                        }
-                                    </td>
-                                </tr>
+                                @for (spelsoort of spelsoorten; track $index) {
+                                    <tr>
+                                        <td style="width: 2em;"></td>
+                                        <td style="width: 2em; overflow: hidden;">{{spelsoort.spelsoortId}}</td>
+                                        <td style="width: 2em; overflow: hidden;">{{spelsoort.spelsoortNaam}}</td>
+                                        <td style="width: 2em;"></td>
+                                    </tr>
+                                }
+                                @for (spelsoort of spelsoortLijst.filtered; track $index) {
+                                    <tr class="selectable" [ngClass]="{'selected': spelsoortLijst.selectedIdx == $index}" (click)="spelsoortClicked($index)">
+                                        <td class="indicator" style="width: 2em;">
+                                            <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
+                                        </td>
+                                        <td style="width: 5em; overflow: hidden;">{{spelsoort.spelsoortId}}</td>
+                                        <td style="width: 12em; overflow: hidden;">{{spelsoort.spelsoortNaam}}</td>
+                                        <td class="right" style="width: 2em;">
+                                            <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="verwijderenClicked($index, $event)"></i>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
-                    </form>
-                </div>    
-            }
-        </div>
-        <div class="flexgrow1 flexbox flexcenter scrollable">
-            <div style="position: relative; left: .25em;">
-                <table class="tbl-spelsoort">
-                    <tbody>
-                        @for (item of spelsoorten; track $index) {
-                            @if (!item.magWeg) {
-                                <tr>
-                                    <td style="width: 2em;"></td>
-                                    <td style="width: 5em; overflow: hidden;">{{item.spelId}}</td>
-                                    <td style="width: 10em; overflow: hidden;">{{item.spelNaam}}</td>
-                                    <td style="width: 4em;"></td>
-                                </tr>    
-                            }
-                        }
-                        @for (item of editableList.items; track $index) {
-                            <tr class="editable" [ngClass]="{'selected': editableList.selectedIdx == $index}" (click)="spelsoortClicked($index)">
-                                <td class="indicator" style="width: 2em; position: relative;">
-                                    @if (editableList.selectedIdx == $index) {
-                                        <i class="fas fa-angle-right" style="color: green; font-size: 1.25em; position: relative; top: 4px;"></i>
-                                    }
-                                </td>
-                                <td style="width: 5em; overflow: hidden;">{{item.spelId}}</td>
-                                <td style="width: 10em; overflow: hidden;">{{item.spelNaam}}</td>
-                                <td style="width: 4em; text-align: right;">
-                                    @if (item.magWeg) {
-                                        <i class="fas fa-trash-alt iconbtn" [ngClass]="{'selected': editableList.selectedIdx == $index}"
-                                            title="Verwijder" (click)="verwijderSpelsoort($index + nrOfNonEditItems)"></i>
-                                    }
-                                </td>
-                            </tr>    
-                        }
-                    </tbody>
-                </table> 
+                    </div>
+                </div>
+                <div class="section-footer" style="border-top: .25em solid #93cf95">
+                    <div class="flexbox flexcenter" style="padding: .125em 0;">
+                        <app-button [button]="toevoegButton" (buttonClicked)="toevoegenClicked()"></app-button>
+                    </div>
+                </div>
+            </div>
+            <div class="fullheight flex50perc flexbox flexcolumn section">
+                <div class="section-header">
+                    <div class="w3-green-l2" style="padding: 0 1em;">
+                        <span>{{sectionTitle}}</span>
+                    </div>
+                </div>
+                <div class="section-body flexgrow1">
+                    @if (spelsoortForm && (mode == 'add' || spelsoortLijst.selectedIdx >= 0)) {
+                        <div class="flexbox flexcenter">
+                            <div>
+                                <form [formGroup]="spelsoortForm">
+                                    <table class="tbl-normal tbl-input">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <label for="spelsoortId">ID<span class="req"> *</span></label>
+                                                </td>
+                                                <td>
+                                                    <input #spelsoortid type="text" id="spelsoortId" style="width: 5em;" formControlName="spelsoortId" autocomplete="off"
+                                                        [ngClass]="{'invalid': spelsoortId?.invalid && (spelsoortId?.dirty), 
+                                                                    'valid': spelsoortId?.valid && (spelsoortId?.dirty)}"
+                                                        (blur)="spelsoortId?.setValue(spelsoortId?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            @if (spelsoortId?.hasError('noDuplicates')) {
+                                                <tr class="input-msg error">
+                                                    <td></td>
+                                                    <td><span>ID wordt al gebruikt</span></td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td>
+                                                    <label for="spelsoortNaam">Naam<span class="req"> *</span></label>
+                                                </td>
+                                                <td>
+                                                    <input #spelsoortnaam type="text" id="spelsoortNaam" style="width: 12em;" formControlName="spelsoortNaam" autocomplete="off"
+                                                        [ngClass]="{'invalid': spelsoortNaam?.invalid && (spelsoortNaam?.dirty), 
+                                                                    'valid': spelsoortNaam?.valid && (spelsoortNaam?.dirty)}"
+                                                        (blur)="spelsoortNaam?.setValue(spelsoortNaam?.value.trim())" (keydown)="onKeydownNaam($event)">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                                @if (spelsoortForm && spelsoortForm.valid) {
+                                    <div class="flexbox flexcenter" style="margin-top: 1em;">
+                                        <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                @if (spelsoortLijst.selectedIdx >= 0) {
+                    <div class="section-footer" style="border-top: .25em solid #93cf95">
+                        <div class="flexbox flexcenter" style="padding: .125em 0;">
+                            <app-button [button]="verwijderButton" (buttonClicked)="verwijderenClicked(spelsoortLijst.selectedIdx)"></app-button>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}

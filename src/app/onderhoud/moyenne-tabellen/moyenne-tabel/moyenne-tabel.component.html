@@ -1,0 +1,113 @@
+<div class="fullheight flexbox flexcolumn">
+    <div class="flexbox" style="border-bottom: .25rem solid #93cf95; padding: .25em .5em;">
+        <label for="klasse">Klasse</label>
+        <div>{{tabel.klasse}}</div>
+        <div style="width: 3em;"></div>
+        <label for="minimum">Minimum</label>
+        <div>{{tabel.minimum}}</div>
+        <label for="minimum" style="padding-left: .5em;">caramboles</label>
+    </div>
+    <div class="flexgrow1 flexbox flexstart">
+        <div class="flex25perc fullheight moyenne-kolom flexbox flexcenter flexmiddle" style="border-right: .125em solid #93cf95;">
+            <div>
+                <table class="tbl-normal tbl-moyenne">
+                    <tr>
+                        <td class="label num" style="width: 4em;">Vanaf</td>
+                        <td class="label num" style="width: 3em;">Cars</td>
+                    </tr>
+                    @for (entry of tabel.moyennes | slice:0:10; track $index) {
+                        @if (entry.filled) {
+                            <tr>
+                                <td class="num">{{entry.vanaf | number:'1.3-3':'nl-NL'}}</td>
+                                <td class="num">{{entry.cars}}</td>
+                            </tr>        
+                        }
+                        @else {
+                            <tr style="color: gray;">
+                                <td class="num">-</td>
+                                <td class="num">-</td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+        <div class="flex25perc fullheight moyenne-kolom flexbox flexcenter flexmiddle" style="border-right: .125em solid #93cf95;">
+            <div>
+                <table class="tbl-normal tbl-moyenne">
+                    <tr>
+                        <td class="label num" style="width: 4em;">Vanaf</td>
+                        <td class="label num" style="width: 3em;">Cars</td>
+                    </tr>
+                    @for (entry of tabel.moyennes | slice:10:20; track $index) {
+                        @if (entry.filled) {
+                            <tr>
+                                <td class="num">{{entry.vanaf | number:'1.3-3':'nl-NL'}}</td>
+                                <td class="num">{{entry.cars}}</td>
+                            </tr>        
+                        }
+                        @else {
+                            <tr style="color: gray;">
+                                <td class="num">-</td>
+                                <td class="num">-</td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+        <div class="flex25perc fullheight moyenne-kolom flexbox flexcenter flexmiddle" style="border-right: .125em solid #93cf95;">
+            <div>
+                <table class="tbl-normal tbl-moyenne">
+                    <tr>
+                        <td class="label num" style="width: 4em;">Vanaf</td>
+                        <td class="label num" style="width: 3em;">Cars</td>
+                    </tr>
+                    @for (entry of tabel.moyennes | slice:20:30; track $index) {
+                        @if (entry.filled) {
+                            <tr>
+                                <td class="num">{{entry.vanaf | number:'1.3-3':'nl-NL'}}</td>
+                                <td class="num">{{entry.cars}}</td>
+                            </tr>        
+                        }
+                        @else {
+                            <tr style="color: gray;">
+                                <td class="num">-</td>
+                                <td class="num">-</td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+        <div class="flex25perc fullheight moyenne-kolom flexbox flexcenter flexmiddle">
+            <div>
+                <table class="tbl-normal tbl-moyenne">
+                    <tr>
+                        <td class="label num" style="width: 4em;">Vanaf</td>
+                        <td class="label num" style="width: 3em;">Cars</td>
+                    </tr>
+                    @for (entry of tabel.moyennes | slice:30:40; track $index) {
+                        @if (entry.filled) {
+                            <tr>
+                                <td class="num">{{entry.vanaf | number:'1.3-3':'nl-NL'}}</td>
+                                <td class="num">{{entry.cars}}</td>
+                            </tr>        
+                        }
+                        @else {
+                            <tr style="color: gray;">
+                                <td class="num">-</td>
+                                <td class="num">-</td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="section-footer" style="border-top: .25rem solid #93cf95;">
+        <div class="flexbox flexcenter" style="font-size: 1.25em;">
+            <app-button [button]="enterButton" (buttonClicked)="enterButtonClicked()"></app-button>
+        </div>
+    </div> -->
+</div>

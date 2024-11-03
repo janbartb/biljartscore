@@ -1,1 +1,63 @@
-<p>verenigingen works!</p>
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="title" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
+        </div>
+        <div class="flexbox flexcenter" style="margin-top: .5rem;">
+            <div>
+                <table class="tbl-normal tbl-list">
+                    <thead>
+                        <tr>
+                            <td style="width: 2em;"></td>
+                            <td class="label" style="width: 6em; overflow: hidden;">ID</td>
+                            <td class="label" style="width: 14em; overflow: hidden;">Naam</td>
+                            <td class="label" style="width: 9em; overflow: hidden;">Plaats</td>
+                            <td class="label" style="width: 6em;"># leden</td>
+                            <td class="label" style="width: 6em;"># teams</td>
+                        </tr>
+                        <tr class="filterrow">
+                            <td style="width: 2em;"></td>
+                            <td style="width: 6em;"></td>
+                            <td style="width: 14em;">
+                                <div>
+                                    <input class="filter" type="text" style="width: 10em;" [(ngModel)]="naamFilter" autocomplete="off"
+                                        (keyup)="naamFilterChanged($event)">
+                                </div>
+                            </td>
+                            <td style="width: 9em;"></td>
+                            <td style="width: 6em;"></td>
+                            <td style="width: 6em;"></td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="flexgrow1 flexbox flexcenter scrollable">
+            <div style="position: relative; left: .25em;">
+                @if (verenigingLijst.isFilled()) {
+                    <table class="tbl-normal tbl-list">
+                        <tbody>
+                            @for (item of verenigingLijst.filtered; track $index) {
+                                <tr class="selectable" [ngClass]="{'selected': verenigingLijst.selectedIdx == $index}" (click)="verenigingClicked($index)">
+                                    <td class="indicator" style="width: 2em;">
+                                        <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
+                                    </td>
+                                    <td style="width: 6em; overflow: hidden;">{{item.vereniging.verId}}</td>
+                                    <td style="width: 14em; overflow: hidden;">{{item.vereniging.naam}}</td>
+                                    <td style="width: 9em; overflow: hidden;">{{item.vereniging.plaats}}</td>
+                                    <td style="width: 6em; overflow: hidden;">{{item.leden.length}}</td>
+                                    <td style="width: 6em; overflow: hidden;">{{item.getTeams(spelId).length}}</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+        <div class="actions flexbox flexcenter">
+            <div style="font-size: 1.25em;">
+                <app-button [button]="addButton" (buttonClicked)="verenigingToevoegenClicked()"></app-button>
+            </div>
+        </div>
+    </div>
+</div>

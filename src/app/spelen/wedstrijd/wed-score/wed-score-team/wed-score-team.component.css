@@ -1,0 +1,42 @@
+.bal { border-radius: 50%; font-size: 5em;}
+.bal.geel { background-color: yellow; }
+.bal.wit { background-color: white; }
+
+.bal .digit3 { transform: translateX(-.025em) scaleX(.7); }
+
+.spelerdata { background-color: black; color: gray; opacity: .5;}
+.spelerdata.active { opacity: 1; }
+.spelerdata .wit { color: white; }
+.spelerdata .geel { color: yellow; }
+
+.scoredata { opacity: .5; }
+.scoredata.active { opacity: 1; }
+.scoredata.active .changes { color: #3d8b40; }
+.scoredata.active .scale { scale: 1.5; }
+
+.laatste5 { opacity: .5; }
+.laatste5 .laatste5data { color: gray; }
+.laatste5.active { opacity: 1; }
+.laatste5.active .laatste5data { color: white; }
+.laatste5 .lbl {
+    font-size: 3em; 
+    text-align: center;
+    transform: translateX(-.01em) scaleX(.9);
+}
+
+.extradata { opacity: .5; }
+.extradata .clr-red { color: red; }
+.extradata.active { opacity: 1; }
+.extradata.active .changes { color: #3d8b40; }
+
+.aantbrt {
+    border-radius: 1em;
+    overflow: hidden;
+    padding: 0 1.5em 0 1em;
+}
+.aantbrt.serie {
+    color: white;
+    background-color: #3d8b40;
+}
+
+.arial { font-family: Arial, Helvetica, sans-serif; }

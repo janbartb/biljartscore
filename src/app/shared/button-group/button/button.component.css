@@ -25,16 +25,24 @@
     border-color: black;
 }
 .cmp-button-key {
+    min-width: 1.4em;
+    text-align: center;
     padding: 0 .25em;
-    margin-left: 1em;
+    margin-left: .25em;
     line-height: 1.2;
     border: .0625em solid gray;
     border-radius: .25em;
     color: gray;
     background-color: lightgray;
+    cursor: pointer;
 }
+.cmp-button-key.selected, .cmp-button-key:hover {
+    color: black;
+    border-color: black;
+}
+
 .cmp-button-txt {
     font-weight: bold;
     text-align: center;
-    padding: 0 1em;
+    padding: 0 .5em;
 }

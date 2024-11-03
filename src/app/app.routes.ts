@@ -6,15 +6,60 @@ import { SpelsoortenComponent } from './onderhoud/spelsoorten/spelsoorten.compon
 import { VerenigingenComponent } from './onderhoud/verenigingen/verenigingen.component';
 import { SpelersComponent } from './onderhoud/spelers/spelers.component';
 import { SpelerComponent } from './onderhoud/spelers/speler/speler.component';
+import { VerenigingComponent } from './onderhoud/verenigingen/vereniging/vereniging.component';
+import { VerenigingAddComponent } from './onderhoud/verenigingen/vereniging/vereniging-add/vereniging-add.component';
+import { VerenigingEditComponent } from './onderhoud/verenigingen/vereniging/vereniging-edit/vereniging-edit.component';
+import { VerenigingTeamComponent } from './onderhoud/verenigingen/vereniging/vereniging-team/vereniging-team.component';
+import { MoyenneTabellenComponent } from './onderhoud/moyenne-tabellen/moyenne-tabellen.component';
+import { MoyenneTabelEditComponent } from './onderhoud/moyenne-tabellen/moyenne-tabel-edit/moyenne-tabel-edit.component';
+import { MoyenneTabelAddComponent } from './onderhoud/moyenne-tabellen/moyenne-tabel-add/moyenne-tabel-add.component';
+import { KnbbCompetitiesComponent } from './onderhoud/knbb-competities/knbb-competities.component';
+import { KnbbDistrictenComponent } from './onderhoud/knbb-districten/knbb-districten.component';
+import { KnbbCompetitieAddComponent } from './onderhoud/knbb-competities/knbb-competitie-add/knbb-competitie-add.component';
+import { KnbbCompetitieEditComponent } from './onderhoud/knbb-competities/knbb-competitie-edit/knbb-competitie-edit.component';
+import { KnbbCompetitieEditTeamsComponent } from './onderhoud/knbb-competities/knbb-competitie-edit-teams/knbb-competitie-edit-teams.component';
+import { SpelkeuzeComponent } from './spelen/spelkeuze/spelkeuze.component';
+import { WedstrijdComponent } from './spelen/wedstrijd/wedstrijd.component';
+import { WedSpelersComponent } from './spelen/wedstrijd/wed-spelers/wed-spelers.component';
+import { WedConfigComponent } from './spelen/wedstrijd/wed-config/wed-config.component';
+import { WedScoreComponent } from './spelen/wedstrijd/wed-score/wed-score.component';
+import { KnbbTeamMatchComponent } from './spelen/knbb-team-match/knbb-team-match.component';
+import { KnbbTeamMatchScoreComponent } from './spelen/knbb-team-match/knbb-team-match-score/knbb-team-match-score.component';
+import { KnbbTeamMatchSetupComponent } from './spelen/knbb-team-match/knbb-team-match-setup/knbb-team-match-setup.component';
+import { KnbbTeamMatchCheckComponent } from './spelen/knbb-team-match/knbb-team-match-check/knbb-team-match-check.component';
 
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },
+    { path: 'teammatch/setup', children: [
+        { path: 'thuis', component: KnbbTeamMatchSetupComponent },
+        { path: 'gasten', component: KnbbTeamMatchSetupComponent },
+    ]},
+    { path: 'teammatch/setup/check', component: KnbbTeamMatchCheckComponent },
+    { path: 'teammatch/score/:wedNr', component: KnbbTeamMatchScoreComponent },
+    { path: 'teammatch', component: KnbbTeamMatchComponent },
+    { path: 'onderhoud/verenigingen/toevoegen', component: VerenigingAddComponent },
+    { path: 'onderhoud/verenigingen/:verId/team/:teamId', component: VerenigingTeamComponent },
+    { path: 'onderhoud/verenigingen/:verId/edit', component: VerenigingEditComponent },
+    { path: 'onderhoud/verenigingen/:verId', component: VerenigingComponent },
     { path: 'onderhoud/verenigingen', component: VerenigingenComponent },
     { path: 'onderhoud/spelers/:spelerId', component: SpelerComponent },
     { path: 'onderhoud/spelers', component: SpelersComponent },
+    { path: 'onderhoud/knbbcompetities/toevoegen', component: KnbbCompetitieAddComponent },
+    { path: 'onderhoud/knbbcompetities/:compId/teams', component: KnbbCompetitieEditTeamsComponent },
+    { path: 'onderhoud/knbbcompetities/:compId', component: KnbbCompetitieEditComponent },
+    { path: 'onderhoud/knbbcompetities', component: KnbbCompetitiesComponent },
+    { path: 'onderhoud/moyennes/toevoegen', component: MoyenneTabelAddComponent },
+    { path: 'onderhoud/moyennes/:klasse', component: MoyenneTabelEditComponent },
+    { path: 'onderhoud/moyennes', component: MoyenneTabellenComponent },
+    { path: 'onderhoud/districten', component: KnbbDistrictenComponent },
     { path: 'onderhoud/spelsoorten', component: SpelsoortenComponent },
     { path: 'onderhoud/instellingen', component: ConfigComponent },
     { path: 'onderhoud', component: OnderhoudComponent },
+    { path: 'spelkeuze', component: SpelkeuzeComponent },
+    { path: 'wedstrijd/score', component: WedScoreComponent },
+    { path: 'wedstrijd/config', component: WedConfigComponent },
+    { path: 'wedstrijd/spelers', component: WedSpelersComponent },
+    { path: 'wedstrijd', component: WedstrijdComponent },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];

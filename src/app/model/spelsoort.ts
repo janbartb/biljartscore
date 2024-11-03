@@ -1,11 +1,11 @@
 export class Spelsoort {
-    spelId: string = '';
-    spelNaam: string = '';
+    spelsoortId: string = '';
+    spelsoortNaam: string = '';
     magWeg: boolean = false;
 
     constructor(id: string, naam: string, weg?: boolean) {
-        this.spelId = id;
-        this.spelNaam = naam;
+        this.spelsoortId = id;
+        this.spelsoortNaam = naam;
         if (weg) {
             this.magWeg = weg;
         }

@@ -1,0 +1,192 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox">
+            <!-- Vereniging section -->
+            <div class="section" style="border-right: .25rem solid #357a38;">
+                <div class="fullheight section flexbox flexcolumn">
+                    <div class="section-header">
+                        <div class="w3-green-l2">
+                            <span>Vereniging</span>
+                        </div>
+                    </div>
+                    <div class="section-body flexgrow1">
+                        <div class="flexbox flexcenter" style="padding-left: .5em;">
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td><label>ID</label></td>
+                                        <td style="min-width: 12em;">{{vereniging.verId}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>KNBB ID</label></td>
+                                        <td class="view">{{vereniging.knbbId}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Naam</label></td>
+                                        <td class="view">{{vereniging.naam}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Korte naam</label></td>
+                                        <td class="view">{{vereniging.korteNaam}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Locatie</label></td>
+                                        <td class="view">{{vereniging.locatie}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Plaats</label></td>
+                                        <td class="view">{{vereniging.plaats}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="section-footer">
+                        
+                    </div>
+                </div>
+            </div>
+            <!-- Teams section -->
+            <div class="fullheight flexgrow1 flexbox flexcolumn section">
+                <div class="section-header">
+                    <div class="w3-green-l2">
+                        <span>{{teamTitle}}</span>
+                    </div>
+                </div>
+                <div class="flexgrow1 flexbox">
+                    <div class="section flex50perc flexbox flexcolumn" style="border-right: .25rem solid #93cf95;">
+                        <div class="section-header">
+                            <div class="w3-green-l4">
+                                <span>Team</span>
+                            </div>
+                        </div>
+                        <div class="section-body flexgrow1">
+                            <div class="flexbox flexcenter">
+                                <div>
+                                    @if (teamForm) {
+                                        <form [formGroup]="teamForm">
+                                            <table class="tbl-normal tbl-input">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="teamId">ID<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <span style="color: gray;">{{createdId}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    @if (duplicateId) {
+                                                        <tr class="input-msg error">
+                                                            <td></td>
+                                                            <td><span>ID wordt al gebruikt</span></td>
+                                                        </tr>
+                                                    }
+                                                    <tr>
+                                                        <td>
+                                                            <label for="spelsoort">Spel<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <span style="color: gray;">{{spelNaam}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="klasse">Klasse</label>
+                                                        </td>
+                                                        <td>
+                                                            <select #klasse id="klasse" formControlName="klasse" (keyup)="stopSomeKeys($event)">
+                                                                <option value=""></option>
+                                                                @for (klas of klassen; track $index) {
+                                                                    <option [ngValue]="klas">{{klas}}</option>
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="volgNr">Volgnr.<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" id="volgNr" style="width: 3em;" formControlName="volgNr" autocomplete="off"
+                                                                [ngClass]="{'invalid': volgNr?.invalid && (volgNr?.dirty), 'valid': volgNr?.valid && (volgNr?.dirty)}"
+                                                                (keyup)="stopSomeKeys($event)">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="knbbId">KNBB ID</label>
+                                                        </td>
+                                                        <td>
+                                                            <input #knbbid type="text" id="knbbId" style="width: 6em;" formControlName="knbbId" autocomplete="off"
+                                                                [ngClass]="{'invalid': knbbId?.invalid && (knbbId?.dirty), 'valid': knbbId?.valid && (knbbId?.dirty)}"
+                                                                (blur)="knbbId?.setValue(knbbId?.value.trim())" (keyup)="stopSomeKeys($event)">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="naam">Naam<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" id="naam" style="width: 10em;" formControlName="naam" autocomplete="off"
+                                                                [ngClass]="{'invalid': naam?.invalid && (naam?.dirty), 'valid': naam?.valid && (naam?.dirty)}"
+                                                                (blur)="naam?.setValue(naam?.value.trim())" (keyup)="stopSomeKeys($event)">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </form>
+                                        <div style="margin-top: 1em;">
+                                            <span class="label" style="padding-right: 1em;">Aantal leden :</span>
+                                            <span class="view">{{aantalLeden}}</span>
+                                        </div>
+                                    }    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section flex50perc flexbox flexcolumn">
+                        <div class="section-header">
+                            <div class="w3-green-l4">
+                                <span>Teamleden</span>
+                            </div>
+                        </div>
+                        <div class="section-body flexgrow1 scrollable">
+                            <div class="flexbox flexcenter">
+                                <div>
+                                    <table class="tbl-normal tbl-list">
+                                        <tbody>
+                                            @for (spl of selectieLijst.filtered; track $index) {
+                                                <tr class="selectable" [ngClass]="{'selected': selectieLijst.selectedIdx == $index}"
+                                                            (click)="spelerSelectieClicked($index)">
+                                                    <td>
+                                                        @if (spl.spelerSelected) {
+                                                            <i class="fas fa-check-square" style="color: green;"></i>
+                                                        }
+                                                        @else {
+                                                            <i class="fas fa-plus-square" style="color: #bdbdbd;"></i>
+                                                        }
+                                                    </td>
+                                                    <td>{{spl.spelerNaam}}</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (teamForm && teamForm.valid && !duplicateId) {
+                    <div class="section-footer" style="border-top: .25rem solid #93cf95;">
+                        <div class="flexbox flexcenter" style="font-size: 1.25em;">
+                            <app-button [button]="enterButton" (buttonClicked)="opslaanClicked()"></app-button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+.wedspeler {
+    padding: .5em;
+    cursor: pointer;
+    border: .125em solid #b7dfb8;
+    border-radius: .5em;
+    background-color: #b7dfb8;
+}
+.wedspeler.active {
+    border-color: red;
+}
+.wedspeler .naam {
+    width: 16em;
+    height: 1.5em;
+    padding: 0 .25em;
+    overflow: hidden;
+    border: 1px solid black;
+    border-radius: .25em;
+    background-color: white;
+}
+.wedspeler .label {
+    padding-left: .25em;
+    color: green;
+    opacity: .6;
+}

@@ -1,9 +1,15 @@
 <div class="header-container">
-    <div class="header-title w3-green-d5">
-        <span>{{title}}</span>
+    <div class="header-title w3-green-d5 w3-display-container">
+        <div class="w3-display-middle">{{title}}</div>
+        <div class="header-game w3-display-right">
+            <span>{{spel}}</span>
+        </div>
     </div>
-    <div class="header-subtitle w3-green-d3">
-        <span>{{subtitle}}</span>
+    <div class="header-subtitle w3-green-d3 w3-display-container">
+        <div class="w3-display-middle">{{subtitle}}</div>
+        <div class="header-game w3-display-right">
+            <span>{{district}}</span>
+        </div>
     </div>
     <div class="header-logo" (click)="gotoHome()">
         <img src="ballen2.jpg" height="112px" alt="">

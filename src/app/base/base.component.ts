@@ -1,7 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '../services/alert.service';
 import { ApiService } from '../services/api.service';
+import { FormGroup, Validators } from '@angular/forms';
+import { StatusService } from '../services/status.service';
 
 @Component({
   selector: 'app-base',
@@ -12,17 +14,26 @@ import { ApiService } from '../services/api.service';
 })
 export class BaseComponent {
     bssApi = inject(ApiService);
+    appData = inject(StatusService);
     alert = inject(AlertService);
     router = inject(Router);
 
-    previousUrl: string = '';
+    spelId: string = this.appData.getSpelId();
+
+    // if a dialog is open set this to true to ignore the component @HostListener
+    isDialogOpen: boolean = false;
 
     homePressed() {
         this.router.navigate(['home']);
     }
 
     escapePressed() {
-        this.router.navigate([this.previousUrl]);
+        this.appData.previousPage();
+    }
+
+    isRequired(form: FormGroup, field: string): boolean {
+        if (!form) return false;
+        return form.controls[field]?.hasValidator(Validators.required);
     }
 
 }

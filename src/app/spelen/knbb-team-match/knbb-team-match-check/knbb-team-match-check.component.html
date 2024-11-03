@@ -1,0 +1,86 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'KNBB team match'" [subtitle]="'Controle selectie spelers'" [spel]="appData.getSpelNaam()"></app-page-header>
+        </div>
+        @if (dataReady) {
+            <div class="flexgrow1 flexbox">
+                <div style="font-size: 1.25em;">
+                    <div style="padding: 0 1.5em;">
+                        <div class="label nowrap" style="margin-top: 5.5em;">Wedstrijd 1</div>
+                        <div class="label nowrap" style="margin-top: 4em;">Wedstrijd 2</div>
+                        <div class="label nowrap" style="margin-top: 4em;">Wedstrijd 3</div>
+                    </div>
+                </div>
+                <div class="fullheight flexgrow1 flexbox">
+                    @for (team of teams; track $index; let idxT = $index) {
+                        <div class="fullheight flex50perc">
+                            <div class="label" style="text-align: center; line-height: 1.2; padding-top: .5em;">
+                                <span style="font-size: 1.5em;">{{idxT == 0 ? 'THUIS' : 'GASTEN'}}</span>
+                            </div>
+                            <div style="text-align: center; line-height: 1.2; padding-bottom: .5em;">
+                                <span style="font-size: 1.5em;">{{team.teamNaam}}</span>
+                            </div>
+                            <div class="flexbox flexcenter">
+                                <div>
+                                    @for (spl of team.spelers; track $index; let idxS = $index) {
+                                        <div class="wedspeler" [ngClass]="{'active': idxTeam == idxT && idxSpeler == idxS}" 
+                                                (click)="maakSpelerActief(idxT, idxS)" style="margin-bottom: .5em;">
+                                            <div class="naam" style="font-size: 1.25em;">
+                                                <span>{{spl.splNaam}}</span>
+                                            </div>
+                                            <div class="flexbox flexbetween">
+                                                <div>
+                                                    <div class="label"><span>Bordnaam</span></div>
+                                                    <div style="font-size: 1.25em; line-height: 1.4;">
+                                                        <input [id]="'naam' + idxT + idxS" type="text" style="width: 6em;" [(ngModel)]="spl.splBordNaam"
+                                                                [disabled]="!(idxTeam == idxT && idxSpeler == idxS)"
+                                                                (keyup)="keyupNaam(idxT, idxS)" (click)="stopPropagation($event)"
+                                                                [ngClass]="{'invalid': !naamValid[idxT][idxS]}" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="label"><span>Moy</span></div>
+                                                    <div style="font-size: 1.25em; line-height: 1.4;">
+                                                        <input [id]="'moy' + idxT + idxS" type="text" style="width: 4em;" [(ngModel)]="spl.splTsGem"
+                                                                [disabled]="!(idxTeam == idxT && idxSpeler == idxS)" 
+                                                                (keyup)="keyupMoyenne(idxT, idxS)" (click)="stopPropagation($event)"
+                                                                [ngClass]="{'invalid': !moyValid[idxT][idxS]}" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="label"><span>Car</span></div>
+                                                    <div style="font-size: 1.25em; line-height: 1.4;">
+                                                        <input [id]="'car' + idxT + idxS" type="text" style="width: 3em;" [(ngModel)]="spl.splTsCar"
+                                                                [disabled]="!(idxTeam == idxT && idxSpeler == idxS)" 
+                                                                (keyup)="keyupCaramboles(idxT, idxS)" (click)="stopPropagation($event)"
+                                                                [ngClass]="{'invalid': !carValid[idxT][idxS]}" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            @if (teamsChanged || namesChanged || teamsValid) {
+                <div style="border-top: .25em solid green">
+                    <div class="flexbox flexcenter" style="font-size: 1.25em; padding: .125em 0;">
+                        @if (teamsChanged || namesChanged) {
+                            <app-button [button]="resetButton" (buttonClicked)="resetClicked()"></app-button>
+                        }
+                        @if (matchGestart && teamsValid && !teamsChanged) {
+                            <app-button [button]="opnieuwButton" (buttonClicked)="opnieuwClicked()"></app-button>
+                        }
+                        @if (teamsValid) {
+                            <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,128 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox">
+            <!-- Vereniging section -->
+            <div class="section" style="border-right: .25rem solid green;">
+                <div class="fullheight section flexbox flexcolumn">
+                    <div class="section-header">
+                        <div class="w3-green-l2">
+                            <span>{{sections[0]}}</span>
+                        </div>
+                    </div>
+                    <div class="section-body flexgrow1">
+                        <div class="flexbox flexcenter" style="padding-left: .5em;">
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td><label>ID</label></td>
+                                        <td style="min-width: 12em;">{{vereniging.verId}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>KNBB ID</label></td>
+                                        <td class="view">{{vereniging.knbbId}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Naam</label></td>
+                                        <td class="view">{{vereniging.naam}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Korte naam</label></td>
+                                        <td class="view">{{vereniging.korteNaam}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Locatie</label></td>
+                                        <td class="view">{{vereniging.locatie}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Plaats</label></td>
+                                        <td class="view">{{vereniging.plaats}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="section-footer">
+                        <div class="flexbox flexcenter">
+                            <div style="font-size: 1.25em;">
+                                <app-button [button]="wijzigButton" (buttonClicked)="verenigingWijzigenClicked()"></app-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fullheight flexgrow1 flexbox">
+                <!-- Teams section -->
+                <div class="flex50perc fullheight flexbox flexcolumn section">
+                    <div class="section-header">
+                        <div class="w3-green-l2">
+                            <span>Teams</span>
+                        </div>
+                    </div>
+                    <div class="section-body flexgrow1 scrollable">
+                        <div class="flexbox flexcenter">
+                            <div>
+                                <table class="tbl-full tbl-list">
+                                    <tbody>
+                                        @for (team of teamLijst.filtered; track $index) {
+                                            <tr class="selectable" [ngClass]="{'selected': teamLijst.selectedIdx == $index}" (click)="teamClicked($index)">
+                                                <td class="indicator" style="width: 1.5em;">
+                                                    <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
+                                                </td>
+                                                <td style="width: 2em;">{{team.klasse}}</td>
+                                                <td>{{team.naam}}</td>
+                                                <td style="width: 1.5em;">
+                                                    <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="teamVerwijderenClicked($event, $index)"></i>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-footer">
+                        <div class="flexbox flexcenter" style="font-size: 1.25em;">
+                            <app-button [button]="teamToevoegenButton" (buttonClicked)="teamToevoegenClicked()"></app-button>
+                            @if (teamLijst.isItemSelected()) {
+                                <app-button [button]="teamVerwijderenButton" (buttonClicked)="teamVerwijderenClicked($event, teamLijst.selectedIdx)"></app-button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <!-- Leden section -->
+                <div class="flex50perc fullheight flexbox flexcolumn section" style="border-left: .25rem solid green;">
+                    <div class="section-header">
+                        <div class="w3-green-l2">
+                            <span>Leden</span>
+                        </div>
+                    </div>
+                    <div class="section-body flexgrow1 scrollable">
+                        <div class="flexbox flexcenter">
+                            <div>
+                                <table class="tbl-normal tbl-list">
+                                    <tbody>
+                                        @for (spl of ledenLijst.filtered; track $index) {
+                                            <tr>
+                                                <td>{{spl.getNaam()}}</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-footer">
+                        <div class="flexbox flexcenter">
+                            <div style="font-size: 1.25em;">
+                                <app-button [button]="ledenButton" (buttonClicked)="ledenWijzigenClicked()"></app-button>
+                            </div>    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

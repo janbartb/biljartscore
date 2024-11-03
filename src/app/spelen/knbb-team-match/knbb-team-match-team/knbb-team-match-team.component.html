@@ -1,0 +1,75 @@
+<div>
+    <div class="team-container">
+        <span style="font-size: 2em;">{{team.teamNaam}}</span>
+    </div>
+    <div class="speler-container">
+        <app-knbb-team-match-speler [spl]="team.spelers[0]" [teg]="teg.spelers[0]" [status]="status[0]"></app-knbb-team-match-speler>
+    </div>
+    <div class="speler-container">
+        <app-knbb-team-match-speler [spl]="team.spelers[1]" [teg]="teg.spelers[1]" [status]="status[1]"></app-knbb-team-match-speler>
+    </div>
+    <div class="speler-container">
+        <app-knbb-team-match-speler [spl]="team.spelers[2]" [teg]="teg.spelers[2]" [status]="status[2]"></app-knbb-team-match-speler>
+    </div>
+    <div class="speler-container">
+        <div class="tot-container flexbox" style="color: white;">
+            <div class="flexgrow1">
+                <span style="font-size: 1.5em;">TEAM</span>
+            </div>
+            <div style="padding-left: 1.5em;">
+                <span style="font-size: 1.25em;">{{totalen.tsCar}}</span>
+            </div>
+        </div>
+        <div class="flexbox">
+            <div style="width: 6.5em;">
+                <div class="data-container flexbox">
+                    <div class="data-label">
+                        <div><span>car.</span></div>
+                        <div><span>brt.</span></div>
+                    </div>
+                    <div class="data-num">
+                        <div><span>{{totalen.aantCar}}</span></div>
+                        <div><span>{{totalen.aantBrt}}</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flexbox" style="width: 10em;">
+                <div class="data-container flexbox">
+                    <div class="data-label">
+                        <div><span>gem.</span></div>
+                        <div><span>perc.</span></div>
+                    </div>
+                    <div class="data-num">
+                        <div><span>{{totalen.gemiddelde | number:'1.3-3':'nl-NL'}}</span></div>
+                        <div><span>{{totalen.percentage | number:'1.2-2':'nl-NL'}}</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flexbox" style="width: 6.5em;">
+                <div class="data-container flexbox">
+                    <div class="data-label">
+                        <div><span>serie</span></div>
+                        <div><span>punt.</span></div>
+                    </div>
+                    <div class="data-num">
+                        <div><span>{{totalen.hoogSer}}</span></div>
+                        <div><span>{{totalen.teamPunten}}</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flexgrow1" style="padding-right: .5em;">
+                <div class="flexbox flexright">
+                    <div style="width: 4em; height: 3em; padding: .125em;">
+                        <div class="flexbox flexcenter flexmiddle" style="border: .125em solid green; border-radius: .5em; background-color: white;">
+                            <div style="font-size: 2em; line-height: 1.25em; color: black;">
+                                <span [ngClass]="{'clr-red': status[3] == 2 && totalen.punten >= tegPunten}">
+                                    {{totalen.punten}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

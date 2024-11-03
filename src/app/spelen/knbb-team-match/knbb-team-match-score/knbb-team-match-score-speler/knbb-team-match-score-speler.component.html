@@ -1,0 +1,134 @@
+<div>
+    <!-- speler gegevens -->
+    <div class="flexbox spelerdata" [ngClass]="{'active': speler.isActief}" style="height: 9em;">
+        <div class="fullheight" style="width: 20em; overflow: hidden;">
+            <div class="nowrap" style="height: 6em; padding: .5em; line-height: 5em;">
+                <span [ngClass]="{'wit': speler.isActief && speler.metWit, 'geel': speler.isActief && !speler.metWit}"
+                        style="font-size: 4em;">{{speler.splBordNaam}}</span>
+            </div>
+            <div style="height: 3em; padding: 0 .5em 0 .5em; line-height: 2.5em; position: relative;">
+                <div style="position: relative; top: -.5em;">
+                    <span style="font-size: 2em; color: gray;">moy: </span>
+                    <span style="font-size: 2.5em;"
+                            [ngClass]="{'wit': speler.isActief && speler.metWit, 'geel': speler.isActief && !speler.metWit}"
+                            >{{speler.splTsGem | number:'1.3-3':'nl-NL'}}</span>    
+                </div>
+            </div>
+        </div>
+        <div class="fullheight" style="width: 9em; padding: .5em;">
+            <div class="bal fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()"
+                    [ngClass]="{'wit': speler.isActief && speler.metWit, 'geel': speler.isActief && !speler.metWit}">
+                <div>
+                    <span style="line-height: 1;" [style.color]="speler.isActief ? 'black' : 'gray'" 
+                            [style.font-size]="speler.splTsCar > 99 ? '3.5em' : '4.5em'">{{speler.splTsCar > 0 ? speler.splTsCar : ''}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- score -->
+    <div class="scoredata flexbox arial" [ngClass]="{'active': speler.isActief}" style="height: 13em;">
+        <div style="width: 17em; position: relative;">
+            <div class="aantcar" style="width: 17em; position: relative; left: -.5em; text-align: center;">
+                <span>{{speler.stand.aantCar}}</span>
+            </div>
+        </div>
+        <div style="width: 12em;">
+            <div style="height: 1em;"></div>
+            <div class="flexbox flexmiddle" style="height: 6em;">
+                <div style="font-size: 2em; padding-left: .5em;" [ngClass]="{'changes scale': speler.stand.serie > 0}"
+                        >{{speler.stand.serie > 0 ? '+' : 'in'}}</div>
+                <div class="flexgrow1 flexbox flexright" style="height: 5em; padding-right: .5em;">
+                    <div class="aantbrt" [ngClass]="{'serie': speler.stand.serie > 0}">
+                        @if (speler.stand.serie > 0) {
+                            <span>{{speler.stand.serie}}</span>
+                        }
+                        @else {
+                            <span>{{speler.stand.aantBrt}}</span>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div style="height: 6em;">
+                <div style="padding-right: 1em; text-align: right;"
+                        [ngClass]="{'changes': speler.stand.serie > 0}">
+                    <span style="font-size: 4em; line-height: 1;">{{speler.stand.gemiddelde | number:'1.3-3':'nl-NL'}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- laatste 5 beurten -->
+    <div class="flexbox flexmiddle laatste5 arial" [ngClass]="{'active': speler.isActief}" 
+            style="height: 4em; padding: 0 .5em; background-color: black; color: white;">
+        <div class="flexgrow1" style="padding-left: .25em;">
+            <div class="laatste5data" style="font-size: 3em;">
+                @for (cars of speler.stand.laatste5brt; track $index) {
+                    <span style="padding-right: .375em;" 
+                            [style.opacity]="1 - ((speler.stand.laatste5brt.length - $index - 1) * .2)">{{cars == 0 ? '­•' : cars}}</span>
+                }
+            </div>
+        </div>
+        <div style="padding-right: .5em; color: gray;">
+            <span style="font-size: 1.5em;">◄</span>
+        </div>
+        <div style="letter-spacing: -.06em; padding-right: .5em; color: gray;">
+            <span style="font-size: 2em;">laatste 5</span>
+        </div>
+    </div>
+    <!-- percentage en hoogste serie -->
+    <div class="flexbox arial" style="height: 7em; padding: 0 .5em;">
+        <div class="flexgrow1 extradata" [ngClass]="{'active': speler.isActief}" style="height: 7em; padding: .25em 1.5em 0 0;">
+            <div class="flexbox flexbetween">
+                <div>
+                    <span style="font-size: 2.5em; color: gray; line-height: 1.25;">Perc.</span>
+                </div>
+                <div style="font-size: 3em; line-height: 1;">
+                    @if (speler.stand.serie > 0) {
+                        <span class="changes">{{(100 * speler.stand.gemiddelde / speler.splTsGem) | number:'1.2-2':'nl-NL'}}</span>
+                    }
+                    @else if ((speler.stand.gemiddelde / speler.splTsGem) <= 1) {
+                        <span class="clr-red">{{(100 * speler.stand.gemiddelde / speler.splTsGem) | number:'1.2-2':'nl-NL'}}</span>
+                    }
+                    @else {
+                        <span>{{(100 * speler.stand.gemiddelde / speler.splTsGem) | number:'1.2-2':'nl-NL'}}</span>
+                    }
+                </div>
+            </div>
+            <div class="flexbox flexbetween">
+                <div>
+                    <span style="font-size: 2.5em; color: gray; line-height: 1.25;">Hoog. ser.</span>
+                </div>
+                <div [ngClass]="{'changes': speler.stand.serie > speler.stand.hoogSer}" style="font-size: 3em; line-height: 1;">
+                    <span>{{speler.stand.serie > speler.stand.hoogSer ? speler.stand.serie : speler.stand.hoogSer}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="aantpunten flexbox flexmiddle" [ngClass]="{'active': speler.isActief}" style="height: 7em;">
+            <div style="color: gray; padding: 0 .5em;">
+                <span style="font-size: 2.25em;">Pnt</span>
+            </div>
+            <div class="aantpunten-container flexbox flexcenter flexmiddle" [ngClass]="{'changes': speler.stand.punten != oldPunten}">
+                <div style="font-size: 5em; line-height: 1;">{{speler.stand.punten}}</div>
+            </div>
+        </div>
+        <!-- <div class="flexbox flexmiddle extradata" [ngClass]="{'active': speler.isActief}" style="height: 3.25em;">
+            <div style="font-size: 2.25em; color: gray;">Percentage</div>
+            <div class="flexgrow1" style="font-size: 2.25em;">
+                @if (speler.stand.serie > 0) {
+                    <span class="changes">{{(100 * speler.stand.gemiddelde / speler.splTsGem) | number:'1.2-2':'nl-NL'}}</span>
+                }
+                @else if ((speler.stand.gemiddelde / speler.splTsGem) <= 1) {
+                    <span class="clr-red">{{(100 * speler.stand.gemiddelde / speler.splTsGem) | number:'1.2-2':'nl-NL'}}</span>
+                }
+                @else {
+                    <span>{{(100 * speler.stand.gemiddelde / speler.splTsGem) | number:'1.2-2':'nl-NL'}}</span>
+                }
+            </div>
+        </div>
+        <div class="flexbox flexmiddle extradata" [ngClass]="{'active': speler.isActief}" style="height: 3.25em;">
+            <div style="font-size: 2.25em; color: gray;">Hoogste serie</div>
+            <div class="flexgrow1" style="font-size: 2.25em;" [ngClass]="{'changes': speler.stand.serie > speler.stand.hoogSer}">
+                <span>{{speler.stand.serie > speler.stand.hoogSer ? speler.stand.serie : speler.stand.hoogSer}}</span>
+            </div>
+        </div> -->
+    </div>
+</div>

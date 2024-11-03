@@ -1,0 +1,13 @@
+.subopties {
+    opacity: .25;
+}
+.subopties.active {
+    opacity: 1;
+}
+
+input.active.valid {
+    background-color: #beffbe;
+}
+input.active.invalid {
+    background-color: #ffacac;
+}

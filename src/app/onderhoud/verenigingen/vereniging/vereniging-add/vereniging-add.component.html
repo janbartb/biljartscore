@@ -1,0 +1,92 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox flexcenter">
+            <div class="section-body">
+                @if (verenigingForm) {
+                    <form [formGroup]="verenigingForm">
+                        <table class="tbl-normal tbl-input">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="verId">ID<span class="req"> *</span></label>
+                                    </td>
+                                    <td>
+                                        <input #verenigingid type="text" id="verId" style="width: 4em;" formControlName="verId" autocomplete="off"
+                                            [ngClass]="{'invalid': verId?.invalid && (verId?.dirty), 'valid': verId?.valid && (verId?.dirty)}"
+                                            (blur)="verId?.setValue(verId?.value.trim())">
+                                    </td>
+                                </tr>
+                                @if (verId?.hasError('noDuplicates')) {
+                                    <tr class="input-msg error">
+                                        <td></td>
+                                        <td><span>ID wordt al gebruikt</span></td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td>
+                                        <label for="knbbId">KNBB ID</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" id="knbbId" style="width: 6em;" formControlName="knbbId" autocomplete="off"
+                                            [ngClass]="{'invalid': knbbId?.invalid && (knbbId?.dirty), 'valid': knbbId?.valid && (knbbId?.dirty)}"
+                                            (blur)="knbbId?.setValue(knbbId?.value.trim())">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="naam">Naam<span class="req"> *</span></label>
+                                    </td>
+                                    <td>
+                                        <input type="text" id="naam" style="width: 12em;" formControlName="naam" autocomplete="off"
+                                            [ngClass]="{'invalid': naam?.invalid && (naam?.dirty), 'valid': naam?.valid && (naam?.dirty)}"
+                                            (blur)="naam?.setValue(naam?.value.trim())">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="korteNaam">Korte naam<span class="req"> *</span></label>
+                                    </td>
+                                    <td>
+                                        <input type="text" id="korteNaam" style="width: 5em;" formControlName="korteNaam" autocomplete="off"
+                                            [ngClass]="{'invalid': korteNaam?.invalid && (korteNaam?.dirty), 'valid': korteNaam?.valid && (korteNaam?.dirty)}"
+                                            (blur)="korteNaam?.setValue(korteNaam?.value.trim())">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="locatie">Locatie</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" id="locatie" style="width: 12em;" formControlName="locatie" autocomplete="off"
+                                            [ngClass]="{'invalid': locatie?.invalid && (locatie?.dirty), 'valid': locatie?.valid && (locatie?.dirty)}"
+                                            (blur)="locatie?.setValue(locatie?.value.trim())">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="plaats">Plaats</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" id="plaats" style="width: 10em;" formControlName="plaats" autocomplete="off"
+                                            [ngClass]="{'invalid': plaats?.invalid && (plaats?.dirty), 'valid': plaats?.valid && (plaats?.dirty)}"
+                                            (blur)="plaats?.setValue(plaats?.value.trim())">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                }
+            </div>
+        </div>
+        <div class="actions flexbox flexcenter">
+            @if (verenigingForm && verenigingForm.valid) {
+                <div style="font-size: 1.25em;">
+                    <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                </div>    
+            }
+        </div>
+    </div>
+</div>

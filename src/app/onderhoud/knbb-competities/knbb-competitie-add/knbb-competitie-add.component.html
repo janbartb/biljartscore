@@ -1,0 +1,132 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"></app-page-header>
+        </div>
+        <div class="section-header">
+            <div class="w3-green-l2" style="padding: 0 1em;">
+                <span>{{sectionTitle}}</span>
+            </div>
+        </div>
+        <div class="flexgrow1">
+            @if (competitieForm) {
+                <div class="flexbox flexcenter">
+                    <div style="padding-top: 2em;">
+                        <form [formGroup]="competitieForm">
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label for="compSeizoen">Seizoen<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="compSeizoen" style="width: 7em;" formControlName="seizoen" autocomplete="off">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="compDistrict">District<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <select id="compDistrict" formControlName="district">
+                                                @for (dist of districten; track $index) {
+                                                    <option [ngValue]="dist.disId">{{dist.disNaam}}</option>
+                                                }
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="compSpelsoort">Spelsoort<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <select id="compSpelsoort" formControlName="spelsoort">
+                                                @for (spel of spelsoorten; track $index) {
+                                                    <option [ngValue]="spel.spelsoortId">{{spel.spelsoortNaam}}</option>
+                                                }
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="height: 1em;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="compId">ID<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <span id="compId">{{competitieId?.value}}</span>
+                                        </td>
+                                    </tr>
+                                    @if (duplicateId) {
+                                        <tr class="input-msg error">
+                                            <td></td>
+                                            <td><span>ID wordt al gebruikt</span></td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td>
+                                            <label for="compKlasse">Klasse<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <select id="compKlasse" formControlName="klasse">
+                                                <option value=""></option>
+                                                @for (klas of klassen; track $index) {
+                                                    <option [ngValue]="klas">{{klas}}</option>
+                                                }
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="compVolgnr">Volgnr<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input type="number" id="disNaam" style="width: 3em;" formControlName="volgNr" autocomplete="off"
+                                                    [ngClass]="{'invalid': volgNr?.invalid && (volgNr?.dirty), 'valid': volgNr?.valid && (volgNr?.dirty)}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="compPoule">Poule<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input type="number" id="compPoule" style="width: 3em;" formControlName="poule" autocomplete="off"
+                                                    [ngClass]="{'invalid': poule?.invalid && (poule?.dirty), 'valid': poule?.valid && (poule?.dirty)}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="compNaam">Naam<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="compNaam" style="width: 15em;" formControlName="naam" autocomplete="off"
+                                                    [ngClass]="{'invalid': naam?.invalid && (naam?.dirty), 'valid': naam?.valid && (naam?.dirty)}"
+                                                    (blur)="naam?.setValue(naam?.value.trim())">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="compBeurten">Max. beurten<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input type="number" id="compBeurten" style="width: 4em;" formControlName="maxBeurten" autocomplete="off"
+                                                    [ngClass]="{'invalid': maxBeurten?.invalid && (maxBeurten?.dirty), 'valid': maxBeurten?.valid && (maxBeurten?.dirty)}">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (!duplicateId && competitieForm && competitieForm.valid) {
+            <div class="section-footer" style="border-top: .25em solid #93cf95">
+                <div class="flexbox flexcenter" style="padding: .125em 0;">
+                    <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                </div>
+            </div>
+        }
+    </div>
+</div>

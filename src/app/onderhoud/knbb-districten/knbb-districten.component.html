@@ -1,0 +1,126 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox">
+            <div class="fullheight flex50perc flexbox flexcolumn section" style="border-right: .25em solid green;">
+                <div class="section-header">
+                    <div class="w3-green-l2" style="padding: 0 1em;">
+                        <span>Districten</span>
+                    </div>
+                </div>
+                <div class="flexbox flexcenter">
+                    <table class="tbl-normal tbl-list">
+                        <thead>
+                            <tr>
+                                <td style="width: 2em;"></td>
+                                <td class="label" style="width: 5em;">ID</td>
+                                <td class="label" style="width: 15em;">Naam</td>
+                                <td style="width: 2em;"></td>
+                            </tr>
+                            <tr class="filterrow">
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <input class="filter" type="text" style="width: 10em;" [(ngModel)]="naamFilter"
+                                                (keyup)="naamFilterChanged()">
+                                    </div>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="flexgrow1 flexbox flexcenter scrollable">
+                    <div style="position: relative; left: .25em;">
+                        <table class="tbl-normal tbl-list">
+                            <tbody>
+                                @for (district of districtLijst.filtered; track $index) {
+                                    <tr class="selectable" [ngClass]="{'selected': districtLijst.selectedIdx == $index}" (click)="districtClicked($index)">
+                                        <td class="indicator" style="width: 2em;">
+                                            <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
+                                        </td>
+                                        <td style="width: 5em; overflow: hidden;">{{district.disId}}</td>
+                                        <td style="width: 15em; overflow: hidden;">{{district.disNaam}}</td>
+                                        <td class="right" style="width: 2em;">
+                                            <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="verwijderenClicked($index, $event)"></i>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="section-footer" style="border-top: .25em solid #93cf95">
+                    <div class="flexbox flexcenter" style="padding: .125em 0;">
+                        <app-button [button]="toevoegButton" (buttonClicked)="toevoegenClicked()"></app-button>
+                    </div>
+                </div>
+            </div>
+            <div class="fullheight flex50perc flexbox flexcolumn section">
+                <div class="section-header">
+                    <div class="w3-green-l2" style="padding: 0 1em;">
+                        <span>{{sectionTitle}}</span>
+                    </div>
+                </div>
+                <div class="section-body flexgrow1">
+                    @if (districtForm && (mode == 'add' || districtLijst.selectedIdx >= 0)) {
+                        <div class="flexbox flexcenter">
+                            <div>
+                                <form [formGroup]="districtForm">
+                                    <table class="tbl-normal tbl-input">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <label for="disId">ID<span class="req"> *</span></label>
+                                                </td>
+                                                <td>
+                                                    <input #districtid type="text" id="disId" style="width: 5em;" formControlName="disId" autocomplete="off"
+                                                        [ngClass]="{'invalid': disId?.invalid && (disId?.dirty), 'valid': disId?.valid && (disId?.dirty)}"
+                                                        (blur)="disId?.setValue(disId?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            @if (disId?.hasError('noDuplicates')) {
+                                                <tr class="input-msg error">
+                                                    <td></td>
+                                                    <td><span>ID wordt al gebruikt</span></td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td>
+                                                    <label for="disNaam">Naam<span class="req"> *</span></label>
+                                                </td>
+                                                <td>
+                                                    <input #districtnaam type="text" id="disNaam" style="width: 12em;" formControlName="disNaam" autocomplete="off"
+                                                        [ngClass]="{'invalid': disNaam?.invalid && (disNaam?.dirty), 'valid': disNaam?.valid && (disNaam?.dirty)}"
+                                                        (blur)="disNaam?.setValue(disNaam?.value.trim())" (keydown)="onKeydownNaam($event)">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                                @if (districtForm && districtForm.valid) {
+                                    <div class="flexbox flexcenter" style="margin-top: 1em;">
+                                        <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                @if (districtLijst.selectedIdx >= 0) {
+                    <div class="section-footer" style="border-top: .25em solid #93cf95">
+                        <div class="flexbox flexcenter" style="padding: .125em 0;">
+                            <app-button [button]="verwijderButton" (buttonClicked)="verwijderenClicked(districtLijst.selectedIdx)"></app-button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}

@@ -1,7 +1,7 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="title" [subtitle]="subtitle" [previousUrl]="previousUrl"></app-page-header>
+            <app-page-header [title]="title" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
         </div>
         <div class="flexbox flexcenter" style="margin-top: .5rem;">
             <div>
@@ -10,29 +10,34 @@
                         <tr>
                             <td style="width: 2em;"></td>
                             <td class="label" style="width: 6em; overflow: hidden;">ID</td>
-                            <td class="label" style="width: 15em; overflow: hidden;">Naam</td>
+                            <td class="label" style="width: 14em; overflow: hidden;">Naam</td>
                             <td class="label" style="width: 10em;">Vereniging</td>
+                            <td class="label" style="width: 7em; overflow: hidden;">Moyenne</td>
+                            <td style="width: 2em;"></td>
                         </tr>
                         <tr class="filterrow">
                             <td style="width: 2em;"></td>
                             <td style="width: 6em;"></td>
-                            <td style="width: 15em;">
+                            <td style="width: 14em;">
                                 <div>
                                     <input class="filter" type="text" style="width: 10em;" [(ngModel)]="naamFilter" autocomplete="off"
-                                        (keyup)="naamFilterChanged($event)">
+                                        (keyup)="naamFilterChanged($event)" [disabled]="moyenneMode">
                                 </div>
                             </td>
                             <td style="width: 10em;">
                                 <div>
-                                    <select class="filter" style="width: 7em; font-weight: normal;" [(ngModel)]="verenigingFilter" (change)="verenigingFilterChanged()">
+                                    <select class="filter" style="width: 7em; font-weight: normal;" [(ngModel)]="verenigingFilter" 
+                                            (change)="verenigingFilterChanged()" [disabled]="moyenneMode">
                                         <option value="">Allen</option>
                                         <option value="0">Geen</option>
                                         @for (ver of verenigingen; track $index) {
-                                            <option [value]="ver.id">{{ver.naam}}</option>
+                                            <option [value]="ver.verId">{{ver.naam}}</option>
                                         }
                                     </select>
                                 </div>
                             </td>
+                            <td style="width: 7em;"></td>
+                            <td style="width: 2em;"></td>
                         </tr>
                     </thead>
                 </table>
@@ -44,15 +49,30 @@
                     <table class="tbl-normal tbl-list">
                         <thead>
                             @for (item of spelerList.filtered; track $index) {
-                                <tr class="selectable" [ngClass]="{'selected': spelerList.selectedIdx == $index}" (click)="spelerClicked($index)">
+                                <tr class="selectable" [ngClass]="{'selected': spelerList.selectedIdx == $index, 'hovered': spelerList.hoveredIdx == $index}" 
+                                        (click)="spelerClicked($index)">
                                     <td class="indicator" style="width: 2em;">
                                         <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
                                     </td>
                                     <td style="width: 6em; overflow: hidden;">{{item.speler.id}}</td>
-                                    <td style="width: 15em; overflow: hidden;">{{item.getNaam()}}</td>
+                                    <td style="width: 14em; overflow: hidden;">{{item.getNaam()}}</td>
                                     <td style="width: 10em; overflow: hidden;">
                                         @for (id of item.speler.verenigingIds; track $index) {
                                             <span style="font-weight: normal; padding-right: .5em;">{{getKorteVerenigingNaam(id)}}</span>
+                                        }
+                                    </td>
+                                    @if (moyenneMode && spelerList.selectedIdx == $index) {
+                                        <td style="width: 7em;">
+                                            <input #moyenne type="number" style="width: 5em;" [(ngModel)]="moyenneEdit"
+                                            (keyup)="keyupMoyenne($event)" (keydown)="keydownMoyenne($event)" (click)="$event.stopPropagation()">
+                                        </td>
+                                    }
+                                    @else {
+                                        <td style="width: 7em; overflow: hidden; padding-left: .25em;">{{item.getGemiddeldeVanSpel() | number:'1.3-3':'nl-NL'}}</td>
+                                    }
+                                    <td class="right" style="width: 2em;">
+                                        @if (!moyenneMode && !spelerZitInTeam(item.speler)) {
+                                            <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="spelerVerwijderenClicked($event, item.speler)"></i>
                                         }
                                     </td>
                                 </tr>
@@ -65,6 +85,9 @@
         <div class="actions flexbox flexcenter">
             <div style="font-size: 1.25em;">
                 <app-button [button]="addButton" (buttonClicked)="spelerToevoegenClicked()"></app-button>
+            </div>
+            <div style="font-size: 1.25em;">
+                <app-button [button]="moyButton" (buttonClicked)="moyennesWijzigenClicked()"></app-button>
             </div>
         </div>
     </div>

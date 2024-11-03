@@ -1,0 +1,65 @@
+.bal { border-radius: 50%; }
+.bal.geel { background-color: yellow; }
+.bal.wit { background-color: white; }
+
+.spelerdata { background-color: black; color: gray; opacity: .5;}
+.spelerdata.active { opacity: 1; }
+.spelerdata .wit { color: white; }
+.spelerdata .geel { color: yellow; }
+
+.arial { font-family: Arial, Helvetica, sans-serif; }
+
+.aantcar {
+    line-height: 13em;
+}
+.aantcar span {
+    font-size: 11em;
+}
+
+.aantbrt {
+    padding: 0 .75em 0 .4em; 
+    line-height: 5em; 
+    border-radius: .5em;
+}
+.aantbrt.serie {
+    background-color: #3d8b40;
+    color: white;
+}
+.aantbrt span {
+    font-size: 5em; 
+}
+
+.scoredata { opacity: .5; }
+.scoredata.active { opacity: 1; }
+.scoredata.active .changes { color: #3d8b40; }
+.scoredata.active .scale { scale: 1.5; }
+
+.laatste5 { opacity: .5; }
+.laatste5 .laatste5data { color: gray; }
+.laatste5.active { opacity: 1; }
+.laatste5.active .laatste5data { color: white; }
+
+.extradata {
+    opacity: .5;
+}
+.extradata .clr-red { color: red; }
+.extradata.active { opacity: 1; }
+.extradata.active .changes { color: #3d8b40; }
+
+.aantpunten {
+    opacity: .5;
+}
+.aantpunten.active {
+    opacity: 1;
+}
+.aantpunten-container {
+    width: 7em;
+    background-color: black;
+    color: white;
+    border-radius: .5em;
+    padding: 0 .5em 0 .25em;
+}
+.aantpunten.active .aantpunten-container.changes {
+    background-color: #6ec071;
+    color: black;
+}

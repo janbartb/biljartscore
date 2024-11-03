@@ -1,0 +1,11 @@
+.speler > div {
+    padding-right: .5em;
+}
+.speler .num {
+    text-align: right;
+}
+.speler .naam {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

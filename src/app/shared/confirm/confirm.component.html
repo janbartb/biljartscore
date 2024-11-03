@@ -1,0 +1,21 @@
+<div class="overlay flexbox flexcenter flexmiddle" (click)="rejectClicked()">
+    <div class="dialog">
+        <div class="dialog-header w3-green-d2">
+            <span>{{title}}</span>
+        </div>
+        <div class="dialog-body w3-text-green">
+            @for (alinea of dialog.inhoud; track $index) {
+                <p>
+                    @for (regel of alinea.regels; track $index) {
+                        <div>{{regel}}</div>
+                    }
+                </p>
+            }
+        </div>
+        <div class="separator w3-green-d2"></div>
+        <div class="dialog-footer flexbox flexright">
+            <app-button [button]="dialog.rejectButton" (buttonClicked)="rejectClicked()"></app-button>
+            <app-button [button]="dialog.acceptButton" (buttonClicked)="acceptClicked()"></app-button>
+        </div>
+    </div>    
+</div>

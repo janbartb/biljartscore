@@ -1,0 +1,14 @@
+<div class="flexbox team" style="padding: .125em 0;">
+    <div>
+        <input type="text" style="width: 6em;" [(ngModel)]="team.teamNaam" (keyup)="keyupTeamNaam()">
+    </div>
+    <div class="naam" style="width: 13em;"></div>
+    <div class="num" style="width: 4.5em;">{{team.teamTsGem| number:'1.3-3':'nl-NL'}}</div>
+    <div class="num" style="width: 3em;">{{team.teamTsCar > 0 ? team.teamTsCar : ''}}</div>
+    <div class="num" style="width: 3em;">{{team.teamTsBrt > 0 ? team.teamTsBrt : ''}}</div>
+    <div style="width: 1em;"></div>
+    <div class="num" style="width: 3em;">{{team.stand.aantCar}}</div>
+    <div class="num" style="width: 3em;">{{team.stand.aantBrt}}</div>
+    <div class="num" style="width: 4.5em;">{{team.stand.gemiddelde | number:'1.3-3':'nl-NL'}}</div>
+    <div class="num" style="width: 3em;">{{team.stand.hoogSer}}</div>
+</div>

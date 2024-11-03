@@ -1,0 +1,14 @@
+<div class="flexbox speler" style="padding: .125em 0;">
+    <div>
+        <input type="text" style="width: 6em;" [(ngModel)]="speler.splBordNaam" (keyup)="keyupBordNaam()">
+    </div>
+    <div class="naam" style="width: 13em;">{{speler.splNaam}}</div>
+    <div class="num" style="width: 4.5em;">{{speler.splTsGem | number:'1.3-3':'nl-NL'}}</div>
+    <div class="num" style="width: 3em;">{{speler.splTsCar > 0 ? speler.splTsCar : ''}}</div>
+    <div class="num" style="width: 3em;">{{speler.splTsBrt > 0 ? speler.splTsBrt : ''}}</div>
+    <div style="width: 1em;"></div>
+    <div class="num" style="width: 3em;">{{speler.stand.aantCar}}</div>
+    <div class="num" style="width: 3em;">{{speler.stand.aantBrt}}</div>
+    <div class="num" style="width: 4.5em;">{{speler.stand.gemiddelde | number:'1.3-3':'nl-NL'}}</div>
+    <div class="num" style="width: 3em;">{{speler.stand.hoogSer}}</div>
+</div>

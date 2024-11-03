@@ -1,0 +1,330 @@
+<div class="bss-scorebord">
+    @if (wedGelezen) {
+        @if (wedstrijd.aantSpelers == 1) {
+            <div class="bss-score-2 fullheight">
+                <div class="fullheight speler-container active">
+                    <app-wed-score-speler-landscape [speler]="wedstrijd.spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler-landscape>
+                </div>
+            </div>
+        }
+        @else if (wedstrijd.aantSpelers == 2) {
+            <div class="bss-score-2 fullheight flexbox">
+                <div class="fullheight flex50perc speler-container" [ngClass]="{'active': idxSpeler == 0}">
+                    <app-wed-score-speler [speler]="wedstrijd.spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler>
+                </div>
+                <div class="fullheight flex50perc speler-container" [ngClass]="{'active': idxSpeler == 1}">
+                    <app-wed-score-speler [speler]="wedstrijd.spelers[1]" (undoBusy)="resetBusy()"></app-wed-score-speler>
+                </div>
+            </div>
+        }
+        @else if (wedstrijd.aantSpelers == 3) {
+            <div class="fullheight scale-for3">
+                <div class="bss-score-3 fullheight flexbox">
+                    <div class="fullheight flex33perc speler-container" [ngClass]="{'active': idxSpeler == 0}">
+                        <app-wed-score-speler [speler]="wedstrijd.spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler>
+                    </div>
+                    <div class="fullheight flex33perc speler-container" [ngClass]="{'active': idxSpeler == 1}">
+                        <app-wed-score-speler [speler]="wedstrijd.spelers[1]" (undoBusy)="resetBusy()"></app-wed-score-speler>
+                    </div>
+                    <div class="fullheight flex33perc speler-container" [ngClass]="{'active': idxSpeler == 2}">
+                        <app-wed-score-speler [speler]="wedstrijd.spelers[2]" (undoBusy)="resetBusy()"></app-wed-score-speler>
+                    </div>
+                </div>    
+            </div>
+        }
+        @else if (wedstrijd.aantSpelers == 4) {
+            <div class="bss-score-1">
+                <div class="flexbox" style="font-size: .5rem;">
+                    <div class="flex50perc">
+                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxSpeler == 0}">
+                            <app-wed-score-speler-landscape [speler]="wedstrijd.spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler-landscape>
+                        </div>
+                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxSpeler == 2}">
+                            <app-wed-score-speler-landscape [speler]="wedstrijd.spelers[2]" (undoBusy)="resetBusy()"></app-wed-score-speler-landscape>
+                        </div>
+                    </div>
+                    <div class="flex50perc">
+                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxSpeler == 1}">
+                            <app-wed-score-speler-landscape [speler]="wedstrijd.spelers[1]" (undoBusy)="resetBusy()"></app-wed-score-speler-landscape>
+                        </div>
+                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxSpeler == 3}">
+                            <app-wed-score-speler-landscape [speler]="wedstrijd.spelers[3]" (undoBusy)="resetBusy()"></app-wed-score-speler-landscape>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+        }
+        @else if (wedstrijd.aantSpelers == 5) {
+            <div class="bss-score-1">
+                <div class="flexbox" style="font-size: .5rem;">
+                    <div class="flex50perc">
+                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxTeam == 0}">
+                            <app-wed-score-team [team]="wedstrijd.teams[0]" (undoBusy)="resetBusy()"></app-wed-score-team>
+                        </div>
+                        <div class="flexbox">
+                            <div class="flex50perc">
+                                <div class="bss-portrait speler-container" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 0}">
+                                    <app-wed-score-speler [speler]="wedstrijd.teams[0].spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler>
+                                </div>
+                            </div>        
+                            <div class="flex50perc">
+                                <div class="bss-portrait speler-container" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 1}">
+                                    <app-wed-score-speler [speler]="wedstrijd.teams[0].spelers[1]" (undoBusy)="resetBusy()"></app-wed-score-speler>
+                                </div>
+                            </div>        
+                        </div>
+                    </div>
+                    <div class="flex50perc">
+                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxTeam == 1}">
+                            <app-wed-score-team [team]="wedstrijd.teams[1]" (undoBusy)="resetBusy()"></app-wed-score-team>
+                        </div>
+                        <div class="flexbox">
+                            <div class="flex50perc">
+                                <div class="bss-portrait speler-container" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 0}">
+                                    <app-wed-score-speler [speler]="wedstrijd.teams[1].spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler>
+                                </div>
+                            </div>        
+                            <div class="flex50perc">
+                                <div class="bss-portrait speler-container" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 1}">
+                                    <app-wed-score-speler [speler]="wedstrijd.teams[1].spelers[1]" (undoBusy)="resetBusy()"></app-wed-score-speler>
+                                </div>
+                            </div>        
+                        </div>
+                    </div>
+                </div>    
+            </div>
+        }
+        @if (helpVisible) {
+            <div class="help">
+                <div class="help-inner" (click)="closeHelp()">
+                    <div style="font-size: 2em; letter-spacing: -.04em;">Uitleg toetsen scorebord</div>
+                    <hr>
+                    <div style="font-size: 2em; letter-spacing: -.04em;">
+                        <table>
+                            <tr>
+                                <td>
+                                    <div class="flexbox flexmiddle">
+                                        <div class="help-btn-key" style="margin-right: .125em;">
+                                            <span>+</span>
+                                        </div>        
+                                        <div class="help-btn-key" style="width: 2.2em;">
+                                            <span>Spatie</span>
+                                        </div>                
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="help-btn-equ">
+                                        <span>=</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="helptext">
+                                        <span>Verhoog serie met 1.</span>
+                                    </div>        
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flexbox flexmiddle">
+                                        <div class="help-btn-key">
+                                            <span>1</span>
+                                        </div>        
+                                        <div style="height: 1em; line-height: .5em; padding: 0 .125em">
+                                            <span style="font-size: .5em;">...</span>
+                                        </div>        
+                                        <div class="help-btn-key">
+                                            <span>9</span>
+                                        </div>                    
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="help-btn-equ">
+                                        <span>=</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="helptext">
+                                        <span>Verhoog serie met aantal van toets.</span>
+                                    </div>        
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="help-btn-key">
+                                        <span>0</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="help-btn-equ">
+                                        <span>=</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="helptext">
+                                        <span>Reset serie naar 0 (nul)</span>
+                                    </div>        
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="help-btn-key">
+                                        <span>-</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="help-btn-equ">
+                                        <span>=</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="helptext">
+                                        <span>Verminder serie met 1.</span>
+                                    </div>        
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"><hr></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="help-btn-key" style="width: 2em;">
+                                        <span>Enter</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="help-btn-equ">
+                                        <span>=</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="helptext">
+                                        <span>Bevestig beurt. Naar volgende speler.</span>
+                                    </div>        
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flexbox flexmiddle">
+                                        <div class="help-btn-key" style="width: 1.5em; margin-right: .125em;">
+                                            <span>Del</span>
+                                        </div>        
+                                        <div class="help-btn-key">
+                                            <span>.</span>
+                                        </div>                
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="help-btn-equ">
+                                        <span>=</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="helptext">
+                                        <span>Laatste beurt ongedaan maken.</span>
+                                    </div>        
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"><hr></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flexbox flexmiddle">
+                                        <div class="help-btn-key" style="width: 1.5em; margin-right: .125em;">
+                                            <span>Esc</span>
+                                        </div>        
+                                        <div class="help-btn-key" style="width: 1.5em;">
+                                            <span>Bck</span>
+                                        </div>              
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="help-btn-equ">
+                                        <span>=</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="helptext">
+                                        <span>Ga een scherm terug.</span>
+                                    </div>        
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flexbox flexmiddle">
+                                        <div class="help-btn-key" style="margin-right: .125em;">
+                                            <span>L</span>
+                                        </div>        
+                                        <div class="help-btn-key">
+                                            <span>*</span>
+                                        </div>              
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="help-btn-equ">
+                                        <span>=</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="helptext">
+                                        <span>Ga naar scorelijsten.</span>
+                                    </div>        
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flexbox flexmiddle">
+                                        <div class="help-btn-key" style="margin-right: .125em;">
+                                            <span>H</span>
+                                        </div>        
+                                        <div class="help-btn-key">
+                                            <span>/</span>
+                                        </div>              
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="help-btn-equ">
+                                        <span>=</span>
+                                    </div>        
+                                </td>
+                                <td>
+                                    <div class="helptext">
+                                        <span>Toon dit helpscherm.</span>
+                                    </div>        
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>    
+        }
+        @if (modalVisible && modals.length) {
+            <div class="modal" (click)="hideModal()">
+                <div class="modal-container">
+                    <div class="modal-content" [ngClass]="modals[0].type">
+                        <div style="letter-spacing: -.05em; padding: 1em 2em;">
+                            @if (modals[0].type === 'serie') {
+                                <div>
+                                    <span style="opacity: .75;">{{modals[0].texts[0]}} : </span>
+                                    <span> {{modals[0].texts[1]}}</span>
+                                </div>    
+                            }
+                            @else if (modals[0].type === 'carambole') {
+                                <div>
+                                    <span>{{modals[0].texts[0]}}</span>
+                                </div>
+                            }
+                            @else {
+                                <div style="line-height: 1.2;">
+                                    @for (txt of modals[0].texts; track $index) {
+                                        <div>{{txt}}</div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        }
+    }
+</div>
