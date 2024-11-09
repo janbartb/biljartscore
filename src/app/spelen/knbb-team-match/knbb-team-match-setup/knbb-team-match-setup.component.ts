@@ -296,6 +296,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         this.idxTeam = (path && path == 'gasten') ? 1 : 0;
         this.idxSpeler = 0;
         this.subtitle = `Selectie spelers ${this.idxTeam == 0 ? 'THUIS' : 'GASTEN'} team`;
+        this.enterButton.text = this.idxTeam == 0 ? 'Naar GASTEN team' : 'Naar controle';
         this.klasse = this.appData.getKlasse();
 
         Promise.all([

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild, ViewChild } from '@angular/core';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DecimalPipe, NgClass } from '@angular/common';
 import { Speler, SpelerWrapper } from '../../model/speler';
@@ -10,12 +10,15 @@ import { ButtonComponent } from "../../shared/button-group/button/button.compone
 import { BaseComponent } from '../../base/base.component';
 import { Spelsoort } from '../../model/spelsoort';
 import { ApiResponse } from '../../model/api-response';
+import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
+import { HelperService } from '../../services/helper.service';
 
 @Component({
   selector: 'app-spelers',
   standalone: true,
   imports: [
     PageHeaderComponent, 
+    SectionFooterBtnsComponent,
     FormsModule, 
     NgClass, 
     ButtonComponent,
@@ -25,7 +28,9 @@ import { ApiResponse } from '../../model/api-response';
   templateUrl: './spelers.component.html',
   styleUrl: './spelers.component.css'
 })
-export class SpelersComponent extends BaseComponent {
+export class SpelersComponent extends BaseComponent implements OnInit {
+    helper = inject(HelperService);
+
     title: string = 'Onderhoud gegevens';
     subtitle: string = 'Spelers';
     thisUrl: string = 'onderhoud/spelers';
@@ -37,21 +42,30 @@ export class SpelersComponent extends BaseComponent {
     verenigingFilter: string = '';
     moyenneMode: boolean = false;
     moyenneEdit: number = 0;
-    addButton: Button = new Button('', '');
-    moyButton: Button = new Button('', '');
+    buttons: Button[] = [
+        new Button('+', 'Speler toevoegen', true),
+        new Button('M', 'Moyennes wijzigen', true)
+    ];
 
-    //htmlInputId = viewChild<ElementRef<HTMLInputElement>>("moyenne");
+    htmlSpelerLijst = viewChild<ElementRef<HTMLInputElement>>("spelerlijst");
+    htmlVerFilter = viewChild<ElementRef<HTMLInputElement>>("verfilter");
     @ViewChild('moyenne', { static: false }) myInput!: ElementRef<HTMLInputElement>;
 
+    constructor() {
+        super();
+        effect(() => {
+            this.htmlVerFilter()?.nativeElement;
+            this.htmlSpelerLijst()?.nativeElement;
+        });
+    }
+
     enterPressed() {
-        if (this.spelerList.isItemSelected()) {
-            this.spelerClicked(this.spelerList.selectedIdx);
-        }
+        this.spelerClicked(this.spelerList.hoveredIdx);
     }
 
     override escapePressed(): void {
         if (this.moyenneMode) {
-            this.moyButton.selected = false;
+            this.buttons[1].selected = false;
             this.moyenneMode = false;
             this.spelerList.clearSelection();
             this.sortSpelers();
@@ -61,20 +75,32 @@ export class SpelersComponent extends BaseComponent {
         }
     }
 
-    buttonPressed(key: string) {
-        if (key == '+' || key == '=') {
-            this.addButton.selected = true;
+    buttonPressed(idx: number) {
+        if (idx == 0) {
+            this.buttons[idx].selected = true;
             setTimeout(() => {
-                this.addButton.selected = false;
+                this.buttons[idx].selected = false;
                 this.spelerToevoegenClicked();
             }, 250);
         }
-        if (key == 'm') {
+        else if (idx == 1) {
+            this.moyennesWijzigenClicked();
+        }
+    }
+
+    buttonClicked(idx: number) {
+        if (idx == 0) {
+            this.spelerToevoegenClicked();
+        }
+        else if (idx == 1) {
             this.moyennesWijzigenClicked();
         }
     }
 
     spelerClicked(idx: number) {
+        if (idx < 0) {
+            return;
+        }
         this.spelerList.selectItem(idx);
         if (this.moyenneMode) {
             this.moyenneEdit = this.spelerList.getSelectedItem()?.getGemiddeldeVanSpel() || 0;
@@ -108,13 +134,14 @@ export class SpelersComponent extends BaseComponent {
         }
         this.moyenneMode = !this.moyenneMode;
         if (!this.moyenneMode) {
-            this.moyButton.selected = false;
+            this.buttons[1].selected = false;
             this.spelerList.clearSelection();
             this.sortSpelers();
         }
         else {
-            this.moyButton.selected = true;
-            this.spelerList.selectItem(0);
+            this.buttons[1].selected = true;
+            const idx = this.spelerList.hoveredIdx < 0 ? 0 : this.spelerList.hoveredIdx;
+            this.spelerList.selectItem(idx);
             this.moyenneEdit = this.spelerList.getSelectedItem()?.getGemiddeldeVanSpel() || 0;
             setTimeout(() => {
                 this.myInput.nativeElement.select();
@@ -128,10 +155,6 @@ export class SpelersComponent extends BaseComponent {
         }
         if (event.key === 'm' || event.key === '+' || event.key === '=') {
             event.preventDefault();
-            event.stopPropagation();
-            if (event.key == 'm') {
-                this.buttonPressed('m');
-            }
         }
     }
 
@@ -157,8 +180,8 @@ export class SpelersComponent extends BaseComponent {
                     }
                 }
             }
-            this.spelerList.selectNextItem();
-            this.spelerClicked(this.spelerList.selectedIdx);
+            this.gotoNextItem();
+            this.spelerClicked(this.spelerList.hoveredIdx);
         }
     }
 
@@ -175,6 +198,7 @@ export class SpelersComponent extends BaseComponent {
         localStorage.setItem('spelersVerenigingFilter', this.verenigingFilter);
         this.filtersChanged();
         this.sortSpelers();
+        this.htmlVerFilter()?.nativeElement.blur();
     }
 
     filtersChanged() {
@@ -218,15 +242,16 @@ export class SpelersComponent extends BaseComponent {
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
+        const fromInput = event.target instanceof HTMLInputElement;
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.spelerList.selectPreviousItem();
+                this.gotoPreviousItem();
             }
             if (event.key === 'ArrowDown') {
-                this.spelerList.selectNextItem();
+                this.gotoNextItem();
             }
             if (this.moyenneMode) {
-                this.spelerClicked(this.spelerList.selectedIdx);
+                this.spelerClicked(this.spelerList.hoveredIdx);
             }
             return false;
         }
@@ -238,8 +263,15 @@ export class SpelersComponent extends BaseComponent {
             this.escapePressed();
             return false;
         }
-        if (event.key === '+' || event.key === '=' || event.key === 'm') {
-            this.buttonPressed(event.key);
+        if (event.code === 'Equal' || event.code === 'NumpadAdd') {
+            this.buttonPressed(0);
+            return false;
+        }
+        if (event.code === 'KeyM') {
+            if (fromInput && (<HTMLInputElement> event.target).id == 'naamfilter') {
+                return true;
+            }
+            this.buttonPressed(1);
             return false;
         }
         if (event.key === 'Home') {
@@ -272,8 +304,26 @@ export class SpelersComponent extends BaseComponent {
         .catch((err) => {
             this.alert.showAlert(err, 'error');
         });
-        this.addButton = new Button('+', 'Speler toevoegen', true);
-        this.moyButton = new Button('M', 'Moyennes wijzigen', true);
+    }
+
+    private gotoNextItem() {
+        this.spelerList.hoverNextItem();
+        if (this.spelerList.hoveredIdx == 13) {
+            this.helper.scrollDown(this.htmlSpelerLijst());
+        }
+        if (this.spelerList.hoveredIdx == 0) {
+            this.helper.scrollUp(this.htmlSpelerLijst());
+        }
+    }
+
+    private gotoPreviousItem() {
+        this.spelerList.hoverPreviousItem();
+        if (this.spelerList.hoveredIdx == 12) {
+            this.helper.scrollUp(this.htmlSpelerLijst());
+        }
+        if (this.spelerList.hoveredIdx == this.spelerList.filtered.length - 1) {
+            this.helper.scrollDown(this.htmlSpelerLijst());
+        }
     }
 
     private removeFromSpelerList(speler: Speler): void {

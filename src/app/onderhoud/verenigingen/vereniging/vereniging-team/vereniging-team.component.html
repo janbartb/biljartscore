@@ -3,22 +3,18 @@
         <div>
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
         </div>
-        <div class="flexgrow1 flexbox">
+        <div class="flexgrow1 flexbox" style="max-height: 29.5em;">
             <!-- Vereniging section -->
             <div class="section" style="border-right: .25rem solid #357a38;">
                 <div class="fullheight section flexbox flexcolumn">
-                    <div class="section-header">
-                        <div class="w3-green-l2">
-                            <span>Vereniging</span>
-                        </div>
-                    </div>
+                    <app-section-header [title]="'Vereniging'" [cssClasses]="'w3-green-l2'"></app-section-header>
                     <div class="section-body flexgrow1">
                         <div class="flexbox flexcenter" style="padding-left: .5em;">
                             <table class="tbl-normal tbl-input">
                                 <tbody>
                                     <tr>
                                         <td><label>ID</label></td>
-                                        <td style="min-width: 12em;">{{vereniging.verId}}</td>
+                                        <td class="view" style="min-width: 12em;">{{vereniging.verId}}</td>
                                     </tr>
                                     <tr>
                                         <td><label>KNBB ID</label></td>
@@ -44,25 +40,14 @@
                             </table>
                         </div>
                     </div>
-                    <div class="section-footer">
-                        
-                    </div>
                 </div>
             </div>
             <!-- Teams section -->
-            <div class="fullheight flexgrow1 flexbox flexcolumn section">
-                <div class="section-header">
-                    <div class="w3-green-l2">
-                        <span>{{teamTitle}}</span>
-                    </div>
-                </div>
-                <div class="flexgrow1 flexbox">
+            <div class="fullheight flexgrow1 flexbox flexcolumn section" style="max-height: 29.5em;">
+                <app-section-header [title]="teamTitle" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <div class="flexgrow1 flexbox" style="max-height: 27.5em;">
                     <div class="section flex50perc flexbox flexcolumn" style="border-right: .25rem solid #93cf95;">
-                        <div class="section-header">
-                            <div class="w3-green-l4">
-                                <span>Team</span>
-                            </div>
-                        </div>
+                        <app-section-header [title]="'Team'" [cssClasses]="'w3-green-l4'" [active]="activeSection == 0"></app-section-header>
                         <div class="section-body flexgrow1">
                             <div class="flexbox flexcenter">
                                 <div>
@@ -97,7 +82,7 @@
                                                             <label for="klasse">Klasse</label>
                                                         </td>
                                                         <td>
-                                                            <select #klasse id="klasse" formControlName="klasse" (keyup)="stopSomeKeys($event)">
+                                                            <select #klasse id="klasse" formControlName="klasse">
                                                                 <option value=""></option>
                                                                 @for (klas of klassen; track $index) {
                                                                     <option [ngValue]="klas">{{klas}}</option>
@@ -111,8 +96,7 @@
                                                         </td>
                                                         <td>
                                                             <input type="number" id="volgNr" style="width: 3em;" formControlName="volgNr" autocomplete="off"
-                                                                [ngClass]="{'invalid': volgNr?.invalid && (volgNr?.dirty), 'valid': volgNr?.valid && (volgNr?.dirty)}"
-                                                                (keyup)="stopSomeKeys($event)">
+                                                                [ngClass]="{'invalid': volgNr?.invalid && (volgNr?.dirty), 'valid': volgNr?.valid && (volgNr?.dirty)}">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -122,7 +106,7 @@
                                                         <td>
                                                             <input #knbbid type="text" id="knbbId" style="width: 6em;" formControlName="knbbId" autocomplete="off"
                                                                 [ngClass]="{'invalid': knbbId?.invalid && (knbbId?.dirty), 'valid': knbbId?.valid && (knbbId?.dirty)}"
-                                                                (blur)="knbbId?.setValue(knbbId?.value.trim())" (keyup)="stopSomeKeys($event)">
+                                                                (blur)="knbbId?.setValue(knbbId?.value.trim())">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -132,7 +116,7 @@
                                                         <td>
                                                             <input type="text" id="naam" style="width: 10em;" formControlName="naam" autocomplete="off"
                                                                 [ngClass]="{'invalid': naam?.invalid && (naam?.dirty), 'valid': naam?.valid && (naam?.dirty)}"
-                                                                (blur)="naam?.setValue(naam?.value.trim())" (keyup)="stopSomeKeys($event)">
+                                                                (blur)="naam?.setValue(naam?.value.trim())">
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -146,22 +130,22 @@
                                 </div>
                             </div>
                         </div>
+                        @if (activeSection == 0 && teamForm && teamForm.valid && !duplicateId) {
+                            <app-section-footer-btns [buttons]="enterButtons" (clickedButton)="opslaanClicked()"
+                                            [cssFooter]="'w3-green-bdr-l2'" [cssButtons]="'font125'"></app-section-footer-btns>
+                        }        
                     </div>
                     <div class="section flex50perc flexbox flexcolumn">
-                        <div class="section-header">
-                            <div class="w3-green-l4">
-                                <span>Teamleden</span>
-                            </div>
-                        </div>
-                        <div class="section-body flexgrow1 scrollable">
-                            <div class="flexbox flexcenter">
-                                <div>
+                        <app-section-header [title]="'Teamleden'" [cssClasses]="'w3-green-l4'" [active]="activeSection == 1"></app-section-header>
+                        <div class="list-container" style="height: 25.5em;">
+                            <div #ledenlijst class="fullheight flexbox flexcenter scrollable">
+                                <div style="padding: 0 1em;">
                                     <table class="tbl-normal tbl-list">
                                         <tbody>
                                             @for (spl of selectieLijst.filtered; track $index) {
-                                                <tr class="selectable" [ngClass]="{'selected': selectieLijst.selectedIdx == $index}"
-                                                            (click)="spelerSelectieClicked($index)">
-                                                    <td>
+                                                <tr class="selectable multselect" (click)="spelerSelectieClicked($index)"
+                                                        [ngClass]="{'selected': spl.spelerSelected, 'hovered': selectieLijst.hoveredIdx == $index}">
+                                                    <td style="padding-left: .5em;">
                                                         @if (spl.spelerSelected) {
                                                             <i class="fas fa-check-square" style="color: green;"></i>
                                                         }
@@ -179,13 +163,6 @@
                         </div>
                     </div>
                 </div>
-                @if (teamForm && teamForm.valid && !duplicateId) {
-                    <div class="section-footer" style="border-top: .25rem solid #93cf95;">
-                        <div class="flexbox flexcenter" style="font-size: 1.25em;">
-                            <app-button [button]="enterButton" (buttonClicked)="opslaanClicked()"></app-button>
-                        </div>
-                    </div>
-                }
             </div>
         </div>
     </div>

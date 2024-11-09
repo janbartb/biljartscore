@@ -45,5 +45,6 @@ export class SpelerWrapper {
 export class SpelerSelectie {
     spelerId: string = '';
     spelerNaam: string = '';
+    spelerMoy: number = 0;
     spelerSelected: boolean = false;
 }

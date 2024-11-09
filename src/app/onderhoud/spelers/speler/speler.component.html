@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div class="section-body flexgrow1">
-                    <div class="flexbox flexcenter">
+                    <div class="flexbox flexcenter" style="padding-top: 1em;">
                         <div>
                             @if (spelerForm) {
                                 <form [formGroup]="spelerForm">
@@ -76,7 +76,7 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <label for="moyenne">Moyenne</label>
+                                                    <label for="moyenne">Moyenne<span class="req"> *</span></label>
                                                 </td>
                                                 <td>
                                                     <input type="number" id="moyenne" style="width: 5em;" formControlName="moyenne" autocomplete="off"
@@ -104,9 +104,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- @if (activeSection != 0) {
-                    <div class="section-inactive" (click)="activateSection(0)"></div>    
-                } -->
             </div>
             <!-- Lid van section -->
             <div class="flex35perc section flexbox flexcolumn">
@@ -115,7 +112,7 @@
                         <span>{{sections[2]}}</span>
                     </div>
                 </div>
-                <div class="section-body flexgrow1">
+                <div class="section-body flexgrow1" style="padding-top: 1em;">
                     <div class="flexbox flexcenter">
                         <div>
                             <table class="tbl-normal tbl-entries">

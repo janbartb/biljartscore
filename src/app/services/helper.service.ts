@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import { WedSpelerStand, Wedstrijd, WedTeamStand } from '../model/wedstrijd';
 import { TeamMatch } from '../model/match';
 
@@ -95,5 +95,17 @@ export class HelperService {
             return true;
         }
         return false;
+    }
+
+    scrollUp(elem?: ElementRef<HTMLDivElement>): void {
+        if (elem) {
+            elem.nativeElement.scrollTop = 0;
+        }
+    }
+
+    scrollDown(elem?: ElementRef<HTMLDivElement>): void {
+        if (elem) {
+            elem.nativeElement.scrollTop = elem.nativeElement.scrollHeight;
+        }
     }
 }

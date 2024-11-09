@@ -3,15 +3,11 @@
         <div>
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
         </div>
-        <div class="flexgrow1 flexbox">
+        <div class="flexgrow1 flexbox" style="max-height: 29.5em;">
             <!-- Vereniging section -->
             <div class="section" style="border-right: .25rem solid green;">
                 <div class="fullheight section flexbox flexcolumn">
-                    <div class="section-header">
-                        <div class="w3-green-l2">
-                            <span>{{sections[0]}}</span>
-                        </div>
-                    </div>
+                    <app-section-header [title]="sections[0]" [cssClasses]="'w3-green-l2'"></app-section-header>
                     <div class="section-body flexgrow1">
                         <div class="flexbox flexcenter" style="padding-left: .5em;">
                             @if (verenigingForm) {
@@ -90,27 +86,27 @@
                             }
                         </div>
                     </div>
-                    <div class="section-footer">
+                    @if (verenigingForm && verenigingForm.valid) {
+                        <app-section-footer-btns [buttons]="enterButtons" (clickedButton)="opslaanClicked()"
+                                            [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                    }
+                    <!-- <div class="section-footer">
                         <div class="flexbox flexcenter">
                             @if (verenigingForm && verenigingForm.valid) {}
                             <div style="font-size: 1.25em;">
                                 <app-button [button]="enterButton" (buttonClicked)="opslaanClicked()"></app-button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <!-- Teams section -->
             <div class="fullheight flexgrow1 flexbox">
                 <div class="flex50perc fullheight flexbox flexcolumn section">
-                    <div class="section-header">
-                        <div class="w3-green-l2">
-                            <span>Teams</span>
-                        </div>
-                    </div>
-                    <div class="section-body flexgrow1 scrollable">
-                        <div class="flexbox flexcenter">
-                            <div>
+                    <app-section-header [title]="sections[1]" [cssClasses]="'w3-green-l2'"></app-section-header>
+                    <div class="list-container" style="height: 27.5em;">
+                        <div class="fullheight flexbox flexcenter scrollable">
+                            <div style="padding: 0 1em;">
                                 <table class="tbl-full tbl-list">
                                     <tbody>
                                         @for (team of teamLijst.filtered; track $index) {
@@ -130,19 +126,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="section-footer">
-                        
-                    </div>
                 </div>
                 <div class="flex50perc fullheight flexbox flexcolumn section" style="border-left: .25rem solid green;">
-                    <div class="section-header">
-                        <div class="w3-green-l2">
-                            <span>Leden</span>
-                        </div>
-                    </div>
-                    <div class="section-body flexgrow1 scrollable">
-                        <div class="flexbox flexcenter">
-                            <div>
+                    <app-section-header [title]="sections[2]" [cssClasses]="'w3-green-l2'"></app-section-header>
+                    <div class="list-container" style="height: 27.5em;">
+                        <div class="fullheight flexbox flexcenter scrollable">
+                            <div style="padding: 0 1em;">
                                 <table class="tbl-normal tbl-list">
                                     <tbody>
                                         @for (spl of ledenLijst.filtered; track $index) {
@@ -154,9 +143,6 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
-                    <div class="section-footer">
-                        
                     </div>
                 </div>
             </div>

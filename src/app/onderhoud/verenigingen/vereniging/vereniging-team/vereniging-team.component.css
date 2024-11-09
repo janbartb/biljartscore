@@ -1,0 +1,6 @@
+.multselect.selected {
+    opacity: 1;
+}
+.multselect.selected:hover, .multselect.selected.hovered {
+    opacity: .5;
+}

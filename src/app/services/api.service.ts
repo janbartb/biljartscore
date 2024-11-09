@@ -102,9 +102,9 @@ export class ApiService {
         return result;
     }
 
-    async getLedenVanVereniging(verId: string): Promise<SpelerWrapper[]> {
+    async getLedenVanVereniging(verId: string, spel: string): Promise<SpelerWrapper[]> {
         const result: Speler[] = await this.getResource(this.dbUrl + '/spelers?verId=' + verId);
-        return result.map(sp => new SpelerWrapper(sp));
+        return result.map(sp => new SpelerWrapper(sp, spel));
     }
 
     async getMoyenneKlassenLijst(spelsoortId: string): Promise<string[]> {

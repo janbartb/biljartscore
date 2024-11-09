@@ -184,7 +184,7 @@ export class MoyenneTabellenComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        let menu: string[] = ['Toevoegen'];
+        let menu: string[] = ['Nieuw...'];
         this.enterButton.text = 'Voeg een klasse toe';
         this.bssApi.getMoyenneKlassenLijst(this.spelId)
             .then(data => {

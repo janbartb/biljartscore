@@ -36,10 +36,10 @@
                         </table>
                     </div>
                 </div>
-                @if (compTeamsOrig != compTeamsEdit) {
+                @if (teamsChanged) {
                     <div style="border-top: .25em solid #b7dfb8">
                         <div class="flexbox flexcenter" style="padding: .125em 0;">
-                            <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                            <app-button [button]="opslaanButton" (buttonClicked)="opslaanClicked()"></app-button>
                         </div>
                     </div>
                 }
@@ -74,10 +74,10 @@
                         </table>
                     </div>
                 </div>
-                @if (spaceButton.text != '') {
+                @if (teamLijst.selectedIdx >= 0) {
                     <div style="border-top: .25em solid #b7dfb8">
                         <div class="flexbox flexcenter" style="padding: .125em 0;">
-                            <app-button [button]="spaceButton" (buttonClicked)="spaceButtonClicked()"></app-button>
+                            <app-button [button]="enterButton" (buttonClicked)="teamClicked(teamLijst.selectedIdx)"></app-button>
                         </div>
                     </div>
                 }

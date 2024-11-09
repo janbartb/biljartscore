@@ -11,11 +11,19 @@ import { List } from '../../../../model/list';
 import { SpelerWrapper } from '../../../../model/speler';
 import { Spelsoort } from '../../../../model/spelsoort';
 import { PageHeaderComponent } from '../../../../shared/page-header/page-header.component';
+import { SectionHeaderComponent } from '../../../../shared/section-header/section-header.component';
+import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
     selector: 'app-vereniging-edit',
     standalone: true,
-    imports: [ReactiveFormsModule, NgClass, PageHeaderComponent, ButtonComponent],
+    imports: [
+        ReactiveFormsModule, 
+        NgClass, 
+        PageHeaderComponent, 
+        SectionHeaderComponent,
+        SectionFooterBtnsComponent,
+        ButtonComponent],
     templateUrl: './vereniging-edit.component.html',
     styleUrl: './vereniging-edit.component.css'
 })
@@ -30,7 +38,7 @@ export class VerenigingEditComponent extends BaseComponent implements OnInit {
     ledenLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
     spelsoorten: Spelsoort[] = [];
 
-    enterButton: Button = new Button('Enter', 'Opslaan', true);
+    enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
 
     htmlInputKnbbId = viewChild<ElementRef<HTMLInputElement>>("knbbid");
 
@@ -44,9 +52,9 @@ export class VerenigingEditComponent extends BaseComponent implements OnInit {
     }
 
     enterPressed() {
-        this.enterButton.selected = true;
+        this.enterButtons[0].selected = true;
         setTimeout(() => {
-            this.enterButton.selected = false;
+            this.enterButtons[0].selected = false;
             this.opslaanClicked();
         }, 300);
     }
@@ -95,7 +103,7 @@ export class VerenigingEditComponent extends BaseComponent implements OnInit {
                 this.spelsoorten = result;
                 Promise.all([
                     this.bssApi.getVereniging(id),
-                    this.bssApi.getLedenVanVereniging(id)
+                    this.bssApi.getLedenVanVereniging(id, this.spelId)
                 ])
                     .then(results => {
                         this.vereniging = results[0];

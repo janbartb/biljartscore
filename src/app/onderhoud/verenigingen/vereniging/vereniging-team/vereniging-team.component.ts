@@ -10,17 +10,28 @@ import { Button } from '../../../../model/button';
 import { ButtonComponent } from '../../../../shared/button-group/button/button.component';
 import { NgClass } from '@angular/common';
 import { notEmpty } from '../../../../directives/validators.directive';
+import { SectionHeaderComponent } from '../../../../shared/section-header/section-header.component';
+import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-btns/section-footer-btns.component';
+import { HelperService } from '../../../../services/helper.service';
 
 @Component({
-  selector: 'app-vereniging-team',
-  standalone: true,
-  imports: [PageHeaderComponent, ButtonComponent, ReactiveFormsModule, NgClass],
-  templateUrl: './vereniging-team.component.html',
-  styleUrl: './vereniging-team.component.css'
+    selector: 'app-vereniging-team',
+    standalone: true,
+    imports: [
+        PageHeaderComponent, 
+        SectionHeaderComponent,
+        SectionFooterBtnsComponent,
+        ButtonComponent, 
+        ReactiveFormsModule, 
+        NgClass
+    ],
+    templateUrl: './vereniging-team.component.html',
+    styleUrl: './vereniging-team.component.css'
 })
 export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     route = inject(ActivatedRoute);
     fb = inject(FormBuilder);
+    helper = inject(HelperService);
 
     vereniging: Vereniging = new Vereniging();
     team: Team = new Team();
@@ -29,6 +40,7 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     klassen: string[] = [];
     existingIds: string[] = [];
     aantalLeden: number = 0;
+    activeSection: number = 0;
     mode: string = 'edit';
     subtitle: string = 'Vereniging';
     teamTitle: string = '';
@@ -36,10 +48,11 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     duplicateId: boolean = false;
     spelNaam: string = this.appData.getSpelNaam();
 
-    enterButton: Button = new Button('Enter', 'Opslaan', true);
+    enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
 
     htmlSelectKlasse = viewChild<ElementRef<HTMLSelectElement>>('klasse');
     htmlInputKnbbId = viewChild<ElementRef<HTMLInputElement>>('knbbid');
+    htmlLedenLijst = viewChild<ElementRef<HTMLDivElement>>('ledenlijst');
 
     teamForm!: FormGroup;
 
@@ -52,13 +65,13 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     }
 
     enterPressed() {
-        if (this.selectieLijst.isItemSelected()) {
-            this.spelerSelectieClicked(this.selectieLijst.selectedIdx);
+        if (this.selectieLijst.hoveredIdx >= 0 && this.activeSection == 1) {
+            this.spelerSelectieClicked(this.selectieLijst.hoveredIdx);
             return;
         }
-        this.enterButton.selected = true;
+        this.enterButtons[0].selected = true;
         setTimeout(() => {
-            this.enterButton.selected = false;
+            this.enterButtons[0].selected = false;
             this.opslaanClicked();
         }, 300);
     }
@@ -75,6 +88,7 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
         let spelerClicked = this.selectieLijst.getItem(idx);
         if (spelerClicked) {
             spelerClicked.spelerSelected = !spelerClicked.spelerSelected;
+            this.sortSelectie();
             this.aantalLeden += spelerClicked.spelerSelected ? 1 : -1;
         }
     }
@@ -102,13 +116,13 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
             this.vereniging.teams[idx] = this.team;
         }
         this.bssApi.updateVereniging(this.vereniging)
-        .then(resp => {
-            const action = this.mode == 'add' ? 'toegevoegd' : 'gewijzigd';
-            this.alert.showAlert(`Team '${this.team.naam}' is ${action}.`, 'success');
-        })
-        .catch(err => {
-            this.alert.showError(err);
-        });
+            .then(resp => {
+                const action = this.mode == 'add' ? 'toegevoegd' : 'gewijzigd';
+                this.alert.showAlert(`Team '${this.team.naam}' is ${action}.`, 'success');
+            })
+            .catch(err => {
+                this.alert.showError(err);
+            });
         super.escapePressed();
     }
 
@@ -123,33 +137,50 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
         this.duplicateId = this.existingIds.some(id => id == this.createdId);
     }
 
-    stopSomeKeys(event: KeyboardEvent) {
-        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            if (event.target instanceof HTMLSelectElement) {
-                event.stopPropagation()
-                return;
-            }
-            if (event.target instanceof HTMLInputElement) {
-                let tg = <HTMLInputElement>event.target;
-                if (tg.id == 'volgNr') {
-                    event.stopPropagation();
-                    return;
-                }
+    @HostListener('document:keydown', ['$event'])
+    handleKeyDownEvent(event: KeyboardEvent): boolean {
+        if (this.activeSection == 1) {
+            if ((event.key === 'Enter' || event.key.startsWith('Arrow')) && event.target instanceof HTMLSelectElement) {
+                event.preventDefault();
             }
         }
+        return true;
     }
 
     @HostListener('document:keyup', ['$event'])
-    handleKeyboardEvent(event: KeyboardEvent): boolean {
+    handleKeyUpEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
+        const fromInput = event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+            if (!fromInput || event.ctrlKey || this.activeSection == 1) {
+                this.activeSection = this.activeSection == 0 ? 1 : 0;
+                return false;
+            }
+            return true;
+        }
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            if (event.key === 'ArrowUp') {
-                this.selectieLijst.selectPreviousItem();
+            if (this.activeSection == 1) {
+                if (event.key === 'ArrowUp') {
+                    this.selectieLijst.hoverPreviousItem();
+                    if (this.selectieLijst.hoveredIdx == 14) {
+                        this.helper.scrollUp(this.htmlLedenLijst());
+                    }
+                    if (this.selectieLijst.hoveredIdx == this.selectieLijst.filtered.length - 1) {
+                        this.helper.scrollDown(this.htmlLedenLijst());
+                    }
+                }
+                if (event.key === 'ArrowDown') {
+                    this.selectieLijst.hoverNextItem();
+                    if (this.selectieLijst.hoveredIdx == 15) {
+                        this.helper.scrollDown(this.htmlLedenLijst());
+                    }
+                    if (this.selectieLijst.hoveredIdx == 0) {
+                        this.helper.scrollUp(this.htmlLedenLijst());
+                    }
+                }
+                return false;    
             }
-            if (event.key === 'ArrowDown') {
-                this.selectieLijst.selectNextItem();
-            }
-            return false;
+            return true;
         }
         if (event.key === 'Enter') {
             this.enterPressed();
@@ -182,7 +213,7 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
 
         Promise.all([
             this.bssApi.getVereniging(verId),
-            this.bssApi.getLedenVanVereniging(verId),
+            this.bssApi.getLedenVanVereniging(verId, this.spelId),
             this.bssApi.getMoyenneKlassenLijst(this.spelId)
         ])
             .then(results => {
@@ -195,8 +226,8 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
                     this.teamTitle = 'Team toevoegen';
                     this.createdId = this.spelId;
                     this.existingIds = this.vereniging.teams
-                            .filter(tm => tm.spelsoort == this.spelId)
-                            .map(x => x.teamId);
+                        .filter(tm => tm.spelsoort == this.spelId)
+                        .map(x => x.teamId);
                 }
                 else {
                     let team = this.vereniging.teams.find(team => team.teamId == teamId);
@@ -226,10 +257,12 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
             let splSel = new SpelerSelectie();
             splSel.spelerId = sw.speler.id;
             splSel.spelerNaam = sw.getNaam();
+            splSel.spelerMoy = sw.getGemiddeldeVanSpel();
             splSel.spelerSelected = this.team.teamLeden.some(teamLid => teamLid == sw.speler.id);
             tempList.push(splSel);
         });
         this.selectieLijst.fillItems(tempList);
+        this.sortSelectie();
     }
 
     private createTeamForm() {
@@ -267,11 +300,17 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
 
     private sortLeden() {
         this.ledenLijst.filtered.sort((a: SpelerWrapper, b: SpelerWrapper) => {
-            if (a.getNaam() == b.getNaam()) {
-                return 0;
+            return b.getGemiddeldeVanSpel() - a.getGemiddeldeVanSpel();
+        });
+    }
+
+    private sortSelectie() {
+        this.selectieLijst.filtered.sort((a: SpelerSelectie, b: SpelerSelectie) => {
+            if ((a.spelerSelected != b.spelerSelected)) {
+                return a.spelerSelected ? -1 : 1;
             }
             else {
-                return (a.getNaam() > b.getNaam()) ? 1 : -1;
+                return b.spelerMoy - a.spelerMoy;
             }
         });
     }

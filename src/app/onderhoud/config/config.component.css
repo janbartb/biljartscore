@@ -1,0 +1,17 @@
+.configform {
+    padding-top: 1em;
+}
+.configform .row {
+    padding: .125em;
+}
+.configform .label {
+    width: 12em;
+}
+
+.spreektest.clickable {
+    cursor: pointer;
+}
+.spreektest.disabled {
+    cursor: not-allowed;
+    color: lightgray;
+}

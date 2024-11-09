@@ -1,0 +1,9 @@
+<div class="btn-footer" [ngClass]="cssFooter">
+    <div class="btn-container" [ngClass]="cssButtons">
+        @for (button of buttons; track $index) {
+            @if (!btnsHide[$index]) {
+                <app-button [button]="button" (buttonClicked)="buttonClicked($index)"></app-button>
+            }
+        }
+    </div>
+</div>

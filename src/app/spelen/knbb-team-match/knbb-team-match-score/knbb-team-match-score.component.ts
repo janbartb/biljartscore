@@ -25,8 +25,8 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
 
     match: TeamMatch = new TeamMatch();
     matchRead: boolean = false;
-    idxWed: number = 0;
-    idxSpeler: number = 0;
+    idxWed: number = -1;
+    idxSpeler: number = -1;
     activeSpeler: MatchSpeler = new MatchSpeler();
     oldPunten: number[] = [0, 0];
     modals: ModalMessage[] = [];
@@ -69,6 +69,7 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
                 const modalMsg = new ModalMessage('success', ['▪ ▪ ▪ ▪ EINDE WEDSTRIJD ▪ ▪ ▪ ▪'], 'Einde wedstrijd', 3);
                 this.modals.push(modalMsg);
                 this.showModal();
+                this.idxSpeler = -1;
                 return;
             }
         }
@@ -215,52 +216,63 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         }
         this.activeSpeler.stand.serie += nr;
         if (nr > 0) {
-            const modalMsg = new ModalMessage('carambole', ['' + this.activeSpeler.stand.serie], '' + this.activeSpeler.stand.serie, 2);
-            this.modals.push(modalMsg);
-            this.showModal();    
+            this.checkForSpelerMessages(true);
         }
         this.activeSpeler.stand.gemiddelde = this.getGemiddelde(this.activeSpeler);
         this.activeSpeler.stand.punten = this.getPunten(this.activeSpeler);
-        this.checkForSpelerMessages(nr > 0);
         return false;
     }
 
     private checkForSpelerMessages(fromSerie?: boolean, fromEnter?: boolean): void {
-        let msg = '';
+        let msg: string[] = [];
         let spk = '';
-        let msgType = '';
-        // beurten - alleen checken voor speler 1
-        if (this.idxSpeler === 0) {
-            const remainingBrt = this.match.maxBeurten - this.activeSpeler.stand.aantBrt;
-            if (remainingBrt === 1 && fromEnter) {
-                msg = 'Voorlaatste beurt';
-                spk = 'Voorlaatste beurt';
-                msgType = 'error';
+        let msgType = 'info';
+        if (!fromSerie) {
+            // beurten - alleen checken voor speler 1
+            if (this.idxSpeler === 0) {
+                const remainingBrt = this.match.maxBeurten - this.activeSpeler.stand.aantBrt;
+                if (remainingBrt === 1 && fromEnter) {
+                    msg.push('Voorlaatste beurt');
+                    spk = 'Voorlaatste beurt';
+                }
+            }
+            if (this.idxSpeler === 1 && fromEnter) {
+                if (this.tegenstanderHeeftAantalBereikt(this.idxSpeler)) {
+                    msg.push('Gelijkmakende beurt');
+                    spk = 'Gelijkmakende beurt';
+                }
+            }
+            const remainingCar = this.activeSpeler.splTsCar - this.activeSpeler.stand.aantCar - this.activeSpeler.stand.serie;
+            if (remainingCar > 0 && remainingCar < 4) {
+                if (msg.length) {
+                    msg.push(`${this.activeSpeler.splBordNaam}, nog ${remainingCar} ...`)
+                    spk = spk + `. ${this.activeSpeler.splBordNaam}, nog ${remainingCar}.`;    
+                }
+                else {
+                    msg.push(`${this.activeSpeler.splBordNaam}, nog ${remainingCar} ...`);
+                    spk = `${this.activeSpeler.splSpreekNaam}. Nog ${remainingCar}.`;    
+                }
             }
         }
-        if (this.idxSpeler === 1 && fromEnter) {
-            if (this.tegenstanderHeeftAantalBereikt(this.idxSpeler)) {
-                msg = 'Gelijkmakende beurt';
-                spk = 'Gelijkmakende beurt voor ' + this.activeSpeler.splSpreekNaam;
-                msgType = 'error';
+        else {
+            // caramboles
+            const remainingCar = this.activeSpeler.splTsCar - this.activeSpeler.stand.aantCar - this.activeSpeler.stand.serie;
+            if (remainingCar === 0) {
+                msg.push('Aantal bereikt');
+                spk = 'Aantal bereikt';
             }
-        }
-        // caramboles
-        const remainingCar = this.activeSpeler.splTsCar - this.activeSpeler.stand.aantCar - this.activeSpeler.stand.serie;
-        if (remainingCar === 0 && fromSerie) {
-            msg = 'Aantal bereikt';
-            spk = this.activeSpeler.splSpreekNaam + ', aantal bereikt';
-            msgType = 'success';
-        }
-        if (remainingCar === 3 && fromSerie) {
-            msg = msg.length ? msg + ', en nog 3 ...' : 'En nog 3 ...';
-            spk = spk.length ? msg + ', ' + this.activeSpeler.splSpreekNaam + ', nog 3' : this.activeSpeler.splSpreekNaam + ', nog 3';
-            if (msgType !== 'error') {
-                msgType = 'info';
+            else if (remainingCar < 4) {
+                msg.push(`${this.activeSpeler.stand.serie}, en nog ${remainingCar} ...`);
+                spk = `${this.activeSpeler.stand.serie}. En nog ${remainingCar}.`;
+            }
+            else {
+                msg.push(`${this.activeSpeler.stand.serie}`);
+                spk = `${this.activeSpeler.stand.serie}`;
+                msgType = 'carambole';
             }
         }
         if (msg.length) {
-            const modalMsg = new ModalMessage(msgType, [msg], spk, 3);
+            const modalMsg = new ModalMessage(msgType, msg, spk, 3);
             this.modals.push(modalMsg);
             this.showModal();
         }
@@ -274,8 +286,11 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         let wasGameOver = this.match.gameOver[this.idxWed];
         if (this.match.gameOver[this.idxWed]) {
             this.match.gameOver[this.idxWed] = false;
+            this.match.matchOver = false;
             this.idxSpeler = 1;
             this.match.teams[0].spelers[this.idxWed].isActief = false;
+            this.activeSpeler = this.match.teams[1].spelers[this.idxWed];
+            this.activeSpeler.isActief = true;
         }
         else {
             // werk beurten en stand huidige speler bij

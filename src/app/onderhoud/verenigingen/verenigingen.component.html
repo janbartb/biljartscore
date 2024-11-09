@@ -3,7 +3,7 @@
         <div>
             <app-page-header [title]="title" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
         </div>
-        <div class="flexbox flexcenter" style="margin-top: .5rem;">
+        <div class="flexbox flexcenter" style="margin-top: .375rem;">
             <div>
                 <table class="tbl-normal tbl-list">
                     <thead>
@@ -32,32 +32,32 @@
                 </table>
             </div>
         </div>
-        <div class="flexgrow1 flexbox flexcenter scrollable">
-            <div style="position: relative; left: .25em;">
-                @if (verenigingLijst.isFilled()) {
-                    <table class="tbl-normal tbl-list">
-                        <tbody>
-                            @for (item of verenigingLijst.filtered; track $index) {
-                                <tr class="selectable" [ngClass]="{'selected': verenigingLijst.selectedIdx == $index}" (click)="verenigingClicked($index)">
-                                    <td class="indicator" style="width: 2em;">
-                                        <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
-                                    </td>
-                                    <td style="width: 6em; overflow: hidden;">{{item.vereniging.verId}}</td>
-                                    <td style="width: 14em; overflow: hidden;">{{item.vereniging.naam}}</td>
-                                    <td style="width: 9em; overflow: hidden;">{{item.vereniging.plaats}}</td>
-                                    <td style="width: 6em; overflow: hidden;">{{item.leden.length}}</td>
-                                    <td style="width: 6em; overflow: hidden;">{{item.getTeams(spelId).length}}</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                }
+        <div class="list-container" style="height: 23em;">
+            <div #verlijst class="flexbox flexcenter scrollable">
+                <div style="padding: 0 1em; position: relative; left: .25em; height: 22.5em;">
+                    @if (verenigingLijst.isFilled()) {
+                        <table class="tbl-normal tbl-list">
+                            <tbody>
+                                @for (item of verenigingLijst.filtered; track $index) {
+                                    <tr class="selectable" (click)="verenigingClicked($index)"
+                                            [ngClass]="{'selected': verenigingLijst.selectedIdx == $index, 'hovered': verenigingLijst.hoveredIdx == $index}">
+                                        <td class="indicator" style="width: 2em;">
+                                            <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
+                                        </td>
+                                        <td style="width: 6em; overflow: hidden;">{{item.vereniging.verId}}</td>
+                                        <td style="width: 14em; overflow: hidden;">{{item.vereniging.naam}}</td>
+                                        <td style="width: 9em; overflow: hidden;">{{item.vereniging.plaats}}</td>
+                                        <td style="width: 6em; overflow: hidden;">{{item.leden.length}}</td>
+                                        <td style="width: 6em; overflow: hidden;">{{item.getTeams(spelId).length}}</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }            
+                </div>
             </div>
         </div>
-        <div class="actions flexbox flexcenter">
-            <div style="font-size: 1.25em;">
-                <app-button [button]="addButton" (buttonClicked)="verenigingToevoegenClicked()"></app-button>
-            </div>
-        </div>
+        <app-section-footer-btns [buttons]="buttons" (clickedButton)="verenigingToevoegenClicked()"
+                                            [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
     </div>
 </div>

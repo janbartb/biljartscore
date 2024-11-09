@@ -1,0 +1,7 @@
+.sect-header .sect-title { 
+    text-align: center; 
+    white-space: nowrap;
+}
+.sect-header .sect-title span { font-size: 1.25em; }
+.sect-header .sect-status { height: .125em; }
+.sect-header .sect-status.active { background-color: red; }

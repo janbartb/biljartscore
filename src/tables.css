@@ -42,8 +42,16 @@ tr.selectable, div.selectable {
 tr.selectable.invalid {
     color: red;
 }
-tr.selectable.hovered, tr.selectable:hover, div.selectable.hovered, div.selectable:hover {
+
+tr.selectable.selected, div.selectable.selected {
     opacity: 1;
+}
+tr.selectable.hovered, div.selectable.hovered {
+    border: .0625em solid green;
+    border-radius: .5em;
+}
+tr.selectable:hover, div.selectable:hover {
+    background-color: lightgray;
 }
 
 td.indicator, div.indicator {

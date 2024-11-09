@@ -1,0 +1,15 @@
+.btn-footer {
+    height: 3em;
+    min-height: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-width: .25em;
+    border-top-style: solid;
+}
+.btn-footer .btn-container {
+    display: flex;
+}
+.btn-footer .btn-container.font100 { font-size: 1em; }
+.btn-footer .btn-container.font125 { font-size: 1.25em; }
+.btn-footer .btn-container.font150 { font-size: 1.5em; }

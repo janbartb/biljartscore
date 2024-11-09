@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { NgClass } from '@angular/common';
 import { BaseComponent } from '../../base/base.component';
@@ -7,12 +7,15 @@ import { VerenigingWrapper } from '../../model/vereniging';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../shared/button-group/button/button.component';
 import { Button } from '../../model/button';
+import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
+import { HelperService } from '../../services/helper.service';
 
 @Component({
     selector: 'app-verenigingen',
     standalone: true,
     imports: [
         PageHeaderComponent, 
+        SectionFooterBtnsComponent,
         ButtonComponent,
         FormsModule,
         NgClass
@@ -21,25 +24,36 @@ import { Button } from '../../model/button';
     styleUrl: './verenigingen.component.css'
 })
 export class VerenigingenComponent extends BaseComponent implements OnInit {
+    helper = inject(HelperService);
+
     title: string = 'Onderhoud gegevens';
     subtitle: string = 'Verenigingen';
     thisUrl = 'onderhoud/verenigingen';
-
     verenigingLijst: List<VerenigingWrapper> = new List<VerenigingWrapper>();
     naamFilter: string = '';
-    addButton: Button = new Button('', '');
+
+    buttons: Button[] = [new Button('+', 'Vereniging toevoegen', true)];
+
+    htmlVerLijst = viewChild<ElementRef<HTMLDivElement>>('verlijst');
+
+    constructor() {
+        super();
+        effect(() => {
+            this.htmlVerLijst()?.nativeElement;
+        });
+    }
 
     enterPressed() {
-        if (this.verenigingLijst.isItemSelected()) {
-            this.verenigingClicked(this.verenigingLijst.selectedIdx);
+        if (this.verenigingLijst.hoveredIdx >= 0) {
+            this.verenigingClicked(this.verenigingLijst.hoveredIdx);
         }
     }
 
     buttonPressed(key: string) {
         if (key == '+') {
-            this.addButton.selected = true;
+            this.buttons[0].selected = true;
             setTimeout(() => {
-                this.addButton.selected = false;
+                this.buttons[0].selected = false;
                 this.verenigingToevoegenClicked();
             }, 500);
         }
@@ -86,10 +100,22 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
         console.log(event.code + ' : ' + event.key);
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.verenigingLijst.selectPreviousItem();
+                this.verenigingLijst.hoverPreviousItem();
+                if (this.verenigingLijst.hoveredIdx == 13) {
+                    this.helper.scrollUp(this.htmlVerLijst());
+                }
+                if (this.verenigingLijst.hoveredIdx == this.verenigingLijst.filtered.length - 1) {
+                    this.helper.scrollDown(this.htmlVerLijst());
+                }
             }
             if (event.key === 'ArrowDown') {
-                this.verenigingLijst.selectNextItem();
+                this.verenigingLijst.hoverNextItem();
+                if (this.verenigingLijst.hoveredIdx == 14) {
+                    this.helper.scrollDown(this.htmlVerLijst());
+                }
+                if (this.verenigingLijst.hoveredIdx == 0) {
+                    this.helper.scrollUp(this.htmlVerLijst());
+                }
             }
             return false;
         }
@@ -121,6 +147,5 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
             .catch((err) => {
                 this.alert.showAlert(err, 'error');
             });
-        this.addButton = new Button('+', 'Vereniging toevoegen', true);
     }
 }

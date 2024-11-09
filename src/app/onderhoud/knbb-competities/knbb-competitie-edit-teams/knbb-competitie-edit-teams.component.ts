@@ -25,14 +25,13 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
 
     competitie: KnbbCompetitie = new KnbbCompetitie();
     compTeams: KnbbCompTeam[] = [];
-    compTeamsOrig: string = '';
-    compTeamsEdit: string = '';
     teamLijst: List<Team> = new List<Team>();
     subtitle: string = '';
     subtitle2: string = '';
+    teamsChanged: boolean = false;
 
-    spaceButton: Button = new Button('Spatie', '', true);
-    enterButton: Button = new Button('Enter', 'Opslaan', true);
+    enterButton: Button = new Button('Enter', '', true);
+    opslaanButton: Button = new Button('Ctrl+Enter', 'Opslaan', true);
 
     buttonPressed(button: Button) {
         if (button.disabled) {
@@ -41,11 +40,11 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
         button.selected = true;
         setTimeout(() => {
             button.selected = false;
-            if (button.key == 'Spatie') {
-                this.spaceButtonClicked();
-            }
             if (button.key == 'Enter') {
-                this.enterClicked();
+                this.teamClicked(this.teamLijst.selectedIdx);
+            }
+            if (button.key == 'Ctrl+Enter') {
+                this.opslaanClicked();
             }
         }, 300);
     }
@@ -58,8 +57,8 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
         super.escapePressed();
     }
 
-    enterClicked() {
-        if (this.compTeamsOrig == this.compTeamsEdit) {
+    opslaanClicked() {
+        if (!this.teamsChanged) {
             return;
         }
         this.competitie.teams = this.compTeams;
@@ -76,17 +75,18 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
     }
 
     teamClicked(idx: number) {
+        if (idx < 0) {
+            return;
+        }
         this.teamLijst.selectItem(idx);
         this.setActionForSelectedTeam();
-    }
-
-    spaceButtonClicked() {
-        if (this.spaceButton.text == 'Team toevoegen') {
+        if (this.enterButton.text == 'Team toevoegen') {
             this.toevoegenClicked();
         }
-        else if (this.spaceButton.text == 'Team verwijderen') {
+        else if (this.enterButton.text == 'Team verwijderen') {
             this.verwijderenClicked();
         }
+        this.haveTeamsChanged();
     }
 
     toevoegenClicked() {
@@ -99,7 +99,6 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
             });
             this.compTeams.push(teamToAdd);
             this.compTeams.sort(this.compareCompTeams);
-            this.compTeamsEdit = JSON.stringify(this.compTeams);
             this.setActionForSelectedTeam();
         }
     }
@@ -110,26 +109,19 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
             const idx = this.compTeams.findIndex(cteam => cteam.verId == teamToRemove.verId && cteam.teamId == teamToRemove.teamId);
             if (idx >= 0) {
                 this.compTeams.splice(idx, 1);
-                this.compTeamsEdit = JSON.stringify(this.compTeams);
                 this.setActionForSelectedTeam();
             }
         }
     }
 
-    getCompTeamNaam(compTeamId: string): string {
-        const ids = compTeamId.split('|');
-        const idx = this.teamLijst.items.findIndex(tm => tm.verId == ids[0] && tm.teamId == ids[1]);
-        return (idx < 0) ? 'Error: not found' : this.teamLijst.items[idx].naam;
-    }
-
     private setActionForSelectedTeam() {
-        this.spaceButton.text = '';
+        this.enterButton.text = '';
         const team = this.teamLijst.getSelectedItem();
         if (!team) {
             return;
         }
         const alToegevoegd = this.compTeams.some(cteam => cteam.verId == team.verId &&  cteam.teamId == team.teamId);
-        this.spaceButton.text = alToegevoegd ? 'Team verwijderen' : 'Team toevoegen'
+        this.enterButton.text = alToegevoegd ? 'Team verwijderen' : 'Team toevoegen'
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -149,11 +141,11 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
             return false;
         }
         if (event.key === 'Enter') {
+            if (event.ctrlKey) {
+                this.buttonPressed(this.opslaanButton);
+                return false;    
+            }
             this.buttonPressed(this.enterButton);
-            return false;
-        }
-        if (event.code === 'Space') {
-            this.buttonPressed(this.spaceButton);
             return false;
         }
         if (event.key === 'Escape') {
@@ -182,9 +174,8 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
         .then(result => {
             this.competitie = result;
             this.competitie.teams.sort(this.compareCompTeams);
-            this.compTeamsOrig = this.compTeamsEdit = JSON.stringify(this.competitie.teams);
-            this.compTeams = JSON.parse(this.compTeamsOrig);
-            this.subtitle2 = `Teams van competitie '${this.competitie.competitieId} ${this.competitie.naam}'`;
+            this.compTeams = JSON.parse(JSON.stringify(this.competitie.teams));
+            this.subtitle2 = `Teams in competitie '${this.competitie.competitieId} ${this.competitie.naam}'`;
             this.bssApi.getTeamsForSpelAndKlasse(this.competitie.spelsoort, this.competitie.klasse)
             .then(data => {
                 data.sort(this.compareTeams);
@@ -199,11 +190,18 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
         });
     }
 
+    private haveTeamsChanged() {
+        this.teamsChanged = this.compTeams.length != this.competitie.teams.length ||
+                this.competitie.teams.some((team, idx) => {
+                    return team.compTeamId != this.compTeams[idx].compTeamId;
+                });
+    }
+
     private compareTeams(a: Team, b: Team) {
         return (a.naam > b.naam) ? 1 : -1;
     }
 
     private compareCompTeams = (a: KnbbCompTeam, b: KnbbCompTeam) => {
-        return (this.getCompTeamNaam(a.compTeamId) > this.getCompTeamNaam(b.compTeamId)) ? 1 : -1;
+        return (a.naam > b.naam) ? 1 : -1;
     }
 }

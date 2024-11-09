@@ -1,14 +1,10 @@
 import { Component, HostListener, inject, Inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { Router } from '@angular/router';
 import { Menu, MenuItem } from '../model/menu';
 import { MenuComponent } from '../shared/menu/menu.component';
 import { Spelsoort } from '../model/spelsoort';
 import { BaseComponent } from '../base/base.component';
 import { FormsModule } from '@angular/forms';
-import { StatusService } from '../services/status.service';
-import { ApiService } from '../services/api.service';
-import { AlertService } from '../services/alert.service';
 
 @Component({
   selector: 'app-home',
@@ -18,13 +14,11 @@ import { AlertService } from '../services/alert.service';
   styleUrl: './home.component.css'
 })
 export class HomeComponent extends BaseComponent implements OnInit {
+    private document = inject(DOCUMENT);
+
     menu: Menu = new Menu();
     elem: any;
     spelsoorten: Spelsoort[] = [];
-
-    constructor(@Inject(DOCUMENT) private document: any) {
-        super();
-    }
 
     enterClicked() {
         const item = this.menu.getSelectedItem();
@@ -46,9 +40,11 @@ export class HomeComponent extends BaseComponent implements OnInit {
         this.menu.selectedIdx = this.menu.getIndex(item);
         console.log('menu item clicked : ' + item.text);
         if (item.shortcut == 'w') {
+            this.openFullscreen();
             this.router.navigate([item.navigateTo]);
             return;
         }
+        this.openFullscreen();
         this.appData.gotoPage('home', item.navigateTo);
     }
 
@@ -103,7 +99,10 @@ export class HomeComponent extends BaseComponent implements OnInit {
         this.appData.resetHistory();
         this.menu.addItem(new MenuItem('w', 'Wedstrijd spelen', 'spelkeuze'));
         this.menu.addItem(new MenuItem('o', 'Onderhoud gegevens', 'onderhoud'));
-        this.elem = document.documentElement;
+        this.elem = this.document.documentElement;
+        setTimeout(() => {
+            this.closeFullscreen();
+        }, 300);
     }
 
     getSpelsoort(id: string): Spelsoort {
@@ -127,17 +126,17 @@ export class HomeComponent extends BaseComponent implements OnInit {
     }
 
     closeFullscreen() {
-        if (this.document.exitFullscreen) {
-            this.document.exitFullscreen();
-        } else if (this.document.mozCancelFullScreen) {
+        if (this.elem.exitFullscreen) {
+            this.elem.exitFullscreen();
+        } else if (this.elem.mozCancelFullScreen) {
             /* Firefox */
-            this.document.mozCancelFullScreen();
-        } else if (this.document.webkitExitFullscreen) {
+            this.elem.mozCancelFullScreen();
+        } else if (this.elem.webkitExitFullscreen) {
             /* Chrome, Safari and Opera */
-            this.document.webkitExitFullscreen();
-        } else if (this.document.msExitFullscreen) {
+            this.elem.webkitExitFullscreen();
+        } else if (this.elem.msExitFullscreen) {
             /* IE/Edge */
-            this.document.msExitFullscreen();
+            this.elem.msExitFullscreen();
         }
     }
 }

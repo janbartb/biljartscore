@@ -1,1 +1,97 @@
-<p>config works!</p>
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="'Instellingen'" [spel]="appData.getSpelNaam()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox flexcenter">
+            <div class="configform">
+                @if (formCreated) {
+                    <form [formGroup]="configForm">
+                        <div class="row flexbox">
+                            <div class="label">
+                                <label for="spelsoort">Voorkeur spelsoort</label>
+                            </div>
+                            <div>
+                                <select id="spelsoort" formControlName="spelsoort">
+                                    @for (spelsoort of spelsoorten; track $index) {
+                                        <option [value]="spelsoort.spelsoortId">{{spelsoort.spelsoortNaam}}</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row flexbox">
+                            <div class="label">
+                                <label for="seizoen">Huidig KNBB seizoen</label>
+                            </div>
+                            <div>
+                                <input id="seizoen" type="text" style="width: 7em;" formControlName="seizoen">
+                            </div>
+                        </div>
+                        <div class="row flexbox">
+                            <div class="label">
+                                <label for="district">Voorkeur district</label>
+                            </div>
+                            <div>
+                                <select id="district" formControlName="district">
+                                    @for (dist of districten; track $index) {
+                                        <option [value]="dist.disId">{{dist.disNaam}}</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row flexbox">
+                            <div class="label">
+                                <label for="klasse">Voorkeur klasse</label>
+                            </div>
+                            <div>
+                                <select id="klasse" formControlName="klasse">
+                                    @for (klas of klassen; track $index) {
+                                        <option [value]="klas">{{klas}}</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div style="height: 1em;"></div>
+                        <div class="row flexbox">
+                            <div class="label">
+                                <label for="vereniging">Voorkeur vereniging</label>
+                            </div>
+                            <div>
+                                <select id="vereniging" formControlName="vereniging">
+                                    @for (ver of verenigingen; track $index) {
+                                        <option [value]="ver.verId">{{ver.naam}}</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div style="height: 1em;"></div>
+                        <div class="row flexbox">
+                            <div class="label">
+                                <label for="spraak">Spraak</label>
+                            </div>
+                            <div>
+                                <div><i class="clickable" [ngClass]="speech?.value ? 'fas fa-check-square' : 'far fa-square'" (click)="toggleSpeech()"></i></div>
+                            </div>
+                            <div style="padding-left: 1em; color: green;">({{speech?.value ? 'aan' : 'uit'}})</div>
+                        </div>
+                        <div class="row flexbox">
+                            <div class="label">Spraak test</div>
+                            <div class="flexbox flexmiddle">
+                                <div>
+                                    <input type="text" style="width: 12em;" formControlName="speechTest">
+                                </div>
+                                @if (speechTest?.value.length) {
+                                    <div style="padding-left: .5em; color: green;">
+                                        <i class="fa fa-volume-up spreektest" [ngClass]="speech?.value ? 'clickable' : 'disabled'" (click)="spreekTest()"></i>
+                                    </div>    
+                                }
+                            </div>
+                        </div>    
+                    </form>
+                }
+            </div>
+        </div>
+        <app-section-footer-btns [buttons]="buttons" (clickedButton)="enterClicked()"
+                                            [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+    </div>
+</div>

@@ -20,13 +20,13 @@
                             <td style="width: 6em;"></td>
                             <td style="width: 14em;">
                                 <div>
-                                    <input class="filter" type="text" style="width: 10em;" [(ngModel)]="naamFilter" autocomplete="off"
+                                    <input id="naamfilter" class="filter" type="text" style="width: 10em;" [(ngModel)]="naamFilter" autocomplete="off"
                                         (keyup)="naamFilterChanged($event)" [disabled]="moyenneMode">
                                 </div>
                             </td>
                             <td style="width: 10em;">
                                 <div>
-                                    <select class="filter" style="width: 7em; font-weight: normal;" [(ngModel)]="verenigingFilter" 
+                                    <select #verfilter class="filter" style="width: 7em; font-weight: normal;" [(ngModel)]="verenigingFilter" 
                                             (change)="verenigingFilterChanged()" [disabled]="moyenneMode">
                                         <option value="">Allen</option>
                                         <option value="0">Geen</option>
@@ -43,7 +43,7 @@
                 </table>
             </div>
         </div>
-        <div class="flexgrow1 flexbox flexcenter scrollable">
+        <div #spelerlijst class="flexgrow1 flexbox flexcenter scrollable" style="border-top: .25em solid white; border-bottom: .25em solid white;">
             <div style="position: relative; left: .25em;">
                 @if (spelerList.isFilled()) {
                     <table class="tbl-normal tbl-list">
@@ -82,13 +82,7 @@
                 }
             </div>
         </div>
-        <div class="actions flexbox flexcenter">
-            <div style="font-size: 1.25em;">
-                <app-button [button]="addButton" (buttonClicked)="spelerToevoegenClicked()"></app-button>
-            </div>
-            <div style="font-size: 1.25em;">
-                <app-button [button]="moyButton" (buttonClicked)="moyennesWijzigenClicked()"></app-button>
-            </div>
-        </div>
+        <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)"
+                                            [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
     </div>
 </div>
