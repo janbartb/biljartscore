@@ -3,20 +3,11 @@
         <div>
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"></app-page-header>
         </div>
-        <div class="section-header">
-            <div class="w3-green-l1" style="padding: 0 1em;">
-                <span>{{subtitle2}}</span>
-            </div>
-        </div>
+        <app-section-header [title]="subtitle2" [cssClasses]="'w3-green-l1'"></app-section-header>
         <div class="flexgrow1 flexbox">
             <div class="fullheight flexbox flexcolumn section" style="border-right: .125em solid #93cf95;">
-                <div class="section-header">
-                    <div class="w3-green-l3" style="padding: 0 1em;">
-                        <span>Competitie</span>
-                    </div>
-                </div>
-                <div class="section-status" [ngClass]="{'active': activeSection == 0}"></div>
-                <div class="flexgrow1 flexbox flexcenter" style="padding: 1em;">
+                <app-section-header [title]="'Competitie'" [cssClasses]="'w3-green-l3'" [active]="activeSection == 0"></app-section-header>
+                <div class="flexgrow1 flexbox flexcenter" style="padding: 1em 2em;">
                     <div>
                         @if (compDataForm) {
                             <form [formGroup]="compDataForm">
@@ -73,36 +64,26 @@
                     </div>
                 </div>
                 @if (compDataForm && compDataForm.valid && dataChanged && activeSection == 0) {
-                    <div style="border-top: .25em solid #b7dfb8">
-                        <div class="flexbox flexcenter" style="padding: .125em 0;">
-                            <app-button [button]="enterCompButton" (buttonClicked)="enterCompClicked()"></app-button>
-                        </div>
-                    </div>
+                    <app-section-footer-btns [buttons]="compButtons" (clickedButton)="compButtonClicked()"
+                                            [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
                 }
             </div>
-            <div class="fullheight flexgrow1 flexbox flexcolumn" style="border-left: .125em solid #93cf95;">
-                <div class="section-header">
-                    <div class="w3-green-l3" style="padding: 0 1em;">
-                        <span>Teams</span>
-                    </div>
-                </div>
-                <div class="section-status" [ngClass]="{'active': activeSection == 1}"></div>
-                <div class="flexbox flexcenter">
-                    <div style="padding: .5em 0;">
+            <div class="flexgrow1" style="height: 27.5em; border-left: .125em solid #93cf95;">
+                <app-section-header [title]="'Teams'" [cssClasses]="'w3-green-l3'" [active]="activeSection == 1"></app-section-header>
+                <div class="flexbox flexcenter" style="height: 2em;">
+                    <div style="padding-top: .375em;">
                         <table class="tbl-normal tbl-list">
                             <tr>
                                 <td style="width: 2em;"></td>
                                 <td class="label" style="width: 5em;">Klasse</td>
                                 <td class="label" style="width: 14em;">Naam</td>
-                                <td class="label" style="width: 4em;" title="Aantal spelers">#SP</td>
-                                <td class="label" style="width: 4em;" title="Aantal matches gespeeld">#MG</td>
-                                <td class="label" style="width: 4em;" title="Aantal matchpunten">Punt</td>
+                                <td class="label" style="width: 4em;" title="Aantal spelers">Spelers</td>
                             </tr>
                         </table>
                     </div>
                 </div>
-                <div class="flexgrow1 scrollable flexbox flexcenter">
-                    <div style="position: relative; left: .25em;">
+                <div class="list-container" style="height: 20.5em;">
+                    <div class="fullheight flexbox flexcenter scrollable">
                         <table class="tbl-normal tbl-list">
                             <tbody>
                                 @for (team of teamLijst.filtered; track $index) {
@@ -119,25 +100,14 @@
                                         <td style="width: 4em;">
                                             <span>{{team.spelers.length}}</span>
                                         </td>
-                                        <td style="width: 4em;">
-                                            <span>{{team.matches.length}}</span>
-                                        </td>
-                                        <td style="width: 4em;">
-                                            <span>0</span>
-                                        </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
                 </div>
-                @if (activeSection == 1) {
-                    <div style="border-top: .25em solid #b7dfb8">
-                        <div class="flexbox flexcenter" style="padding: .125em 0;">
-                            <app-button [button]="teamsButton" (buttonClicked)="teamsClicked()"></app-button>
-                        </div>
-                    </div>    
-                }
+                <app-section-footer-btns [buttons]="teamButtons" [btnsDisabled]="[activeSection == 0]" (clickedButton)="teamButtonClicked()"
+                                        [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
             </div>
         </div>
     </div>

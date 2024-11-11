@@ -11,11 +11,11 @@ import { NgClass } from '@angular/common';
 })
 export class ButtonComponent implements OnInit {
     @Input() button: Button = new Button('', '');
-    //@Input() selected: boolean = false;
+    @Input() disabled: boolean = false;
     @Output() buttonClicked: EventEmitter<string> = new EventEmitter<string>();
 
     clicked() {
-        if (!this.button.disabled) {
+        if (!(this.button.disabled || this.disabled)) {
             this.buttonClicked.emit(this.button.key);
         }
     }

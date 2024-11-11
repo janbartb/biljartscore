@@ -29,7 +29,11 @@ export class List<T> {
     }
 
     selectItem(idx: number) {
-        this.selectedIdx = this.hoveredIdx = (idx >= 0 && idx < this.filtered.length) ? idx : -1;
+        this.selectedIdx = (idx >= 0 && idx < this.filtered.length) ? idx : -1;
+    }
+
+    hoverItem(idx: number) {
+        this.hoveredIdx = (idx >= 0 && idx < this.filtered.length) ? idx : -1;
     }
 
     selectNextItem(): void {

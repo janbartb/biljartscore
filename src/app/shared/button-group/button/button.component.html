@@ -6,7 +6,7 @@
     }
     @else {
         <div class="cmp-button flexbox flexmiddle" (click)="clicked()" 
-                [ngClass]="{'selected': button.selected, 'disabled': button.disabled}">
+                [ngClass]="{'selected': button.selected, 'disabled': disabled || button.disabled}">
             @if (button.showKey) {
                 <div class="cmp-button-key">
                     <span>{{button.key}}</span>

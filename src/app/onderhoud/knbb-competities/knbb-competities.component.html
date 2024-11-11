@@ -3,9 +3,9 @@
         <div>
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"></app-page-header>
         </div>
-        <div class="flexgrow1 flexbox flexcolumn">
-            <div class="flexbox flexcenter">
-                <div style="padding: .5em 0;">
+        <div class="flexbox flexcolumn">
+            <div class="flexbox flexcenter" style="height: 2em;">
+                <div style="padding-top: .375em;">
                     <table class="tbl-normal tbl-list">
                         <thead>
                             <tr>
@@ -21,8 +21,8 @@
                     </table>    
                 </div>
             </div>
-            <div class="flexgrow1 scrollable">
-                <div class="flexbox flexcenter">
+            <div class="list-container" style="height: 24.5em;">
+                <div class="fullheight flexbox flexcenter scrollable">
                     <div style="position: relative; left: .25em">
                         @if (compLijst.isEmpty()) {
                             <div style="padding: 2em 0; color: gray;">
@@ -33,7 +33,8 @@
                             <table class="tbl-normal tbl-list">
                                 <tbody>
                                     @for (comp of compLijst.filtered; track $index) {
-                                        <tr class="selectable" [ngClass]="{'selected': compLijst.selectedIdx == $index}" (click)="competitieClicked($index)">
+                                        <tr class="selectable" (click)="competitieClicked($index)"
+                                                [ngClass]="{'selected': compLijst.selectedIdx == $index, 'hovered': compLijst.hoveredIdx == $index}">
                                             <td class="indicator" style="width: 2em;">
                                                 <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
                                             </td>
@@ -53,16 +54,15 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <div style="border-top: .25em solid #93cf95">
-                    <div class="flexbox flexcenter" style="padding: .125em 0;">
-                        <app-button [button]="toevoegButton" (buttonClicked)="toevoegenClicked()"></app-button>
-                        @if (compLijst.selectedIdx >= 0) {
-                            <app-button [button]="enterButton" (buttonClicked)="wijzigenClicked(compLijst.selectedIdx)"></app-button>
-                            <app-button [button]="teamsButton" (buttonClicked)="teamsClicked(compLijst.selectedIdx)"></app-button>
-                            <app-button [button]="verwijderButton" (buttonClicked)="verwijderenClicked(compLijst.selectedIdx)"></app-button>
-                        }
-                    </div>
+        </div>
+        <div>
+            <div class="button-footer" style="border-top: .25em solid #93cf95">
+                <div class="flexbox flexcenter" style="font-size: 1.25em;">
+                    <app-button [button]="toevoegButton" (buttonClicked)="toevoegenClicked()"></app-button>
+                    @if (compLijst.selectedIdx >= 0) {
+                        <app-button [button]="enterButton" (buttonClicked)="wijzigenClicked(compLijst.selectedIdx)"></app-button>
+                        <app-button [button]="verwijderButton" (buttonClicked)="verwijderenClicked(compLijst.selectedIdx)"></app-button>
+                    }
                 </div>
             </div>
         </div>

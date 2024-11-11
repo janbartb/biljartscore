@@ -29,8 +29,7 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
 
     enterButton: Button = new Button('Enter', 'Wijzigen', true);
-    teamsButton: Button = new Button('T', 'Teams', true);
-    toevoegButton: Button = new Button('Ins', 'Competitie toevoegen', true);
+    toevoegButton: Button = new Button('+', 'Toevoegen', true);
     verwijderButton: Button = new Button('Del', 'Verwijderen', true);
 
     buttonPressed(button: Button) {
@@ -42,9 +41,6 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
             button.selected = false;
             if (button.key == 'Enter') {
                 this.wijzigenClicked(this.compLijst.selectedIdx);
-            }
-            else if (button.key == 'T') {
-                this.teamsClicked(this.compLijst.selectedIdx);
             }
             else if (button.key == 'Ins') {
                 this.toevoegenClicked();
@@ -68,13 +64,6 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
             return;
         }
         this.compLijst.selectItem(idx);
-    }
-
-    teamsClicked(idx: number) {
-        if (idx < 0) {
-            return;
-        }
-        this.appData.gotoPage(this.router.url, this.router.url + `/${this.compLijst.getSelectedItem()?.competitieId}/teams`);
     }
 
     wijzigenClicked(idx: number) {
@@ -137,10 +126,6 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
             if (event.key === 'ArrowDown') {
                 this.compLijst.selectNextItem();
             }
-            return false;
-        }
-        if (event.code === 'KeyT') {
-            this.buttonPressed(this.teamsButton);
             return false;
         }
         if (event.key === 'Enter') {

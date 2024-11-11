@@ -16,6 +16,7 @@ import { NgClass } from '@angular/common';
 export class SectionFooterBtnsComponent implements OnInit {
     @Input() buttons: Button[] = [];
     @Input() btnsHide: boolean[] = [];
+    @Input() btnsDisabled: boolean[] = [];
     @Input() cssFooter: string | string[] = '';
     @Input() cssButtons: string | string[] = '';
     @Output() clickedButton: EventEmitter<number> = new EventEmitter<number>();
@@ -27,6 +28,9 @@ export class SectionFooterBtnsComponent implements OnInit {
     ngOnInit(): void {
         if (this.btnsHide.length == 0) {
             this.buttons.forEach(_ => this.btnsHide.push(false));
+        }
+        if (this.btnsDisabled.length == 0) {
+            this.buttons.forEach(_ => this.btnsDisabled.push(false));
         }
     }
 }

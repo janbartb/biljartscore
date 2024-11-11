@@ -8,12 +8,16 @@ import { KnbbCompetitie, KnbbCompTeam, KnbbCompTeamSpeler } from '../../../model
 import { List } from '../../../model/list';
 import { Team } from '../../../model/vereniging';
 import { Button } from '../../../model/button';
+import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
+import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
     selector: 'app-knbb-competitie-edit-teams',
     standalone: true,
     imports: [
         PageHeaderComponent,
+        SectionHeaderComponent,
+        SectionFooterBtnsComponent,
         ButtonComponent,
         NgClass
     ],
@@ -31,7 +35,7 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
     teamsChanged: boolean = false;
 
     enterButton: Button = new Button('Enter', '', true);
-    opslaanButton: Button = new Button('Ctrl+Enter', 'Opslaan', true);
+    opslaanButtons: Button[] = [new Button('Ctrl+Enter', 'Opslaan', true)];
 
     buttonPressed(button: Button) {
         if (button.disabled) {
@@ -142,7 +146,7 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
         }
         if (event.key === 'Enter') {
             if (event.ctrlKey) {
-                this.buttonPressed(this.opslaanButton);
+                this.buttonPressed(this.opslaanButtons[0]);
                 return false;    
             }
             this.buttonPressed(this.enterButton);

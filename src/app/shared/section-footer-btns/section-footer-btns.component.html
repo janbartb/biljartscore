@@ -2,7 +2,7 @@
     <div class="btn-container" [ngClass]="cssButtons">
         @for (button of buttons; track $index) {
             @if (!btnsHide[$index]) {
-                <app-button [button]="button" (buttonClicked)="buttonClicked($index)"></app-button>
+                <app-button [button]="button" [disabled]="btnsDisabled[$index]" (buttonClicked)="buttonClicked($index)"></app-button>
             }
         }
     </div>

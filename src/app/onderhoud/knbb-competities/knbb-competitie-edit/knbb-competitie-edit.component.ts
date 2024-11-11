@@ -1,22 +1,23 @@
 import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { BaseComponent } from '../../../base/base.component';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
-import { ButtonComponent } from '../../../shared/button-group/button/button.component';
 import { NgClass } from '@angular/common';
 import { KnbbCompetitie, KnbbCompTeam } from '../../../model/knbb-competitie';
 import { ActivatedRoute } from '@angular/router';
-import { Team } from '../../../model/vereniging';
 import { List } from '../../../model/list';
 import { Button } from '../../../model/button';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { notEmpty } from '../../../directives/validators.directive';
+import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
+import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
     selector: 'app-knbb-competitie-edit',
     standalone: true,
     imports: [
         PageHeaderComponent,
-        ButtonComponent,
+        SectionHeaderComponent,
+        SectionFooterBtnsComponent,
         ReactiveFormsModule,
         NgClass
     ],
@@ -34,9 +35,8 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
     activeSection: number = 0;
     dataChanged: boolean = false;
 
-    teamsButton: Button = new Button('T', 'Teams wijzigen', true);
-    enterCompButton: Button = new Button('Enter', 'Opslaan', true);
-    enterTeamButton: Button = new Button('Enter', 'Wijzig team', true);
+    teamButtons: Button[] = [new Button('T', 'Teams wijzigen', true)];
+    compButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
 
     compDataForm!: FormGroup;
 
@@ -59,28 +59,29 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
         setTimeout(() => {
             button.selected = false;
             if (button.key == 'T') {
-                this.teamsClicked();
+                if (this.activeSection == 1) {
+                    this.teamButtonClicked();
+                }
             }
             if (button.key == 'Enter') {
-                if (button.text == 'Opslaan') {
-                    this.enterCompClicked();
-                }
-                else {
-                    this.enterTeamClicked();
+                if (this.activeSection == 0) {
+                    this.compButtonClicked();
                 }
             }
         }, 300);
     }
 
     override escapePressed(): void {
-        if (this.dataChanged) {
+        if (this.dataChanged || this.teamLijst.selectedIdx >= 0) {
             this.compDataForm.reset();
+            this.dataChanged = false;
+            this.teamLijst.clearSelection();
             return;
         }
         super.escapePressed();
     }
 
-    enterCompClicked() {
+    compButtonClicked() {
         if (!this.dataChanged) {
             return;
         }
@@ -101,7 +102,7 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
 
     }
 
-    teamsClicked() {
+    teamButtonClicked() {
         this.appData.gotoPage(this.router.url, this.router.url + '/teams');
     }
 
@@ -150,12 +151,23 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
         this.dataChanged = !(this.competitie.naam == this.naam?.value && this.competitie.maxBeurten == this.maxBeurten?.value)
     }
 
-    @HostListener('document:keyup', ['$event'])
-    handleKeyboardEvent(event: KeyboardEvent): boolean {
-        if (this.isDialogOpen) {
-            return false;
+    @HostListener('document:keydown', ['$event'])
+    handleKeydownEvent(event: KeyboardEvent): boolean {
+        const fromInput = event.target instanceof HTMLInputElement;
+        console.log('down = ' + event.code + ' : ' + event.key);
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+            if (!fromInput || event.ctrlKey) {
+                event.preventDefault();
+                return false;
+            }
         }
-        console.log(event.code + ' : ' + event.key);
+        return true;
+    }
+
+    @HostListener('document:keyup', ['$event'])
+    handleKeyupEvent(event: KeyboardEvent): boolean {
+        const fromInput = event.target instanceof HTMLInputElement;
+        console.log('up = ' + event.code + ' : ' + event.key);
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             if (this.activeSection == 1) {
                 if (event.key === 'ArrowUp') {
@@ -169,20 +181,17 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
             return true;
         }
         if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-            this.toggleSection();
+            if (!fromInput || event.ctrlKey) {
+                this.toggleSection();
+            }
             return false;
         }
-        if (event.key === 'Enter') {
-            if (this.activeSection == 0) {
-                this.buttonPressed(this.enterCompButton);
-            }
-            else {
-                this.buttonPressed(this.enterTeamButton);
-            }
+        if (event.key === 'Enter' && this.activeSection == 0) {
+            this.buttonPressed(this.compButtons[0]);
             return false;
         }
         if (event.code === 'KeyT' && this.activeSection == 1) {
-            this.buttonPressed(this.teamsButton);
+            this.buttonPressed(this.teamButtons[0]);
             return false;
         }
         if (event.key === 'Escape') {
