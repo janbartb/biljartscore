@@ -4,8 +4,8 @@
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"></app-page-header>
         </div>
         <app-section-header [title]="subtitle2" [cssClasses]="'w3-green-l1'"></app-section-header>
-        <div class="flexgrow1 flexbox">
-            <div class="fullheight flex50perc" style="border-right: .125em solid #93cf95;">
+        <div class="flexgrow1 flexbox flexstretch">
+            <div class="flex50perc" style="border-right: .125em solid #93cf95;">
                 <app-section-header [title]="'Teams in competitie'" [cssClasses]="'w3-green-l3'"></app-section-header>
                 <div class="list-container" style="height: 22.5em;">
                     <div class="fullheight flexbox flexcenter scrollable">
@@ -33,14 +33,9 @@
                 @if (teamsChanged) {
                     <app-section-footer-btns [buttons]="opslaanButtons" (clickedButton)="opslaanClicked()"
                                             [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
-                    <!-- <div style="border-top: .25em solid #b7dfb8">
-                        <div class="flexbox flexcenter" style="padding: .125em 0;">
-                            <app-button [button]="opslaanButton" (buttonClicked)="opslaanClicked()"></app-button>
-                        </div>
-                    </div> -->
                 }
             </div>
-            <div class="fullheight flex50perc" style="border-left: .125em solid #93cf95;">
+            <div class="flex50perc" style="border-left: .125em solid #93cf95;">
                 <app-section-header [title]="'Mogelijke teams'" [cssClasses]="'w3-green-l3'" [active]="true"></app-section-header>
                 <div class="list-container" style="height: 22.5em;">
                     <div class="fullheight flexbox flexcenter scrollable">
