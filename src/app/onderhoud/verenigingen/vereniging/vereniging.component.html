@@ -3,101 +3,99 @@
         <div>
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
         </div>
-        <div class="flexgrow1 flexbox" style="max-height: 29.5em;">
+        <div class="flexgrow1 flexbox flexstretch">
             <!-- Vereniging section -->
-            <div class="fullheight section" style="border-right: .25rem solid green;">
-                <div class="fullheight section flexbox flexcolumn">
-                    <app-section-header [title]="sections[0]" [cssClasses]="'w3-green-l2'"></app-section-header>
-                    <div class="section-body flexgrow1">
-                        <div class="flexbox flexcenter" style="padding-left: .5em;">
-                            <div>
-                                <table class="tbl-normal tbl-input">
-                                    <tbody>
-                                        <tr>
-                                            <td><label>ID</label></td>
-                                            <td style="min-width: 12em;">{{vereniging.verId}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><label>KNBB ID</label></td>
-                                            <td class="view">{{vereniging.knbbId}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><label>Naam</label></td>
-                                            <td class="view">{{vereniging.naam}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><label>Korte naam</label></td>
-                                            <td class="view">{{vereniging.korteNaam}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><label>Locatie</label></td>
-                                            <td class="view">{{vereniging.locatie}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><label>Plaats</label></td>
-                                            <td class="view">{{vereniging.plaats}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>    
-                            </div>
+            <div class="flexbox flexcolumn" style="border-right: .25rem solid green;">
+                <app-section-header [title]="sections[0]" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <div class="flexgrow1" style="padding: .5em 1em;">
+                    <div class="flexbox flexcenter" style="padding-left: .5em;">
+                        <div>
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td><label>ID</label></td>
+                                        <td class="view" style="min-width: 10em;">{{vereniging.verId}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>KNBB ID</label></td>
+                                        <td class="view">{{vereniging.knbbId}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Naam</label></td>
+                                        <td class="view">{{vereniging.naam}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Korte naam</label></td>
+                                        <td class="view">{{vereniging.korteNaam}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Locatie</label></td>
+                                        <td class="view">{{vereniging.locatie}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Plaats</label></td>
+                                        <td class="view">{{vereniging.plaats}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>    
                         </div>
                     </div>
-                    <app-section-footer-btns [buttons]="wijzigButtons" (clickedButton)="verenigingWijzigenClicked()"
-                                            [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
                 </div>
+                <app-section-footer-btns [buttons]="wijzigButtons" (clickedButton)="verenigingWijzigenClicked()"
+                                        [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
             </div>
-            <!-- Teams en leden section -->
-            <div class="fullheight flexgrow1 flexbox">
-                <!-- Teams section -->
-                <div class="flex50perc flexbox flexcolumn">
-                    <app-section-header [title]="'Teams'" [cssClasses]="'w3-green-l2'" [active]="true"></app-section-header>
-                    <div class="list-container" style="height: 24.5em;">
-                        <div class="fullheight flexbox flexcenter scrollable">
-                            <div style="padding: 0 1em;">
-                                <table class="tbl-full tbl-list">
-                                    <tbody>
-                                        @for (team of teamLijst.filtered; track $index) {
-                                            <tr class="selectable" (click)="teamClicked($index)"
-                                                    [ngClass]="{'selected': teamLijst.selectedIdx == $index, 'hovered': teamLijst.hoveredIdx == $index}">
-                                                <td class="indicator" style="width: 1.5em;">
-                                                    <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
-                                                </td>
-                                                <td style="width: 2em;">{{team.klasse}}</td>
-                                                <td>{{team.naam}}</td>
-                                                <td style="width: 1.5em;">
-                                                    <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="teamVerwijderenClicked($event, $index)"></i>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
+            <!-- Teams section -->
+            <div class="flexbox flexcolumn" style="width: 22em; border-right: .25rem solid green;">
+                <app-section-header [title]="'Teams'" [cssClasses]="'w3-green-l2'" [active]="true"></app-section-header>
+                <div class="flexgrow1 scroll-container">
+                    <div class="scroll-content">
+                        <div class="flexbox flexcenter">
+                            <div class="lijst" style="padding: 0 .5em;">
+                                @for (team of teamLijst.filtered; track $index) {
+                                    <div class="lijst-row selectable" (click)="teamClicked($index)"
+                                            [ngClass]="{'selected': teamLijst.selectedIdx == $index, 'hovered': teamLijst.hoveredIdx == $index}">
+                                        <div class="lijst-col indicator" style="width: 1.5em;">
+                                            <i class="fas fa-angle-right"></i>
+                                        </div>
+                                        <div class="lijst-col" style="width: 4em;">
+                                            <span>{{team.klasse}} - {{team.volgNr}}</span>
+                                        </div>
+                                        <div class="lijst-col" style="width: 11em;">
+                                            <span>{{team.naam}}</span>
+                                        </div>
+                                        <div class="lijst-col num" style="width: 2.5em;">
+                                            <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="teamVerwijderenClicked($event, $index)"></i>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
-                    <app-section-footer-btns [buttons]="teamButtons" [btnsHide]="[false, teamLijst.selectedIdx < 0]" (clickedButton)="teamButtonClicked($event)"
-                                            [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
                 </div>
-                <!-- Leden section -->
-                <div class="flex50perc flexbox flexcolumn" style="border-left: .25rem solid green;">
-                    <app-section-header [title]="'Leden'" [cssClasses]="'w3-green-l2'"></app-section-header>
-                    <div class="list-container" style="height: 24.5em;">
-                        <div class="fullheight flexbox flexcenter scrollable">
-                            <div style="padding: 0 1em;">
-                                <table class="tbl-normal tbl-list">
-                                    <tbody>
-                                        @for (spl of ledenLijst.filtered; track $index) {
-                                            <tr>
-                                                <td>{{spl.getNaam()}}</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                <app-section-footer-btns [buttons]="teamButtons" [btnsHide]="[false, teamLijst.hoveredIdx < 0]" 
+                                (clickedButton)="teamButtonClicked($event)"
+                                [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+            </div>
+            <!-- Leden section -->
+            <div class="flexgrow1 flexbox flexcolumn">
+                <app-section-header [title]="'Leden'" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <div class="flexgrow1 scroll-container">
+                    <div class="scroll-content">
+                        <div class="flexbox flexcenter">
+                            <div class="lijst" style="color: gray;">
+                                @for (spl of ledenLijst.filtered; track $index) {
+                                    <div class="lijst-row">
+                                        <div class="lijst-col">
+                                            <span>{{spl.getNaam()}}</span>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
-                    <app-section-footer-btns [buttons]="ledenButtons" (clickedButton)="ledenWijzigenClicked()"
-                                            [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
                 </div>
+                <app-section-footer-btns [buttons]="ledenButtons" (clickedButton)="ledenWijzigenClicked()"
+                                        [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
             </div>
         </div>
     </div>

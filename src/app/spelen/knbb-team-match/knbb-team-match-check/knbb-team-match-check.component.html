@@ -1,10 +1,11 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'KNBB team match'" [subtitle]="'Controle selectie spelers'" [spel]="appData.getSpelNaam()"></app-page-header>
+            <app-page-header [title]="'KNBB team match'" [subtitle]="'Controle selectie spelers'" [spel]="appData.getSpelNaam()"
+                    [escCount]="escapeCount" (escClicked)="escapePressed()"></app-page-header>
         </div>
         @if (dataReady) {
-            <div class="flexgrow1 flexbox">
+            <div class="flexgrow1 flexbox flexstretch">
                 <div style="font-size: 1.25em;">
                     <div style="padding: 0 1.5em;">
                         <div class="label nowrap" style="margin-top: 5.5em;">Wedstrijd 1</div>
@@ -12,9 +13,55 @@
                         <div class="label nowrap" style="margin-top: 4em;">Wedstrijd 3</div>
                     </div>
                 </div>
-                <div class="fullheight flexgrow1 flexbox">
+                <div class="flexbox flexcenter" style="width: 2em;">
+                    <div style="width: 1em; padding-top: 4.25em;">
+                        <div style="height: 7em; padding: .5em 0;">
+                            @switch (wedStatus[0]) {
+                                @case (0) {
+                                    <div class="thermo-start"></div>
+                                }
+                                @case (1) {
+                                    <div class="thermo filler filler-lgreen" 
+                                            [style.background-size]="'100% ' + voortgang[0]"></div>
+                                }
+                                @case (2) {
+                                    <div class="thermo-end"></div>
+                                }
+                            }
+                        </div>
+                        <div style="height: 7em; padding: .5em 0;">
+                            @switch (wedStatus[1]) {
+                                @case (0) {
+                                    <div class="thermo-start"></div>
+                                }
+                                @case (1) {
+                                    <div class="thermo filler filler-lgreen" 
+                                            [style.background-size]="'100% ' + voortgang[1]"></div>
+                                }
+                                @case (2) {
+                                    <div class="thermo-end"></div>
+                                }
+                            }
+                        </div>
+                        <div style="height: 7em; padding: .5em 0;">
+                            @switch (wedStatus[2]) {
+                                @case (0) {
+                                    <div class="thermo-start"></div>
+                                }
+                                @case (1) {
+                                    <div class="thermo filler filler-lgreen" 
+                                            [style.background-size]="'100% ' + voortgang[2]"></div>
+                                }
+                                @case (2) {
+                                    <div class="thermo-end"></div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="flexgrow1 flexbox flexstretch">
                     @for (team of teams; track $index; let idxT = $index) {
-                        <div class="fullheight flex50perc">
+                        <div class="flex50perc">
                             <div class="label" style="text-align: center; line-height: 1.2; padding-top: .5em;">
                                 <span style="font-size: 1.5em;">{{idxT == 0 ? 'THUIS' : 'GASTEN'}}</span>
                             </div>
@@ -51,7 +98,7 @@
                                                 <div>
                                                     <div class="label"><span>Car</span></div>
                                                     <div style="font-size: 1.25em; line-height: 1.4;">
-                                                        <input [id]="'car' + idxT + idxS" type="text" style="width: 3em;" [(ngModel)]="spl.splTsCar"
+                                                        <input [id]="'car' + idxT + idxS" type="text" class="car" style="width: 3em;" [(ngModel)]="spl.splTsCar"
                                                                 [disabled]="!(idxTeam == idxT && idxSpeler == idxS)" 
                                                                 (keyup)="keyupCaramboles(idxT, idxS)" (click)="stopPropagation($event)"
                                                                 [ngClass]="{'invalid': !carValid[idxT][idxS]}" autocomplete="off">
@@ -66,16 +113,16 @@
                     }
                 </div>
             </div>
-            @if (teamsChanged || namesChanged || teamsValid) {
+            @if (matchChanged || namesChanged || matchValid) {
                 <div style="border-top: .25em solid green">
                     <div class="flexbox flexcenter" style="font-size: 1.25em; padding: .125em 0;">
-                        @if (teamsChanged || namesChanged) {
+                        @if (matchChanged || namesChanged) {
                             <app-button [button]="resetButton" (buttonClicked)="resetClicked()"></app-button>
                         }
-                        @if (matchGestart && teamsValid && !teamsChanged) {
+                        @if (matchGestart && matchValid && !matchChanged) {
                             <app-button [button]="opnieuwButton" (buttonClicked)="opnieuwClicked()"></app-button>
                         }
-                        @if (teamsValid) {
+                        @if (matchValid) {
                             <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
                         }
                     </div>

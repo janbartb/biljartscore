@@ -1,11 +1,15 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { ElementRef, inject, Injectable } from '@angular/core';
 import { WedSpelerStand, Wedstrijd, WedTeamStand } from '../model/wedstrijd';
 import { TeamMatch } from '../model/match';
+import { AlertService } from './alert.service';
+import { KnbbCompetitie } from '../model/knbb-competitie';
+import { Team, Vereniging } from '../model/vereniging';
 
 @Injectable({
     providedIn: 'root'
 })
 export class HelperService {
+    alert = inject(AlertService);
 
     constructor() { }
 
@@ -107,5 +111,31 @@ export class HelperService {
         if (elem) {
             elem.nativeElement.scrollTop = elem.nativeElement.scrollHeight;
         }
+    }
+
+    getCompetitieTeamsData(comp: KnbbCompetitie, verenigingen: Vereniging[]): Team[] {
+        let teams: Team[] = [];
+        const allFound = comp.teams.every(compTeam => {
+            const vereniging = verenigingen.find(ver => ver.verId == compTeam.verId);
+            if (vereniging) {
+                const team = vereniging.teams.find(tm => tm.teamId == compTeam.teamId);
+                if (team) {
+                    teams.push(team);
+                }
+                else {
+                    this.alert.showError(`Team met ID '${compTeam.verId}' niet geveonden in vereniging ${vereniging.naam}.`);
+                    return false;
+                }
+            }
+            else {
+                this.alert.showError(`Vereniging met ID '${compTeam.verId}' niet geveonden.`);
+                return false;
+            }
+            return true;
+        });
+        if (!allFound) {
+            return [];
+        }
+        return teams;
     }
 }

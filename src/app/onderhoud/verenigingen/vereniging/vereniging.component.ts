@@ -19,11 +19,9 @@ import { SectionFooterBtnsComponent } from "../../../shared/section-footer-btns/
         PageHeaderComponent,
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
-        ButtonComponent,
         NgClass,
         FormsModule,
-        ReactiveFormsModule,
-        SectionFooterBtnsComponent
+        ReactiveFormsModule
     ],
     templateUrl: './vereniging.component.html',
     styleUrl: './vereniging.component.css'
@@ -45,7 +43,7 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
     ];
 
     enterPressed() {
-        this.teamClicked(this.teamLijst.hoveredIdx);
+        this.teamClicked(this.teamLijst.selectedIdx);
     }
 
     buttonPressed(event: any, button: Button) {
@@ -121,10 +119,10 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
         console.log(event.code + ' : ' + event.key);
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.teamLijst.hoverPreviousItem();
+                this.teamLijst.selectPreviousItem();
             }
             if (event.key === 'ArrowDown') {
-                this.teamLijst.hoverNextItem();
+                this.teamLijst.selectNextItem();
             }
             return false;
         }

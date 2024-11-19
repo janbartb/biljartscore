@@ -9,13 +9,16 @@ import { ButtonComponent } from '../../../shared/button-group/button/button.comp
 import { Button } from '../../../model/button';
 import { notEmpty } from '../../../directives/validators.directive';
 import { Spelsoort } from '../../../model/spelsoort';
+import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
+import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
     selector: 'app-knbb-competitie-add',
     standalone: true,
     imports: [
         PageHeaderComponent,
-        ButtonComponent,
+        SectionHeaderComponent,
+        SectionFooterBtnsComponent,
         ReactiveFormsModule,
         NgClass
     ],
@@ -32,7 +35,8 @@ export class KnbbCompetitieAddComponent extends BaseComponent implements OnInit 
     districten: District[] = [];
     spelsoorten: Spelsoort[] = [];
     existing: string[] = [];
-    enterButton: Button = new Button('Enter', 'Opslaan', true);
+
+    buttons: Button[] = [new Button('Enter', 'Opslaan', true)];
 
     competitieForm!: FormGroup;
     duplicateId: boolean = false;
@@ -74,7 +78,7 @@ export class KnbbCompetitieAddComponent extends BaseComponent implements OnInit 
         const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
         if (event.key === 'Enter') {
-            this.buttonPressed(this.enterButton);
+            this.buttonPressed(this.buttons[0]);
             return false;
         }
         if (event.key === 'Escape') {

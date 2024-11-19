@@ -28,6 +28,10 @@ export class List<T> {
         return this.isItemSelected() ? this.filtered[this.selectedIdx] : undefined;
     }
 
+    getHoveredItem(): T | undefined {
+        return this.isItemHovered() ? this.filtered[this.hoveredIdx] : undefined;
+    }
+
     selectItem(idx: number) {
         this.selectedIdx = (idx >= 0 && idx < this.filtered.length) ? idx : -1;
     }
@@ -90,6 +94,10 @@ export class List<T> {
 
     isItemSelected(): boolean {
         return this.selectedIdx >= 0 && this.selectedIdx < this.filtered.length; 
+    }
+
+    isItemHovered(): boolean {
+        return this.hoveredIdx >= 0 && this.hoveredIdx < this.filtered.length; 
     }
 
     isFilled(): boolean {

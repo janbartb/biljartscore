@@ -4,16 +4,21 @@ import { BaseComponent } from '../../../../base/base.component';
 import { Vereniging } from '../../../../model/vereniging';
 import { Button } from '../../../../model/button';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonComponent } from '../../../../shared/button-group/button/button.component';
 import { noDuplicates, notEmpty } from '../../../../directives/validators.directive';
 import { NgClass } from '@angular/common';
+import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
-  selector: 'app-vereniging-add',
-  standalone: true,
-  imports: [PageHeaderComponent, ButtonComponent, ReactiveFormsModule, NgClass],
-  templateUrl: './vereniging-add.component.html',
-  styleUrl: './vereniging-add.component.css'
+    selector: 'app-vereniging-add',
+    standalone: true,
+    imports: [
+        PageHeaderComponent, 
+        SectionFooterBtnsComponent,
+        ReactiveFormsModule, 
+        NgClass
+    ],
+    templateUrl: './vereniging-add.component.html',
+    styleUrl: './vereniging-add.component.css'
 })
 export class VerenigingAddComponent extends BaseComponent implements OnInit {
     fb = inject(FormBuilder);
@@ -21,7 +26,7 @@ export class VerenigingAddComponent extends BaseComponent implements OnInit {
     subtitle: string = 'Vereniging toevoegen';
     vereniging: Vereniging = new Vereniging();
     existingVerenigingIds: string[] = [];
-    enterButton: Button = new Button('Enter', 'Opslaan', true);
+    buttons: Button[] = [new Button('Enter', 'Opslaan', true)];
 
     verenigingForm!: FormGroup;
 
@@ -44,13 +49,13 @@ export class VerenigingAddComponent extends BaseComponent implements OnInit {
         }
         Object.assign(this.vereniging, this.verenigingForm.value);
         this.bssApi.addVereniging(this.vereniging)
-        .then(resp => {
-            this.alert.showAlert(resp.message, 'success');
-            this.escapePressed();
-        })
-        .catch(err => {
-            this.alert.showAlert(err, 'error');
-        });
+            .then(resp => {
+                this.alert.showAlert(resp.message, 'success');
+                this.escapePressed();
+            })
+            .catch(err => {
+                this.alert.showAlert(err, 'error');
+            });
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -67,19 +72,19 @@ export class VerenigingAddComponent extends BaseComponent implements OnInit {
         if (event.key === 'Home') {
             this.homePressed();
             return false;
-        }    
+        }
         return true;
     }
 
     ngOnInit(): void {
         this.bssApi.getExistingVerenigingIds()
-        .then(result => {
-            this.existingVerenigingIds = result;
-            this.createVerenigingForm();
-        })
-        .catch(err => {
-            this.alert.showAlert(err, 'error');
-        });
+            .then(result => {
+                this.existingVerenigingIds = result;
+                this.createVerenigingForm();
+            })
+            .catch(err => {
+                this.alert.showAlert(err, 'error');
+            });
     }
 
     private createVerenigingForm() {

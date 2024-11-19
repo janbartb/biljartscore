@@ -7,12 +7,12 @@ import { List } from '../../../../model/list';
 import { SpelerSelectie, SpelerWrapper } from '../../../../model/speler';
 import { PageHeaderComponent } from '../../../../shared/page-header/page-header.component';
 import { Button } from '../../../../model/button';
-import { ButtonComponent } from '../../../../shared/button-group/button/button.component';
 import { NgClass } from '@angular/common';
 import { notEmpty } from '../../../../directives/validators.directive';
 import { SectionHeaderComponent } from '../../../../shared/section-header/section-header.component';
 import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-btns/section-footer-btns.component';
 import { HelperService } from '../../../../services/helper.service';
+import { Scrolling } from '../../../../model/scrolling';
 
 @Component({
     selector: 'app-vereniging-team',
@@ -21,7 +21,6 @@ import { HelperService } from '../../../../services/helper.service';
         PageHeaderComponent, 
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
-        ButtonComponent, 
         ReactiveFormsModule, 
         NgClass
     ],
@@ -47,8 +46,14 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     createdId: string = '';
     duplicateId: boolean = false;
     spelNaam: string = this.appData.getSpelNaam();
+    scrollElm!: HTMLDivElement;
+    ledenScroll!: Scrolling;
 
     enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
+    selectButtons: Button[] = [
+        new Button('Enter', 'Voeg toe aan team', true),
+        new Button('Enter', 'Verwijder uit team', true)
+    ];
 
     htmlSelectKlasse = viewChild<ElementRef<HTMLSelectElement>>('klasse');
     htmlInputKnbbId = viewChild<ElementRef<HTMLInputElement>>('knbbid');
@@ -64,9 +69,14 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
         });
     }
 
-    enterPressed() {
+    buttonPressed() {
         if (this.selectieLijst.hoveredIdx >= 0 && this.activeSection == 1) {
-            this.spelerSelectieClicked(this.selectieLijst.hoveredIdx);
+            const btnIdx = this.selectieLijst.filtered[this.selectieLijst.hoveredIdx].spelerSelected ? 1 : 0;
+            this.selectButtons[btnIdx].selected = true;
+            setTimeout(() => {
+                this.selectButtons[btnIdx].selected = false;
+                this.spelerSelectieClicked(this.selectieLijst.hoveredIdx);
+            }, 300);
             return;
         }
         this.enterButtons[0].selected = true;
@@ -90,6 +100,8 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
             spelerClicked.spelerSelected = !spelerClicked.spelerSelected;
             this.sortSelectie();
             this.aantalLeden += spelerClicked.spelerSelected ? 1 : -1;
+            this.selectieLijst.hoveredIdx = -1;
+            this.ledenScroll.scrollToTop();
         }
     }
 
@@ -143,6 +155,9 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
             if ((event.key === 'Enter' || event.key.startsWith('Arrow')) && event.target instanceof HTMLSelectElement) {
                 event.preventDefault();
             }
+            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                event.preventDefault();
+            }
         }
         return true;
     }
@@ -162,28 +177,18 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
             if (this.activeSection == 1) {
                 if (event.key === 'ArrowUp') {
                     this.selectieLijst.hoverPreviousItem();
-                    if (this.selectieLijst.hoveredIdx == 14) {
-                        this.helper.scrollUp(this.htmlLedenLijst());
-                    }
-                    if (this.selectieLijst.hoveredIdx == this.selectieLijst.filtered.length - 1) {
-                        this.helper.scrollDown(this.htmlLedenLijst());
-                    }
+                    this.ledenScroll.scrollUp(this.selectieLijst.hoveredIdx);
                 }
                 if (event.key === 'ArrowDown') {
                     this.selectieLijst.hoverNextItem();
-                    if (this.selectieLijst.hoveredIdx == 15) {
-                        this.helper.scrollDown(this.htmlLedenLijst());
-                    }
-                    if (this.selectieLijst.hoveredIdx == 0) {
-                        this.helper.scrollUp(this.htmlLedenLijst());
-                    }
+                    this.ledenScroll.scrollDown(this.selectieLijst.hoveredIdx);
                 }
                 return false;    
             }
             return true;
         }
         if (event.key === 'Enter') {
-            this.enterPressed();
+            this.buttonPressed();
             return false;
         }
         if (event.key === 'Escape') {
@@ -245,10 +250,27 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
                 this.fillSelectieLijst();
                 this.subtitle = `Vereniging '${this.vereniging.naam}'`;
                 this.createTeamForm();
+
+                const elm = this.htmlLedenLijst()?.nativeElement;
+                if (elm) {
+                    this.scrollElm = elm;
+                    new ResizeObserver(() => { 
+                        this.initSelectieLijstScrolling(this.scrollElm);
+                    }).observe(elm);
+                }
             })
             .catch((err) => {
                 this.alert.showError(err);
             });
+    }
+
+    private initSelectieLijstScrolling(elm: HTMLDivElement) {
+        if (elm) {
+            if (this.selectieLijst.hoveredIdx >= 0) {
+                this.selectieLijst.hoveredIdx = 0;
+            }
+            this.ledenScroll = new Scrolling(elm, elm.offsetHeight, this.selectieLijst.filtered.length);
+        }
     }
 
     private fillSelectieLijst() {

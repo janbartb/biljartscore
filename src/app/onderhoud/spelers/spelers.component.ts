@@ -12,6 +12,7 @@ import { Spelsoort } from '../../model/spelsoort';
 import { ApiResponse } from '../../model/api-response';
 import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
 import { HelperService } from '../../services/helper.service';
+import { Scrolling } from '../../model/scrolling';
 
 @Component({
   selector: 'app-spelers',
@@ -42,6 +43,8 @@ export class SpelersComponent extends BaseComponent implements OnInit {
     verenigingFilter: string = '';
     moyenneMode: boolean = false;
     moyenneEdit: number = 0;
+    scrollElm!: HTMLDivElement;
+    listScroll!: Scrolling;
     buttons: Button[] = [
         new Button('+', 'Speler toevoegen', true),
         new Button('M', 'Moyennes wijzigen', true)
@@ -60,7 +63,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
     }
 
     enterPressed() {
-        this.spelerClicked(this.spelerList.hoveredIdx);
+        this.spelerClicked(this.spelerList.selectedIdx);
     }
 
     override escapePressed(): void {
@@ -140,7 +143,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         }
         else {
             this.buttons[1].selected = true;
-            const idx = this.spelerList.hoveredIdx < 0 ? 0 : this.spelerList.hoveredIdx;
+            const idx = this.spelerList.selectedIdx < 0 ? 0 : this.spelerList.selectedIdx;
             this.spelerList.selectItem(idx);
             this.moyenneEdit = this.spelerList.getSelectedItem()?.getGemiddeldeVanSpel() || 0;
             setTimeout(() => {
@@ -180,8 +183,9 @@ export class SpelersComponent extends BaseComponent implements OnInit {
                     }
                 }
             }
-            this.gotoNextItem();
-            this.spelerClicked(this.spelerList.hoveredIdx);
+            this.spelerList.selectNextItem();
+            this.listScroll.scrollDown(this.spelerList.selectedIdx);
+            this.spelerClicked(this.spelerList.selectedIdx);
         }
     }
 
@@ -192,6 +196,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         localStorage.setItem('spelersNaamFilter', this.naamFilter);
         this.filtersChanged();
         this.sortSpelers();
+        this.initListScrolling(this.scrollElm);
     }
 
     verenigingFilterChanged() {
@@ -245,13 +250,15 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         const fromInput = event.target instanceof HTMLInputElement;
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.gotoPreviousItem();
+                this.spelerList.selectPreviousItem();
+                this.listScroll.scrollUp(this.spelerList.selectedIdx);
             }
             if (event.key === 'ArrowDown') {
-                this.gotoNextItem();
+                this.spelerList.selectNextItem();
+                this.listScroll.scrollDown(this.spelerList.selectedIdx);
             }
             if (this.moyenneMode) {
-                this.spelerClicked(this.spelerList.hoveredIdx);
+                this.spelerClicked(this.spelerList.selectedIdx);
             }
             return false;
         }
@@ -300,29 +307,26 @@ export class SpelersComponent extends BaseComponent implements OnInit {
                 this.filtersChanged();
             }
             this.sortSpelers();
+            const elm = this.htmlSpelerLijst()?.nativeElement;
+            if (elm) {
+                this.scrollElm = elm;
+                new ResizeObserver(() => { 
+                    this.initListScrolling(this.scrollElm);
+                }).observe(this.scrollElm);
+            }
         })
         .catch((err) => {
             this.alert.showAlert(err, 'error');
         });
     }
 
-    private gotoNextItem() {
-        this.spelerList.hoverNextItem();
-        if (this.spelerList.hoveredIdx == 13) {
-            this.helper.scrollDown(this.htmlSpelerLijst());
-        }
-        if (this.spelerList.hoveredIdx == 0) {
-            this.helper.scrollUp(this.htmlSpelerLijst());
-        }
-    }
-
-    private gotoPreviousItem() {
-        this.spelerList.hoverPreviousItem();
-        if (this.spelerList.hoveredIdx == 12) {
-            this.helper.scrollUp(this.htmlSpelerLijst());
-        }
-        if (this.spelerList.hoveredIdx == this.spelerList.filtered.length - 1) {
-            this.helper.scrollDown(this.htmlSpelerLijst());
+    private initListScrolling(elm: HTMLDivElement) {
+        if (elm) {
+            if (this.spelerList.selectedIdx >= 0) {
+                this.spelerList.selectedIdx = 0;
+            }
+            this.listScroll = new Scrolling(elm, elm.offsetHeight, this.spelerList.filtered.length);
+            console.log('resize event - pos = ' + this.listScroll.scrollPos);    
         }
     }
 
@@ -332,6 +336,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             this.spelerList.items.splice(idx, 1);
             this.filtersChanged();
             this.sortSpelers();
+            this.initListScrolling(this.scrollElm);
         }
     }
 

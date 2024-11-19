@@ -34,7 +34,7 @@ tbody td {
     white-space: nowrap;
     overflow: hidden;
 }
-tr.selectable, div.selectable {
+tr.selectable {
     cursor: pointer;
     color: black;
     opacity: .5;
@@ -43,26 +43,22 @@ tr.selectable.invalid {
     color: red;
 }
 
-tr.selectable.selected, div.selectable.selected {
+tr.selectable.selected {
     opacity: 1;
 }
-tr.selectable.hovered, div.selectable.hovered {
+tr.selectable.hovered {
     border: .0625em solid green;
-    border-radius: .5em;
 }
-tr.selectable:hover, div.selectable:hover {
+tr.selectable:hover {
     background-color: lightgray;
 }
 
-td.indicator, div.indicator {
+td.indicator {
     color: green;
     position: relative;
     opacity: 0;
 }
 tr.selectable.selected td.indicator, tr.editable.selected td.indicator {
-    opacity: 1;
-}
-div.selectable.selected div.indicator {
     opacity: 1;
 }
 

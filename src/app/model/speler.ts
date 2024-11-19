@@ -17,6 +17,7 @@ export class SpelerGemiddelde {
 export class SpelerWrapper {
     speler: Speler = new Speler();
     idxMoyenne = -1;
+    selected: boolean = false;
 
     constructor(speler: Speler, spelId?: string) {
         this.speler = speler;

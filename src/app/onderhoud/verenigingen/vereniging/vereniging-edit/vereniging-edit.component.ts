@@ -2,8 +2,7 @@ import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild,
 import { Team, Vereniging } from '../../../../model/vereniging';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgClass } from '@angular/common';
-import { noDuplicates, notEmpty } from '../../../../directives/validators.directive';
-import { ButtonComponent } from '../../../../shared/button-group/button/button.component';
+import { notEmpty } from '../../../../directives/validators.directive';
 import { Button } from '../../../../model/button';
 import { BaseComponent } from '../../../../base/base.component';
 import { ActivatedRoute } from '@angular/router';
@@ -22,8 +21,8 @@ import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-bt
         NgClass, 
         PageHeaderComponent, 
         SectionHeaderComponent,
-        SectionFooterBtnsComponent,
-        ButtonComponent],
+        SectionFooterBtnsComponent
+    ],
     templateUrl: './vereniging-edit.component.html',
     styleUrl: './vereniging-edit.component.css'
 })
@@ -32,10 +31,7 @@ export class VerenigingEditComponent extends BaseComponent implements OnInit {
     route = inject(ActivatedRoute);
 
     subtitle: string = "Vereniging"
-    sections: string[] = ['Vereniging', 'Teams', 'Leden'];
     vereniging: Vereniging = new Vereniging();
-    teamLijst: List<Team> = new List<Team>();
-    ledenLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
     spelsoorten: Spelsoort[] = [];
 
     enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
@@ -102,16 +98,11 @@ export class VerenigingEditComponent extends BaseComponent implements OnInit {
             .then(result => {
                 this.spelsoorten = result;
                 Promise.all([
-                    this.bssApi.getVereniging(id),
-                    this.bssApi.getLedenVanVereniging(id, this.spelId)
+                    this.bssApi.getVereniging(id)
                 ])
                     .then(results => {
                         this.vereniging = results[0];
                         let teams = this.vereniging.teams.filter(team => team.spelsoort == this.spelId);
-                        this.teamLijst.fillItems(teams);
-                        this.sortTeams();
-                        this.ledenLijst.fillItems(results[1]);
-                        this.sortLeden();
                         this.subtitle = `Vereniging '${this.vereniging.naam}' wijzigen`;
                         this.createVerenigingForm();
                     })
@@ -122,28 +113,6 @@ export class VerenigingEditComponent extends BaseComponent implements OnInit {
             .catch(err => {
                 this.alert.showAlert(err, 'error');
             });
-    }
-
-    private sortTeams() {
-        this.teamLijst.filtered.sort((a: Team, b: Team) => {
-            if (a.klasse == b.klasse) {
-                return (a.teamId > b.teamId) ? 1 : -1;
-            }
-            else {
-                return (a.klasse > b.klasse) ? 1 : -1;
-            }
-        });
-    }
-
-    private sortLeden() {
-        this.ledenLijst.filtered.sort((a: SpelerWrapper, b: SpelerWrapper) => {
-            if (a.getNaam() == b.getNaam()) {
-                return 0;
-            }
-            else {
-                return (a.getNaam() > b.getNaam()) ? 1 : -1;
-            }
-        });
     }
 
     private createVerenigingForm() {

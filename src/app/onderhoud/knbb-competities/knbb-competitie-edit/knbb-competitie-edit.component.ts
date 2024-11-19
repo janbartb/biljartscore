@@ -10,6 +10,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { notEmpty } from '../../../directives/validators.directive';
 import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
+import { Team, Vereniging } from '../../../model/vereniging';
+import { HelperService } from '../../../services/helper.service';
 
 @Component({
     selector: 'app-knbb-competitie-edit',
@@ -25,11 +27,12 @@ import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/
     styleUrl: './knbb-competitie-edit.component.css'
 })
 export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit {
+    helper = inject(HelperService);
     route = inject(ActivatedRoute);
     fb = inject(FormBuilder);
 
     competitie: KnbbCompetitie = new KnbbCompetitie();
-    teamLijst: List<KnbbCompTeam> = new List<KnbbCompTeam>();
+    teamLijst: List<Team> = new List<Team>();
     subtitle: string = '';
     subtitle2: string = '';
     activeSection: number = 0;
@@ -216,11 +219,15 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
     }
 
     private getData(id: string) {
-        this.bssApi.getKnbbCompetitie(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId, id)
-        .then(result => {
-            this.competitie = result;
-            this.competitie.teams.sort(this.compareCompTeams);
-            this.teamLijst.fillItems(this.competitie.teams);
+        Promise.all([
+            this.bssApi.getKnbbCompetitie(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId, id),
+            this.bssApi.getVerenigingen()
+        ])
+        .then(results => {
+            this.competitie = results[0];
+            let teams = this.helper.getCompetitieTeamsData(this.competitie, results[1]);
+            teams.sort(this.compareTeams);
+            this.teamLijst.fillItems(teams);
             this.subtitle2 = `Competitie '${this.competitie.competitieId} ${this.competitie.naam}'`;
             this.createForm();
         })
@@ -236,7 +243,7 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
         });
     }
 
-    private compareCompTeams(a: KnbbCompTeam, b: KnbbCompTeam) {
+    private compareTeams(a: Team, b: Team) {
         return (a.naam > b.naam) ? 1 : -1;
     }
 

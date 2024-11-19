@@ -57,6 +57,9 @@
 .flexshrink0 {
     flex-shrink: 0;
 }
+.flexremaining {
+    flex: 0 1 auto;
+}
 
 .flex05perc {
     flex: 0 0 5%;

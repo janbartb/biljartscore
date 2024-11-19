@@ -14,6 +14,16 @@ export class KnbbCompetitie {
 }
 
 export class KnbbCompTeam {
+    verId: string = '';
+    teamId: string = '';
+
+    constructor(verId: string, teamId: string) {
+        this.verId = verId;
+        this.teamId = teamId;
+    }
+}
+
+export class KnbbCompTeamOld {
     compTeamId: string = '';
     verId: string = '';
     teamId: string = '';

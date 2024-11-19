@@ -24,3 +24,14 @@
     left: 10px;
     cursor: pointer;
 }
+
+.header-esc {
+    width: 1.25rem;
+    height: 1rem;
+    background-color: lightgray;
+    color: black;
+    border: .0625rem solid gray;
+    border-radius: .25rem;
+    text-align: center;
+    cursor: pointer;
+}

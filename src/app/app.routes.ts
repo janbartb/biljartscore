@@ -27,13 +27,15 @@ import { KnbbTeamMatchComponent } from './spelen/knbb-team-match/knbb-team-match
 import { KnbbTeamMatchScoreComponent } from './spelen/knbb-team-match/knbb-team-match-score/knbb-team-match-score.component';
 import { KnbbTeamMatchSetupComponent } from './spelen/knbb-team-match/knbb-team-match-setup/knbb-team-match-setup.component';
 import { KnbbTeamMatchCheckComponent } from './spelen/knbb-team-match/knbb-team-match-check/knbb-team-match-check.component';
+import { KnbbTeamMatchCompComponent } from './spelen/knbb-team-match/knbb-team-match-comp/knbb-team-match-comp.component';
 
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },
     { path: 'teammatch/setup', children: [
         { path: 'thuis', component: KnbbTeamMatchSetupComponent },
-        { path: 'gasten', component: KnbbTeamMatchSetupComponent },
+        { path: 'gasten', component: KnbbTeamMatchSetupComponent }
     ]},
+    { path: 'teammatch/setup/comp', component: KnbbTeamMatchCompComponent },
     { path: 'teammatch/setup/check', component: KnbbTeamMatchCheckComponent },
     { path: 'teammatch/score/:wedNr', component: KnbbTeamMatchScoreComponent },
     { path: 'teammatch', component: KnbbTeamMatchComponent },

@@ -3,15 +3,11 @@
         <div>
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"></app-page-header>
         </div>
-        <div class="section-header">
-            <div class="w3-green-l2" style="padding: 0 1em;">
-                <span>{{sectionTitle}}</span>
-            </div>
-        </div>
+        <app-section-header [title]="sectionTitle" [cssClasses]="'w3-green-l2'"></app-section-header>
         <div class="flexgrow1">
             @if (competitieForm) {
                 <div class="flexbox flexcenter">
-                    <div style="padding-top: 2em;">
+                    <div style="padding-top: 1em;">
                         <form [formGroup]="competitieForm">
                             <table class="tbl-normal tbl-input">
                                 <tbody>
@@ -122,11 +118,8 @@
             }
         </div>
         @if (!duplicateId && competitieForm && competitieForm.valid) {
-            <div class="section-footer" style="border-top: .25em solid #93cf95">
-                <div class="flexbox flexcenter" style="padding: .125em 0;">
-                    <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
-                </div>
-            </div>
+            <app-section-footer-btns [buttons]="buttons" (clickedButton)="enterClicked()"
+                    [cssFooter]="'w3-green-bdr-l2'" [cssButtons]="'font125'"></app-section-footer-btns>
         }
     </div>
 </div>

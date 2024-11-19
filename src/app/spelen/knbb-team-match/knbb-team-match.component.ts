@@ -97,7 +97,7 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
     }
 
     nieuwClicked(): void {
-        this.router.navigate(['teammatch/setup/thuis']);
+        this.router.navigate(['teammatch/setup/comp']);
     }
 
     fillMatchAndWedStatus(): void {
@@ -186,6 +186,10 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
             }
             if (!(this.match.teams.every(tm => tm.spelers.length === 3))) {
                 this.router.navigate(['teammatch/setup/thuis']);
+                return;
+            }
+            if (this.match.teams[0].spelers[0].splTsCar == 0) {
+                this.router.navigate(['teammatch/setup/check']);
                 return;
             }
 

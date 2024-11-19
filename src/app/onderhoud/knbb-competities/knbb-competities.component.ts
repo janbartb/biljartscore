@@ -6,16 +6,16 @@ import { NgClass } from '@angular/common';
 import { KnbbCompetitie } from '../../model/knbb-competitie';
 import { Alinea, ConfirmDialog } from '../../model/confirm-dialog';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
-import { ButtonComponent } from '../../shared/button-group/button/button.component';
 import { Button } from '../../model/button';
+import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
     selector: 'app-knbb-competities',
     standalone: true,
     imports: [
         PageHeaderComponent,
+        SectionFooterBtnsComponent,
         ConfirmComponent,
-        ButtonComponent,
         NgClass
     ],
     templateUrl: './knbb-competities.component.html',
@@ -26,37 +26,42 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
     sectionTitle: string = 'Competities';
     compLijst: List<KnbbCompetitie> = new List<KnbbCompetitie>();
     idxToDelete: number = -1;
+    escapeCount: number = 0;
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
 
-    enterButton: Button = new Button('Enter', 'Wijzigen', true);
-    toevoegButton: Button = new Button('+', 'Toevoegen', true);
-    verwijderButton: Button = new Button('Del', 'Verwijderen', true);
+    buttons: Button[] = [
+        new Button('Enter', 'Wijzigen', true),
+        new Button('+', 'Toevoegen', true),
+        new Button('Del', 'Verwijderen', true)
+    ];
 
-    buttonPressed(button: Button) {
-        if (button.disabled) {
-            return;
-        }
-        button.selected = true;
+    buttonPressed(idx: number) {
+        this.buttons[idx].selected = true;
         setTimeout(() => {
-            button.selected = false;
-            if (button.key == 'Enter') {
-                this.wijzigenClicked(this.compLijst.selectedIdx);
-            }
-            else if (button.key == 'Ins') {
-                this.toevoegenClicked();
-            }
-            else if (button.key == 'Del') {
-                this.verwijderenClicked(this.compLijst.selectedIdx);
-            }
+            this.buttons[idx].selected = false;
+            this.buttonClicked(idx);
         }, 300);
     }
 
     override escapePressed(): void {
         if (this.compLijst.selectedIdx >= 0) {
             this.compLijst.clearSelection();
+            this.escapeCount--;
             return;
         }
         super.escapePressed();
+    }
+
+    buttonClicked(idx: number) {
+        if (idx == 0) {
+            this.wijzigenClicked(this.compLijst.selectedIdx);
+        }
+        else if (idx == 1) {
+            this.toevoegenClicked();
+        }
+        else if (idx == 2) {
+            this.verwijderenClicked(this.compLijst.selectedIdx);
+        }
     }
 
     competitieClicked(idx: number) {
@@ -64,6 +69,9 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
             return;
         }
         this.compLijst.selectItem(idx);
+        if (this.escapeCount == 0) {
+            this.escapeCount++;
+        }
     }
 
     wijzigenClicked(idx: number) {
@@ -126,18 +134,21 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
             if (event.key === 'ArrowDown') {
                 this.compLijst.selectNextItem();
             }
+            if (this.escapeCount == 0) {
+                this.escapeCount++;
+            }
             return false;
         }
         if (event.key === 'Enter') {
-            this.buttonPressed(this.enterButton);
+            this.buttonPressed(0);
             return false;
         }
-        if (event.key === 'Insert') {
-            this.buttonPressed(this.toevoegButton);
+        if (event.key === '+' || event.code === 'Equal') {
+            this.buttonPressed(1);
             return false;
         }
         if (event.key === 'Delete') {
-            this.buttonPressed(this.verwijderButton);
+            this.buttonPressed(2);
             return false;
         }
         if (event.key === 'Escape') {

@@ -1,5 +1,12 @@
 <div class="header-container">
     <div class="header-title w3-green-d5 w3-display-container">
+                <div class="fullheight flexbox flexmiddle" style="padding-left: 4.125rem;">
+                    @for (item of escapes; track $index) {
+                        <div class="header-esc" (click)="escapeClicked()">
+                            <span class="fas fa-undo-alt" style="font-size: .5rem; position: relative; top: -1.0625rem"></span>
+                        </div>
+                    }
+                </div>    
         <div class="w3-display-middle">{{title}}</div>
         <div class="header-game w3-display-right">
             <span>{{spel}}</span>

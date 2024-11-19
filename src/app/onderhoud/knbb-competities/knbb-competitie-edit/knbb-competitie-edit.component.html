@@ -6,7 +6,8 @@
         <app-section-header [title]="subtitle2" [cssClasses]="'w3-green-l1'"></app-section-header>
         <div class="flexgrow1 flexbox">
             <div class="fullheight flexbox flexcolumn section" style="border-right: .125em solid #93cf95;">
-                <app-section-header [title]="'Competitie'" [cssClasses]="'w3-green-l3'" [active]="activeSection == 0"></app-section-header>
+                <app-section-header [id]="0" [title]="'Competitie'" [cssClasses]="'w3-green-l3'" 
+                        [active]="activeSection == 0" (headerClicked)="activeSection = 0"></app-section-header>
                 <div class="flexgrow1 flexbox flexcenter" style="padding: 1em 2em;">
                     <div>
                         @if (compDataForm) {
@@ -68,42 +69,39 @@
                                             [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
                 }
             </div>
-            <div class="flexgrow1" style="height: 27.5em; border-left: .125em solid #93cf95;">
-                <app-section-header [title]="'Teams'" [cssClasses]="'w3-green-l3'" [active]="activeSection == 1"></app-section-header>
-                <div class="flexbox flexcenter" style="height: 2em;">
-                    <div style="padding-top: .375em;">
-                        <table class="tbl-normal tbl-list">
-                            <tr>
-                                <td style="width: 2em;"></td>
-                                <td class="label" style="width: 5em;">Klasse</td>
-                                <td class="label" style="width: 14em;">Naam</td>
-                                <td class="label" style="width: 4em;" title="Aantal spelers">Spelers</td>
-                            </tr>
-                        </table>
+            <div class="flexgrow1 flexbox flexcolumn" style="border-left: .125em solid #93cf95;">
+                <app-section-header [id]="1" [title]="'Teams'" [cssClasses]="'w3-green-l3'" 
+                        [active]="activeSection == 1" (headerClicked)="activeSection = 1"></app-section-header>
+                <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+                    <div class="lijst-row">
+                        <div class="lijst-col" style="width: 2.5em;"></div>
+                        <div class="lijst-col" style="width: 5em;">Klasse</div>
+                        <div class="lijst-col" style="width: 14em;">Naam</div>
+                        <div class="lijst-col" style="width: 5em;" title="Aantal spelers">Spelers</div>
                     </div>
                 </div>
-                <div class="list-container" style="height: 20.5em;">
-                    <div class="fullheight flexbox flexcenter scrollable">
-                        <table class="tbl-normal tbl-list">
-                            <tbody>
+                <div class="flexgrow1 scroll-container">
+                    <div class="scroll-content">
+                        <div class="flexbox flexcenter">
+                            <div class="lijst">
                                 @for (team of teamLijst.filtered; track $index) {
-                                    <tr class="selectable" [ngClass]="{'selected': teamLijst.selectedIdx == $index}" (click)="teamClicked($index)">
-                                        <td class="indicator" style="width: 2em;">
-                                            <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
-                                        </td>
-                                        <td style="width: 5em;">
+                                    <div class="lijst-row selectable" [ngClass]="{'selected': teamLijst.selectedIdx == $index}" (click)="teamClicked($index)">
+                                        <div class="lijst-col indicator" style="width: 2.5em;">
+                                            <i class="fas fa-angle-right"></i>
+                                        </div>
+                                        <div class="lijst-col" style="width: 5em;">
                                             <span>{{team.klasse + '-' + team.volgNr}}</span>
-                                        </td>
-                                        <td style="width: 14em; overflow: hidden;">
+                                        </div>
+                                        <div class="lijst-col" style="width: 14em;">
                                             <span>{{team.naam}}</span>
-                                        </td>
-                                        <td style="width: 4em;">
-                                            <span>{{team.spelers.length}}</span>
-                                        </td>
-                                    </tr>
+                                        </div>
+                                        <div class="lijst-col" style="width: 5em;">
+                                            <span>{{team.teamLeden.length}}</span>
+                                        </div>
+                                    </div>
                                 }
-                            </tbody>
-                        </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <app-section-footer-btns [buttons]="teamButtons" [btnsDisabled]="[activeSection == 0]" (clickedButton)="teamButtonClicked()"

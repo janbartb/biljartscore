@@ -5,10 +5,10 @@ import { BaseComponent } from '../../base/base.component';
 import { List } from '../../model/list';
 import { VerenigingWrapper } from '../../model/vereniging';
 import { FormsModule } from '@angular/forms';
-import { ButtonComponent } from '../../shared/button-group/button/button.component';
 import { Button } from '../../model/button';
 import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
 import { HelperService } from '../../services/helper.service';
+import { Scrolling } from '../../model/scrolling';
 
 @Component({
     selector: 'app-verenigingen',
@@ -16,7 +16,6 @@ import { HelperService } from '../../services/helper.service';
     imports: [
         PageHeaderComponent, 
         SectionFooterBtnsComponent,
-        ButtonComponent,
         FormsModule,
         NgClass
     ],
@@ -31,10 +30,15 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
     thisUrl = 'onderhoud/verenigingen';
     verenigingLijst: List<VerenigingWrapper> = new List<VerenigingWrapper>();
     naamFilter: string = '';
+    escapeCount: number = 0;
+    scrollElm!: HTMLDivElement;
+    verScroll!: Scrolling;
 
-    buttons: Button[] = [new Button('+', 'Vereniging toevoegen', true)];
+    buttons: Button[] = [
+        new Button('+', 'Toevoegen', true)
+    ];
 
-    htmlVerLijst = viewChild<ElementRef<HTMLDivElement>>('verlijst');
+    htmlVerLijst = viewChild<ElementRef<HTMLDivElement>>('vereniginglijst');
 
     constructor() {
         super();
@@ -43,23 +47,42 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
         });
     }
 
-    enterPressed() {
-        if (this.verenigingLijst.hoveredIdx >= 0) {
-            this.verenigingClicked(this.verenigingLijst.hoveredIdx);
+    override escapePressed(): void {
+        if (this.verenigingLijst.selectedIdx >= 0) {
+            this.verenigingLijst.clearSelection();
+            this.setEscapeCount();
+            return;
         }
+        if (this.naamFilter.length) {
+            this.naamFilter = '';
+            this.naamFilterChanged();
+            return;
+        }
+        super.escapePressed()
     }
 
-    buttonPressed(key: string) {
-        if (key == '+') {
-            this.buttons[0].selected = true;
-            setTimeout(() => {
-                this.buttons[0].selected = false;
-                this.verenigingToevoegenClicked();
-            }, 500);
+    enterPressed() {
+        this.verenigingClicked(this.verenigingLijst.selectedIdx);
+    }
+
+    buttonPressed(idx: number) {
+        this.buttons[idx].selected = true;
+        setTimeout(() => {
+            this.buttons[idx].selected = false;
+            this.buttonClicked(idx);
+        }, 500);
+    }
+
+    buttonClicked(idx: number) {
+        if (idx == 0) {
+            this.verenigingToevoegenClicked();
         }
     }
 
     verenigingClicked(idx: number) {
+        if (idx < 0) {
+            return;
+        }
         this.verenigingLijst.selectItem(idx);
         this.appData.gotoPage(this.thisUrl, this.thisUrl + '/' + this.verenigingLijst.getItem(idx)?.vereniging.verId)
     }
@@ -68,12 +91,17 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
         this.appData.gotoPage(this.thisUrl, this.thisUrl + '/toevoegen')
     }
 
-    naamFilterChanged(event: KeyboardEvent) {
-        if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Enter' || event.key === 'Escape') {
-            return;
+    naamFilterChanged(event?: KeyboardEvent) {
+        if (event) {
+            if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Enter' || event.key === 'Escape') {
+                return;
+            }    
         }
+        this.verenigingLijst.clearSelection();
         this.filtersChanged();
         this.sortVerenigingen();
+        this.initVerLijstScrolling(this.scrollElm);
+        this.setEscapeCount();
     }
 
     filtersChanged() {
@@ -95,28 +123,27 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
         });
     }
 
+    @HostListener('document:keydown', ['$event'])
+    handleKeyDownEvent(event: KeyboardEvent): boolean {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            event.preventDefault();
+        }
+        return true;
+    }    
+    
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.verenigingLijst.hoverPreviousItem();
-                if (this.verenigingLijst.hoveredIdx == 13) {
-                    this.helper.scrollUp(this.htmlVerLijst());
-                }
-                if (this.verenigingLijst.hoveredIdx == this.verenigingLijst.filtered.length - 1) {
-                    this.helper.scrollDown(this.htmlVerLijst());
-                }
+                this.verenigingLijst.selectPreviousItem();
+                this.verScroll.scrollUp(this.verenigingLijst.selectedIdx);
             }
             if (event.key === 'ArrowDown') {
-                this.verenigingLijst.hoverNextItem();
-                if (this.verenigingLijst.hoveredIdx == 14) {
-                    this.helper.scrollDown(this.htmlVerLijst());
-                }
-                if (this.verenigingLijst.hoveredIdx == 0) {
-                    this.helper.scrollUp(this.htmlVerLijst());
-                }
+                this.verenigingLijst.selectNextItem();
+                this.verScroll.scrollDown(this.verenigingLijst.selectedIdx);
             }
+            this.setEscapeCount();
             return false;
         }
         if (event.key === 'Enter') {
@@ -128,7 +155,7 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.key === '+' || event.key === '=') {
-            this.buttonPressed('+');
+            this.buttonPressed(0);
             return false;
         }
         if (event.key === 'Home') {
@@ -143,9 +170,36 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
             .then(result => {
                 this.verenigingLijst.fillItems(result);
                 this.sortVerenigingen();
+                const elm = this.htmlVerLijst()?.nativeElement;
+                if (elm) {
+                    this.scrollElm = elm;
+                    new ResizeObserver(() => { 
+                        this.initVerLijstScrolling(this.scrollElm);
+                    }).observe(this.scrollElm);
+                }
             })
             .catch((err) => {
                 this.alert.showAlert(err, 'error');
             });
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = 0;
+        if (this.verenigingLijst.selectedIdx >= 0) {
+            this.escapeCount++;
+        }
+        if (this.naamFilter.length) {
+            this.escapeCount++;
+        }
+    }
+
+    private initVerLijstScrolling(elm: HTMLDivElement) {
+        if (elm) {
+            if (this.verenigingLijst.hoveredIdx >= 0) {
+                this.verenigingLijst.hoveredIdx = 0;
+            }
+            this.verScroll = new Scrolling(elm, elm.offsetHeight, this.verenigingLijst.filtered.length);
+            console.log('resize event - pos = ' + this.verScroll.scrollPos);    
+        }
     }
 }

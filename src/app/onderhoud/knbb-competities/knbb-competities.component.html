@@ -1,71 +1,64 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"></app-page-header>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" 
+                    [district]="appData.getDistrict().disNaam" 
+                    [escCount]="escapeCount" (escClicked)="escapePressed()"></app-page-header>
         </div>
-        <div class="flexbox flexcolumn">
-            <div class="flexbox flexcenter" style="height: 2em;">
-                <div style="padding-top: .375em;">
-                    <table class="tbl-normal tbl-list">
-                        <thead>
-                            <tr>
-                                <td class="label" style="width: 2em;"></td>
-                                <td class="label" style="width: 5em;">Klasse</td>
-                                <td class="label" style="width: 5em;">Volgnr</td>
-                                <td class="label" style="width: 5em;">Poule</td>
-                                <td class="label" style="width: 20em;">Naam</td>
-                                <td class="label" style="width: 5em;">#Teams</td>
-                                <td class="label" style="width: 2em;"></td>
-                            </tr>
-                        </thead>
-                    </table>    
-                </div>
+        <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+            <div class="lijst-row">
+                <div class="lijst-col" style="width: 2.5em;"></div>
+                <div class="lijst-col" style="width: 5em;">Klasse</div>
+                <div class="lijst-col" style="width: 5em;">Volgnr</div>
+                <div class="lijst-col" style="width: 5em;">Poule</div>
+                <div class="lijst-col" style="width: 16em;">Naam</div>
+                <div class="lijst-col" style="width: 5em;" title="Aantal teams">Teams</div>
+                <div class="lijst-col" style="width: 3em;"></div>
             </div>
-            <div class="list-container" style="height: 24.5em;">
-                <div class="fullheight flexbox flexcenter scrollable">
-                    <div style="position: relative; left: .25em">
+        </div>
+        <div class="flexgrow1 scroll-container">
+            <div class="scroll-content">
+                <div class="flexbox flexcenter">
+                    <div class="lijst">
                         @if (compLijst.isEmpty()) {
                             <div style="padding: 2em 0; color: gray;">
                                 <span>Geen competities</span>
                             </div>
                         }
                         @else {
-                            <table class="tbl-normal tbl-list">
-                                <tbody>
-                                    @for (comp of compLijst.filtered; track $index) {
-                                        <tr class="selectable" (click)="competitieClicked($index)"
-                                                [ngClass]="{'selected': compLijst.selectedIdx == $index, 'hovered': compLijst.hoveredIdx == $index}">
-                                            <td class="indicator" style="width: 2em;">
-                                                <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
-                                            </td>
-                                            <td style="width: 5em; overflow: hidden;">{{comp.klasse}}</td>
-                                            <td style="width: 5em; overflow: hidden;">{{comp.volgNr}}</td>
-                                            <td style="width: 5em; overflow: hidden;">{{comp.poule}}</td>
-                                            <td style="width: 20em; overflow: hidden;">{{comp.naam}}</td>
-                                            <td style="width: 5em; overflow: hidden;">{{comp.teams.length}}</td>
-                                            <td class="right" style="width: 2em;">
-                                                <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="verwijderenClicked($index, $event)"></i>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                            @for (comp of compLijst.filtered; track $index) {
+                                <div class="lijst-row selectable" (click)="competitieClicked($index)"
+                                        [ngClass]="{'selected': compLijst.selectedIdx == $index, 'hovered': compLijst.hoveredIdx == $index}">
+                                    <div class="lijst-col indicator" style="width: 2.5em;">
+                                        <i class="fas fa-angle-right"></i>
+                                    </div>
+                                    <div class="lijst-col" style="width: 5em;">
+                                        <span>{{comp.klasse}}</span>
+                                    </div>
+                                    <div class="lijst-col" style="width: 5em;">
+                                        <span>{{comp.volgNr}}</span>
+                                    </div>
+                                    <div class="lijst-col" style="width: 5em;">
+                                        <span>{{comp.poule}}</span>
+                                    </div>
+                                    <div class="lijst-col" style="width: 16em;">
+                                        <span>{{comp.naam}}</span>
+                                    </div>
+                                    <div class="lijst-col" style="width: 5em;">
+                                        <span>{{comp.teams.length}}</span>
+                                    </div>
+                                    <div class="lijst-col num" style="width: 3em;">
+                                        <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="verwijderenClicked($index, $event)"></i>
+                                    </div>
+                                </div>
+                            }
                         }
                     </div>
                 </div>
             </div>
         </div>
-        <div>
-            <div class="button-footer" style="border-top: .25em solid #93cf95">
-                <div class="flexbox flexcenter" style="font-size: 1.25em;">
-                    <app-button [button]="toevoegButton" (buttonClicked)="toevoegenClicked()"></app-button>
-                    @if (compLijst.selectedIdx >= 0) {
-                        <app-button [button]="enterButton" (buttonClicked)="wijzigenClicked(compLijst.selectedIdx)"></app-button>
-                        <app-button [button]="verwijderButton" (buttonClicked)="verwijderenClicked(compLijst.selectedIdx)"></app-button>
-                    }
-                </div>
-            </div>
-        </div>
+        <app-section-footer-btns [buttons]="buttons" [btnsHide]="[compLijst.selectedIdx < 0, false, compLijst.selectedIdx < 0]" 
+                (clickedButton)="buttonClicked($event)" [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
     </div>
 </div>
 @if (isDialogOpen) {

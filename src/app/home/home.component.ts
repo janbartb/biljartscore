@@ -17,7 +17,6 @@ export class HomeComponent extends BaseComponent implements OnInit {
     private document = inject(DOCUMENT);
 
     menu: Menu = new Menu();
-    elem: any;
     spelsoorten: Spelsoort[] = [];
 
     enterClicked() {
@@ -94,15 +93,12 @@ export class HomeComponent extends BaseComponent implements OnInit {
             }
         })
         .catch(err => {
-            this.alert.showAlert(err, "error");
+            this.alert.showError(err);
         });
         this.appData.resetHistory();
         this.menu.addItem(new MenuItem('w', 'Wedstrijd spelen', 'spelkeuze'));
         this.menu.addItem(new MenuItem('o', 'Onderhoud gegevens', 'onderhoud'));
-        this.elem = this.document.documentElement;
-        setTimeout(() => {
-            this.closeFullscreen();
-        }, 300);
+        this.closeFullscreen();
     }
 
     getSpelsoort(id: string): Spelsoort {
@@ -111,32 +107,14 @@ export class HomeComponent extends BaseComponent implements OnInit {
     }
 
     openFullscreen() {
-        if (this.elem.requestFullscreen) {
-            this.elem.requestFullscreen();
-        } else if (this.elem.mozRequestFullScreen) {
-            /* Firefox */
-            this.elem.mozRequestFullScreen();
-        } else if (this.elem.webkitRequestFullscreen) {
-            /* Chrome, Safari and Opera */
-            this.elem.webkitRequestFullscreen();
-        } else if (this.elem.msRequestFullscreen) {
-            /* IE/Edge */
-            this.elem.msRequestFullscreen();
+        if (!this.document.fullscreenElement) {
+            this.document.documentElement.requestFullscreen();
         }
     }
 
     closeFullscreen() {
-        if (this.elem.exitFullscreen) {
-            this.elem.exitFullscreen();
-        } else if (this.elem.mozCancelFullScreen) {
-            /* Firefox */
-            this.elem.mozCancelFullScreen();
-        } else if (this.elem.webkitExitFullscreen) {
-            /* Chrome, Safari and Opera */
-            this.elem.webkitExitFullscreen();
-        } else if (this.elem.msExitFullscreen) {
-            /* IE/Edge */
-            this.elem.msExitFullscreen();
+        if (this.document.fullscreenElement) {
+            document.exitFullscreen();
         }
     }
 }

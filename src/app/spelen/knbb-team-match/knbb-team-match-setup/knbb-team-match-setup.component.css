@@ -9,10 +9,12 @@
     border-color: red;
 }
 .wedspeler .naam {
-    width: 14em;
+    width: 13em;
     height: 1.5em;
     padding: 0 .5em;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
     border: 1px solid black;
     border-radius: .25em;
     background-color: white;

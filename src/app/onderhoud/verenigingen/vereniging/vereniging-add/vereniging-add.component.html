@@ -81,12 +81,9 @@
                 }
             </div>
         </div>
-        <div class="actions flexbox flexcenter">
-            @if (verenigingForm && verenigingForm.valid) {
-                <div style="font-size: 1.25em;">
-                    <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
-                </div>    
-            }
-        </div>
+        @if (verenigingForm && verenigingForm.valid) {
+            <app-section-footer-btns [buttons]="buttons" (clickedButton)="enterClicked()"
+                                [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+        }
     </div>
 </div>
