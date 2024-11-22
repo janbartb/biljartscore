@@ -10,7 +10,7 @@
 }
 
 .speler-container {
-    border: .5em solid gray;
+    border: .5em solid #505050;
 }
 .speler-container.thuis {
     border-color: white;

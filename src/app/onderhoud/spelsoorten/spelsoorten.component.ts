@@ -10,12 +10,16 @@ import { Alinea, ConfirmDialog } from '../../model/confirm-dialog';
 import { Button } from '../../model/button';
 import { ButtonComponent } from '../../shared/button-group/button/button.component';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
+import { SectionHeaderComponent } from '../../shared/section-header/section-header.component';
+import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
     selector: 'app-spelsoorten',
     standalone: true,
     imports: [
         PageHeaderComponent, 
+        SectionHeaderComponent,
+        SectionFooterBtnsComponent,
         ButtonComponent,
         ConfirmComponent,
         NgClass, 
@@ -36,11 +40,12 @@ export class SpelsoortenComponent extends BaseComponent implements OnInit {
     spelsoort: Spelsoort = new Spelsoort('', '');
     idxToDelete: number = -1;
     existing: string[] = [];
+    escapeCount: number = 0;
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
 
-    enterButton: Button = new Button('Enter', 'Opslaan', true);
-    toevoegButton: Button = new Button('Ins', 'Spelsoort toevoegen', true);
-    verwijderButton: Button = new Button('Del', 'Verwijderen', true);
+    enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
+    toevoegButtons: Button[] = [new Button('+', 'Toevoegen', true)];
+    verwijderButtons: Button[] = [new Button('Del', 'Verwijderen', true)];
 
     spelsoortForm!: FormGroup;
 
@@ -73,7 +78,7 @@ export class SpelsoortenComponent extends BaseComponent implements OnInit {
             if (button.key == 'Enter') {
                 this.enterClicked();
             }
-            else if (button.key == 'Ins') {
+            else if (button.key == '+') {
                 this.toevoegenClicked();
             }
             else if (button.key == 'Del') {
@@ -96,12 +101,16 @@ export class SpelsoortenComponent extends BaseComponent implements OnInit {
     }
 
     toevoegenClicked() {
+        if (this.toevoegButtons[0].disabled) {
+            return;
+        }
         this.spelsoortLijst.clearSelection();
         this.sectionTitle = 'Spelsoort toevoegen';
         this.mode = 'add';
         this.spelsoort = new Spelsoort('', '', true);
         this.createSpelsoortForm();
-        this.toevoegButton.disable();
+        this.toevoegButtons[0].disable();
+        this.setEscapeCount();
     }
 
     spelsoortClicked(idx: number) {
@@ -117,7 +126,8 @@ export class SpelsoortenComponent extends BaseComponent implements OnInit {
             this.spelsoort = new Spelsoort('', '', true);
             this.alert.showError(`Spelsoort met index '${idx}' niet gevonden.`);
         }
-        this.toevoegButton.disable();
+        this.toevoegButtons[0].disable();
+        this.setEscapeCount();
     }
 
     verwijderenClicked(idx: number, event?: MouseEvent) {
@@ -204,16 +214,16 @@ export class SpelsoortenComponent extends BaseComponent implements OnInit {
             if (this.isDialogOpen) {
                 return true;
             }
-            this.buttonPressed(this.enterButton);
+            this.buttonPressed(this.enterButtons[0]);
             return false;
         }
         if (event.key === 'Delete' && this.spelsoortLijst.selectedIdx >= 0) {
             event.preventDefault();
-            this.buttonPressed(this.verwijderButton);
+            this.buttonPressed(this.verwijderButtons[0]);
             return false;
         }
-        if (event.key === 'Insert') {
-            this.buttonPressed(this.toevoegButton);
+        if (event.key === '+' || event.key === '=') {
+            this.buttonPressed(this.toevoegButtons[0]);
             return false;
         }
         if (event.key === 'Escape') {
@@ -238,7 +248,8 @@ export class SpelsoortenComponent extends BaseComponent implements OnInit {
         this.spelsoortLijst.selectedIdx = -1;
         this.mode = 'edit';
         this.sectionTitle = '';
-        this.toevoegButton.enable();
+        this.toevoegButtons[0].enable();
+        this.setEscapeCount();
     }
 
     private getSpelsoorten() {
@@ -251,6 +262,10 @@ export class SpelsoortenComponent extends BaseComponent implements OnInit {
             .catch(err => {
                 this.alert.showError(err);
             });
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = (this.mode == 'add' || this.spelsoortLijst.selectedIdx >= 0) ? 1 : 0;
     }
 
     createSpelsoortForm() {

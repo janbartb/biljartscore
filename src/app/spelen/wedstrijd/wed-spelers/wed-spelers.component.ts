@@ -1,21 +1,24 @@
-import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { BaseComponent } from '../../../base/base.component';
 import { WedSpeler, WedSpelerStand, Wedstrijd, WedTeam } from '../../../model/wedstrijd';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { List } from '../../../model/list';
 import { NgClass } from '@angular/common';
 import { Button } from '../../../model/button';
-import { ButtonComponent } from '../../../shared/button-group/button/button.component';
 import { SpelerWrapper } from '../../../model/speler';
 import { VerenigingKort } from '../../../model/vereniging';
 import { HelperService } from '../../../services/helper.service';
+import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
+import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
+import { Scrolling } from '../../../model/scrolling';
 
 @Component({
     selector: 'app-wed-spelers',
     standalone: true,
     imports: [
         PageHeaderComponent,
-        ButtonComponent,
+        SectionHeaderComponent,
+        SectionFooterBtnsComponent,
         NgClass
     ],
     templateUrl: './wed-spelers.component.html',
@@ -24,13 +27,13 @@ import { HelperService } from '../../../services/helper.service';
 export class WedSpelersComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
 
+    subtitle: string = 'Oefen wedstrijd';
     activeSection: number = 0;
     verenigingLijst: List<VerenigingKort> = new List<VerenigingKort>();
     spelerLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
     verenigingFilter: string = this.appData.getConfig()?.vereniging || '';
     wedOrig: Wedstrijd = new Wedstrijd();
     wedstrijd: Wedstrijd = new Wedstrijd();
-    aantalLijst: List<string> = new List<string>();
 
     idxActiveTeam: number = -1;
     idxActiveSpeler: number = -1;
@@ -38,13 +41,40 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     spelersFilled: boolean = false;
     wedstrijdChanged: boolean = false;
 
-    enterButton: Button = new Button('Ctrl+Enter', 'Ga verder', true);
-    resetButton: Button = new Button('Backspace', 'Reset', true);
-    enterSelectButton: Button = new Button('Enter', 'Selecteer', true);
+    pageButtons: Button[] = [
+        new Button('Backspace', 'Reset', true),
+        new Button('Ctrl+Enter', 'Ga verder', true)
+    ];
+    sectionButtons: Button[] = [new Button('Enter', 'Selecteer', true)];
+
+    aantalTekst: string[] = [
+        'dummy',
+        '1 speler',
+        '2 spelers',
+        '3 spelers',
+        '4 spelers',
+        '4 (2 x 2) spelers'
+    ];
+
+    scrollElmVer!: HTMLDivElement;
+    verScrolling!: Scrolling;
+    scrollElmSpl!: HTMLDivElement;
+    splScrolling!: Scrolling;
+
+    htmlVerLijst = viewChild<ElementRef<HTMLDivElement>>('vereniginglijst');
+    htmlSplLijst = viewChild<ElementRef<HTMLDivElement>>('spelerlijst');
+
+    constructor() {
+        super();
+        effect(() => {
+            this.htmlVerLijst()?.nativeElement;
+            this.htmlSplLijst()?.nativeElement;
+        });
+    }
 
     override escapePressed(): void {
         if (this.activeSection == 0) {
-            this.router.navigate(['spelkeuze']);
+            this.router.navigate(['wedstrijd/aantspl']);
         }
         this.activeSection--;
     }
@@ -68,37 +98,29 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         }, 300);
     }
 
-    enterSelectClicked() {
-        if (this.activeSection == 0) {
-            this.aantalClicked(this.aantalLijst.hoveredIdx);
+    pageButtonClicked(idx: number) {
+        if (idx == 0) {
+            this.resetClicked();
         }
-        else if (this.activeSection == 1) {
-            this.verenigingClicked(this.verenigingLijst.hoveredIdx);
-        }
-        else if (this.activeSection == 2) {
-            this.spelerClicked(this.spelerLijst.hoveredIdx);
+        else if (idx == 1) {
+            this.gaVerderClicked();
         }
     }
 
-    aantalClicked(idx: number) {
-        if (idx < 0) {
-            return;
+    enterSelectClicked() {
+        if (this.activeSection == 0) {
+            this.verenigingClicked(this.verenigingLijst.hoveredIdx);
         }
-        this.activeSection = 0;
-        this.aantalLijst.selectedIdx = this.aantalLijst.hoveredIdx = idx;
-        if (this.wedstrijd.aantSpelers != idx + 1) {
-            this.wedstrijd.aantSpelers = idx + 1;
-            this.initSpelers();
-            this.setWedstrijdChanged();
+        else if (this.activeSection == 1) {
+            this.spelerClicked(this.spelerLijst.hoveredIdx);
         }
-        this.activeSection++;
     }
 
     verenigingClicked(idx: number) {
         if (idx < 0) {
             return;
         }
-        this.activeSection = 1;
+        this.activeSection = 0;
         this.verenigingLijst.selectedIdx = this.verenigingLijst.hoveredIdx = idx;
         const vereniging: VerenigingKort = this.verenigingLijst.filtered[idx];
         this.verenigingFilter = vereniging.verId;
@@ -110,10 +132,10 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     }
 
     spelerClicked(idx: number) {
-        if (idx < 0 || this.aantalLijst.selectedIdx < 0) {
+        if (idx < 0) {
             return;
         }
-        this.activeSection = 2;
+        this.activeSection = 1;
         this.spelerLijst.selectedIdx = this.spelerLijst.hoveredIdx = idx;
         this.addSpelerToWedstrijd(this.spelerLijst.filtered[idx]);
     }
@@ -125,13 +147,10 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         this.filterSpelerLijst();
         this.spelerLijst.selectedIdx = this.spelerLijst.hoveredIdx = -1;
         this.wedstrijd = this.copyWedstrijd();
-        this.aantalLijst.selectedIdx = this.aantalLijst.hoveredIdx = this.wedstrijd.aantSpelers == 0 ? -1 : this.wedstrijd.aantSpelers - 1;
-        if (this.aantalLijst.selectedIdx >= 0) {
-            if (this.wedstrijd.teams.length > 0) {
-                this.idxActiveTeam = 0;
-            }
-            this.idxActiveSpeler = 0;
+        if (this.wedstrijd.teams.length > 0) {
+            this.idxActiveTeam = 0;
         }
+        this.idxActiveSpeler = 0;
         this.setSpelersFilled();
         this.wedstrijdChanged = false;
     }
@@ -166,6 +185,15 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         this.activeSection = idx;
     }
 
+    @HostListener('document:keydown', ['$event'])
+    handleKeydownEvent(event: KeyboardEvent): boolean {
+        if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
+            event.preventDefault();
+            return false;
+        }
+        return true;
+    }
+
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         //console.log(event);
@@ -176,32 +204,30 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         }
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.key === 'ArrowUp') {
-                if (this.activeSection == 0) {
-                    this.aantalLijst.hoverPreviousItem();
+                if (this.activeSection == 2 || event.ctrlKey) {
+                    this.maakVorigeSpelerActief();
+                }
+                else if (this.activeSection == 0) {
+                    this.verenigingLijst.hoverPreviousItem();
+                    this.verScrolling.scrollUp(this.verenigingLijst.hoveredIdx);
                 }
                 else if (this.activeSection == 1) {
-                    this.verenigingLijst.hoverPreviousItem();
-                }
-                else if (this.activeSection == 2) {
                     this.spelerLijst.hoverPreviousItem();
-                }
-                else if (this.activeSection == 3 || event.ctrlKey) {
-                    this.maakVorigeSpelerActief();
+                    this.splScrolling.scrollUp(this.spelerLijst.hoveredIdx);
                 }
                 return false;
             }
             if (event.key === 'ArrowDown') {
-                if (this.activeSection == 0) {
-                    this.aantalLijst.hoverNextItem();
+                if (this.activeSection == 2 || event.ctrlKey) {
+                    this.maakVolgendeSpelerActief();
+                }
+                else if (this.activeSection == 0) {
+                    this.verenigingLijst.hoverNextItem();
+                    this.verScrolling.scrollDown(this.verenigingLijst.hoveredIdx);
                 }
                 else if (this.activeSection == 1) {
-                    this.verenigingLijst.hoverNextItem();
-                }
-                else if (this.activeSection == 2) {
                     this.spelerLijst.hoverNextItem();
-                }
-                else if (this.activeSection == 3 || event.ctrlKey) {
-                    this.maakVolgendeSpelerActief();
+                    this.splScrolling.scrollDown(this.spelerLijst.hoveredIdx);
                 }
                 return false;
             }
@@ -209,17 +235,17 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         }
         if (event.key === 'Enter') {
             if (event.ctrlKey) {
-                this.buttonPressed(this.enterButton);
+                this.buttonPressed(this.pageButtons[1]);
                 return false;
             }
-            if (this.activeSection < 3) {
-                this.buttonPressed(this.enterSelectButton);
+            if (this.activeSection < 2) {
+                this.buttonPressed(this.sectionButtons[0]);
                 return false;
             }
             return true;
         }
         if (event.key === 'Backspace') {
-            this.buttonPressed(this.resetButton);
+            this.buttonPressed(this.pageButtons[0]);
             return false;
         }
         if (event.key === 'Escape') {
@@ -234,7 +260,6 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.fillAantalLijst();
         Promise.all([
             this.bssApi.getVerenigingenKort(),
             this.bssApi.getSpelersLijst(this.spelId),
@@ -242,6 +267,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         ])
         .then(results => {
             let verenigingen = results[0];
+            verenigingen.sort(this.compareVerenigingen);
             verenigingen.unshift({
                 verId: '',
                 naam: 'Geen',
@@ -254,21 +280,61 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
             this.filterSpelerLijst();
             if (results[2].gevonden) {
                 this.wedOrig = results[2].wedstrijd;
+                this.subtitle += ' - ' + this.aantalTekst[this.wedOrig.aantSpelers];
             }
+            if (this.wedOrig.aantSpelers == 0) {
+                this.router.navigate(['wedstrijd/aantspl']);
+                return;
+            } 
             this.resetClicked();
+            this.setupScrolling();
         })
         .catch(err => {
             this.alert.showError(err);
         });
     }
 
+    private setupScrolling() {
+        setTimeout(() => {
+            const elmV = this.htmlVerLijst()?.nativeElement;
+            if (elmV) {
+                this.scrollElmVer = elmV;
+                new ResizeObserver(() => { 
+                    this.initLijstScrolling(this.scrollElmVer, 'ver');
+                }).observe(this.scrollElmVer);
+            }
+            const elmS = this.htmlSplLijst()?.nativeElement;
+            if (elmS) {
+                this.scrollElmSpl = elmS;
+                new ResizeObserver(() => { 
+                    this.initLijstScrolling(this.scrollElmSpl, 'spl');
+                }).observe(this.scrollElmSpl);
+            }
+        }, 500);
+    }
+
+    private initLijstScrolling(elm: HTMLDivElement, lijst: string) {
+        if (elm) {
+            if (lijst == 'ver') {
+                this.verenigingLijst.hoveredIdx = this.verenigingLijst.selectedIdx >= 0 ? this.verenigingLijst.selectedIdx : 0;
+                this.verScrolling = new Scrolling(elm, elm.offsetHeight, this.verenigingLijst.filtered.length, this.verenigingLijst.selectedIdx);
+                console.log('resize event - pos = ' + this.verScrolling.scrollPos);
+            }
+            else {
+                this.spelerLijst.hoveredIdx = this.spelerLijst.selectedIdx >= 0 ? this.spelerLijst.selectedIdx : 0;
+                this.splScrolling = new Scrolling(elm, elm.offsetHeight, this.spelerLijst.filtered.length, this.spelerLijst.selectedIdx);
+                console.log('resize event - pos = ' + this.splScrolling.scrollPos);
+            }
+        }
+    }
+
     private veranderActieveSectie(direction: number) {
         let idx = this.activeSection;
         idx += direction;
         if (idx < 0) {
-            idx = 3;
+            idx = 2;
         }
-        if (idx > 3) {
+        if (idx > 2) {
             idx = 0;
         }
         this.maakSectionActief(idx);
@@ -369,37 +435,6 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         }
     }
 
-    private initSpelers() {
-        this.idxActiveTeam = -1;
-        this.idxActiveSpeler = -1;
-        this.wedstrijd.teams = [];
-        this.wedstrijd.spelers = [];
-        if (this.wedstrijd.aantSpelers == 5) {
-            const team1 = new WedTeam(0, 'Team A');
-            team1.spelers.push(new WedSpeler(0, 0));
-            team1.spelers.push(new WedSpeler(1, 0));
-            const team2 = new WedTeam(1, 'Team B');
-            team2.spelers.push(new WedSpeler(0, 1));
-            team2.spelers.push(new WedSpeler(1, 1));
-            this.wedstrijd.teams.push(team1);
-            this.wedstrijd.teams.push(team2);
-            this.idxActiveTeam = 0;
-        }
-        else {
-            this.wedstrijd.spelers.push(new WedSpeler(0));
-            if (this.wedstrijd.aantSpelers > 1) {
-                this.wedstrijd.spelers.push(new WedSpeler(1));
-            }
-            if (this.wedstrijd.aantSpelers > 2) {
-                this.wedstrijd.spelers.push(new WedSpeler(2));
-            }
-            if (this.wedstrijd.aantSpelers > 3) {
-                this.wedstrijd.spelers.push(new WedSpeler(3));
-            }
-        }
-        this.idxActiveSpeler = 0;
-    }
-
     private setSpelersFilled() {
         this.spelersFilled = false;
         if (this.wedstrijd.aantSpelers == 0) {
@@ -422,6 +457,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         this.spelerLijst.filter(sp => {
             return sp.isLidVan(this.verenigingFilter);
         })
+        this.spelerLijst.filtered.sort(this.compareSpelers);
     }
 
     private setWedstrijdChanged() {
@@ -448,13 +484,17 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         return JSON.parse(JSON.stringify(this.wedOrig));
     }
 
-    private fillAantalLijst(): void {
-        this.aantalLijst.fillItems([
-            '1 speler',
-            '2 spelers',
-            '3 spelers',
-            '4 spelers',
-            '4 (2 x 2) spelers'
-        ]);
+    private compareSpelers(a: SpelerWrapper, b: SpelerWrapper): number {
+        if (a.getGemiddeldeVanSpel() == b.getGemiddeldeVanSpel()) {
+            return (a.getNaam() > b.getNaam()) ? 1 : -1;
+        }
+        else {
+            return b.getGemiddeldeVanSpel() - a.getGemiddeldeVanSpel(); 
+        }
     }
+
+    private compareVerenigingen(a: VerenigingKort, b: VerenigingKort): number {
+        return (a.naam > b.naam) ? 1 : -1;
+    }
+
 }

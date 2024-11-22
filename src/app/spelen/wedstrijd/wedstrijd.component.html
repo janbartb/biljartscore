@@ -63,6 +63,7 @@
         @if (namesValid) {
             <div style="border-top: .25em solid green">
                 <div class="flexbox flexcenter" style="font-size: 1.25em; padding: .125em 0;">
+                    <app-button [button]="nieuwButton" (buttonClicked)="andereClicked()"></app-button>
                     @if (wedGestart) {
                         <app-button [button]="opnieuwButton" (buttonClicked)="opnieuwClicked()"></app-button>
                     }

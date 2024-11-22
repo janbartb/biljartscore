@@ -35,6 +35,10 @@ export class OnderhoudComponent extends BaseComponent implements OnInit {
             localStorage.removeItem('spelersNaamFilter');
             localStorage.removeItem('spelersVerenigingFilter');
         }
+        if (item.shortcut == 'e') {
+            this.alert.showAlert('Deze functionaliteit is nog niet ingebouwd.', 'info');
+            return;
+        }
         this.appData.gotoPage('onderhoud', 'onderhoud/' + item.navigateTo);
     }
 

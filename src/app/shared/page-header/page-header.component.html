@@ -7,7 +7,9 @@
                         </div>
                     }
                 </div>    
-        <div class="w3-display-middle">{{title}}</div>
+        <div class="w3-display-middle">
+            <span class="clickable" (click)="headerClicked()">{{title}}</span>
+        </div>
         <div class="header-game w3-display-right">
             <span>{{spel}}</span>
         </div>

@@ -248,99 +248,123 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             this.checkForTeamMessages(fromSerie, fromEnter);
             return;
         }
-        let msg = '';
+        let msg: string[] = [];
         let spk = '';
-        let msgType = '';
-        let sound = '';
-        if (fromEnter) {
+        let msgType = 'info';
+        if (!fromSerie) {
             // beurten - alleen checken voor speler 1
             if (this.idxSpeler === 0) {
                 let maxBeurten = this.getMaxBeurten();
                 const remainingBrt = maxBeurten - this.activeSpeler.stand.aantBrt;
-                if (remainingBrt === 1) {
-                    msg = 'Voorlaatste beurt';
+                if (remainingBrt === 1 && fromEnter) {
+                    msg.push('Voorlaatste beurt');
                     spk = 'Voorlaatste beurt';
-                    msgType = 'info';
-                    sound = 'voorlaatste';
+                }
+                if (remainingBrt === 0 && fromEnter) {
+                    msg.push('Laatste beurt');
+                    spk = 'Laatste beurt';
                 }
             }
             // gelijkmakende beurt
             if (!this.wedstrijd.isVastAantBrt) {
                 let idx = this.findIndexEersteSpelerDieCarsHeeftBereikt();
                 if (idx >= 0 && this.idxSpeler > idx) {
-                    msg = 'Gelijkmakende beurt';
-                    spk = 'Gelijkmakende beurt voor ' + this.activeSpeler.splSpreekNaam;
-                    msgType = 'info';
-                    sound = 'voorlaatste';
+                    msg.push('Gelijkmakende beurt');
+                    spk = 'Gelijkmakende beurt';
+                }
+            }
+            // herhaal 'en nog ...' melding
+            const remainingCar = this.activeSpeler.splTsCar - this.activeSpeler.stand.aantCar - this.activeSpeler.stand.serie;
+            if (remainingCar > 0 && remainingCar < 4) {
+                if (msg.length) {
+                    msg.push(`${this.activeSpeler.splBordNaam} - nog ${remainingCar} ...`)
+                    spk = spk + `. ${this.activeSpeler.splBordNaam}, nog ${remainingCar}.`;    
+                }
+                else {
+                    msg.push(`${this.activeSpeler.splBordNaam} - nog ${remainingCar} ...`);
+                    spk = `${this.activeSpeler.splSpreekNaam}. Nog ${remainingCar}.`;    
                 }
             }
         }
         else if (fromSerie && !this.wedstrijd.isVastAantBrt) {
             const remainingCar = this.activeSpeler.splTsCar - this.activeSpeler.stand.aantCar - this.activeSpeler.stand.serie;
             if (remainingCar === 0) {
-                msg = 'Aantal bereikt';
+                msg.push('Aantal bereikt');
                 spk = this.activeSpeler.splSpreekNaam + ', aantal bereikt';
-                msgType = 'success';
-                sound = 'voorlaatste';
             }
-            if (remainingCar === 3) {
-                msg = 'En nog 3 ...';
-                spk = this.activeSpeler.splSpreekNaam + ', nog 3';
-                msgType = 'info';
-                sound = 'voorlaatste';
-            }    
+            else if (remainingCar < 4) {
+                msg.push(`${this.activeSpeler.stand.serie}, en nog ${remainingCar} ...`);
+                spk = `${this.activeSpeler.stand.serie}, en nog ${remainingCar}.`;
+            }
+            else {
+                msg.push(`${this.activeSpeler.stand.serie}`);
+                spk = `${this.activeSpeler.stand.serie}`;
+                msgType = 'carambole';
+            }
         }
         if (msg.length) {
-            const modalMsg = new ModalMessage(msgType, [msg], spk, 3);
+            const modalMsg = new ModalMessage(msgType, msg, spk, 3);
             this.modals.push(modalMsg);
             this.showModal();
         }
     }
 
     private checkForTeamMessages(fromSerie?: boolean, fromEnter?: boolean): void {
-        let msg = '';
+        let msg: string[] = [];
         let spk = '';
-        let msgType = '';
-        let sound = '';
-        if (fromEnter) {
+        let msgType = 'info';
+        if (!fromSerie) {
             // beurten - alleen checken voor speler 1
             if (this.idxTeam === 0 && this.idxSpeler === 0) {
                 let maxBeurten = this.getMaxBeurten();
                 const remainingBrt = maxBeurten - this.activeSpeler.stand.aantBrt;
                 if (remainingBrt === 1) {
-                    msg = 'Voorlaatste beurt';
+                    msg.push('Voorlaatste beurt');
                     spk = 'Voorlaatste beurt';
-                    msgType = 'info';
-                    sound = 'voorlaatste';
+                }
+                if (remainingBrt === 0) {
+                    msg.push('Laatste beurt');
+                    spk = 'Laatste beurt';
                 }
             }
             // gelijkmakende beurt
             if (!this.wedstrijd.isVastAantBrt) {
                 if (this.idxTeam === 1 && this.wedstrijd.teams[0].stand.aantCar === this.wedstrijd.teams[0].teamTsCar) {
-                    msg = 'Gelijkmakende beurt';
-                    spk = 'Gelijkmakende beurt voor ' + this.activeTeam.teamNaam;
-                    msgType = 'info';
-                    sound = 'voorlaatste';
+                    msg.push('Gelijkmakende beurt');
+                    spk = 'Gelijkmakende beurt';
+                }
+            }
+            // herhaal 'en nog ...' melding
+            const remainingCar = this.activeTeam.teamTsCar - this.activeTeam.stand.aantCar - this.activeTeam.stand.serie;
+            if (remainingCar > 0 && remainingCar < 4) {
+                if (msg.length) {
+                    msg.push(`${this.activeTeam.teamNaam} - nog ${remainingCar} ...`)
+                    spk = spk + `. ${this.activeTeam.teamNaam}, nog ${remainingCar}.`;    
+                }
+                else {
+                    msg.push(`${this.activeTeam.teamNaam} - nog ${remainingCar} ...`);
+                    spk = `${this.activeTeam.teamNaam}, nog ${remainingCar}.`;    
                 }
             }
         }
-        else if (fromSerie && !this.wedstrijd.isVastAantBrt) {
+        else if (!this.wedstrijd.isVastAantBrt) {
             const remainingCar = this.activeTeam.teamTsCar - this.activeTeam.stand.aantCar - this.activeTeam.stand.serie;
             if (remainingCar === 0) {
-                msg = `Aantal bereikt`;
+                msg.push('Aantal bereikt');
                 spk = this.activeTeam.teamNaam + ', aantal bereikt';
-                msgType = 'success';
-                sound = 'voorlaatste';
             }
-            if (remainingCar === 3) {
-                msg = 'En nog 3 ...';
-                spk = this.activeTeam.teamNaam + ', nog 3';
-                msgType = 'info';
-                sound = 'voorlaatste';
-            }    
+            else if (remainingCar < 4) {
+                msg.push(`${this.activeTeam.stand.serie}, en nog ${remainingCar} ...`);
+                spk = `${this.activeTeam.stand.serie}, en nog ${remainingCar}.`;
+            }
+            else {
+                msg.push(`${this.activeTeam.stand.serie}`);
+                spk = `${this.activeTeam.stand.serie}`;
+                msgType = 'carambole';
+            }
         }
         if (msg.length) {
-            const modalMsg = new ModalMessage(msgType, [msg], spk, 3);
+            const modalMsg = new ModalMessage(msgType, msg, spk, 3);
             this.modals.push(modalMsg);
             this.showModal();
         }
@@ -364,18 +388,14 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             }
         }
         this.activeSpeler.stand.serie += nr;
-        if (nr > 0) {
-            const msg = '' + this.activeSpeler.stand.serie;
-            const modalMsg = new ModalMessage('carambole', [msg], msg, 2);
-            this.modals.push(modalMsg);
-            this.showModal();
-        }
         this.activeSpeler.stand.gemiddelde = this.getGemiddelde(this.activeSpeler);
         if (this.isTeamWedstrijd()) {
             this.activeTeam.stand.serie += nr;
             this.activeTeam.stand.gemiddelde = this.getTeamGemiddelde(this.activeTeam);
         }
-        this.checkForMessages(nr > 0);
+        if (nr > 0) {
+            this.checkForMessages(true);
+        }
         return false;
     }
 

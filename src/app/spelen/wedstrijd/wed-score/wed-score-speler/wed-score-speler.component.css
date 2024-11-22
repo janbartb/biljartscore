@@ -31,6 +31,7 @@
 
 .scoredata { opacity: .5; }
 .scoredata.active { opacity: 1; }
+.scoredata.active.geel { background-color: yellow; }
 .scoredata.active .changes { color: #3d8b40; }
 .scoredata.active .scale { scale: 1.5; }
 
@@ -38,6 +39,7 @@
 .laatste5 .laatste5data { color: gray; }
 .laatste5.active { opacity: 1; }
 .laatste5.active .laatste5data { color: white; }
+.laatste5.active.geel .laatste5data { color: yellow; }
 
 .extradata {
     text-align: right;
@@ -45,4 +47,5 @@
 }
 .extradata .clr-red { color: red; }
 .extradata.active { opacity: 1; }
+.extradata.active.geel { background-color: yellow; }
 .extradata.active .changes { color: #3d8b40; }

@@ -49,6 +49,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     optieLijst: List<string> = new List<string>();
     subOptieLijst: List<string> = new List<string>();
     activeOpties = 0;
+    escapeCount: number = 0;
 
     enterButton: Button = new Button('Ctrl+Enter', 'Ga verder', true);
 
@@ -89,7 +90,9 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         }
         if (this.activeOpties == 1) {
             this.activeOpties = 0;
+            this.subOptieLijst.selectedIdx = this.subOptieLijst.hoveredIdx = -1;
             this.optieClicked(0, 0);
+            this.setEscapeCount();
             return;
         }
         this.router.navigate(['wedstrijd/spelers']);
@@ -114,20 +117,25 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         }
         if (idxActive == 0) {
             this.activeOpties = 0;
+            this.subOptieLijst.selectedIdx = this.subOptieLijst.hoveredIdx = -1;
             if (idxOptie == 1) {
+                this.optieLijst.hoverItem(idxOptie);
                 this.optieLijst.selectItem(idxOptie);
                 this.activeOpties = 1;
                 if (this.subOptieLijst.selectedIdx < 0) {
+                    this.subOptieLijst.hoverItem(0);
                     this.subOptieLijst.selectItem(0);
                     this.helper.setFocus(this.htmlVastCar()?.nativeElement);
                 }
             }
             else {
+                this.optieLijst.hoverItem(idxOptie);
                 this.optieLijst.selectItem(idxOptie);
                 this.helper.setFocus(this.htmlVastBrt()?.nativeElement);
             }
         }
         else {
+            this.subOptieLijst.hoverItem(idxOptie);
             this.subOptieLijst.selectItem(idxOptie);
             if (idxOptie == 0) {
                 this.helper.setFocus(this.htmlVastCar()?.nativeElement);
@@ -137,6 +145,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             }
         }
         this.validateInput();
+        this.setEscapeCount();
     }
 
     gaVerderClicked() {
@@ -292,6 +301,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             }
         }
         this.validateInput();
+        this.setEscapeCount();
     }
 
     private hasWedstrijdChanged() {
@@ -305,6 +315,17 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             else {
                 this.wedstrijdChanged = this.gemBrt.hasChanged() || this.maxBrt.hasChanged();
             }
+        }
+        this.setEscapeCount();
+    }
+
+    setEscapeCount() {
+        this.escapeCount = 0;
+        if (this.wedstrijdChanged) {
+            this.escapeCount++;
+        }
+        if (this.activeOpties == 1) {
+            this.escapeCount++;
         }
     }
 

@@ -1,112 +1,68 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="'Oefen wedstrijd - spelers'" [spel]="appData.getSpelNaam()"></app-page-header>
+            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
         </div>
-        <div class="flexgrow1 flexbox">
-            <div class="fullheight flexbox flexcolumn section" style="border-right: .25em solid green;">
-                <div class="section-header clickable" (click)="maakSectionActief(0)">
-                    <div class="w3-green-l2" style="padding: 0 1em;">
-                        <span>Aantal spelers</span>
-                    </div>
-                </div>
-                <div class="section-status" [ngClass]="{'active': activeSection == 0}"></div>
-                <div class="flexgrow1 flexbox flexcenter" style="padding: 0 1em;">
+        <div class="flexgrow1 flexbox flexstretch">
+            <div class="flex30perc flexbox flexcolumn" style="border-right: .25em solid green;">
+                <app-section-header [title]="'Kies vereniging'" [cssClasses]="'w3-green-l2'" 
+                                [active]="activeSection == 0" (headerClicked)="maakSectionActief(0)"></app-section-header>
+                <div class="flexgrow1 scroll-container">
                     <div style="margin-top: .5em;">
-                        <table class="tbl-normal tbl-list">
-                            <tbody>
-                                @for (aantSpl of aantalLijst.filtered; track $index) {
-                                    <tr class="selectable" [ngClass]="{'selected': aantalLijst.selectedIdx == $index, 'hovered': aantalLijst.hoveredIdx == $index}" 
-                                            (click)="aantalClicked($index)">
-                                        <td class="indicator" style="width: 1.25em;">
-                                            <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
-                                        </td>
-                                        <td>{{aantSpl}}</td>
-                                    </tr>
-                                }    
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                @if (activeSection == 0 && aantalLijst.hoveredIdx >= 0) {
-                    <div class="section-footer" style="border-top: .25em solid #93cf95">
-                        <div class="flexbox flexcenter" style="padding: .125em 0;">
-                            <app-button [button]="enterSelectButton" (buttonClicked)="enterSelectClicked()"></app-button>
+                        <div #vereniginglijst class="scroll-content">
+                            <div class="flexbox flexcenter">
+                                <div class="lijst">
+                                    @for (ver of verenigingLijst.filtered; track $index) {
+                                        <div class="lijst-row selectable" (click)="verenigingClicked($index)"
+                                                [ngClass]="{'selected': verenigingLijst.selectedIdx == $index, 
+                                                            'hovered': activeSection == 0 && verenigingLijst.hoveredIdx == $index}">
+                                            <div class="lijst-col">
+                                                <span class="indicator fas fa-angle-right"> </span>
+                                                <span> {{ver.naam}}</span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+                @if (activeSection == 0 && verenigingLijst.hoveredIdx >= 0) {
+                    <app-section-footer-btns [buttons]="sectionButtons" (clickedButton)="enterSelectClicked()"
+                                                [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
                 }
             </div>
-            <div class="fullheight flexbox flexcolumn section" style="border-right: .25em solid green;">
-                <div class="section-header clickable" (click)="maakSectionActief(1)">
-                    <div class="w3-green-l2" style="padding: 0 1em;">
-                        <span>Kies vereniging</span>
-                    </div>
-                </div>
-                <div class="section-status" [ngClass]="{'active': activeSection == 1}"></div>
-                <div class="flexgrow1 flexbox flexcenter scrollable" style="padding: 0 1em;">
+            <div class="flex30perc flexbox flexcolumn" style="border-right: .25em solid green;">
+                <app-section-header [title]="'Kies speler'" [cssClasses]="'w3-green-l2'" 
+                                [active]="activeSection == 1" (headerClicked)="maakSectionActief(1)"></app-section-header>
+                <div class="flexgrow1 scroll-container">
                     <div style="margin-top: .5em;">
-                        <table class="tbl-normal tbl-list">
-                            <tbody>
-                                @for (ver of verenigingLijst.filtered; track $index) {
-                                    <tr class="selectable" [ngClass]="{'selected': verenigingLijst.selectedIdx == $index, 'hovered': verenigingLijst.hoveredIdx == $index}" 
-                                            (click)="verenigingClicked($index)">
-                                        <td class="indicator" style="width: 1.25em;">
-                                            <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
-                                        </td>
-                                        <td>{{ver.naam}}</td>
-                                    </tr>
-                                }    
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                @if (activeSection == 1 && verenigingLijst.hoveredIdx >= 0) {
-                    <div class="section-footer" style="border-top: .25em solid #93cf95">
-                        <div class="flexbox flexcenter" style="padding: .125em 0;">
-                            <app-button [button]="enterSelectButton" (buttonClicked)="enterSelectClicked()"></app-button>
+                        <div #spelerlijst class="scroll-content">
+                            <div class="flexbox flexcenter">
+                                <div class="lijst">
+                                    @for (spl of spelerLijst.filtered; track $index) {
+                                        <div class="lijst-row selectable" (click)="spelerClicked($index)"
+                                                [ngClass]="{'selected': spelerLijst.selectedIdx == $index, 
+                                                            'hovered': activeSection == 1 && spelerLijst.hoveredIdx == $index}">
+                                            <div class="lijst-col">
+                                                <span class="indicator fas fa-angle-right"> </span>
+                                                <span> {{spl.getNaam()}}</span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+                @if (activeSection == 1 && spelerLijst.hoveredIdx >= 0) {
+                    <app-section-footer-btns [buttons]="sectionButtons" (clickedButton)="enterSelectClicked()"
+                                                [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
                 }
             </div>
-            <div class="fullheight flexbox flexcolumn section" style="border-right: .25em solid green;">
-                <div class="section-header clickable" (click)="maakSectionActief(2)">
-                    <div class="w3-green-l2" style="padding: 0 1em;">
-                        <span>Kies speler</span>
-                    </div>
-                </div>
-                <div class="section-status" [ngClass]="{'active': activeSection == 2}"></div>
-                <div class="flexgrow1 flexbox flexcenter scrollable" style="padding: 0 1em;">
-                    <div style="margin-top: .5em;">
-                        <table class="tbl-normal tbl-list">
-                            <tbody>
-                                @for (spl of spelerLijst.filtered; track $index) {
-                                    <tr class="selectable" [ngClass]="{'selected': spelerLijst.selectedIdx == $index, 'hovered': spelerLijst.hoveredIdx == $index}"
-                                             (click)="spelerClicked($index)">
-                                        <td class="indicator" style="width: 1.25em;">
-                                            <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
-                                        </td>
-                                        <td>{{spl.getNaam()}}</td>
-                                    </tr>
-                                }    
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                @if (activeSection == 2 && spelerLijst.hoveredIdx >= 0) {
-                    <div class="section-footer" style="border-top: .25em solid #93cf95">
-                        <div class="flexbox flexcenter" style="padding: .125em 0;">
-                            <app-button [button]="enterSelectButton" (buttonClicked)="enterSelectClicked()"></app-button>
-                        </div>
-                    </div>
-                }
-            </div>
-            <div class="fullheight flexgrow1 flexbox flexcolumn section">
-                <div class="section-header clickable" (click)="maakSectionActief(3)">
-                    <div class="w3-green-l2" style="padding: 0 1em;">
-                        <span>Spelers</span>
-                    </div>
-                </div>
-                <div class="section-status" [ngClass]="{'active': activeSection == 3}"></div>
+            <div class="flexgrow1 flexbox flexcolumn">
+                <app-section-header [title]="'Spelers'" [cssClasses]="'w3-green-l2'" 
+                                [active]="activeSection == 2" (headerClicked)="maakSectionActief(2)"></app-section-header>
                 @if (wedstrijd.aantSpelers > 0) {
                     <div class="flexbox flexcenter">
                         <div>
@@ -145,16 +101,8 @@
             </div>
         </div>
         @if (wedstrijdChanged || spelersFilled) {
-            <div style="border-top: .25em solid green">
-                <div class="flexbox flexcenter" style="font-size: 1.25em; padding: .125em 0;">
-                    @if (wedstrijdChanged) {
-                        <app-button [button]="resetButton" (buttonClicked)="resetClicked()"></app-button>
-                    }
-                    @if (spelersFilled) {
-                        <app-button [button]="enterButton" (buttonClicked)="gaVerderClicked()"></app-button>
-                    }
-                </div>
-            </div>    
+            <app-section-footer-btns [buttons]="pageButtons" [btnsHide]="[!wedstrijdChanged, !spelersFilled]"
+                            (clickedButton)="pageButtonClicked($event)" [cssFooter]="'w3-green-bdr-d2'" [cssButtons]="'font125'"></app-section-footer-btns>
         }
     </div>
 </div>

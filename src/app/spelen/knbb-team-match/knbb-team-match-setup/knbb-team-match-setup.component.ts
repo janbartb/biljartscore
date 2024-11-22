@@ -438,7 +438,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         }
         else {
             // preselect team op basis van het team in de match
-            idx = this.teamLijst.filtered.findIndex(ctm => ctm.key.verId == this.activeMatchTeam.verId);
+            idx = this.teamLijst.filtered.findIndex(ctm => ctm.key.verId == this.activeMatchTeam.verId && ctm.key.teamId == this.activeMatchTeam.teamId);
             this.teamClicked(idx, true);
         }
         this.idxSpeler = 0;

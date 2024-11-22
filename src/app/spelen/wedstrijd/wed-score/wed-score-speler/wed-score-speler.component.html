@@ -26,7 +26,7 @@
         </div>
     </div>
     <!-- score -->
-    <div class="scoredata flexbox arial" [ngClass]="{'active': speler.active}" style="height: 13em;">
+    <div class="scoredata flexbox arial" [ngClass]="{'active': speler.active, 'geel': !speler.metWit}" style="height: 13em;">
         <div style="width: 17em; position: relative;">
             <div class="aantcar" style="width: 17em; position: relative; left: -.5em; text-align: center;">
                 <span>{{speler.stand.aantCar}}</span>
@@ -57,13 +57,13 @@
         </div>
     </div>
     <!-- laatste 5 beurten -->
-    <div class="flexbox flexmiddle laatste5 arial" [ngClass]="{'active': speler.active}" 
+    <div class="flexbox flexmiddle laatste5 arial" [ngClass]="{'active': speler.active, 'geel': !speler.metWit}" 
             style="height: 4em; padding: 0 .5em; background-color: black; color: white;">
         <div class="flexgrow1" style="padding-left: .25em;">
             <div class="laatste5data" style="font-size: 3em;">
                 @for (cars of speler.stand.laatste5brt; track $index) {
                     <span style="padding-right: .375em;" 
-                            [style.opacity]="1 - ((speler.stand.laatste5brt.length - $index - 1) * .2)">{{cars == 0 ? '­•' : cars}}</span>
+                            [style.opacity]="1 - ((speler.stand.laatste5brt.length - $index - 1) * .15)">{{cars == 0 ? '­•' : cars}}</span>
                 }
             </div>
         </div>
@@ -75,8 +75,8 @@
         </div>
     </div>
     <!-- percentage en hoogste serie -->
-    <div style="padding: 0 1em;">
-        <div class="flexbox flexmiddle extradata" [ngClass]="{'active': speler.active}" style="height: 3.25em;">
+    <div class="extradata" [ngClass]="{'active': speler.active, 'geel': !speler.metWit}" style="padding: 0 1em;">
+        <div class="flexbox flexmiddle" style="height: 3.25em;">
             <div style="font-size: 2.25em; color: gray;">Percentage</div>
             <div class="flexgrow1" style="font-size: 2.25em;">
                 @if (speler.stand.serie > 0) {
@@ -90,11 +90,12 @@
                 }
             </div>
         </div>
-        <div class="flexbox flexmiddle extradata" [ngClass]="{'active': speler.active}" style="height: 3.25em;">
+        <div class="flexbox flexmiddle" style="height: 3.25em;">
             <div style="font-size: 2.25em; color: gray;">Hoogste serie</div>
             <div class="flexgrow1" style="font-size: 2.25em;" [ngClass]="{'changes': speler.stand.serie > speler.stand.hoogSer}">
                 <span>{{speler.stand.serie > speler.stand.hoogSer ? speler.stand.serie : speler.stand.hoogSer}}</span>
             </div>
         </div>
+        <div style="height: .25em;"></div>
     </div>
 </div>

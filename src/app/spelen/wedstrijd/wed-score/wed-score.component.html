@@ -2,31 +2,34 @@
     @if (wedGelezen) {
         @if (wedstrijd.aantSpelers == 1) {
             <div class="bss-score-2 fullheight">
-                <div class="fullheight speler-container active">
+                <div class="fullheight speler-container active" [ngClass]="{'wit': wedstrijd.spelers[0].metWit, 'geel': !wedstrijd.spelers[0].metWit}">
                     <app-wed-score-speler-landscape [speler]="wedstrijd.spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler-landscape>
                 </div>
             </div>
         }
         @else if (wedstrijd.aantSpelers == 2) {
-            <div class="bss-score-2 fullheight flexbox">
-                <div class="fullheight flex50perc speler-container" [ngClass]="{'active': idxSpeler == 0}">
+            <div class="bss-score-2 fullheight flexbox flexstretch">
+                <div class="flex50perc speler-container wit" [ngClass]="{'active': idxSpeler == 0}">
                     <app-wed-score-speler [speler]="wedstrijd.spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler>
                 </div>
-                <div class="fullheight flex50perc speler-container" [ngClass]="{'active': idxSpeler == 1}">
+                <div class="flex50perc speler-container geel" [ngClass]="{'active': idxSpeler == 1}">
                     <app-wed-score-speler [speler]="wedstrijd.spelers[1]" (undoBusy)="resetBusy()"></app-wed-score-speler>
                 </div>
             </div>
         }
         @else if (wedstrijd.aantSpelers == 3) {
             <div class="fullheight scale-for3">
-                <div class="bss-score-3 fullheight flexbox">
-                    <div class="fullheight flex33perc speler-container" [ngClass]="{'active': idxSpeler == 0}">
+                <div class="bss-score-3 fullheight flexbox flexstretch">
+                    <div class="flex33perc speler-container" [ngClass]="{'active': idxSpeler == 0, 
+                                'wit': wedstrijd.spelers[0].metWit, 'geel': !wedstrijd.spelers[0].metWit}">
                         <app-wed-score-speler [speler]="wedstrijd.spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler>
                     </div>
-                    <div class="fullheight flex33perc speler-container" [ngClass]="{'active': idxSpeler == 1}">
+                    <div class="flex33perc speler-container" [ngClass]="{'active': idxSpeler == 1, 
+                                'wit': wedstrijd.spelers[1].metWit, 'geel': !wedstrijd.spelers[1].metWit}">
                         <app-wed-score-speler [speler]="wedstrijd.spelers[1]" (undoBusy)="resetBusy()"></app-wed-score-speler>
                     </div>
-                    <div class="fullheight flex33perc speler-container" [ngClass]="{'active': idxSpeler == 2}">
+                    <div class="flex33perc speler-container" [ngClass]="{'active': idxSpeler == 2, 
+                                'wit': wedstrijd.spelers[2].metWit, 'geel': !wedstrijd.spelers[2].metWit}">
                         <app-wed-score-speler [speler]="wedstrijd.spelers[2]" (undoBusy)="resetBusy()"></app-wed-score-speler>
                     </div>
                 </div>    
@@ -36,18 +39,18 @@
             <div class="bss-score-1">
                 <div class="flexbox" style="font-size: .5rem;">
                     <div class="flex50perc">
-                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxSpeler == 0}">
+                        <div class="bss-landscape speler-container wit" [ngClass]="{'active': idxSpeler == 0}">
                             <app-wed-score-speler-landscape [speler]="wedstrijd.spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler-landscape>
                         </div>
-                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxSpeler == 2}">
+                        <div class="bss-landscape speler-container wit" [ngClass]="{'active': idxSpeler == 2}">
                             <app-wed-score-speler-landscape [speler]="wedstrijd.spelers[2]" (undoBusy)="resetBusy()"></app-wed-score-speler-landscape>
                         </div>
                     </div>
                     <div class="flex50perc">
-                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxSpeler == 1}">
+                        <div class="bss-landscape speler-container geel" [ngClass]="{'active': idxSpeler == 1}">
                             <app-wed-score-speler-landscape [speler]="wedstrijd.spelers[1]" (undoBusy)="resetBusy()"></app-wed-score-speler-landscape>
                         </div>
-                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxSpeler == 3}">
+                        <div class="bss-landscape speler-container geel" [ngClass]="{'active': idxSpeler == 3}">
                             <app-wed-score-speler-landscape [speler]="wedstrijd.spelers[3]" (undoBusy)="resetBusy()"></app-wed-score-speler-landscape>
                         </div>
                     </div>
@@ -58,34 +61,34 @@
             <div class="bss-score-1">
                 <div class="flexbox" style="font-size: .5rem;">
                     <div class="flex50perc">
-                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxTeam == 0}">
+                        <div class="bss-landscape speler-container wit" [ngClass]="{'active': idxTeam == 0}">
                             <app-wed-score-team [team]="wedstrijd.teams[0]" (undoBusy)="resetBusy()"></app-wed-score-team>
                         </div>
                         <div class="flexbox">
                             <div class="flex50perc">
-                                <div class="bss-portrait speler-container" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 0}">
+                                <div class="bss-portrait speler-container wit" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 0}">
                                     <app-wed-score-speler [speler]="wedstrijd.teams[0].spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler>
                                 </div>
                             </div>        
                             <div class="flex50perc">
-                                <div class="bss-portrait speler-container" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 1}">
+                                <div class="bss-portrait speler-container wit" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 1}">
                                     <app-wed-score-speler [speler]="wedstrijd.teams[0].spelers[1]" (undoBusy)="resetBusy()"></app-wed-score-speler>
                                 </div>
                             </div>        
                         </div>
                     </div>
                     <div class="flex50perc">
-                        <div class="bss-landscape speler-container" [ngClass]="{'active': idxTeam == 1}">
+                        <div class="bss-landscape speler-container geel" [ngClass]="{'active': idxTeam == 1}">
                             <app-wed-score-team [team]="wedstrijd.teams[1]" (undoBusy)="resetBusy()"></app-wed-score-team>
                         </div>
                         <div class="flexbox">
                             <div class="flex50perc">
-                                <div class="bss-portrait speler-container" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 0}">
+                                <div class="bss-portrait speler-container geel" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 0}">
                                     <app-wed-score-speler [speler]="wedstrijd.teams[1].spelers[0]" (undoBusy)="resetBusy()"></app-wed-score-speler>
                                 </div>
                             </div>        
                             <div class="flex50perc">
-                                <div class="bss-portrait speler-container" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 1}">
+                                <div class="bss-portrait speler-container geel" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 1}">
                                     <app-wed-score-speler [speler]="wedstrijd.teams[1].spelers[1]" (undoBusy)="resetBusy()"></app-wed-score-speler>
                                 </div>
                             </div>        

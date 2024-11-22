@@ -1,7 +1,8 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"></app-page-header>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"
+                        (hdrClicked)="gotoOnderhoud()"></app-page-header>
         </div>
         <app-section-header [title]="sectionTitle" [cssClasses]="'w3-green-l2'"></app-section-header>
         <div class="flexgrow1">

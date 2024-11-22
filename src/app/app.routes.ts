@@ -28,6 +28,7 @@ import { KnbbTeamMatchScoreComponent } from './spelen/knbb-team-match/knbb-team-
 import { KnbbTeamMatchSetupComponent } from './spelen/knbb-team-match/knbb-team-match-setup/knbb-team-match-setup.component';
 import { KnbbTeamMatchCheckComponent } from './spelen/knbb-team-match/knbb-team-match-check/knbb-team-match-check.component';
 import { KnbbTeamMatchCompComponent } from './spelen/knbb-team-match/knbb-team-match-comp/knbb-team-match-comp.component';
+import { WedAantSpelersComponent } from './spelen/wedstrijd/wed-aant-spelers/wed-aant-spelers.component';
 
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },
@@ -61,6 +62,7 @@ export const routes: Routes = [
     { path: 'wedstrijd/score', component: WedScoreComponent },
     { path: 'wedstrijd/config', component: WedConfigComponent },
     { path: 'wedstrijd/spelers', component: WedSpelersComponent },
+    { path: 'wedstrijd/aantspl', component: WedAantSpelersComponent },
     { path: 'wedstrijd', component: WedstrijdComponent },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', redirectTo: 'home', pathMatch: 'full' }

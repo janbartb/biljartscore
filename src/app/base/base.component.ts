@@ -31,6 +31,10 @@ export class BaseComponent {
         this.appData.previousPage();
     }
 
+    gotoOnderhoud() {
+        this.router.navigate(['onderhoud']);
+    }
+
     isRequired(form: FormGroup, field: string): boolean {
         if (!form) return false;
         return form.controls[field]?.hasValidator(Validators.required);

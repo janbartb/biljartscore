@@ -10,10 +10,13 @@
 }
 
 .speler-container {
-    border: .5em solid gray;
+    border: .5em solid #505050;
 }
-.speler-container.active {
-    border-color: red;
+.speler-container.active.wit {
+    border-color: white;
+}
+.speler-container.active.geel {
+    border-color: yellow;
 }
 .speler-container div {
     overflow: hidden;

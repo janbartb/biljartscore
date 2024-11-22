@@ -235,6 +235,10 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
                     msg.push('Voorlaatste beurt');
                     spk = 'Voorlaatste beurt';
                 }
+                if (remainingBrt === 0 && fromEnter) {
+                    msg.push('Laatste beurt');
+                    spk = 'Laatste beurt';
+                }
             }
             if (this.idxSpeler === 1 && fromEnter) {
                 if (this.tegenstanderHeeftAantalBereikt(this.idxSpeler)) {
@@ -246,11 +250,11 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
             if (remainingCar > 0 && remainingCar < 4) {
                 if (msg.length) {
                     msg.push(`${this.activeSpeler.splBordNaam}, nog ${remainingCar} ...`)
-                    spk = spk + `. ${this.activeSpeler.splBordNaam}, nog ${remainingCar}.`;    
+                    spk = spk + `. ${this.activeSpeler.splSpreekNaam}, nog ${remainingCar}.`;    
                 }
                 else {
                     msg.push(`${this.activeSpeler.splBordNaam}, nog ${remainingCar} ...`);
-                    spk = `${this.activeSpeler.splSpreekNaam}. Nog ${remainingCar}.`;    
+                    spk = `${this.activeSpeler.splSpreekNaam}, nog ${remainingCar}.`;    
                 }
             }
         }

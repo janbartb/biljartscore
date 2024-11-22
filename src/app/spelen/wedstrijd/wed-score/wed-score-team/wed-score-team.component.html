@@ -26,7 +26,7 @@
         <div class="flexgrow1 flexbox">
             <div class="fullheight" style="width: 1em;" [style.background-color]="team.active ? 'black' : 'grey'"></div>
             <div class="fullheight flexgrow1 flexbox flexcolumn">
-                <div class="flexbox flexmiddle arial scoredata" [ngClass]="{'active': team.active}"
+                <div class="flexbox flexmiddle arial scoredata" [ngClass]="{'active': team.active, 'geel': !team.metWit}"
                         style="height: 14em; line-height: 1;">
                     <div class="flex50perc" style="text-align: center;">
                         <span style="font-size: 14em;">{{team.stand.aantCar}}</span>
@@ -45,8 +45,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="flexgrow1 flexbox flexmiddle arial extradata" [ngClass]="{'active': team.active}" 
-                        style="background-color: black; color: white;">
+                <div class="flexgrow1 flexbox flexmiddle arial extradata" [ngClass]="{'active': team.active, 'geel': !team.metWit}" 
+                        style="background-color: black;">
                     <div style="width: 19em; line-height: 1; text-align: right;">
                         <span style="font-size: 7em;" [ngClass]="{'changes': team.stand.serie > 0}"
                                 >{{team.stand.gemiddelde | number:'1.3-3':'nl-NL'}}</span>
@@ -65,14 +65,14 @@
                     </div>
                 </div>
             </div>
-            <div class="fullheight arial laatste5" [ngClass]="{'active': team.active}"
+            <div class="fullheight arial laatste5" [ngClass]="{'active': team.active, 'geel': !team.metWit}"
                     style="width: 11em; background-color: black; color: gray;">
                 <div class="lbl">
                     <span>laatste 5</span>
                 </div>
-                <div class="laatste5data" style="color: white; position: relative; top: -.5em;">
-                    @for (cars of team.stand.laatste5brt; track $index) {
-                        <div style="text-align: center;" [style.opacity]="1 - ((team.stand.laatste5brt.length - $index - 1) * .2)">
+                <div class="laatste5data" style="position: relative; top: -.5em;">
+                    @for (cars of team.stand.laatste5brt.slice().reverse(); track $index) {
+                        <div style="text-align: center;" [style.opacity]="1 - ($index * .15)">
                             <span style="font-size: 4em; letter-spacing: -.075em; line-height: 1;">{{cars == 0 ? '­•' : cars}}</span>
                         </div>    
                     }

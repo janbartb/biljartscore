@@ -1,3 +1,57 @@
+.opties.selectable {
+    cursor: pointer;
+    color: black;
+    opacity: .5;
+    padding: 0 .5em;
+    border: .0625em solid white;
+    border-radius: .5em;
+}
+.opties.selectable.selected {
+    opacity: 1;
+}
+.opties.selectable:not(.selected).hovered {
+    border-color: green;
+}
+.opties.selectable:hover {
+    background-color: lightgray;
+}
+
+.opties .indicator {
+    color: green;
+    position: relative;
+    opacity: 0;
+}
+.opties.selectable.selected .indicator {
+    opacity: 1;
+}
+
+.subopties .selectable {
+    cursor: pointer;
+    color: black;
+    opacity: .5;
+    padding: 0 .5em;
+    border: .0625em solid white;
+    border-radius: .5em;
+}
+.subopties .selectable.selected {
+    opacity: 1;
+}
+.subopties .selectable:not(.selected).hovered {
+    border-color: green;
+}
+.subopties .selectable:hover {
+    background-color: lightgray;
+}
+
+.subopties .indicator {
+    color: green;
+    position: relative;
+    opacity: 0;
+}
+.subopties .selectable.selected .indicator {
+    opacity: 1;
+}
+
 .subopties {
     opacity: .25;
 }

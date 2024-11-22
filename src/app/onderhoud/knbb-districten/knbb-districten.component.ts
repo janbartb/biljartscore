@@ -10,12 +10,16 @@ import { NgClass } from '@angular/common';
 import { noDuplicates, notEmpty } from '../../directives/validators.directive';
 import { Alinea, ConfirmDialog } from '../../model/confirm-dialog';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
+import { SectionHeaderComponent } from '../../shared/section-header/section-header.component';
+import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
     selector: 'app-knbb-districten',
     standalone: true,
     imports: [
         PageHeaderComponent,
+        SectionHeaderComponent,
+        SectionFooterBtnsComponent,
         ButtonComponent,
         ConfirmComponent,
         FormsModule,
@@ -36,11 +40,12 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
     existing: string[] = [];
     mode: string = 'edit';
     naamFilter: string = '';
+    escapeCount: number = 0;
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
 
-    enterButton: Button = new Button('Enter', 'Opslaan', true);
-    toevoegButton: Button = new Button('Ins', 'District toevoegen', true);
-    verwijderButton: Button = new Button('Del', 'Verwijderen', true);
+    enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
+    toevoegButtons: Button[] = [new Button('+', 'Toevoegen', true)];
+    verwijderButtons: Button[] = [new Button('Del', 'Verwijderen', true)];
 
     districtForm!: FormGroup;
 
@@ -96,12 +101,16 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
     }
 
     toevoegenClicked() {
+        if (this.toevoegButtons[0].disabled) {
+            return;
+        }
         this.districtLijst.clearSelection();
         this.sectionTitle = 'District toevoegen';
         this.mode = 'add';
         this.district = new District();
         this.createDisctrictForm();
-        this.toevoegButton.disable();
+        this.toevoegButtons[0].disable();
+        this.setEscapeCount()
     }
 
     districtClicked(idx: number) {
@@ -117,7 +126,8 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
             this.district = new District();
             this.alert.showError(`District met index '${idx}' niet gevonden.`);
         }
-        this.toevoegButton.disable();
+        this.toevoegButtons[0].disable();
+        this.setEscapeCount();
     }
 
     verwijderenClicked(idx: number, event?: MouseEvent) {
@@ -213,16 +223,16 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
             if (this.isDialogOpen) {
                 return true;
             }
-            this.buttonPressed(this.enterButton);
+            this.buttonPressed(this.enterButtons[0]);
             return false;
         }
         if (event.key === 'Delete' && this.districtLijst.selectedIdx >= 0) {
             event.preventDefault();
-            this.buttonPressed(this.verwijderButton);
+            this.buttonPressed(this.verwijderButtons[0]);
             return false;
         }
         if (event.key === 'Insert') {
-            this.buttonPressed(this.toevoegButton);
+            this.buttonPressed(this.toevoegButtons[0]);
             return false;
         }
         if (event.key === 'Escape') {
@@ -247,7 +257,8 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
         this.districtLijst.selectedIdx = -1;
         this.mode = 'edit';
         this.sectionTitle = '';
-        this.toevoegButton.enable();
+        this.toevoegButtons[0].enable();
+        this.setEscapeCount();
     }
 
     private getDistricten() {
@@ -261,6 +272,10 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
             .catch(err => {
                 this.alert.showError(err);
             });
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = (this.mode == 'add' || this.districtLijst.selectedIdx >= 0) ? 1 : 0;
     }
 
     private compareDistricten(a: District, b: District): number {

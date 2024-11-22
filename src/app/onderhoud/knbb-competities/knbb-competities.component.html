@@ -3,7 +3,7 @@
         <div>
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" 
                     [district]="appData.getDistrict().disNaam" 
-                    [escCount]="escapeCount" (escClicked)="escapePressed()"></app-page-header>
+                    [escCount]="escapeCount" (escClicked)="escapePressed()" (hdrClicked)="gotoOnderhoud()"></app-page-header>
         </div>
         <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
             <div class="lijst-row">

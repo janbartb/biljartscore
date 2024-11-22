@@ -1,71 +1,66 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
+                        [escCount]="escapeCount" (escClicked)="escapePressed()" (hdrClicked)="gotoOnderhoud()"></app-page-header>
         </div>
-        <div class="flexgrow1 flexbox">
-            <div class="fullheight flex50perc flexbox flexcolumn section" style="border-right: .25em solid green;">
-                <div class="section-header">
-                    <div class="w3-green-l2" style="padding: 0 1em;">
-                        <span>Spelsoorten</span>
+        <div class="flexgrow1 flexbox flexstretch">
+            <div class="flex50perc flexbox flexcolumn" style="border-right: .25em solid green;">
+                <app-section-header [title]="'Spelsoorten'" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+                    <div class="lijst-row">
+                        <div class="lijst-col" style="width: 1.75em;"></div>
+                        <div class="lijst-col" style="width: 5em;">ID</div>
+                        <div class="lijst-col" style="width: 12em;">Naam</div>
+                        <div class="lijst-col" style="width: 2.5em;"></div>
                     </div>
                 </div>
-                <div class="flexbox flexcenter" style="padding: .25em 0;">
-                    <table class="tbl-normal tbl-list">
-                        <thead>
-                            <tr>
-                                <td style="width: 2em;"></td>
-                                <td class="label" style="width: 5em;">ID</td>
-                                <td class="label" style="width: 12em;">Naam</td>
-                                <td style="width: 2em;"></td>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-                <div class="flexgrow1 flexbox flexcenter scrollable">
-                    <div style="position: relative; left: .25em;">
-                        <table class="tbl-normal tbl-list">
-                            <tbody>
+                <div class="flexgrow1 scroll-container">
+                    <div #spelsoortlijst class="scroll-content">
+                        <div class="flexbox flexcenter">
+                            <div class="lijst">
                                 @for (spelsoort of spelsoorten; track $index) {
-                                    <tr>
-                                        <td style="width: 2em;"></td>
-                                        <td style="width: 2em; overflow: hidden;">{{spelsoort.spelsoortId}}</td>
-                                        <td style="width: 2em; overflow: hidden;">{{spelsoort.spelsoortNaam}}</td>
-                                        <td style="width: 2em;"></td>
-                                    </tr>
+                                    <div class="lijst-row">
+                                        <div class="lijst-col" style="width: 1.75em;"></div>
+                                        <div class="lijst-col" style="width: 5em;">
+                                            <span>{{spelsoort.spelsoortId}}</span>
+                                        </div>
+                                        <div class="lijst-col" style="width: 12em;">
+                                            <span>{{spelsoort.spelsoortNaam}}</span>
+                                        </div>
+                                        <div class="lijst-col" style="width: 2.5em;"></div>
+                                    </div>
                                 }
                                 @for (spelsoort of spelsoortLijst.filtered; track $index) {
-                                    <tr class="selectable" [ngClass]="{'selected': spelsoortLijst.selectedIdx == $index}" (click)="spelsoortClicked($index)">
-                                        <td class="indicator" style="width: 2em;">
-                                            <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
-                                        </td>
-                                        <td style="width: 5em; overflow: hidden;">{{spelsoort.spelsoortId}}</td>
-                                        <td style="width: 12em; overflow: hidden;">{{spelsoort.spelsoortNaam}}</td>
-                                        <td class="right" style="width: 2em;">
+                                    <div class="lijst-row selectable" (click)="spelsoortClicked($index)"
+                                                    [ngClass]="{'selected': spelsoortLijst.selectedIdx == $index}">
+                                        <div class="lijst-col indicator" style="width: 1.75em;">
+                                            <i class="fas fa-angle-right"></i>
+                                        </div>
+                                        <div class="lijst-col" style="width: 5em;">
+                                            <span>{{spelsoort.spelsoortId}}</span>
+                                        </div>
+                                        <div class="lijst-col" style="width: 12em;">
+                                            <span>{{spelsoort.spelsoortNaam}}</span>
+                                        </div>
+                                        <div class="lijst-col num" style="width: 2.5em;">
                                             <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="verwijderenClicked($index, $event)"></i>
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </div>
                                 }
-                            </tbody>
-                        </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="section-footer" style="border-top: .25em solid #93cf95">
-                    <div class="flexbox flexcenter" style="padding: .125em 0;">
-                        <app-button [button]="toevoegButton" (buttonClicked)="toevoegenClicked()"></app-button>
-                    </div>
-                </div>
+                <app-section-footer-btns [buttons]="toevoegButtons" (clickedButton)="toevoegenClicked()"
+                                [cssFooter]="'w3-green-bdr-l2'" [cssButtons]="'font125'"></app-section-footer-btns>
             </div>
-            <div class="fullheight flex50perc flexbox flexcolumn section">
-                <div class="section-header">
-                    <div class="w3-green-l2" style="padding: 0 1em;">
-                        <span>{{sectionTitle}}</span>
-                    </div>
-                </div>
+            <div class="flex50perc flexbox flexcolumn">
+                <app-section-header [title]="sectionTitle" [cssClasses]="'w3-green-l2'"></app-section-header>
                 <div class="section-body flexgrow1">
                     @if (spelsoortForm && (mode == 'add' || spelsoortLijst.selectedIdx >= 0)) {
                         <div class="flexbox flexcenter">
-                            <div>
+                            <div style="padding-top: 2em;">
                                 <form [formGroup]="spelsoortForm">
                                     <table class="tbl-normal tbl-input">
                                         <tbody>
@@ -101,8 +96,10 @@
                                     </table>
                                 </form>
                                 @if (spelsoortForm && spelsoortForm.valid) {
-                                    <div class="flexbox flexcenter" style="margin-top: 1em;">
-                                        <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
+                                    <div class="flexbox flexcenter" style="margin-top: 2em;">
+                                        <div style="font-size: 1.25em;">
+                                            <app-button [button]="enterButtons[0]" (buttonClicked)="enterClicked()"></app-button>
+                                        </div>
                                     </div>
                                 }
                             </div>
@@ -110,11 +107,8 @@
                     }
                 </div>
                 @if (spelsoortLijst.selectedIdx >= 0) {
-                    <div class="section-footer" style="border-top: .25em solid #93cf95">
-                        <div class="flexbox flexcenter" style="padding: .125em 0;">
-                            <app-button [button]="verwijderButton" (buttonClicked)="verwijderenClicked(spelsoortLijst.selectedIdx)"></app-button>
-                        </div>
-                    </div>
+                    <app-section-footer-btns [buttons]="verwijderButtons" (clickedButton)="verwijderenClicked(spelsoortLijst.selectedIdx)"
+                                [cssFooter]="'w3-green-bdr-l2'" [cssButtons]="'font125'"></app-section-footer-btns>
                 }
             </div>
         </div>

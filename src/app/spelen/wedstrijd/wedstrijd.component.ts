@@ -27,8 +27,9 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
     namesValid: boolean = true;
     wedGestart: boolean = false;
 
-    enterButton: Button = new Button('Enter', 'Start wedstrijd', true);
-    opnieuwButton: Button = new Button('Del', 'Opnieuw beginnen', true);
+    enterButton: Button = new Button('Enter', 'Naar scorebord', true);
+    opnieuwButton: Button = new Button('S', 'Start opnieuw', true);
+    nieuwButton: Button = new Button('A', 'Andere wedstrijd', true);
 
     override escapePressed(): void {
         this.router.navigate(['wedstrijd/config']);
@@ -44,8 +45,11 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
             if (button.key == 'Enter') {
                 this.enterClicked();
             }
-            if (button.key == 'Del') {
+            else if (button.key == 'S') {
                 this.opnieuwClicked();
+            }
+            else if (button.key == 'A') {
+                this.andereClicked();
             }
         }, 300);
     }
@@ -73,6 +77,10 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
             }
             this.naarScorebord();
         }
+    }
+
+    andereClicked() {
+        this.router.navigate(['wedstrijd/aantspl']);
     }
 
     teamNaamChanged() {
@@ -149,12 +157,12 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
         this.bssApi.getWedstrijd()
         .then(resp => {
             if (!resp.gevonden) {
-                this.router.navigate(['wedstrijd/spelers']);
+                this.router.navigate(['wedstrijd/aantspl']);
                 return;
             }
             this.wedstrijd = resp.wedstrijd;
             if (!this.helper.areWedstrijdSpelersFilled(this.wedstrijd)) {
-                this.router.navigate(['wedstrijd/spelers']);
+                this.router.navigate(['wedstrijd/aantspl']);
                 return;
             }
             if (!this.isWedstrijdConfigOk) {
@@ -168,7 +176,7 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
                 this.enterButton.text = 'Start wedstrijd';
             }
             else {
-                this.enterButton.text = 'Doorgaan met wedstrijd';
+                this.enterButton.text = 'Naar scorebord';
             }
         })
         .catch(err => {

@@ -75,16 +75,34 @@ export class HelperService {
         wedstrijd.teams.forEach((team, idxT) => {
             team.active = idxT == 0;
             team.metWit = idxT == 0;
+            if (wedstrijd.isVastAantBrt) {
+                team.teamTsCar = 0;
+            }
+            if (wedstrijd.isVastAantCar) {
+                team.teamTsBrt = 0;
+            }
             team.stand = new WedTeamStand();
             team.spelers.forEach((spl, idxS) => {
                 spl.active = idxT == 0 && idxS == 0;
                 spl.metWit = idxT == 0;
+                if (wedstrijd.isVastAantBrt) {
+                    spl.splTsCar = 0;
+                }
+                if (wedstrijd.isVastAantCar) {
+                    spl.splTsBrt = 0;
+                }
                 spl.stand = new WedSpelerStand();
             });
         });
         wedstrijd.spelers.forEach((spl, idx) => {
             spl.active = idx == 0;
             spl.metWit = idx % 2 == 0;
+            if (wedstrijd.isVastAantBrt) {
+                spl.splTsCar = 0;
+            }
+            if (wedstrijd.isVastAantCar) {
+                spl.splTsBrt = 0;
+            }
             spl.stand = new WedSpelerStand();
         });
     }

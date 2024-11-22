@@ -67,6 +67,6 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
         const filler = true;
         this.menu.centered = true;
         this.menu.addItem(new MenuItem('m', 'KNBB competitie team match', 'teammatch'));
-        this.menu.addItem(new MenuItem('w', 'Oefen wedstrijd', 'wedstrijd/spelers'));
+        this.menu.addItem(new MenuItem('w', 'Oefen wedstrijd', 'wedstrijd/aantspl'));
     }
 }
