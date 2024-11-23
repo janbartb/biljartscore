@@ -9,8 +9,7 @@ import { NgClass } from '@angular/common';
 import { VerenigingKort } from '../../model/vereniging';
 import { Spelsoort } from '../../model/spelsoort';
 import { District } from '../../model/district';
-
-declare var mySpeechObject: any;
+import { SpeechService } from '../../services/speech.service';
 
 @Component({
     selector: 'app-config',
@@ -26,6 +25,7 @@ declare var mySpeechObject: any;
 })
 export class ConfigComponent extends BaseComponent implements OnInit {
     fb = inject(FormBuilder);
+    spraak = inject(SpeechService);
 
     config: Config = new Config();
     spelsoorten: Spelsoort[] = [];
@@ -35,6 +35,7 @@ export class ConfigComponent extends BaseComponent implements OnInit {
     spraakTest: string = 'Dit is een test';
     buttons: Button[] = [new Button('Enter', 'Opslaan', true)];
     formCreated: boolean = false;
+    voices: SpeechSynthesisVoice[] = [];
 
     configForm!: FormGroup;
 
@@ -61,9 +62,11 @@ export class ConfigComponent extends BaseComponent implements OnInit {
     toggleSpeech() {
         this.speech?.setValue(!this.speech.value);
         if (this.speech?.value) {
+            this.stem?.enable();
             this.speechTest?.enable();
         }
         else {
+            this.stem?.disable();
             this.speechTest?.disable();
         }
     }
@@ -72,7 +75,8 @@ export class ConfigComponent extends BaseComponent implements OnInit {
         if (!this.speech?.value) {
             return;
         }
-        mySpeechObject.speak(this.speechTest?.value);
+        this.spraak.setVoiceByName(this.stem?.value);
+        this.spraak.speak(this.speechTest?.value);
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -94,6 +98,10 @@ export class ConfigComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        let cfg = this.appData.getConfig();
+        if (cfg) {
+            this.config = cfg;
+        }
         Promise.all([
             this.bssApi.getSpelsoorten(),
             this.bssApi.getKnbbDistricten(),
@@ -106,8 +114,15 @@ export class ConfigComponent extends BaseComponent implements OnInit {
             this.districten = results[1];
             this.klassen = results[2];
             this.verenigingen = results[3];
-            this.config = results[4];
-            this.createForm();
+            if (!cfg) {
+                this.config = results[4];
+            }
+            this.spraak.getVoices()
+            .then((data => {
+                this.voices = data;
+                console.log(this.voices);
+                this.createForm();                    
+            }));
         })
         .catch((err) => {
             this.alert.showAlert(err, 'error');
@@ -124,6 +139,7 @@ export class ConfigComponent extends BaseComponent implements OnInit {
         this.config.klasse = this.klasse?.value;
         this.config.vereniging = this.vereniging?.value;
         this.config.speech = this.speech?.value;
+        this.config.stem = this.stem?.value;
         this.bssApi.saveConfig(this.config)
         .then(resp => {
             this.alert.showAlert(resp.message, 'success');
@@ -132,6 +148,7 @@ export class ConfigComponent extends BaseComponent implements OnInit {
             if (foundSpelsoort) {
                 this.appData.setSpel(foundSpelsoort);
             }
+            this.spraak.setVoiceByName(this.config.stem);
         })
         .catch(err => {
             this.alert.showError(err);
@@ -146,6 +163,7 @@ export class ConfigComponent extends BaseComponent implements OnInit {
             klasse: [this.config.klasse],
             vereniging: [this.config.vereniging],
             speech: [this.config.speech],
+            stem: [this.config.stem],
             speechTest: [this.spraakTest]
         });
         this.formCreated = true;
@@ -169,6 +187,9 @@ export class ConfigComponent extends BaseComponent implements OnInit {
     }
     get speech() {
         return this.configForm.get('speech');
+    }
+    get stem() {
+        return this.configForm.get('stem');
     }
     get speechTest() {
         return this.configForm.get('speechTest');

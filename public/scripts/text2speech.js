@@ -15,12 +15,19 @@ var mySpeechObject = (function () {
     return {
         speak: function(textToSay, omitSpeech) {
             if (('speechSynthesis' in window) && !omitSpeech) {
+                // var voice = voices.filter(function(voice) { return voice.name == 'Google Nederlands'; })[0];
+                // if (voiceName && voiceName != '') {
+                //     voice = voices.filter(function(voice) { return voice.name == voiceName; })[0];
+                // }
                 speechSynthesis.cancel();
                 speechSynthesis.speak(createUtterance(' '));
                 //speechSynthesis.speak(createUtterance(' '));
                 setTimeout(() => {
                     speechSynthesis.cancel();
-                    speechSynthesis.speak(createUtterance(textToSay));                        
+                    var utterance = createUtterance(textToSay);
+                    utterance.voice = msg.voice;
+                    console.log(utterance);
+                    speechSynthesis.speak(utterance);                        
                 }, 500);
             }
         },
@@ -30,8 +37,8 @@ var mySpeechObject = (function () {
         getVoice: function() {
             return msg.voice;
         },
-        setVoice: function(voice) {
-            msg.voice = voice;
+        setVoice: function(voiceName) {
+            msg.voice = voices.filter(function(voice) { return voice.name == voiceName; })[0];
         }
     }
 

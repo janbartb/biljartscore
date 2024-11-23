@@ -6,6 +6,8 @@ import { Spelsoort } from '../model/spelsoort';
 import { BaseComponent } from '../base/base.component';
 import { FormsModule } from '@angular/forms';
 
+//declare var mySpeechObject: any;
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -79,13 +81,17 @@ export class HomeComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        Promise.all([this.bssApi.getConfig(), this.bssApi.getSpelsoorten()])
+        Promise.all([
+            //this.bssApi.getConfig(), 
+            this.bssApi.getSpelsoorten()
+        ])
         .then(results => {
-            this.appData.setConfig(results[0]);
-            this.spelsoorten = results[1];
+            //this.appData.setConfig(results[0]);
+            this.spelsoorten = results[0];
             const gekozenSpel = this.appData.getSpel();
             if (!gekozenSpel) {
-                this.spelId = results[0].spelsoort;
+                console.log('Voorkeur spelsoort niet gevonden. Gezet op driebanden.');
+                this.spelId = '3BA';
                 this.spelsoortChanged();
             }
             else {

@@ -6,8 +6,7 @@ import { HelperService } from '../../../services/helper.service';
 import { BaseComponent } from '../../../base/base.component';
 import { KnbbTeamMatchScoreSpelerComponent } from './knbb-team-match-score-speler/knbb-team-match-score-speler.component';
 import { NgClass } from '@angular/common';
-
-declare var mySpeechObject: any;
+import { SpeechService } from '../../../services/speech.service';
 
 @Component({
     selector: 'app-knbb-team-match-score',
@@ -22,6 +21,7 @@ declare var mySpeechObject: any;
 export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit {
     route = inject(ActivatedRoute);
     helper = inject(HelperService);
+    spraak = inject(SpeechService);
 
     match: TeamMatch = new TeamMatch();
     matchRead: boolean = false;
@@ -434,7 +434,7 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         if (!this.modalVisible) {
             this.modalVisible = true;
             if (this.modals[0].textToSpeak.length) {
-                mySpeechObject.speak(this.modals[0].textToSpeak);
+                this.spraak.speak(this.modals[0].textToSpeak);
             }
             setTimeout(() => {this.hideModal()}, this.modals[0].duration);
         }

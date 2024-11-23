@@ -76,6 +76,18 @@
                             <div style="padding-left: 1em; color: green;">({{speech?.value ? 'aan' : 'uit'}})</div>
                         </div>
                         <div class="row flexbox">
+                            <div class="label">
+                                <label for="stem">Stem</label>
+                            </div>
+                            <div>
+                                <select id="stem" formControlName="stem">
+                                    @for (voice of voices; track $index) {
+                                        <option [value]="voice.name">{{voice.name}}</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row flexbox">
                             <div class="label">Spraak test</div>
                             <div class="flexbox flexmiddle">
                                 <div>

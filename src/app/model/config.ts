@@ -6,7 +6,6 @@ export class Config {
     seizoen: string = '';
     district: District = new District();
     klasse: string = '';
-    playSounds: boolean = true;
     speech: boolean = true;
-    voiceName: String = '';
+    stem: string = '';
 }

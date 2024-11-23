@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { WedSpeler, Wedstrijd, WedTeam } from '../../../model/wedstrijd';
 import { BaseComponent } from '../../../base/base.component';
 import { NgClass } from '@angular/common';
@@ -6,8 +6,7 @@ import { WedScoreSpelerComponent } from './wed-score-speler/wed-score-speler.com
 import { ModalMessage } from '../../../model/modal-message';
 import { WedScoreSpelerLandscapeComponent } from './wed-score-speler-landscape/wed-score-speler-landscape.component';
 import { WedScoreTeamComponent } from './wed-score-team/wed-score-team.component';
-
-declare var mySpeechObject: any;
+import { SpeechService } from '../../../services/speech.service';
 
 @Component({
     selector: 'app-wed-score',
@@ -22,6 +21,7 @@ declare var mySpeechObject: any;
     styleUrl: './wed-score.component.css'
 })
 export class WedScoreComponent extends BaseComponent implements OnInit {
+    spraak = inject(SpeechService);
     wedstrijd: Wedstrijd = new Wedstrijd();
     activeTeam: WedTeam = new WedTeam(-1, '');
     activeSpeler: WedSpeler = new WedSpeler(-1);
@@ -663,7 +663,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         if (!this.modalVisible) {
             this.modalVisible = true;
             if (this.modals[0].textToSpeak.length) {
-                mySpeechObject.speak(this.modals[0].textToSpeak);
+                this.spraak.speak(this.modals[0].textToSpeak);
             }
             setTimeout(() => {this.hideModal()}, this.modals[0].duration);
         }

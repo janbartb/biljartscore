@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Vereniging, VerenigingKort } from '../../model/vereniging';
 import { List } from '../../model/list';
 import { Button } from '../../model/button';
-import { ButtonComponent } from "../../shared/button-group/button/button.component";
 import { BaseComponent } from '../../base/base.component';
 import { Spelsoort } from '../../model/spelsoort';
 import { ApiResponse } from '../../model/api-response';
@@ -22,7 +21,6 @@ import { Scrolling } from '../../model/scrolling';
     SectionFooterBtnsComponent,
     FormsModule, 
     NgClass, 
-    ButtonComponent,
     DecimalPipe,
     ReactiveFormsModule
   ],
@@ -39,10 +37,13 @@ export class SpelersComponent extends BaseComponent implements OnInit {
     spelerList: List<SpelerWrapper> = new List<SpelerWrapper>();
     verenigingen: Vereniging[] = [];
     spelsoorten: Spelsoort[] = [];
+    naamFilterInit: string = localStorage.getItem('spelersNaamFilter') || '';
     naamFilter: string = localStorage.getItem('spelersNaamFilter') || '';
+    verenigingFilterInit: string = '';
     verenigingFilter: string = '';
     moyenneMode: boolean = false;
     moyenneEdit: number = 0;
+    escapeCount: number = 0;
     scrollElm!: HTMLDivElement;
     listScroll!: Scrolling;
     buttons: Button[] = [
@@ -68,10 +69,11 @@ export class SpelersComponent extends BaseComponent implements OnInit {
 
     override escapePressed(): void {
         if (this.moyenneMode) {
-            this.buttons[1].selected = false;
-            this.moyenneMode = false;
-            this.spelerList.clearSelection();
-            this.sortSpelers();
+            this.moyennesWijzigenClicked();
+        }
+        else if (this.naamFilter != this.naamFilterInit) {
+            this.naamFilter = this.naamFilterInit;
+            this.naamFilterChanged();
         }
         else {
             super.escapePressed();
@@ -150,6 +152,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
                 this.myInput.nativeElement.select();
             }, 200);
         }
+        this.setEscapeCount();
     }
 
     keydownMoyenne(event: KeyboardEvent) {
@@ -189,14 +192,15 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         }
     }
 
-    naamFilterChanged(event: KeyboardEvent) {
-        if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Enter' || event.key === 'Escape') {
+    naamFilterChanged(event?: KeyboardEvent) {
+        if (event && (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Enter' || event.key === 'Escape')) {
             return;
         }
         localStorage.setItem('spelersNaamFilter', this.naamFilter);
         this.filtersChanged();
         this.sortSpelers();
         this.initListScrolling(this.scrollElm);
+        this.setEscapeCount();
     }
 
     verenigingFilterChanged() {
@@ -293,7 +297,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         if (!config) {
             return;
         }
-        this.verenigingFilter = localStorage.getItem('spelersVerenigingFilter') || config.vereniging;
+        this.verenigingFilter = this.verenigingFilterInit = localStorage.getItem('spelersVerenigingFilter') || config.vereniging;
         Promise.all([
             this.bssApi.getVerenigingen(),
             this.bssApi.getSpelersLijst(this.spelId),
@@ -337,6 +341,16 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             this.filtersChanged();
             this.sortSpelers();
             this.initListScrolling(this.scrollElm);
+        }
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = 0;
+        if (this.moyenneMode) {
+            this.escapeCount++;
+        }
+        if (this.naamFilter != this.naamFilterInit || this.verenigingFilter != this.verenigingFilterInit) {
+            this.escapeCount++;
         }
     }
 

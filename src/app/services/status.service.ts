@@ -47,6 +47,17 @@ export class StatusService {
         return conf ? conf.klasse : 'B1';
     }
 
+    getInitVoiceName(): string {
+        const conf = localStorage.getItem('config');
+        if (conf) {
+            const cfg: Config = JSON.parse(conf);
+            return cfg.stem.length ? cfg.stem : 'Google Nederlands';
+        }
+        else {
+            return 'Google Nederlands';
+        }
+    }
+
     private getHuidigSeizoen(): string {
         const now = new Date();
         const month = now.getMonth();
