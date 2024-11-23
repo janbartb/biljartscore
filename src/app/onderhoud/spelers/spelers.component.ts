@@ -349,7 +349,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         if (this.moyenneMode) {
             this.escapeCount++;
         }
-        if (this.naamFilter != this.naamFilterInit || this.verenigingFilter != this.verenigingFilterInit) {
+        if (this.naamFilter != this.naamFilterInit) {
             this.escapeCount++;
         }
     }
