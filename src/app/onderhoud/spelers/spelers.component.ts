@@ -12,6 +12,7 @@ import { ApiResponse } from '../../model/api-response';
 import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
 import { HelperService } from '../../services/helper.service';
 import { Scrolling } from '../../model/scrolling';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-spelers',
@@ -29,10 +30,11 @@ import { Scrolling } from '../../model/scrolling';
 })
 export class SpelersComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
+    route = inject(ActivatedRoute);
 
     title: string = 'Onderhoud gegevens';
     subtitle: string = 'Spelers';
-    thisUrl: string = 'onderhoud/spelers';
+    fromVereniging: boolean = false;
 
     spelerList: List<SpelerWrapper> = new List<SpelerWrapper>();
     verenigingen: Vereniging[] = [];
@@ -114,11 +116,15 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             }, 200);
             return;
         }
-        this.appData.gotoPage(this.thisUrl, this.thisUrl + '/' + this.spelerList.getItem(idx)?.speler.id);
+        this.appData.gotoPage(this.router.url, '/onderhoud/spelers/' + this.spelerList.getItem(idx)?.speler.id);
     }
 
     spelerToevoegenClicked() {
-        this.appData.gotoPage(this.thisUrl, this.thisUrl + '/toevoegen');
+        let url = '/onderhoud/spelers/toevoegen';
+        if (this.verenigingFilter.length) {
+            url += '/' + this.verenigingFilter;
+        }
+        this.appData.gotoPage(this.router.url, url);
     }
 
     spelerVerwijderenClicked(event: any, speler: Speler) {
@@ -298,6 +304,13 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             return;
         }
         this.verenigingFilter = this.verenigingFilterInit = localStorage.getItem('spelersVerenigingFilter') || config.vereniging;
+        this.fromVereniging = this.router.url.startsWith('/onderhoud/verenigingen');
+        if (this.fromVereniging) {
+            const id: string | null = this.route.snapshot.paramMap.get('verId');
+            if (id) {
+                this.verenigingFilter = this.verenigingFilterInit = id;
+            }
+        }
         Promise.all([
             this.bssApi.getVerenigingen(),
             this.bssApi.getSpelersLijst(this.spelId),
@@ -305,6 +318,12 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         ])
         .then(results => {
             this.verenigingen = results[0];
+            if (this.fromVereniging) {
+                const vereniging = this.verenigingen.find(v => v.verId == this.verenigingFilter);
+                if (vereniging) {
+                    this.subtitle = `Spelers van vereniging '${vereniging.naam}'`;
+                }
+            }
             this.spelerList.fillItems(results[1]);
             this.spelsoorten = results[2];
             if (this.verenigingFilter != '') {

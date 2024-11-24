@@ -111,7 +111,7 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
     }
 
     ledenWijzigenClicked() {
-        this.alert.showAlert('Deze functie is nog onder constructie', 'info', 2);
+        this.appData.gotoPage(this.router.url, this.router.url + '/spelers');
     }
 
     @HostListener('document:keyup', ['$event'])

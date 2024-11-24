@@ -24,7 +24,7 @@
                 </div>
                 <div class="lijst-col" style="width: 10em;">
                     <select #verfilter class="filter" style="width: 7em; font-weight: normal;" [(ngModel)]="verenigingFilter" 
-                            (change)="verenigingFilterChanged()" [disabled]="moyenneMode">
+                            (change)="verenigingFilterChanged()" [disabled]="moyenneMode || fromVereniging">
                         <option value="">Allen</option>
                         <option value="0">Geen</option>
                         @for (ver of verenigingen; track $index) {

@@ -26,6 +26,8 @@ export class SpelerComponent extends BaseComponent implements OnInit {
     route = inject(ActivatedRoute);
     fb = inject(FormBuilder);
 
+    initSplId: string = '';
+    initVerId: string = '';
     subtitle: string = "Speler "
     mode: string = 'edit';
     speler: Speler = new Speler();
@@ -176,25 +178,31 @@ export class SpelerComponent extends BaseComponent implements OnInit {
     // }
 
     ngOnInit(): void {
-        const id: string | null = this.route.snapshot.paramMap.get('spelerId');
-        if (!id) {
-            this.alert.showAlert('Het ID in de URL is undefined.', 'error');
-            return;
+        this.mode = (this.router.url.includes('toevoegen')) ? 'add' : 'edit';
+        if (this.mode == 'add') {
+            let id: string | null = this.route.snapshot.paramMap.get('verId');
+            if (!id) {
+                id = '';
+            }
+            this.initVerId = id;
         }
-        if (this.spelId == '') {
-            this.alert.showAlert('Gekozen spel is leeg. Ga terug naar de Home pagina.', 'error');
-            return;
+        else {
+            const id: string | null = this.route.snapshot.paramMap.get('spelerId');
+            if (!id) {
+                this.alert.showAlert('Het speler ID in de URL is undefined.', 'error');
+                return;
+            }
+            this.initSplId = id;
         }
-
         Promise.all([
             this.bssApi.getSpelsoorten(),
             this.bssApi.getVerenigingen()
         ])
         .then((results) => {
             this.spelsoorten = results[0];
-            if (id != 'toevoegen') {
+            if (this.mode == 'edit') {
                 this.subtitle += 'wijzigen';
-                this.bssApi.getSpeler(id)
+                this.bssApi.getSpeler(this.initSplId)
                 .then((result: Speler) => {
                     this.speler = result;
                     this.subtitle = this.getSubtitle();
@@ -215,6 +223,9 @@ export class SpelerComponent extends BaseComponent implements OnInit {
                 this.mode = 'add';
                 this.subtitle += 'toevoegen';
                 this.verenigingen = results[1].map((result) => new VerenigingKort(result));
+                if (this.initVerId.length) {
+                    this.presetVerenigingVanSpeler(this.initVerId);
+                }
                 this.bssApi.getExistingSpelerIds()
                 .then((result: string[]) => {
                     this.existingSpelerIds = result;
@@ -256,7 +267,11 @@ export class SpelerComponent extends BaseComponent implements OnInit {
     setVerenigingenVanSpeler(): void {
         this.spelerVerenigingen = this.verenigingen.filter((ver) => {
             return this.speler.verenigingIds.some(id => id == ver.verId);
-        })
+        });
+    }
+
+    presetVerenigingVanSpeler(verId: string) {
+        this.spelerVerenigingen = this.verenigingen.filter(ver => ver.verId == verId);
     }
 
     private getSubtitle() {
