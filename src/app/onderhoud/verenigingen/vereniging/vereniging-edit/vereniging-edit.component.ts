@@ -6,11 +6,8 @@ import { notEmpty } from '../../../../directives/validators.directive';
 import { Button } from '../../../../model/button';
 import { BaseComponent } from '../../../../base/base.component';
 import { ActivatedRoute } from '@angular/router';
-import { List } from '../../../../model/list';
-import { SpelerWrapper } from '../../../../model/speler';
 import { Spelsoort } from '../../../../model/spelsoort';
 import { PageHeaderComponent } from '../../../../shared/page-header/page-header.component';
-import { SectionHeaderComponent } from '../../../../shared/section-header/section-header.component';
 import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
@@ -20,7 +17,6 @@ import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-bt
         ReactiveFormsModule, 
         NgClass, 
         PageHeaderComponent, 
-        SectionHeaderComponent,
         SectionFooterBtnsComponent
     ],
     templateUrl: './vereniging-edit.component.html',
