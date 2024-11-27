@@ -2,7 +2,7 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
-                        (hdrClicked)="gotoOnderhoud()"></app-page-header>
+                        (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()"></app-page-header>
         </div>
         <app-section-header [title]="teamTitle" [cssClasses]="'w3-green-l2'"></app-section-header>
         <div class="flexgrow1 flexbox flexstretch">

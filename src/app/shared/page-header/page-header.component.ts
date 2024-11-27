@@ -18,6 +18,7 @@ export class PageHeaderComponent implements OnInit, OnChanges {
     @Input() escCount: number = 0;
     @Input() spel: string = this.appData.getSpelNaam();
     @Input() district: string = '';
+    @Output() prevClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() escClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() hdrClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -33,6 +34,10 @@ export class PageHeaderComponent implements OnInit, OnChanges {
 
     escapeClicked() {
         this.escClicked.emit(true);
+    }
+
+    previousClicked() {
+        this.prevClicked.emit(true);
     }
 
     private setEscapeButtons() {

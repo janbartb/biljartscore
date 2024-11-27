@@ -34,6 +34,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     verenigingFilter: string = this.appData.getConfig()?.vereniging || '';
     wedOrig: Wedstrijd = new Wedstrijd();
     wedstrijd: Wedstrijd = new Wedstrijd();
+    escapeCount: number = 0;
 
     idxActiveTeam: number = -1;
     idxActiveSpeler: number = -1;
@@ -74,9 +75,11 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
 
     override escapePressed(): void {
         if (this.activeSection == 0) {
-            this.router.navigate(['wedstrijd/aantspl']);
+            this.previousClicked();
+            return;
         }
         this.activeSection--;
+        this.setEscapeCount();
     }
 
     buttonPressed(button: Button) {
@@ -96,6 +99,10 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
                 this.gaVerderClicked();
             }
         }, 300);
+    }
+
+    previousClicked() {
+        this.router.navigate(['wedstrijd/aantspl']);
     }
 
     pageButtonClicked(idx: number) {
@@ -129,6 +136,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         if (this.spelerLijst.filtered.length > 0) {
             this.activeSection++;
         }
+        this.setEscapeCount();
     }
 
     spelerClicked(idx: number) {
@@ -138,6 +146,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         this.activeSection = 1;
         this.spelerLijst.selectedIdx = this.spelerLijst.hoveredIdx = idx;
         this.addSpelerToWedstrijd(this.spelerLijst.filtered[idx]);
+        this.setEscapeCount();
     }
 
     resetClicked() {
@@ -152,6 +161,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         }
         this.idxActiveSpeler = 0;
         this.setSpelersFilled();
+        this.setEscapeCount();
         this.wedstrijdChanged = false;
     }
 
@@ -183,6 +193,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
 
     maakSectionActief(idx: number) {
         this.activeSection = idx;
+        this.setEscapeCount();
     }
 
     @HostListener('document:keydown', ['$event'])
@@ -495,6 +506,10 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
 
     private compareVerenigingen(a: VerenigingKort, b: VerenigingKort): number {
         return (a.naam > b.naam) ? 1 : -1;
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = this.activeSection;
     }
 
 }

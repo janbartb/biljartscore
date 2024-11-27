@@ -54,7 +54,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
             this.setEscapeCount();
         }
         else {
-            this.router.navigate(['teammatch/setup/gasten']);
+            this.previousClicked();
         }
     }
 
@@ -75,6 +75,10 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
                 this.resetClicked();
             }
         }, 300);
+    }
+
+    previousClicked() {
+        this.router.navigate(['teammatch/setup/gasten']);
     }
 
     enterClicked() {

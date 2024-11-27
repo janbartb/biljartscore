@@ -2,7 +2,7 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="'Oefen wedstrijd - regels'" [spel]="appData.getSpelNaam()"
-                        [escCount]="escapeCount" (escClicked)="escapePressed()"></app-page-header>
+                        [escCount]="escapeCount" (escClicked)="escapePressed()" (prevClicked)="previousClicked()"></app-page-header>
         </div>
         <div class="flexgrow1" style="padding: .5em 1em;">
             <div class="flexbox flexcenter">

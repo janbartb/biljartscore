@@ -85,12 +85,8 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
 
     override escapePressed(): void {
         if (this.activeSection == 0) {
-            if (this.idxTeam == 0) {
-                this.router.navigate(['teammatch/setup/comp']);
-            }
-            else {
-                this.router.navigate(['teammatch/setup/thuis']);
-            }
+            this.previousClicked();
+            return;
         }
         this.activeSection--;
         this.setEscapeCount();
@@ -113,6 +109,15 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
                 this.gaVerderClicked();
             }
         }, 300);
+    }
+
+    previousClicked() {
+        if (this.idxTeam == 0) {
+            this.router.navigate(['teammatch/setup/comp']);
+        }
+        else {
+            this.router.navigate(['teammatch/setup/thuis']);
+        }
     }
 
     pageButtonClicked(idx: number) {

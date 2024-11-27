@@ -95,7 +95,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             this.setEscapeCount();
             return;
         }
-        this.router.navigate(['wedstrijd/spelers']);
+        this.previousClicked();
     }
 
     buttonPressed(button: Button) {
@@ -109,6 +109,10 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
                 this.gaVerderClicked();
             }
         }, 300);
+    }
+
+    previousClicked() {
+        this.router.navigate(['wedstrijd/spelers']);
     }
 
     optieClicked(idxActive: number, idxOptie: number) {

@@ -31,6 +31,10 @@ export class BaseComponent {
         this.appData.previousPage();
     }
 
+    previousPressed() {
+        this.appData.previousPage();
+    }
+
     gotoOnderhoud() {
         this.router.navigate(['onderhoud']);
     }

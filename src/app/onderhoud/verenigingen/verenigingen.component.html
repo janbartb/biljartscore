@@ -1,8 +1,8 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="title" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
-                    [escCount]="escapeCount" (escClicked)="escapePressed()" (hdrClicked)="gotoOnderhoud()"></app-page-header>
+            <app-page-header [title]="title" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()"></app-page-header>
         </div>
         <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
             <div class="lijst-row">

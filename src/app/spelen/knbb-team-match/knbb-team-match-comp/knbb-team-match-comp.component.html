@@ -1,7 +1,8 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'KNBB team match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"></app-page-header>
+            <app-page-header [title]="'KNBB team match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
+                        (prevClicked)="escapePressed()"></app-page-header>
         </div>
         <div class="flexgrow1 scroll-container">
             <div #complijst class="scroll-content">

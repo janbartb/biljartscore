@@ -1,6 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
-import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 import { NgClass } from '@angular/common';
 import { MatchTeam, TeamMatch } from '../../../model/match';
@@ -14,7 +13,6 @@ import { Button } from '../../../model/button';
     standalone: true,
     imports: [
         PageHeaderComponent,
-        SectionHeaderComponent,
         SectionFooterBtnsComponent,
         NgClass
     ],
