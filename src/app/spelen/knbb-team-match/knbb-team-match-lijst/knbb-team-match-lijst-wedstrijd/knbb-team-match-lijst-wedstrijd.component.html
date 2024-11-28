@@ -1,0 +1,26 @@
+<div style="padding: 0 .25em">
+    <div [ngClass]="colorClass" style="text-align: center; padding: .5em 0;">
+        <span style="font-size: 1.5em;">Wedstrijd {{wedNr}}</span>
+    </div>
+    <div class="flexbox flexstart" style="border: .0625em solid black;">
+        <div class="flex50perc" style="overflow-x: hidden; ">
+            <div class="flexbox flexmiddle flexbetween" style="background-color: black; color: white; padding: .25em .5em; border-right: 1px solid white">
+                <div>{{spl.splBordNaam}}</div>
+                <div>{{spl.splTsCar}}</div>
+            </div>
+            <div style="border-right: 1px solid black;">
+                <app-knbb-team-match-lijst-speler [lijst]="lijsten[0]"></app-knbb-team-match-lijst-speler>
+            </div>
+            
+        </div>
+        <div class="flex50perc" style="overflow-x: hidden;">
+            <div class="flexbox flexmiddle flexbetween" style="background-color: black; color: white; padding: .25em .5em; border-left: 1px solid white">
+                <div>{{teg.splBordNaam}}</div>
+                <div>{{teg.splTsCar}}</div>
+            </div>
+            <div style="border-left: 1px solid black;">
+                <app-knbb-team-match-lijst-speler [lijst]="lijsten[1]"></app-knbb-team-match-lijst-speler>
+            </div>
+        </div>
+    </div>
+</div>

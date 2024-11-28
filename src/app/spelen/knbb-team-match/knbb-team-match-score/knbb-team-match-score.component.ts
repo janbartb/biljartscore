@@ -42,7 +42,13 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         // werk score bij
         if (this.activeSpeler.stand.serie > 0) {
             const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.splSpreekNaam + ', ' + this.activeSpeler.stand.serie;
-            const modalMsg = new ModalMessage('serie', [this.activeSpeler.splBordNaam], msgToSpeak, 3, this.activeSpeler.stand.serie);
+            const modalMsg = new ModalMessage('serie', [this.activeSpeler.splBordNaam], msgToSpeak, 3, '' + this.activeSpeler.stand.serie);
+            this.modals.push(modalMsg);
+            this.showModal();
+        }
+        else {
+            const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.splSpreekNaam + ', 0';
+            const modalMsg = new ModalMessage('serie', [this.activeSpeler.splBordNaam], msgToSpeak, 3, '0');
             this.modals.push(modalMsg);
             this.showModal();
         }
@@ -117,8 +123,7 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
             return false;
         }
         if (event.code === 'KeyL' || event.key === '*') {
-            //this.appStat.escapeLijstUrl = '/score/' + (this.idxWedstrijd + 1);
-            this.router.navigate(['teammatch/score/lijst']);
+            this.appData.gotoPage(this.router.url, 'teammatch/lijst');
             return false;
         }
         if (event.key === 'Delete' || event.code === 'NumpadDecimal') {

@@ -1,0 +1,54 @@
+<div style="font-weight: bold;">
+    <div style="padding: .25em 0;">
+        <div class="flexbox flexstart">
+            <div class="flex50perc" [ngClass]="lijst.length > 60 ? 'lijstkolom100' : 'lijstkolom60'">
+                <div>
+                    <table class="tbl-lijst">
+                        <thead>
+                            <tr>
+                                <td class="sco-label" style="width: 25%">brt</td>
+                                <td class="sco-label" style="width: 37%">serie</td>
+                                <td class="sco-label" style="width: 38%">totaal</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (brt of lijst | slice:0:lijst.length / 2; track $index; let i = $index) {
+                                <tr [ngClass]="{'selected': brt.selected}">
+                                    <td [ngClass]="brt.gespeeld ? 'clr-blu' : 'clr-lgr'" style="width: 20%"><span>{{brt.verberg ? '&nbsp;' : (i + 1)}}</span></td>
+                                    <td [ngClass]="{'edited': brt.origSerie != brt.serie}" style="width: 40%"><span [hidden]="!brt.gespeeld"
+                                            >{{brt.serie == 0 && brt.origSerie == 0 ? '---' : brt.serie}}</span></td>
+                                    <td style="width: 40%"><span [hidden]="!brt.gespeeld">{{brt.serie == 0 && brt.origSerie == 0 ? '---' : brt.totaal}}</span></td>
+                                </tr>    
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="flex50perc" [ngClass]="lijst.length > 60 ? 'lijstkolom100' : 'lijstkolom60'">
+                <div>
+                    <table class="tbl-lijst">
+                        <thead>
+                            <tr>
+                                <td class="sco-label" style="width: 25%">brt</td>
+                                <td class="sco-label" style="width: 37%">serie</td>
+                                <td class="sco-label" style="width: 38%">totaal</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (brt of lijst | slice:lijst.length / 2:lijst.length; track $index; let i = $index) {
+                                <tr [ngClass]="{'selected': brt.selected}">
+                                    <td [ngClass]="brt.gespeeld ? 'clr-blu' : 'clr-lgr'" style="width: 20%">
+                                        <span>{{brt.verberg ? '&nbsp;' : (i + 1 + (lijst.length / 2))}}</span>
+                                    </td>
+                                    <td [ngClass]="{'edited': brt.origSerie != brt.serie}" style="width: 40%"><span [hidden]="!brt.gespeeld"
+                                            >{{brt.serie == 0 && brt.origSerie == 0 ? '---' : brt.serie}}</span></td>
+                                    <td style="width: 40%"><span [hidden]="!brt.gespeeld">{{brt.serie == 0 && brt.origSerie == 0 ? '---' : brt.totaal}}</span></td>
+                                </tr>    
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

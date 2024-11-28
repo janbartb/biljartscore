@@ -1,0 +1,18 @@
+@if (matchRead) {
+    <div style="font-weight: bold; line-height: 1;">
+        <div class="flexbox flexstart" [style.padding-top]="match.maxBeurten > 60 ? '.0625em': '.375em'">
+            <div style="flex: 0 0 20em; overflow-x: hidden;">
+                <app-knbb-team-match-lijst-wedstrijd [spl]="match.teams[0].spelers[0]" [teg]="match.teams[1].spelers[0]" [wedNr]="1" [gameOver]="match.gameOver[0]"
+                            [maxBrt]="match.maxBeurten"></app-knbb-team-match-lijst-wedstrijd>
+            </div>
+            <div style="flex: 0 0 20em; overflow-x: hidden;">
+                <app-knbb-team-match-lijst-wedstrijd [spl]="match.teams[0].spelers[1]" [teg]="match.teams[1].spelers[1]" [wedNr]="2" [gameOver]="match.gameOver[1]"
+                            [maxBrt]="match.maxBeurten"></app-knbb-team-match-lijst-wedstrijd>
+            </div>
+            <div style="flex: 0 0 20em; overflow-x: hidden;">
+                <app-knbb-team-match-lijst-wedstrijd [spl]="match.teams[0].spelers[2]" [teg]="match.teams[1].spelers[2]" [wedNr]="3" [gameOver]="match.gameOver[2]"
+                            [maxBrt]="match.maxBeurten"></app-knbb-team-match-lijst-wedstrijd>
+            </div>
+        </div>
+    </div>    
+}

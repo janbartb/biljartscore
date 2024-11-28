@@ -1,0 +1,49 @@
+.ellips {white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+
+.label {color: gray;}
+
+.clr-red {color: red;}
+.clr-grn {color: green;}
+.clr-blu {color: blue;}
+.clr-lgr {opacity: .4;}
+
+.tbl-lijst {
+    table-layout: fixed;
+    width: 100%;
+    border: 0;
+	padding: 0;
+	border-spacing: 0;
+    border-collapse: collapse;
+}
+.tbl-lijst tbody tr {
+    border-top: 1px solid gray;
+}
+.tbl-lijst tbody tr.selected {
+    background-color: lightgray;
+}
+.tbl-lijst td {
+    text-align: right;
+}
+.lijstkolom60 .tbl-lijst td {
+    padding: .35em .3125em .35em 0;
+}
+.lijstkolom100 .tbl-lijst td {
+    padding: 1px 5px 1px 0;
+}
+.tbl-lijst tbody td.edited {
+    background-color: red;
+    color: white;
+}
+
+.lijstkolom60 > div {
+    font-size: .5em;
+    margin: 0 .25em;
+    padding: .25em .5em;
+    border: 1px solid gray;
+}
+.lijstkolom100 > div {
+    font-size: 15px;
+    margin: 0 .25em;
+    padding: .25em .5em;
+    border: 1px solid gray;
+}

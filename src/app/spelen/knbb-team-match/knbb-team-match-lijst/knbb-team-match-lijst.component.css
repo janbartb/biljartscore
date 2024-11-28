@@ -1,0 +1,6 @@
+.cols3 {
+    transform: translateX(-320px) scaleX(.666);
+}
+.cols4 {
+    transform: translateX(-480px) scaleX(.5);
+}

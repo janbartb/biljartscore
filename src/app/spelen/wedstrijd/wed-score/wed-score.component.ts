@@ -40,9 +40,15 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             return;
         }
         // werk score bij
-        if (this.activeSpeler.stand.serie) {
+        if (this.activeSpeler.stand.serie > 0) {
             const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.splSpreekNaam + ', ' + this.activeSpeler.stand.serie;
-            const modalMsg = new ModalMessage('serie', [this.activeSpeler.splBordNaam], msgToSpeak, 3, this.activeSpeler.stand.serie);
+            const modalMsg = new ModalMessage('serie', [this.activeSpeler.splBordNaam], msgToSpeak, 3, '' + this.activeSpeler.stand.serie);
+            this.modals.push(modalMsg);
+            this.showModal();
+        }
+        else {
+            const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.splSpreekNaam + ', ' + this.activeSpeler.stand.serie;
+            const modalMsg = new ModalMessage('serie', [this.activeSpeler.splBordNaam], msgToSpeak, 3, '0');
             this.modals.push(modalMsg);
             this.showModal();
         }

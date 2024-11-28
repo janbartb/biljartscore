@@ -167,8 +167,7 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.code === 'KeyL' || event.key === '*') {
-            //this.appStat.escapeLijstUrl = '/match';
-            this.router.navigate(['teammatch/score/lijst']);
+            this.appData.gotoPage(this.router.url, 'teammatch/lijst');
             return false;
         }
         return true;
