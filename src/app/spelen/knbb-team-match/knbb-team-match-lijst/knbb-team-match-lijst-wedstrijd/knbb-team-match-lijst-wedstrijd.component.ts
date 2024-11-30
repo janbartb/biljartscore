@@ -33,7 +33,6 @@ export class KnbbTeamMatchLijstWedstrijdComponent implements OnInit {
             if (i < this.spl.stand.score.length) {
                 item.gespeeld = true;
                 item.serie = this.spl.stand.score[i];
-                item.origSerie = item.serie;
                 totaal += item.serie;
                 item.totaal = totaal;
             }
@@ -51,7 +50,6 @@ export class KnbbTeamMatchLijstWedstrijdComponent implements OnInit {
             if (i < this.teg.stand.score.length) {
                 item.gespeeld = true;
                 item.serie = this.teg.stand.score[i];
-                item.origSerie = item.serie;
                 totaal += item.serie;
                 item.totaal = totaal;
             }

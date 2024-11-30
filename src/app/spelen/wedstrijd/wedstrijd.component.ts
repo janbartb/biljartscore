@@ -138,8 +138,12 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
             this.buttonPressed(this.enterButton);
             return false;
         }
-        if (event.key === 'Delete' && this.wedGestart) {
+        if (event.code === 'KeyS' && this.wedGestart) {
             this.buttonPressed(this.opnieuwButton);
+            return false;
+        }
+        if (event.code === 'KeyL' || event.key === '*') {
+            this.appData.gotoPage(this.router.url, 'wedstrijd/lijst');
             return false;
         }
         if (event.key === 'Escape') {

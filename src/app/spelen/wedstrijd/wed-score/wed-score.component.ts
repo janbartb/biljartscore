@@ -179,8 +179,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.code === 'KeyL' || event.key === '*') {
-            //this.appStat.escapeLijstUrl = '/score/' + (this.idxWedstrijd + 1);
-            //this.router.navigate(['/score/lijst']);
+            this.appData.gotoPage(this.router.url, 'wedstrijd/lijst');
             return false;
         }
         if (event.key === 'Delete' || event.code === 'NumpadDecimal') {

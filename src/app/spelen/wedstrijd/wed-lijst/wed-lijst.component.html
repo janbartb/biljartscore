@@ -1,0 +1,25 @@
+<div class="fullviewheight flexbox flexaround" style="background-color: lightgray;">
+    @if (dataReady) {
+        @if (spelerLijsten.length <= 2) {
+            @for (lijst of spelerLijsten; track $index) {
+                <div>
+                    <app-wed-lijst-speler [speler]="lijst"></app-wed-lijst-speler>
+                </div>        
+            }
+        }
+        @else if (spelerLijsten.length == 3) {
+            @for (lijst of spelerLijsten; track $index) {
+                <div [style.font-size]="lijst.pageSize == 34 ? '.75em' : lijst.pages.length == 3 ? '.875em' : '1em'">
+                    <app-wed-lijst-speler [speler]="lijst"></app-wed-lijst-speler>
+                </div>        
+            }
+        }
+        @else if (spelerLijsten.length == 4) {
+            @for (lijst of spelerLijsten; track $index) {
+                <div [style.font-size]="lijst.pages.length == 3 ? '.6875em' : '1em'">
+                    <app-wed-lijst-speler [speler]="lijst"></app-wed-lijst-speler>
+                </div>        
+            }
+        }
+    }
+</div>

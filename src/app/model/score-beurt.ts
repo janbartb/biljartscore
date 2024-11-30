@@ -3,6 +3,12 @@ export class ScoreBeurt {
     totaal: number = 0;
     gespeeld: boolean = false;
     verberg: boolean = false;
-    selected: boolean = false;
-    origSerie: number = 0;
+}
+
+export class ScoreSpeler {
+    naam: string = '';
+    tsCar: number = 0;
+    pages: number[] = [0];
+    pageSize: number = 25;
+    scores: ScoreBeurt[] = [];
 }
