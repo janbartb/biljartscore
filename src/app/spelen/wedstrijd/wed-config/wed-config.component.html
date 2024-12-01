@@ -4,92 +4,83 @@
             <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="'Oefen wedstrijd - regels'" [spel]="appData.getSpelNaam()"
                         [escCount]="escapeCount" (escClicked)="escapePressed()" (prevClicked)="previousClicked()"></app-page-header>
         </div>
-        <div class="flexgrow1" style="padding: .5em 1em;">
-            <div class="flexbox flexcenter">
+        <div class="flexgrow1 flexbox">
+            <div style="padding-left: 15em;">
+                <div style="width: 15em;"></div>
                 <div>
+                    <div style="height: 2em;"></div>
                     @for (optie of optieLijst.filtered; track $index; let idxOpt = $index) {
-                        <div class="opties flexbox flexmiddle selectable" style="margin-top: 1em;" (click)="optieClicked(0, idxOpt)"
+                        <div class="opties flexbox flexmiddle selectable" (click)="optieClicked(0, idxOpt)"
                                 [ngClass]="{'hovered': optieLijst.hoveredIdx == idxOpt, 'selected': optieLijst.selectedIdx == idxOpt}">
-                            <div class="indicator" style="width: 1.25em;">
-                                <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
+                            <div class="indicator" style="width: 1.5em;">
+                                <i [ngClass]="optieLijst.selectedIdx == idxOpt ? 'fas fa-check-circle' : 'far fa-circle'"></i>
                             </div>
                             <div>
                                 <span>{{optie}}</span>
                             </div>
                         </div>
-                        @if (idxOpt == 0) {
-                            <div class="subopties" [ngClass]="{'active': activeOpties == 0 && optieLijst.selectedIdx == idxOpt}" 
-                                    style="padding: .5em 0 .5em 5.75em;">
+                    }
+                    <hr>
+                    @if (optieLijst.selectedIdx == 0) {
+                        <div>
+                            <div class="flexbox" style="padding-top: .5em;">
+                                <div class="label">Aantal beurten</div>
+                                <div style="padding: 0 .5em;">
+                                    <input #vastbrt type="text" style="width: 3.5em;" [(ngModel)]="vastBrt.val"
+                                            [ngClass]="{'active': activeLijst == 0, 'valid': vastBrt.valid, 'invalid': !vastBrt.valid}" 
+                                            [disabled]="activeLijst == 1" (keyup)="validateInput()">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (optieLijst.selectedIdx == 1) {
+                        @for (subOptie of subOptieLijst.filtered; track $index; let idxSubOpt = $index) {
+                            <div class="opties flexbox flexmiddle selectable" (click)="optieClicked(1, idxSubOpt)"
+                                    [ngClass]="{'hovered': subOptieLijst.hoveredIdx == idxSubOpt, 'selected': subOptieLijst.selectedIdx == idxSubOpt}">
+                                <div class="indicator" style="width: 1.5em;">
+                                    <i [ngClass]="subOptieLijst.selectedIdx == idxSubOpt ? 'fas fa-check-circle' : 'far fa-circle'"></i>
+                                </div>
                                 <div>
-                                    <div class="flexbox">
-                                        <div class="label">Aantal beurten</div>
-                                        <div style="padding: 0 .5em;">
-                                            <input #vastbrt type="text" style="width: 3.5em;" [(ngModel)]="vastBrt.val"
-                                                    [ngClass]="{'active': activeOpties == 0, 'valid': vastBrt.valid, 'invalid': !vastBrt.valid}" 
-                                                    [disabled]="activeOpties == 1" (keyup)="validateInput()">
-                                        </div>
-                                    </div>
+                                    <span>{{subOptie}}</span>
                                 </div>
                             </div>
                         }
-                        @if (idxOpt == 1) {
-                            <div class="subopties" [ngClass]="{'active': optieLijst.selectedIdx == idxOpt || activeOpties == 1}" 
-                                    style="padding: .5em 0 .5em 3.75em;">
-                                @for (subOptie of subOptieLijst.filtered; track $index; let idxSubOpt = $index) {
-                                    <div class="flexbox flexmiddle selectable" (click)="optieClicked(1, idxSubOpt)"
-                                            [ngClass]="{'hovered': subOptieLijst.hoveredIdx == idxSubOpt, 'selected': subOptieLijst.selectedIdx == idxSubOpt}">
-                                        <div class="indicator" style="width: 1.25em;">
-                                            <i class="fas fa-angle-right" style="font-size: 1.25em; position: relative; top: 4px;"></i>
-                                        </div>
-                                        <div>
-                                            <span>{{subOptie}}</span>
-                                        </div>
-                                    </div>
-                                    @if (idxSubOpt == 0) {
-                                        <div [ngClass]="{'subopties': activeOpties == 1, 'active': subOptieLijst.selectedIdx == idxSubOpt}" 
-                                                style="padding: .5em 0 .5em 5em;">
-                                            <div class="flexbox">
-                                                <div class="label">Aantal caramboles</div>
-                                                <div style="padding: 0 .5em;">
-                                                    <input #vastcar type="text" style="width: 3.5em;" [(ngModel)]="vastCar.val" 
-                                                            [ngClass]="{'active': activeOpties == 1 && subOptieLijst.selectedIdx == 0, 
-                                                                        'valid': vastCar.valid, 'invalid': !vastCar.valid}"
-                                                            [disabled]="activeOpties == 0 || subOptieLijst.selectedIdx == 1" (keyup)="validateInput()">
-                                                </div>
-                                            </div>                                                    
-                                        </div>
-                                    }
-                                    @if (idxSubOpt == 1) {
-                                        <div [ngClass]="{'subopties': activeOpties == 1, 'active': subOptieLijst.selectedIdx == idxSubOpt}" 
-                                                style="padding: .5em 0 .5em 5em;">
-                                            <div class="flexbox">
-                                                <div class="label">Bepaal aantal caramboles over</div>
-                                                <div style="padding: 0 .5em;">
-                                                    <input #gembrt type="text" style="width: 3.5em;" [(ngModel)]="gemBrt.val" 
-                                                            [ngClass]="{'active': activeOpties == 1 && subOptieLijst.selectedIdx == 1, 
-                                                                        'valid': gemBrt.valid, 'invalid': !gemBrt.valid}"
-                                                            [disabled]="activeOpties == 0 || subOptieLijst.selectedIdx == 0" (keyup)="validateInput()">
-                                                </div>
-                                                <div class="label">beurten</div>
-                                            </div>                                                    
-                                        </div>                                        
-                                    }
-                                }
-                                <div style="padding-left: 1.75em;">
-                                    <div class="flexbox">
-                                        <div class="label">Max. aantal beurten</div>
-                                        <div style="padding: 0 .5em;">
-                                            <input #maxbrt type="text" style="width: 3.5em;" [(ngModel)]="maxBrt.val" 
-                                                    [ngClass]="{'active': activeOpties == 1, 'valid': maxBrt.valid, 'invalid': !maxBrt.valid}"
-                                                    [disabled]="activeOpties == 0" (keyup)="validateInput()">
-                                        </div>
-                                        <div class="label">(0 = geen maximum)</div>
-                                    </div>
+                        <hr>
+                        @if (subOptieLijst.selectedIdx == 0) {
+                            <div class="flexbox" style="padding-top: .5em;">
+                                <div class="label">Aantal caramboles</div>
+                                <div style="padding: 0 .5em;">
+                                    <input #vastcar type="text" style="width: 3.5em;" [(ngModel)]="vastCar.val" 
+                                            [ngClass]="{'active': activeLijst == 1 && subOptieLijst.selectedIdx == 0, 
+                                                        'valid': vastCar.valid, 'invalid': !vastCar.valid}"
+                                            (keyup)="validateInput()">
                                 </div>
                             </div>
                         }
-                    }    
+                        @else {
+                            <div class="flexbox" style="padding-top: .5em;">
+                                <div class="label">Bepaal aantal caramboles over</div>
+                                <div style="padding: 0 .5em;">
+                                    <input #gembrt type="text" style="width: 3.5em;" [(ngModel)]="gemBrt.val" 
+                                            [ngClass]="{'active': activeLijst == 1 && subOptieLijst.selectedIdx == 1, 
+                                                        'valid': gemBrt.valid, 'invalid': !gemBrt.valid}"
+                                            [disabled]="activeLijst == 0 || subOptieLijst.selectedIdx == 0" (keyup)="validateInput()">
+                                </div>
+                                <div class="label">beurten</div>
+                            </div>
+                        }
+                        <div class="flexbox" style="padding-top: .5em;">
+                            <div class="label">Max. aantal beurten</div>
+                            <div style="padding: 0 .5em;">
+                                <input #maxbrt type="text" style="width: 3.5em;" [(ngModel)]="maxBrt.val" 
+                                        [ngClass]="{'active': activeLijst == 1, 'valid': maxBrt.valid, 'invalid': !maxBrt.valid}"
+                                        [disabled]="activeLijst == 0" (keyup)="validateInput()">
+                            </div>
+                            <div class="label">(0 = geen maximum)</div>
+                        </div>
+                    }
                 </div>
+                <div class="flexgrow1"></div>
             </div>
         </div>
         @if (inputValid) {

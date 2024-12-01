@@ -48,7 +48,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
 
     optieLijst: List<string> = new List<string>();
     subOptieLijst: List<string> = new List<string>();
-    activeOpties = 0;
+    activeLijst: number = 0;
     escapeCount: number = 0;
 
     enterButton: Button = new Button('Ctrl+Enter', 'Ga verder', true);
@@ -75,7 +75,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     }
 
     enterPressed() {
-        if (this.activeOpties == 0) {
+        if (this.activeLijst == 0) {
             this.optieClicked(0, this.optieLijst.hoveredIdx);
         }
         else {
@@ -88,8 +88,8 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             this.resetWedstrijd();
             return;
         }
-        if (this.activeOpties == 1) {
-            this.activeOpties = 0;
+        if (this.activeLijst == 1) {
+            this.activeLijst = 0;
             this.subOptieLijst.selectedIdx = this.subOptieLijst.hoveredIdx = -1;
             this.optieClicked(0, 0);
             this.setEscapeCount();
@@ -116,16 +116,16 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     }
 
     optieClicked(idxActive: number, idxOptie: number) {
-        if (idxActive == 1 && this.activeOpties == 0) {
+        if (idxActive == 1 && this.activeLijst == 0) {
             return;
         }
         if (idxActive == 0) {
-            this.activeOpties = 0;
+            this.activeLijst = 0;
             this.subOptieLijst.selectedIdx = this.subOptieLijst.hoveredIdx = -1;
             if (idxOptie == 1) {
                 this.optieLijst.hoverItem(idxOptie);
                 this.optieLijst.selectItem(idxOptie);
-                this.activeOpties = 1;
+                this.activeLijst = 1;
                 if (this.subOptieLijst.selectedIdx < 0) {
                     this.subOptieLijst.hoverItem(0);
                     this.subOptieLijst.selectItem(0);
@@ -156,7 +156,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         this.wedstrijd.tsBeurten = 0;
         this.wedstrijd.tsCaramboles = 0;
         this.wedstrijd.maxBeurten = 0;
-        if (this.activeOpties == 0) {
+        if (this.activeLijst == 0) {
             this.wedstrijd.isVastAantBrt = true;
             this.wedstrijd.tsBeurten = Number(this.vastBrt.val);
         }
@@ -175,6 +175,17 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         if (this.wedstrijdChanged) {
             this.wedstrijd.wedOver = false;
             this.helper.clearWedstrijdResultaten(this.wedstrijd);
+            if (!this.wedstrijd.isVastAantBrt && !this.wedstrijd.isVastAantCar) {
+                this.wedstrijd.teams.forEach(team => {
+                    team.spelers.forEach(spl => {
+                        spl.splTsCar = Math.round(this.wedstrijd.tsBeurten * spl.splTsGem);
+                    });
+                    team.teamTsCar = team.spelers[0].splTsCar + team.spelers[1].splTsCar;
+                });
+                this.wedstrijd.spelers.forEach(spl => {
+                    spl.splTsCar = Math.round(this.wedstrijd.tsBeurten * spl.splTsGem);
+                });    
+            }
         }
         this.bssApi.saveWedstrijd(this.wedstrijd)
         .then(resp => {
@@ -188,7 +199,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     validateInput() {
         this.hasWedstrijdChanged();
         this.inputValid = false;
-        if (this.activeOpties == 0) {
+        if (this.activeLijst == 0) {
             this.vastBrt.valid = this.helper.isValidInteger('' + this.vastBrt.val);
             this.inputValid = this.vastBrt.valid;
         }
@@ -211,19 +222,19 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         console.log(event.code + ' : ' + event.key);
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.key === 'ArrowUp') {
-                if (this.activeOpties == 0) {
+                if (this.activeLijst == 0) {
                     this.optieLijst.hoverPreviousItem();
                 }
-                else if (this.activeOpties == 1) {
+                else if (this.activeLijst == 1) {
                     this.subOptieLijst.hoverPreviousItem();
                 }
                 return false;
             }
             if (event.key === 'ArrowDown') {
-                if (this.activeOpties == 0) {
+                if (this.activeLijst == 0) {
                     this.optieLijst.hoverNextItem();
                 }
-                else if (this.activeOpties == 1) {
+                else if (this.activeLijst == 1) {
                     this.subOptieLijst.hoverNextItem();
                 }
                 return false;
@@ -251,9 +262,9 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        const opts = ['Speel door tot aantal beurten is bereikt', 'Speel door tot aantal caramboles is bereikt'];
+        const opts = ['Speel een vast aantal beurten', 'Doorspelen tot het aantal caramboles is bereikt'];
         this.optieLijst.fillItems(opts);
-        const subOpts = ['Vast aantal caramboles voor iedere speler', 'Bepaal aantal caramboles op basis van gemiddelde van speler'];
+        const subOpts = ['Een vast aantal caramboles voor iedere speler', 'Bepaal aantal caramboles op basis van moyenne van speler'];
         this.subOptieLijst.fillItems(subOpts);
         Promise.all([
             this.bssApi.getWedstrijd()
@@ -267,13 +278,13 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
                 return;
             }
             if (this.wedstrijd.isVastAantBrt) {
-                this.activeOpties = 0;
+                this.activeLijst = 0;
                 this.optieLijst.selectedIdx = this.optieLijst.hoveredIdx = 0;
                 this.vastBrt = new InpNumber(this.wedstrijd.tsBeurten);
             }
             else {
-                this.optieLijst.hoveredIdx = 1;
-                this.activeOpties = 1;
+                this.optieLijst.selectedIdx = this.optieLijst.hoveredIdx = 1;
+                this.activeLijst = 1;
                 this.subOptieLijst.selectedIdx = this.subOptieLijst.hoveredIdx = this.wedstrijd.isVastAantCar ? 0 : 1;
                 this.maxBrt = new InpNumber(this.wedstrijd.maxBeurten);
                 if (this.wedstrijd.isVastAantCar) {
@@ -291,7 +302,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     }
 
     private resetWedstrijd() {
-        if (this.activeOpties == 0) {
+        if (this.activeLijst == 0) {
             this.vastBrt.reset();
         }
         else {
@@ -309,7 +320,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     }
 
     private hasWedstrijdChanged() {
-        if (this.activeOpties == 0) {
+        if (this.activeLijst == 0) {
             this.wedstrijdChanged = this.vastBrt.hasChanged();
         }
         else {
@@ -328,7 +339,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         if (this.wedstrijdChanged) {
             this.escapeCount++;
         }
-        if (this.activeOpties == 1) {
+        if (this.activeLijst == 1) {
             this.escapeCount++;
         }
     }

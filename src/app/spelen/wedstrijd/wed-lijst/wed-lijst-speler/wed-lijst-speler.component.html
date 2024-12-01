@@ -1,23 +1,19 @@
 <div>
     <div class="flexbox flexcenter">
-        <div style="padding: 1em 0 .5em 0;">
-            <span style="font-size: 1.25rem;">{{speler.naam}}</span>
-            @if (speler.tsCar > 0) {
-                <span style="font-size: 1rem; padding-left: 1em; color: #666666;">({{speler.tsCar}})</span>
-            }
-        </div>    
-    </div>
-    <div class="flexbox flexcenter">
-        @for (page of speler.pages; track $index) {
-            <div class="arial" style="padding: 0 .0625em;">
+        @for (page of speler.dim.pages; track $index) {
+            <div class="arial" style="padding: 0 .125rem;" [style.font-size]="speler.dim.fontSize + 'rem'">
                 <div style="padding: .25em .5em; background-color: white;">
                     <table class="tbl-lijst">
                         <tbody>
-                            @for (brt of speler.scores | slice:(page * speler.pageSize):((page + 1) * speler.pageSize); track $index; let i = $index) {
-                                <tr>
-                                    <td [ngClass]="brt.gespeeld ? 'clr-blu' : 'clr-lgr'" style="width: 1.5em;"><span>{{brt.verberg ? '&nbsp;' : ((page * speler.pageSize) + i + 1)}}</span></td>
-                                    <td style="width: 2.25em;"><span [hidden]="!brt.gespeeld">{{brt.serie == 0 ? '---' : brt.serie}}</span></td>
-                                    <td style="width: 2.25em;"><span [hidden]="!brt.gespeeld">{{brt.serie == 0 ? '---' : brt.totaal}}</span></td>
+                            @for (brt of speler.scores | slice:(page * speler.dim.pageRows):((page + 1) * speler.dim.pageRows); track $index; let i = $index) {
+                                <tr [style.height]="speler.dim.rowHeight + 'rem'" [ngClass]="{'border': $index > 0}">
+                                    <td [ngClass]="brt.gespeeld ? 'clr-blu' : 'clr-lgr'" style="width: 1.5em;">
+                                        <span>{{brt.verberg ? '&nbsp;' : ((page * speler.dim.pageRows) + i + 1)}}</span>
+                                    </td>
+                                    <td style="width: 3em; color: gray;">
+                                        <span [hidden]="!brt.gespeeld">{{brt.serie == 0 ? '---' : brt.serie}}</span>
+                                    </td>
+                                    <td style="width: 3em;"><span [hidden]="!brt.gespeeld">{{brt.serie == 0 ? '---' : brt.totaal}}</span></td>
                                 </tr>
                             }
                         </tbody>

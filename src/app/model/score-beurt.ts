@@ -8,7 +8,15 @@ export class ScoreBeurt {
 export class ScoreSpeler {
     naam: string = '';
     tsCar: number = 0;
-    pages: number[] = [0];
-    pageSize: number = 25;
     scores: ScoreBeurt[] = [];
+    dim: LijstDimensies = new LijstDimensies();
+}
+
+export class LijstDimensies {
+    maxBrt: number = 0;
+    totBrt: number = 0;
+    pages: number[] = [0];
+    pageRows: number = 0;
+    rowHeight: number = 0;
+    fontSize: number = .5;
 }

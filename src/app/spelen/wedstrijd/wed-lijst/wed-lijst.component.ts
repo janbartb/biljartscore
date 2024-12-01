@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { WedSpeler, Wedstrijd } from '../../../model/wedstrijd';
 import { BaseComponent } from '../../../base/base.component';
-import { ScoreBeurt, ScoreSpeler } from '../../../model/score-beurt';
+import { LijstDimensies, ScoreBeurt, ScoreSpeler } from '../../../model/score-beurt';
 import { WedLijstSpelerComponent } from "./wed-lijst-speler/wed-lijst-speler.component";
 
 @Component({
@@ -16,44 +16,19 @@ export class WedLijstComponent extends BaseComponent implements OnInit {
     spelerLijsten: ScoreSpeler[] = [];
     spelers: WedSpeler[] = [];
     dataReady: boolean = false;
+    dim: LijstDimensies = new LijstDimensies();
 
     fillScoreLijsten(): void {
-        let lijstLength = 100;
-        let pages = [0, 1, 2, 3];
-        let pageSize = 25;
-        let maxBeurten = 100;
+        this.dim.maxBrt = 100;
         if (this.wedstrijd.isVastAantBrt) {
-            maxBeurten = this.wedstrijd.tsBeurten;
+            this.dim.maxBrt = this.wedstrijd.tsBeurten;
         }
         else {
             if (this.wedstrijd.maxBeurten > 0) {
-                maxBeurten = this.wedstrijd.maxBeurten;
+                this.dim.maxBrt = this.wedstrijd.maxBeurten;
             }
         }
-        if (maxBeurten <= 75) {
-            lijstLength = 75;
-            pages = [0, 1, 2];
-        }
-        if (maxBeurten <= 50) {
-            lijstLength = 50;
-            pages = [0, 1];
-        }
-        if (maxBeurten <= 25) {
-            lijstLength = 25;
-            pages = [0];
-        }
-        if (this.wedstrijd.aantSpelers == 3 && lijstLength == 100) {
-            pages = [0, 1, 2];
-            pageSize = 34;
-            lijstLength = 102;
-        }
-        if (this.wedstrijd.aantSpelers >= 4 && lijstLength > 50) {
-            pages = [0, 1, 2];
-            if (lijstLength > 75) {
-                pageSize = 34;
-                lijstLength = 102;    
-            }
-        }
+        this.bepaalDimensies();
         if (this.wedstrijd.aantSpelers == 5) {
             this.wedstrijd.teams.forEach(team => {
                 team.spelers.forEach(spl => this.spelers.push(spl));
@@ -65,11 +40,10 @@ export class WedLijstComponent extends BaseComponent implements OnInit {
         this.spelers.forEach(spl => {
             let scoreSpeler = new ScoreSpeler();
             scoreSpeler.naam = spl.splBordNaam;
-            scoreSpeler.tsCar = this.wedstrijd.isVastAantBrt ? 0 : this.wedstrijd.tsCaramboles;
-            scoreSpeler.pages = pages;
-            scoreSpeler.pageSize = pageSize;
+            scoreSpeler.tsCar = this.wedstrijd.isVastAantBrt ? 0 : this.wedstrijd.isVastAantCar ? this.wedstrijd.tsCaramboles : spl.splTsCar;
+            scoreSpeler.dim = this.dim;
             let totaal = 0;
-            for (let i = 0; i < lijstLength; i++) {
+            for (let i = 0; i < this.dim.totBrt; i++) {
                 let item = new ScoreBeurt();
                 if (i < spl.stand.score.length) {
                     item.gespeeld = true;
@@ -78,7 +52,7 @@ export class WedLijstComponent extends BaseComponent implements OnInit {
                     item.totaal = totaal;
                 }
                 else {
-                    item.verberg = i >= maxBeurten;
+                    item.verberg = i >= this.dim.maxBrt;
                 }
                 scoreSpeler.scores.push(item);
             }
@@ -113,5 +87,95 @@ export class WedLijstComponent extends BaseComponent implements OnInit {
         .catch(err => {
             this.alert.showError(err);
         });
+    }
+
+    private bepaalDimensies() {
+        if (this.wedstrijd.aantSpelers <= 2) {
+            this.bepaalDimensies2spelers();
+        }
+        else if (this.wedstrijd.aantSpelers == 3) {
+            this.bepaalDimensies3spelers();
+        }
+        else {
+            this.bepaalDimensies4spelers();
+        }
+    }
+
+    private bepaalDimensies2spelers() {
+        this.dim.pageRows = 30;
+        this.dim.rowHeight = 1;
+        this.dim.fontSize = .75;
+        if (this.dim.maxBrt <= 30) {
+            this.dim.totBrt = 30;
+            this.dim.pages = [0];
+        }
+        else if (this.dim.maxBrt <= 60) {
+            this.dim.totBrt = 60;
+            this.dim.pages = [0, 1];
+        }
+        else if (this.dim.maxBrt <= 90) {
+            this.dim.totBrt = 90;
+            this.dim.pages = [0, 1, 2];
+        }
+        else {
+            this.dim.totBrt = 120;
+            this.dim.pages = [0, 1, 2, 3];
+        }
+    }
+
+    private bepaalDimensies3spelers() {
+        if (this.dim.maxBrt <= 60) {
+            this.dim.pageRows = 30;
+            this.dim.rowHeight = 1;
+            this.dim.fontSize = .75;
+            this.dim.totBrt = 60;
+            this.dim.pages = [0, 1];
+            if (this.dim.maxBrt <= 30) {
+                this.dim.totBrt = 30;
+                this.dim.pages = [0];
+            }
+        }
+        else if (this.dim.maxBrt <= 90) {
+            this.dim.pageRows = 30;
+            this.dim.rowHeight = 1;
+            this.dim.fontSize = .7;
+            this.dim.totBrt = 90;
+            this.dim.pages = [0, 1, 2];
+        }
+        else {
+            this.dim.pageRows = 40;
+            this.dim.rowHeight = .75;
+            this.dim.fontSize = .625;
+            this.dim.totBrt = 120;
+            this.dim.pages = [0, 1, 2];
+        }    
+    }
+
+    private bepaalDimensies4spelers() {
+        if (this.dim.maxBrt <= 60) {
+            this.dim.pageRows = 30;
+            this.dim.rowHeight = 1;
+            this.dim.fontSize = .75;
+            this.dim.totBrt = 60;
+            this.dim.pages = [0, 1];
+            if (this.dim.maxBrt <= 30) {
+                this.dim.totBrt = 30;
+                this.dim.pages = [0];
+            }
+        }
+        else if (this.dim.maxBrt <= 80) {
+            this.dim.pageRows = 40;
+            this.dim.rowHeight = .75;
+            this.dim.fontSize = .625;
+            this.dim.totBrt = 80;
+            this.dim.pages = [0, 1];
+        }
+        else {
+            this.dim.pageRows = 40;
+            this.dim.rowHeight = .75;
+            this.dim.fontSize = .53125;
+            this.dim.totBrt = 120;
+            this.dim.pages = [0, 1, 2];
+        }    
     }
 }

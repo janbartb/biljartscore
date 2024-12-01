@@ -5,6 +5,7 @@
     padding: 0 .5em;
     border: .0625em solid white;
     border-radius: .5em;
+    line-height: 1.75em;
 }
 .opties.selectable.selected {
     opacity: 1;
@@ -18,8 +19,7 @@
 
 .opties .indicator {
     color: green;
-    position: relative;
-    opacity: 0;
+    opacity: 0.5;
 }
 .opties.selectable.selected .indicator {
     opacity: 1;

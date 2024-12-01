@@ -2,23 +2,47 @@
     @if (dataReady) {
         @if (spelerLijsten.length <= 2) {
             @for (lijst of spelerLijsten; track $index) {
-                <div>
-                    <app-wed-lijst-speler [speler]="lijst"></app-wed-lijst-speler>
-                </div>        
+                <div class="flexbox flexcolumn">
+                    <div class="speler-header">
+                        <span>{{lijst.naam}}</span>
+                        @if (lijst.tsCar > 0) {
+                            <span style="font-size: 1rem; padding-left: 1em; color: #666666;">({{lijst.tsCar}})</span>
+                        }
+                    </div>
+                    <div class="flexgrow1 speler-lijst">
+                        <app-wed-lijst-speler [speler]="lijst"></app-wed-lijst-speler>
+                    </div>
+                </div>
             }
         }
         @else if (spelerLijsten.length == 3) {
             @for (lijst of spelerLijsten; track $index) {
-                <div [style.font-size]="lijst.pageSize == 34 ? '.75em' : lijst.pages.length == 3 ? '.875em' : '1em'">
-                    <app-wed-lijst-speler [speler]="lijst"></app-wed-lijst-speler>
-                </div>        
+                <div class="flexbox flexcolumn">
+                    <div class="speler-header">
+                        <span>{{lijst.naam}}</span>
+                        @if (lijst.tsCar > 0) {
+                            <span style="font-size: 1rem; padding-left: 1em; color: #666666;">({{lijst.tsCar}})</span>
+                        }
+                    </div>
+                    <div class="flexgrow1 speler-lijst">
+                        <app-wed-lijst-speler [speler]="lijst"></app-wed-lijst-speler>
+                    </div>
+                </div>
             }
         }
         @else if (spelerLijsten.length == 4) {
             @for (lijst of spelerLijsten; track $index) {
-                <div [style.font-size]="lijst.pages.length == 3 ? '.6875em' : '1em'">
-                    <app-wed-lijst-speler [speler]="lijst"></app-wed-lijst-speler>
-                </div>        
+                <div class="flexbox flexcolumn">
+                    <div class="speler-header">
+                        <span>{{lijst.naam}}</span>
+                        @if (lijst.tsCar > 0) {
+                            <span style="font-size: 1rem; padding-left: 1em; color: #666666;">({{lijst.tsCar}})</span>
+                        }
+                    </div>
+                    <div class="flexgrow1 speler-lijst">
+                        <app-wed-lijst-speler [speler]="lijst"></app-wed-lijst-speler>
+                    </div>
+                </div>
             }
         }
     }
