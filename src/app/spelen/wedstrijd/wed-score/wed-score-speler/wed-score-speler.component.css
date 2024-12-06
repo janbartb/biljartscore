@@ -1,4 +1,4 @@
-.bal { border-radius: 50%; }
+.bal { border-radius: 50%; background-color: #252525; }
 .bal.geel { background-color: yellow; }
 .bal.wit { background-color: white; }
 

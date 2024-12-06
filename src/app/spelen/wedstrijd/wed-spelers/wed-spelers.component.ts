@@ -172,6 +172,11 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         console.log(this.wedstrijd);
         if (this.wedstrijdChanged) {
             this.wedstrijd.wedOver = false;
+            this.wedstrijd.isVastAantBrt = true;
+            this.wedstrijd.isVastAantCar = true;
+            this.wedstrijd.maxBeurten = 0;
+            this.wedstrijd.tsBeurten = 0;
+            this.wedstrijd.tsCaramboles = 0;
             this.helper.clearWedstrijdResultaten(this.wedstrijd);
         }
         this.bssApi.saveWedstrijd(this.wedstrijd)

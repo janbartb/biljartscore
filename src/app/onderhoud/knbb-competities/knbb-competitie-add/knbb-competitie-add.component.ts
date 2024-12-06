@@ -129,6 +129,7 @@ export class KnbbCompetitieAddComponent extends BaseComponent implements OnInit 
             seizoen: [this.competitie.seizoen],
             district: [this.competitie.district],
             spelsoort: [this.competitie.spelsoort],
+            knbbId: [this.competitie.knbbId],
             klasse: [this.competitie.klasse, [Validators.required]],
             volgNr: [this.competitie.volgNr, [Validators.required, Validators.min(1)]],
             poule: [this.competitie.poule, [Validators.required, Validators.min(1)]],
@@ -163,6 +164,9 @@ export class KnbbCompetitieAddComponent extends BaseComponent implements OnInit 
     }
     get spelsoort() {
         return this.competitieForm.get('spelsoort');
+    }
+    get knbbId() {
+        return this.competitieForm.get('knbbId');
     }
     get klasse() {
         return this.competitieForm.get('klasse');

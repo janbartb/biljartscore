@@ -7,9 +7,10 @@
         <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
             <div class="lijst-row">
                 <div class="lijst-col" style="width: 2em;"></div>
-                <div class="lijst-col" style="width: 6em;">ID</div>
+                <div class="lijst-col" style="width: 5em;">ID</div>
+                <div class="lijst-col" style="width: 6em;">KNBB ID</div>
                 <div class="lijst-col" style="width: 14em;">Naam</div>
-                <div class="lijst-col" style="width: 10em;">Vereniging</div>
+                <div class="lijst-col" style="width: 8em;">Vereniging</div>
                 <div class="lijst-col" style="width: 7em;">Moyenne</div>
                 <div class="lijst-col" style="width: 2.5em;"></div>
             </div>
@@ -17,13 +18,14 @@
         <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
             <div class="lijst-row filter-row">
                 <div class="lijst-col" style="width: 2em;"></div>
+                <div class="lijst-col" style="width: 5em;"></div>
                 <div class="lijst-col" style="width: 6em;"></div>
                 <div class="lijst-col" style="width: 14em;">
                     <input id="naamfilter" class="filter" type="text" style="width: 10em;" [(ngModel)]="naamFilter" autocomplete="off"
                                         (keyup)="naamFilterChanged($event)" [disabled]="moyenneMode">
                 </div>
-                <div class="lijst-col" style="width: 10em;">
-                    <select #verfilter class="filter" style="width: 7em; font-weight: normal;" [(ngModel)]="verenigingFilter" 
+                <div class="lijst-col" style="width: 8em;">
+                    <select #verfilter class="filter" style="width: 6em; font-weight: normal;" [(ngModel)]="verenigingFilter" 
                             (change)="verenigingFilterChanged()" [disabled]="moyenneMode || fromVereniging">
                         <option value="">Allen</option>
                         <option value="0">Geen</option>
@@ -46,13 +48,16 @@
                                 <div class="lijst-col indicator" style="width: 2em;">
                                     <i class="fas fa-angle-right"></i>
                                 </div>
-                                <div class="lijst-col" style="width: 6em;">
+                                <div class="lijst-col" style="width: 5em;">
                                     <span>{{item.speler.id}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 6em;">
+                                    <span>{{item.speler.knbbId}}</span>
                                 </div>
                                 <div class="lijst-col" style="width: 14em;">
                                     <span>{{item.getNaam()}}</span>
                                 </div>
-                                <div class="lijst-col" style="width: 10em;">
+                                <div class="lijst-col" style="width: 8em;">
                                     @for (id of item.speler.verenigingIds; track $index) {
                                         <span style="font-weight: normal; padding-right: .5em;">{{getKorteVerenigingNaam(id)}}</span>
                                     }

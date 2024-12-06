@@ -8,6 +8,7 @@
         <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
             <div class="lijst-row">
                 <div class="lijst-col" style="width: 2.5em;"></div>
+                <div class="lijst-col" style="width: 6em;">KNBB ID</div>
                 <div class="lijst-col" style="width: 5em;">Klasse</div>
                 <div class="lijst-col" style="width: 5em;">Volgnr</div>
                 <div class="lijst-col" style="width: 5em;">Poule</div>
@@ -31,6 +32,9 @@
                                         [ngClass]="{'selected': compLijst.selectedIdx == $index, 'hovered': compLijst.hoveredIdx == $index}">
                                     <div class="lijst-col indicator" style="width: 2.5em;">
                                         <i class="fas fa-angle-right"></i>
+                                    </div>
+                                    <div class="lijst-col" style="width: 6em;">
+                                        <span>{{comp.knbbId}}</span>
                                     </div>
                                     <div class="lijst-col" style="width: 5em;">
                                         <span>{{comp.klasse}}</span>

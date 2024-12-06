@@ -175,16 +175,25 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         if (this.wedstrijdChanged) {
             this.wedstrijd.wedOver = false;
             this.helper.clearWedstrijdResultaten(this.wedstrijd);
-            if (!this.wedstrijd.isVastAantBrt && !this.wedstrijd.isVastAantCar) {
+            if (!this.wedstrijd.isVastAantBrt) {
+                if (this.wedstrijd.aantSpelers == 5) {
+                    this.berekenAantCarambolesVoorTeams();
+                }
+                else {
+                    this.berekenAantCarambolesVoorSpelers();
+                }    
+            }
+            else {
                 this.wedstrijd.teams.forEach(team => {
+                    team.teamTsGem = Math.round(1000 * ((team.spelers[0].splTsGem + team.spelers[1].splTsGem) / 2)) / 1000;
+                    team.teamTsBrt = 2 * this.wedstrijd.tsBeurten;
                     team.spelers.forEach(spl => {
-                        spl.splTsCar = Math.round(this.wedstrijd.tsBeurten * spl.splTsGem);
+                        spl.splTsBrt = this.wedstrijd.tsBeurten;
                     });
-                    team.teamTsCar = team.spelers[0].splTsCar + team.spelers[1].splTsCar;
                 });
                 this.wedstrijd.spelers.forEach(spl => {
-                    spl.splTsCar = Math.round(this.wedstrijd.tsBeurten * spl.splTsGem);
-                });    
+                    spl.splTsBrt = this.wedstrijd.tsBeurten;
+                });
             }
         }
         this.bssApi.saveWedstrijd(this.wedstrijd)
@@ -264,8 +273,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         const opts = ['Speel een vast aantal beurten', 'Doorspelen tot het aantal caramboles is bereikt'];
         this.optieLijst.fillItems(opts);
-        const subOpts = ['Een vast aantal caramboles voor iedere speler', 'Bepaal aantal caramboles op basis van moyenne van speler'];
-        this.subOptieLijst.fillItems(subOpts);
+        let subOpts = ['Een vast aantal caramboles voor iedere speler', 'Bereken aantal caramboles op basis van moyenne van speler'];
         Promise.all([
             this.bssApi.getWedstrijd()
         ])
@@ -277,6 +285,10 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
                 this.escapePressed();
                 return;
             }
+            if (this.wedstrijd.aantSpelers == 5) {
+                subOpts = ['Een vast aantal caramboles voor ieder team', 'Bereken aantal caramboles op basis van moyenne van team'];
+            }
+            this.subOptieLijst.fillItems(subOpts);
             if (this.wedstrijd.isVastAantBrt) {
                 this.activeLijst = 0;
                 this.optieLijst.selectedIdx = this.optieLijst.hoveredIdx = 0;
@@ -299,6 +311,40 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         .catch(err => {
             this.alert.showError(err);
         });
+    }
+
+    private berekenAantCarambolesVoorSpelers() {
+        if (this.wedstrijd.isVastAantCar) {
+            this.wedstrijd.spelers.forEach(spl => {
+                spl.splTsCar = this.wedstrijd.tsCaramboles;
+            });
+        }
+        else {
+            this.wedstrijd.spelers.forEach(spl => {
+                spl.splTsCar = Math.round(this.wedstrijd.tsBeurten * spl.splTsGem);
+            });
+        }
+    }
+
+    private berekenAantCarambolesVoorTeams() {
+        if (this.wedstrijd.isVastAantCar) {
+            this.wedstrijd.teams.forEach(team => {
+                team.teamTsGem = Math.round(1000 * ((team.spelers[0].splTsGem + team.spelers[1].splTsGem) / 2)) / 1000;
+                team.teamTsCar = this.wedstrijd.tsCaramboles;
+                const totGem = team.spelers[0].splTsGem + team.spelers[1].splTsGem;
+                team.spelers[0].splTsCar = Math.round((team.spelers[0].splTsGem / totGem) * team.teamTsCar);
+                team.spelers[1].splTsCar = team.teamTsCar - team.spelers[0].splTsCar;
+            });
+        }
+        else {
+            this.wedstrijd.teams.forEach(team => {
+                team.teamTsGem = Math.round(1000 * ((team.spelers[0].splTsGem + team.spelers[1].splTsGem) / 2)) / 1000;
+                team.teamTsCar = Math.round(team.teamTsGem * this.wedstrijd.tsBeurten);
+                const totGem = team.spelers[0].splTsGem + team.spelers[1].splTsGem;
+                team.spelers[0].splTsCar = Math.round((team.spelers[0].splTsGem / totGem) * team.teamTsCar);
+                team.spelers[1].splTsCar = team.teamTsCar - team.spelers[0].splTsCar;
+            });
+        }
     }
 
     private resetWedstrijd() {

@@ -108,6 +108,9 @@
                                         <div class="lijst-col label" style="width: 2.5em;">
                                             <i class="fas" [ngClass]="spl.spelerSelected ? 'fa-check' : ''"></i>
                                         </div>
+                                        <div class="lijst-col num" style="width: 4em;">
+                                            <span>{{spl.spelerMoy | number:'1.3-3':'nl-NL'}}</span>
+                                        </div>
                                         <div class="lijst-col">
                                             <span>{{spl.spelerNaam}}</span>
                                         </div>

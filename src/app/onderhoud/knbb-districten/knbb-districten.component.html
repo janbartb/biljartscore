@@ -5,12 +5,13 @@
                         (escClicked)="escapePressed()" (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()"></app-page-header>
         </div>
         <div class="flexgrow1 flexbox flexstretch">
-            <div class="flex50perc flexbox flexcolumn" style="border-right: .25em solid green;">
+            <div class="flex60perc flexbox flexcolumn" style="border-right: .25em solid green;">
                 <app-section-header [title]="'Districten'" [cssClasses]="'w3-green-l2'"></app-section-header>
                 <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
                     <div class="lijst-row">
                         <div class="lijst-col" style="width: 1.75em;"></div>
                         <div class="lijst-col" style="width: 5em;">ID</div>
+                        <div class="lijst-col" style="width: 6em;">KNBB ID</div>
                         <div class="lijst-col" style="width: 15em;">Naam</div>
                         <div class="lijst-col" style="width: 2.5em;"></div>
                     </div>
@@ -19,6 +20,7 @@
                     <div class="lijst-row filter-row">
                         <div class="lijst-col" style="width: 1.75em;"></div>
                         <div class="lijst-col" style="width: 5em;"></div>
+                        <div class="lijst-col" style="width: 6em;"></div>
                         <div class="lijst-col" style="width: 15em;">
                             <input class="filter" type="text" style="width: 10em;" [(ngModel)]="naamFilter" autocomplete="off"
                                                 (keyup)="naamFilterChanged()">
@@ -39,6 +41,9 @@
                                         <div class="lijst-col" style="width: 5em;">
                                             <span>{{district.disId}}</span>
                                         </div>
+                                        <div class="lijst-col" style="width: 6em;">
+                                            <span>{{district.knbbId}}</span>
+                                        </div>
                                         <div class="lijst-col" style="width: 15em;">
                                             <span>{{district.disNaam}}</span>
                                         </div>
@@ -54,7 +59,7 @@
                 <app-section-footer-btns [buttons]="toevoegButtons" (clickedButton)="toevoegenClicked()"
                                 [cssFooter]="'w3-green-bdr-l2'" [cssButtons]="'font125'"></app-section-footer-btns>
             </div>
-            <div class="flex50perc flexbox flexcolumn">
+            <div class="flex40perc flexbox flexcolumn">
                 <app-section-header [title]="sectionTitle" [cssClasses]="'w3-green-l2'"></app-section-header>
                 <div class="section-body flexgrow1">
                     @if (districtForm && (mode == 'add' || districtLijst.selectedIdx >= 0)) {
@@ -79,6 +84,16 @@
                                                     <td><span>ID wordt al gebruikt</span></td>
                                                 </tr>
                                             }
+                                            <tr>
+                                                <td>
+                                                    <label for="disKnbbId">KNBB ID</label>
+                                                </td>
+                                                <td>
+                                                    <input #districtnaam type="text" id="disKnbbId" style="width: 4em;" formControlName="knbbId" autocomplete="off"
+                                                        [ngClass]="{'invalid': knbbId?.invalid && (knbbId?.dirty), 'valid': knbbId?.valid && (knbbId?.dirty)}"
+                                                        (blur)="knbbId?.setValue(knbbId?.value.trim())" (keydown)="onKeydownNaam($event)">
+                                                </td>
+                                            </tr>
                                             <tr>
                                                 <td>
                                                     <label for="disNaam">Naam<span class="req"> *</span></label>

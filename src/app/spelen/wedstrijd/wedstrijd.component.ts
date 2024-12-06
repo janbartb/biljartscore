@@ -176,7 +176,13 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
             console.log(this.wedstrijd);
             this.wedGestart = this.isWedstrijdGestart();
             if (!this.wedGestart) {
-                this.aanvullenTeamEnSpelerData();
+                if (this.wedstrijd.teams.length) {
+                    this.wedstrijd.teams[0].active = true;
+                    this.wedstrijd.teams[0].spelers[0].active = true;
+                }
+                else {
+                    this.wedstrijd.spelers[0].active = true;
+                }
                 this.enterButton.text = 'Start wedstrijd';
             }
             else {

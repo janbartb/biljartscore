@@ -1,13 +1,13 @@
-.bal { border-radius: 50%; font-size: 5em;}
+.bal { border-radius: 50%; font-size: 6em; background-color: #252525; }
 .bal.geel { background-color: yellow; }
 .bal.wit { background-color: white; }
 
 .bal .digit3 { transform: translateX(-.025em) scaleX(.7); }
 
-.spelerdata { background-color: black; color: gray; opacity: .5;}
-.spelerdata.active { opacity: 1; }
-.spelerdata .wit { color: white; }
-.spelerdata .geel { color: yellow; }
+.teamdata { background-color: black; color: gray; opacity: .5;}
+.teamdata.active { opacity: 1; }
+.teamdata .wit { color: white; }
+.teamdata .geel { color: yellow; }
 
 .scoredata { opacity: .5; }
 .scoredata.active { opacity: 1; }

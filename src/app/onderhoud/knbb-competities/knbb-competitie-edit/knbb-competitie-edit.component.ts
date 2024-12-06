@@ -88,6 +88,7 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
         if (!this.dataChanged) {
             return;
         }
+        this.competitie.knbbId = this.knbbId?.value;
         this.competitie.naam = this.naam?.value;
         this.competitie.maxBeurten = this.maxBeurten?.value;
         //console.log(this.competitie);
@@ -151,7 +152,9 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
     }
 
     setDataChanged(): void {
-        this.dataChanged = !(this.competitie.naam == this.naam?.value && this.competitie.maxBeurten == this.maxBeurten?.value)
+        this.dataChanged = !(this.competitie.knbbId == this.knbbId?.value && 
+                            this.competitie.naam == this.naam?.value && 
+                            this.competitie.maxBeurten == this.maxBeurten?.value);
     }
 
     @HostListener('document:keydown', ['$event'])
@@ -238,6 +241,7 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
 
     private createForm() {
         this.compDataForm = this.fb.nonNullable.group({
+            knbbId: [this.competitie.knbbId],
             naam: [this.competitie.naam, [Validators.required, notEmpty()]],
             maxBeurten: [this.competitie.maxBeurten, [Validators.required, Validators.min(1)]]
         });
@@ -247,6 +251,9 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
         return (a.naam > b.naam) ? 1 : -1;
     }
 
+    get knbbId() {
+        return this.compDataForm.get('knbbId');
+    }
     get naam() {
         return this.compDataForm.get('naam');
     }

@@ -39,7 +39,7 @@ export class StatusService {
 
     getDistrict(): District {
         const conf = this.getConfig();
-        return conf ? conf.district : { disId: 'kemp', disNaam: 'Kempenland'};
+        return conf ? conf.district : { disId: 'kemp', knbbId: '86', disNaam: 'Kempenland'};
     }
 
     getKlasse(): string {

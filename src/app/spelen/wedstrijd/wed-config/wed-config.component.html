@@ -24,7 +24,7 @@
                     @if (optieLijst.selectedIdx == 0) {
                         <div>
                             <div class="flexbox" style="padding-top: .5em;">
-                                <div class="label">Aantal beurten</div>
+                                <div class="label">{{'Aantal beurten' + (wedstrijd.aantSpelers == 5 ? ' per speler' : '')}}</div>
                                 <div style="padding: 0 .5em;">
                                     <input #vastbrt type="text" style="width: 3.5em;" [(ngModel)]="vastBrt.val"
                                             [ngClass]="{'active': activeLijst == 0, 'valid': vastBrt.valid, 'invalid': !vastBrt.valid}" 
@@ -48,7 +48,7 @@
                         <hr>
                         @if (subOptieLijst.selectedIdx == 0) {
                             <div class="flexbox" style="padding-top: .5em;">
-                                <div class="label">Aantal caramboles</div>
+                                <div class="label">{{'Aantal caramboles' + (wedstrijd.aantSpelers == 5 ? ' per team' : '')}}</div>
                                 <div style="padding: 0 .5em;">
                                     <input #vastcar type="text" style="width: 3.5em;" [(ngModel)]="vastCar.val" 
                                             [ngClass]="{'active': activeLijst == 1 && subOptieLijst.selectedIdx == 0, 
@@ -59,7 +59,7 @@
                         }
                         @else {
                             <div class="flexbox" style="padding-top: .5em;">
-                                <div class="label">Bepaal aantal caramboles over</div>
+                                <div class="label">Bereken aantal caramboles over</div>
                                 <div style="padding: 0 .5em;">
                                     <input #gembrt type="text" style="width: 3.5em;" [(ngModel)]="gemBrt.val" 
                                             [ngClass]="{'active': activeLijst == 1 && subOptieLijst.selectedIdx == 1, 

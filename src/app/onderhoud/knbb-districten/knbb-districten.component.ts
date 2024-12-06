@@ -153,6 +153,7 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
 
     districtWijzigen() {
         this.district.disNaam = this.disNaam?.value;
+        this.district.knbbId = this.knbbId?.value;
         this.bssApi.updateDistrict(this.district)
         .then(resp => {
             this.alert.showAlert(resp.message, 'success');
@@ -288,6 +289,7 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
     private createDisctrictForm() {
         this.districtForm = this.fb.nonNullable.group({
             disId: [this.district.disId],
+            knbbId: [this.district.knbbId],
             disNaam: [this.district.disNaam, [Validators.required, notEmpty()]],
         });
         if (this.mode == 'add') {
@@ -303,6 +305,9 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
 
     get disId() {
         return this.districtForm.get('disId');
+    }
+    get knbbId() {
+        return this.districtForm.get('knbbId');
     }
     get disNaam() {
         return this.districtForm.get('disNaam');

@@ -7,7 +7,7 @@ import { List } from '../../../../model/list';
 import { SpelerSelectie, SpelerWrapper } from '../../../../model/speler';
 import { PageHeaderComponent } from '../../../../shared/page-header/page-header.component';
 import { Button } from '../../../../model/button';
-import { NgClass } from '@angular/common';
+import { DecimalPipe, NgClass } from '@angular/common';
 import { notEmpty } from '../../../../directives/validators.directive';
 import { SectionHeaderComponent } from '../../../../shared/section-header/section-header.component';
 import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-btns/section-footer-btns.component';
@@ -22,6 +22,7 @@ import { Scrolling } from '../../../../model/scrolling';
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
         ReactiveFormsModule, 
+        DecimalPipe,
         NgClass
     ],
     templateUrl: './vereniging-team.component.html',

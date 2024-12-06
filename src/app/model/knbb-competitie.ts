@@ -2,6 +2,7 @@ import { Team } from "./vereniging";
 
 export class KnbbCompetitie {
     competitieId: string = '';
+    knbbId: string = '';
     seizoen: string = '';
     district: string = '';
     spelsoort: string = '';

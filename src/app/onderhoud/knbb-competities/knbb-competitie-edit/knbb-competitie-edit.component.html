@@ -41,6 +41,16 @@
                                         </tr>
                                         <tr>
                                             <td>
+                                                <label for="knbbId">KNBB ID</label>
+                                            </td>
+                                            <td>
+                                                <input #knbbid type="text" id="knbbId" style="width: 4em;" formControlName="knbbId" autocomplete="off"
+                                                        [ngClass]="{'invalid': knbbId?.invalid && (knbbId?.dirty), 'valid': knbbId?.valid && (knbbId?.dirty)}"
+                                                        (blur)="knbbId?.setValue(knbbId?.value.trim())" (keyup)="setDataChanged()" (focus)="activeSection = 0">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
                                                 <label for="compNaam">Naam<span class="req"> *</span></label>
                                             </td>
                                             <td>
