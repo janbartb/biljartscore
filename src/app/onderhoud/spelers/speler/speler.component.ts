@@ -1,19 +1,18 @@
 import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Speler, SpelerGemiddelde, SpelerWrapper } from '../../../model/speler';
+import { ActivatedRoute } from '@angular/router';
+import { Speler, SpelerWrapper } from '../../../model/speler';
 
 import { BaseComponent } from '../../../base/base.component';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { NgClass } from '@angular/common';
 import { Spelsoort } from '../../../model/spelsoort';
 import { Vereniging, VerenigingKort } from '../../../model/vereniging';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { greaterZero, noDuplicates, notEmpty } from '../../../directives/validators.directive';
 import { Button } from '../../../model/button';
 import { ButtonComponent } from '../../../shared/button-group/button/button.component';
 import { ApiResponse } from '../../../model/api-response';
-
-declare var mySpeechObject: any;
+import { SpeechService } from '../../../services/speech.service';
 
 @Component({
   selector: 'app-speler',
@@ -25,6 +24,7 @@ declare var mySpeechObject: any;
 export class SpelerComponent extends BaseComponent implements OnInit {
     route = inject(ActivatedRoute);
     fb = inject(FormBuilder);
+    spraak = inject(SpeechService);
 
     initSplId: string = '';
     initVerId: string = '';
@@ -91,7 +91,7 @@ export class SpelerComponent extends BaseComponent implements OnInit {
 
     naamUitspreken(): void {
         const naam = (this.spreeknaam?.value.trim().length) ? this.spreeknaam?.value.trim() : this.vnaam?.value.trim();
-        mySpeechObject.speak(naam);
+        this.spraak.speak(naam);
     }
 
     verenigingClicked(verKort: VerenigingKort) {

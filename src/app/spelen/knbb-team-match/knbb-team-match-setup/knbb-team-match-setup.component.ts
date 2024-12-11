@@ -175,6 +175,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         else {
             this.activeSection = 0;
         }
+        this.checkInput();
         this.setEscapeCount();
     }
 
