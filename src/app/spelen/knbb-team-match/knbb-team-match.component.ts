@@ -183,7 +183,7 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
                 this.router.navigate(['teammatch/setup/thuis']);
                 return;
             }
-            if (!(this.match.teams.every(tm => tm.spelers.length === 3))) {
+            if (!(this.match.teams.every(tm => tm.spelers.length === 3 && tm.spelers.every(sp => sp.splId != '')))) {
                 this.router.navigate(['teammatch/setup/thuis']);
                 return;
             }
