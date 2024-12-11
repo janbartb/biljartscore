@@ -1,16 +1,18 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BaseComponent } from '../../../base/base.component';
 import { Team, Vereniging } from '../../../model/vereniging';
 import { List } from '../../../model/list';
 import { SpelerWrapper } from '../../../model/speler';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
-import { ButtonComponent } from '../../../shared/button-group/button/button.component';
 import { NgClass } from '@angular/common';
 import { Button } from '../../../model/button';
 import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
 import { SectionFooterBtnsComponent } from "../../../shared/section-footer-btns/section-footer-btns.component";
+import { KnbbCompetitie } from '../../../model/knbb-competitie';
+import { ConfirmComponent } from '../../../shared/confirm/confirm.component';
+import { Alinea, ConfirmDialog } from '../../../model/confirm-dialog';
 
 @Component({
     selector: 'app-vereniging',
@@ -19,6 +21,7 @@ import { SectionFooterBtnsComponent } from "../../../shared/section-footer-btns/
         PageHeaderComponent,
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
+        ConfirmComponent,
         NgClass,
         FormsModule,
         ReactiveFormsModule
@@ -34,6 +37,9 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
     vereniging: Vereniging = new Vereniging();
     teamLijst: List<Team> = new List<Team>();
     ledenLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
+    comps: KnbbCompetitie[] = [];
+    idxToDelete: number = -1;
+    confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
 
     wijzigButtons: Button[] = [new Button('W', 'Wijzigen', true)];
     ledenButtons: Button[] = [new Button('L', 'Wijzigen', true)];
@@ -96,8 +102,29 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
         if (this.teamLijst.isIndexWithinRange(idx)) {
             //TODO: first confirm and save if confirmed
             const teamToRemove = this.teamLijst.filtered[idx];
+            let compNaam = this.teamZitInCompetitie(teamToRemove);
+            if (compNaam.length) {
+                this.alert.showAlert(`Kan team niet verwijderen. Zit nog in KNBB competitie '${compNaam}'.`, 'warning', 5);
+                return;
+            }
+            this.idxToDelete = idx;
+            this.confirmVerwijderen(teamToRemove);
+        }
+    }
+
+    private confirmVerwijderen(team: Team) {
+        let inhoud: Alinea[] = [];
+        inhoud.push(new Alinea([`Team '${team.naam}' verwijderen.`]));
+        inhoud.push(new Alinea([`Weet u het zeker?`]));
+        this.confirmDialog = new ConfirmDialog('verwijderen', inhoud);
+        this.isDialogOpen = true;
+    }
+
+    confirmReplied(confirmed: boolean) {
+        if (confirmed) {
+            const teamToRemove = this.teamLijst.filtered[this.idxToDelete];
             this.teamLijst.items = this.teamLijst.items.filter(team => team.teamId != teamToRemove.teamId);
-            this.teamLijst.filtered.splice(idx, 1);
+            this.teamLijst.filtered.splice(this.idxToDelete, 1);
             this.teamLijst.clearSelection();
             this.vereniging.teams = this.teamLijst.items;
             this.bssApi.updateVereniging(this.vereniging)
@@ -108,6 +135,7 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
                     this.alert.showError(err);
                 });
         }
+        this.isDialogOpen = false;
     }
 
     ledenWijzigenClicked() {
@@ -127,10 +155,16 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.key === 'Enter') {
+            if (this.isDialogOpen) {
+                return true;
+            }
             this.enterPressed();
             return false;
         }
         if (event.key === 'Escape') {
+            if (this.isDialogOpen) {
+                return true;
+            }
             this.escapePressed();
             return false;
         }
@@ -165,7 +199,8 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
         }
         Promise.all([
             this.bssApi.getVereniging(id),
-            this.bssApi.getLedenVanVereniging(id, this.spelId)
+            this.bssApi.getLedenVanVereniging(id, this.spelId),
+            this.bssApi.getKnbbCompetities(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId)
         ])
             .then(results => {
                 this.vereniging = results[0];
@@ -174,6 +209,7 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
                 this.sortTeams();
                 this.ledenLijst.fillItems(results[1]);
                 this.sortLeden();
+                this.comps = results[2];
                 this.subtitle = `Vereniging '${this.vereniging.naam}'`;
             })
             .catch((err) => {
@@ -201,6 +237,16 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
                 return (a.getNaam() > b.getNaam()) ? 1 : -1;
             }
         });
+    }
+
+    private teamZitInCompetitie(team: Team): string {
+        const foundComp = this.comps.find(comp => {
+            return comp.teams.some(tm => tm.verId == team.verId && tm.teamId == team.teamId);
+        });
+        if (foundComp) {
+            return foundComp.naam;
+        }
+        return '';
     }
 
 }

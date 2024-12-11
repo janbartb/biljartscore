@@ -12,6 +12,7 @@ import { SectionHeaderComponent } from '../../../shared/section-header/section-h
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 import { Team, Vereniging } from '../../../model/vereniging';
 import { HelperService } from '../../../services/helper.service';
+import { Scrolling } from '../../../model/scrolling';
 
 @Component({
     selector: 'app-knbb-competitie-edit',
@@ -36,15 +37,20 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
     subtitle: string = '';
     subtitle2: string = '';
     activeSection: number = 0;
+    biljartPointLink: string = '';
     dataChanged: boolean = false;
+    escapeCount: number = 0;
+    scrollElm!: HTMLDivElement;
+    teamScroll!: Scrolling;
 
-    teamButtons: Button[] = [new Button('T', 'Teams wijzigen', true)];
+    teamsButtons: Button[] = [new Button('T', 'Teams wijzigen', true)];
     compButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
 
     compDataForm!: FormGroup;
 
     htmlInputNaam = viewChild<ElementRef<HTMLInputElement>>("compnaam");
     htmlInputBeurten = viewChild<ElementRef<HTMLInputElement>>("compbeurten");
+    htmlTeamLijst = viewChild<ElementRef<HTMLDivElement>>('teamlijst');
 
     constructor() {
         super();
@@ -63,28 +69,26 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
             button.selected = false;
             if (button.key == 'T') {
                 if (this.activeSection == 1) {
-                    this.teamButtonClicked();
+                    this.teamsButtonClicked();
                 }
             }
             if (button.key == 'Enter') {
-                if (this.activeSection == 0) {
-                    this.compButtonClicked();
-                }
+                this.opslaanClicked();
             }
         }, 300);
     }
 
     override escapePressed(): void {
-        if (this.dataChanged || this.teamLijst.selectedIdx >= 0) {
+        if (this.dataChanged) {
             this.compDataForm.reset();
             this.dataChanged = false;
-            this.teamLijst.clearSelection();
+            this.setEscapeCount();
             return;
         }
         super.escapePressed();
     }
 
-    compButtonClicked() {
+    opslaanClicked() {
         if (!this.dataChanged) {
             return;
         }
@@ -96,6 +100,7 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
         .then(resp => {
             this.alert.showAlert(resp.message, 'success');
             this.getData(this.competitie.competitieId);
+            this.setEscapeCount();
         })
         .catch(err => {
             this.alert.showError(err);
@@ -106,14 +111,16 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
 
     }
 
-    teamButtonClicked() {
+    teamsButtonClicked() {
         this.appData.gotoPage(this.router.url, this.router.url + '/teams');
     }
 
     teamClicked(idx: number) {
-        this.activeSection = 1;
-        this.teamLijst.selectItem(idx);
-        //this.setActionForSelectedTeam();
+        if (this.dataChanged) {
+            return;
+        }
+        const team = this.teamLijst.filtered[idx];
+        this.appData.gotoPage(this.router.url, `onderhoud/verenigingen/${team.verId}/team/${team.teamId}`);
     }
 
     toevoegenClicked() {
@@ -144,6 +151,7 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
         this.activeSection = (this.activeSection == 0) ? 1 : 0;
         if (this.activeSection == 0) {
             this.htmlInputNaam()?.nativeElement.focus();
+            this.teamLijst.clearSelection();
         }
         else {
             this.htmlInputNaam()?.nativeElement.blur();
@@ -151,10 +159,21 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
         }
     }
 
+    setSection(idx: number) {
+        if (idx == this.activeSection) {
+            return;
+        }
+        this.activeSection = idx;
+        if (idx == 0) {
+            this.teamLijst.clearSelection();
+        }
+    }
+
     setDataChanged(): void {
         this.dataChanged = !(this.competitie.knbbId == this.knbbId?.value && 
                             this.competitie.naam == this.naam?.value && 
                             this.competitie.maxBeurten == this.maxBeurten?.value);
+        this.setEscapeCount();
     }
 
     @HostListener('document:keydown', ['$event'])
@@ -167,6 +186,9 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
                 return false;
             }
         }
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            event.preventDefault();
+        }
         return true;
     }
 
@@ -177,10 +199,12 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             if (this.activeSection == 1) {
                 if (event.key === 'ArrowUp') {
-                    this.teamLijst.selectPreviousItem();
+                    this.teamLijst.hoverPreviousItem();
+                    this.teamScroll.scrollUp(this.teamLijst.hoveredIdx);
                 }
                 if (event.key === 'ArrowDown') {
-                    this.teamLijst.selectNextItem();
+                    this.teamLijst.hoverNextItem();
+                    this.teamScroll.scrollDown(this.teamLijst.hoveredIdx);
                 }
                 return false;    
             }
@@ -192,12 +216,17 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
             }
             return false;
         }
-        if (event.key === 'Enter' && this.activeSection == 0) {
-            this.buttonPressed(this.compButtons[0]);
+        if (event.key === 'Enter') {
+            if (this.dataChanged) {
+                this.buttonPressed(this.compButtons[0]);
+            }
+            else if (this.activeSection == 1 && this.teamLijst.hoveredIdx >= 0) {
+                this.teamClicked(this.teamLijst.hoveredIdx);
+            }
             return false;
         }
-        if (event.code === 'KeyT' && this.activeSection == 1) {
-            this.buttonPressed(this.teamButtons[0]);
+        if (event.code === 'KeyT' && !this.dataChanged) {
+            this.buttonPressed(this.teamsButtons[0]);
             return false;
         }
         if (event.key === 'Escape') {
@@ -233,6 +262,15 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
             this.teamLijst.fillItems(teams);
             this.subtitle2 = `Competitie '${this.competitie.competitieId} ${this.competitie.naam}'`;
             this.createForm();
+            this.setDataChanged();
+
+            const elm = this.htmlTeamLijst()?.nativeElement;
+            if (elm) {
+                this.scrollElm = elm;
+                new ResizeObserver(() => { 
+                    this.initTeamLijstScrolling(this.scrollElm);
+                }).observe(elm);
+            }
         })
         .catch(err => {
             this.alert.showError(err);
@@ -245,6 +283,34 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
             naam: [this.competitie.naam, [Validators.required, notEmpty()]],
             maxBeurten: [this.competitie.maxBeurten, [Validators.required, Validators.min(1)]]
         });
+        this.knbbId?.valueChanges.subscribe(val => {
+            this.createBiljartpointLink();
+        });
+        this.createBiljartpointLink();
+    }
+
+    private createBiljartpointLink() {
+        this.biljartPointLink = '';
+        const compId = this.knbbId?.value;
+        const poule = this.competitie.poule > 0 ? '' + this.competitie.poule : '';
+        const distrId = this.appData.getDistrict().knbbId;
+        if (!compId || compId == '' || poule == '' || distrId == '') {
+            return;
+        }
+        this.biljartPointLink = `https://biljartpoint.nl/index.php?page=stand&poule=${poule}&compid=${compId}&district=${distrId}`;
+    }
+
+    private initTeamLijstScrolling(elm: HTMLDivElement) {
+        if (elm) {
+            if (this.teamLijst.hoveredIdx >= 0) {
+                this.teamLijst.hoveredIdx = 0;
+            }
+            this.teamScroll = new Scrolling(elm, elm.offsetHeight, this.teamLijst.filtered.length);
+        }
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = this.dataChanged ? 1 : 0;
     }
 
     private compareTeams(a: Team, b: Team) {

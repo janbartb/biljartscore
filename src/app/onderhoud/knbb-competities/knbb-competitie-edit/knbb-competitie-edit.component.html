@@ -2,13 +2,13 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [district]="appData.getDistrict().disNaam"
-                        (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()"></app-page-header>
+                        (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()" [escCount]="escapeCount" (escClicked)="escapePressed()"></app-page-header>
         </div>
         <app-section-header [title]="subtitle2" [cssClasses]="'w3-green-l1'"></app-section-header>
         <div class="flexgrow1 flexbox">
             <div class="fullheight flexbox flexcolumn section" style="border-right: .125em solid #93cf95;">
                 <app-section-header [id]="0" [title]="'Competitie'" [cssClasses]="'w3-green-l3'" 
-                        [active]="activeSection == 0" (headerClicked)="activeSection = 0"></app-section-header>
+                        [active]="activeSection == 0" (headerClicked)="setSection(0)"></app-section-header>
                 <div class="flexgrow1 flexbox flexcenter" style="padding: 1em 2em;">
                     <div>
                         @if (compDataForm) {
@@ -46,7 +46,7 @@
                                             <td>
                                                 <input #knbbid type="text" id="knbbId" style="width: 4em;" formControlName="knbbId" autocomplete="off"
                                                         [ngClass]="{'invalid': knbbId?.invalid && (knbbId?.dirty), 'valid': knbbId?.valid && (knbbId?.dirty)}"
-                                                        (blur)="knbbId?.setValue(knbbId?.value.trim())" (keyup)="setDataChanged()" (focus)="activeSection = 0">
+                                                        (blur)="knbbId?.setValue(knbbId?.value.trim())" (keyup)="setDataChanged()" (focus)="setSection(0)">
                                             </td>
                                         </tr>
                                         <tr>
@@ -56,7 +56,7 @@
                                             <td>
                                                 <input #compnaam type="text" id="compNaam" style="width: 12em;" formControlName="naam" autocomplete="off"
                                                         [ngClass]="{'invalid': naam?.invalid && (naam?.dirty), 'valid': naam?.valid && (naam?.dirty)}"
-                                                        (blur)="naam?.setValue(naam?.value.trim())" (keyup)="setDataChanged()" (focus)="activeSection = 0">
+                                                        (blur)="naam?.setValue(naam?.value.trim())" (keyup)="setDataChanged()" (focus)="setSection(0)">
                                             </td>
                                         </tr>
                                         <tr>
@@ -66,23 +66,31 @@
                                             <td>
                                                 <input #compbeurten type="number" id="compBeurten" style="width: 4em;" formControlName="maxBeurten"
                                                         [ngClass]="{'invalid': maxBeurten?.invalid && (maxBeurten?.dirty), 'valid': maxBeurten?.valid && (maxBeurten?.dirty)}"
-                                                        (keyup)="setDataChanged()" (change)="setDataChanged()" (focus)="activeSection = 0">
+                                                        (keyup)="setDataChanged()" (change)="setDataChanged()" (focus)="setSection(0)">
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>        
                             </form>
+                            @if (biljartPointLink != '') {
+                                <div style="margin-top: 1em;">
+                                    <a [href]="biljartPointLink" target="_blank">
+                                        <span class="label">Bekijk competitie in </span>
+                                        <img src="biljartpoint.png" alt="" style="height: 2em;">
+                                    </a>
+                                </div>    
+                            }
                         }
                     </div>
                 </div>
-                @if (compDataForm && compDataForm.valid && dataChanged && activeSection == 0) {
-                    <app-section-footer-btns [buttons]="compButtons" (clickedButton)="compButtonClicked()"
+                @if (compDataForm && compDataForm.valid && dataChanged) {
+                    <app-section-footer-btns [buttons]="compButtons" (clickedButton)="opslaanClicked()"
                                             [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
                 }
             </div>
             <div class="flexgrow1 flexbox flexcolumn" style="border-left: .125em solid #93cf95;">
                 <app-section-header [id]="1" [title]="'Teams'" [cssClasses]="'w3-green-l3'" 
-                        [active]="activeSection == 1" (headerClicked)="activeSection = 1"></app-section-header>
+                        [active]="activeSection == 1" (headerClicked)="setSection(1)"></app-section-header>
                 <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
                     <div class="lijst-row">
                         <div class="lijst-col" style="width: 2.5em;"></div>
@@ -92,11 +100,11 @@
                     </div>
                 </div>
                 <div class="flexgrow1 scroll-container">
-                    <div class="scroll-content">
+                    <div #teamlijst class="scroll-content">
                         <div class="flexbox flexcenter">
                             <div class="lijst">
                                 @for (team of teamLijst.filtered; track $index) {
-                                    <div class="lijst-row selectable" [ngClass]="{'selected': teamLijst.selectedIdx == $index}" (click)="teamClicked($index)">
+                                    <div class="lijst-row selectable" [ngClass]="{'hovered': teamLijst.hoveredIdx == $index}" (click)="teamClicked($index)">
                                         <div class="lijst-col indicator" style="width: 2.5em;">
                                             <i class="fas fa-angle-right"></i>
                                         </div>
@@ -115,7 +123,7 @@
                         </div>
                     </div>
                 </div>
-                <app-section-footer-btns [buttons]="teamButtons" [btnsDisabled]="[activeSection == 0]" (clickedButton)="teamButtonClicked()"
+                <app-section-footer-btns [buttons]="teamsButtons" [btnsDisabled]="[dataChanged]" (clickedButton)="teamsButtonClicked()"
                                         [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
             </div>
         </div>

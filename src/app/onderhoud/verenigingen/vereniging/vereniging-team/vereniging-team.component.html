@@ -2,7 +2,7 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
-                        (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()"></app-page-header>
+                    (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()" [escCount]="escapeCount" (escClicked)="escapePressed()"></app-page-header>
         </div>
         <app-section-header [title]="teamTitle" [cssClasses]="'w3-green-l2'"></app-section-header>
         <div class="flexgrow1 flexbox flexstretch">
@@ -87,14 +87,18 @@
                                     <span class="label" style="padding-right: 1em;">Aantal leden :</span>
                                     <span class="view">{{aantalLeden}}</span>
                                 </div>
+                                @if (biljartPointLink != '') {
+                                    <div style="margin-top: 1em;">
+                                        <a [href]="biljartPointLink" target="_blank">
+                                            <span class="label">Bekijk team in </span>
+                                            <img src="biljartpoint.png" alt="" style="height: 2em;">
+                                        </a>
+                                    </div>    
+                                }
                             }    
                         </div>
                     </div>
                 </div>
-                @if (activeSection == 0 && teamForm && teamForm.valid && !duplicateId) {
-                    <app-section-footer-btns [buttons]="enterButtons" (clickedButton)="opslaanClicked()"
-                                    [cssFooter]="'w3-green-bdr-l2'" [cssButtons]="'font125'"></app-section-footer-btns>
-                }        
             </div>
             <div class="flex50perc flexbox flexcolumn">
                 <app-section-header [title]="'Selecteer teamleden'" [cssClasses]="'w3-green-l4'" [active]="activeSection == 1"></app-section-header>
@@ -120,14 +124,15 @@
                         </div>
                     </div>
                 </div>
-                @if (activeSection == 1 && selectieLijst.hoveredIdx >= 0) {
-                    <app-section-footer-btns [buttons]="selectButtons" [btnsHide]="[
-                        selectieLijst.filtered[selectieLijst.hoveredIdx].spelerSelected, 
-                        !selectieLijst.filtered[selectieLijst.hoveredIdx].spelerSelected
-                    ]" (clickedButton)="spelerSelectieClicked(selectieLijst.hoveredIdx)"
-                        [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
-                }
             </div>
         </div>
+        @if (teamChanged || (activeSection == 1 && selectieLijst.hoveredIdx >= 0)) {
+            <app-section-footer-btns [buttons]="buttons" [btnsHide]="[!teamChanged,
+            activeSection == 0 || selectieLijst.hoveredIdx < 0 || selectieLijst.filtered[selectieLijst.hoveredIdx].spelerSelected, 
+            activeSection == 0 || selectieLijst.hoveredIdx < 0 || !selectieLijst.filtered[selectieLijst.hoveredIdx].spelerSelected
+        ]" (clickedButton)="buttonClicked($event)"
+            [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
+
+        }
     </div>
 </div>

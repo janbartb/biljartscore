@@ -13,6 +13,7 @@ import { SectionHeaderComponent } from '../../../../shared/section-header/sectio
 import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-btns/section-footer-btns.component';
 import { HelperService } from '../../../../services/helper.service';
 import { Scrolling } from '../../../../model/scrolling';
+import { KnbbCompetitie } from '../../../../model/knbb-competitie';
 
 @Component({
     selector: 'app-vereniging-team',
@@ -35,10 +36,14 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
 
     vereniging: Vereniging = new Vereniging();
     team: Team = new Team();
+    teamChanged: boolean = false;
     ledenLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
     selectieLijst: List<SpelerSelectie> = new List<SpelerSelectie>();
     klassen: string[] = [];
     existingIds: string[] = [];
+    compKnbbId: string = '';
+    compPoule: string = '';
+    biljartPointLink: string = '';
     aantalLeden: number = 0;
     activeSection: number = 0;
     mode: string = 'edit';
@@ -47,11 +52,12 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     createdId: string = '';
     duplicateId: boolean = false;
     spelNaam: string = this.appData.getSpelNaam();
+    escapeCount: number = 0;
     scrollElm!: HTMLDivElement;
     ledenScroll!: Scrolling;
 
-    enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
-    selectButtons: Button[] = [
+    buttons: Button[] = [
+        new Button('Ctrl+Enter', 'Opslaan', true),
         new Button('Enter', 'Voeg toe aan team', true),
         new Button('Enter', 'Verwijder uit team', true)
     ];
@@ -72,27 +78,44 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
 
     buttonPressed() {
         if (this.selectieLijst.hoveredIdx >= 0 && this.activeSection == 1) {
-            const btnIdx = this.selectieLijst.filtered[this.selectieLijst.hoveredIdx].spelerSelected ? 1 : 0;
-            this.selectButtons[btnIdx].selected = true;
+            const btnIdx = this.selectieLijst.filtered[this.selectieLijst.hoveredIdx].spelerSelected ? 2 : 1;
+            this.buttons[btnIdx].selected = true;
             setTimeout(() => {
-                this.selectButtons[btnIdx].selected = false;
+                this.buttons[btnIdx].selected = false;
                 this.spelerSelectieClicked(this.selectieLijst.hoveredIdx);
             }, 300);
             return;
         }
-        this.enterButtons[0].selected = true;
+    }
+
+    enterPressed() {
+        this.buttons[0].selected = true;
         setTimeout(() => {
-            this.enterButtons[0].selected = false;
+            this.buttons[0].selected = false;
             this.opslaanClicked();
         }, 300);
     }
 
     override escapePressed(): void {
-        if (this.selectieLijst.isItemSelected()) {
-            this.selectieLijst.clearSelection();
+        if (this.teamChanged) {
+            this.teamForm.reset();
+            this.fillSelectieLijst();
+            this.teamChanged = false;
+            this.setEscapeCount();
             return;
         }
         super.escapePressed();
+    }
+
+    buttonClicked(idx: number) {
+        if (idx == 0) {
+            this.opslaanClicked();
+        }
+        else {
+            if (this.selectieLijst.hoveredIdx >= 0 && this.activeSection == 1) {
+                this.spelerSelectieClicked(this.selectieLijst.hoveredIdx);
+            }
+        }
     }
 
     spelerSelectieClicked(idx: number) {
@@ -103,6 +126,8 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
             this.aantalLeden += spelerClicked.spelerSelected ? 1 : -1;
             this.selectieLijst.hoveredIdx = -1;
             this.ledenScroll.scrollToTop();
+            this.teamChanged = this.hasTeamChanged();
+            this.setEscapeCount();
         }
     }
 
@@ -153,7 +178,8 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     @HostListener('document:keydown', ['$event'])
     handleKeyDownEvent(event: KeyboardEvent): boolean {
         if (this.activeSection == 1) {
-            if ((event.key === 'Enter' || event.key.startsWith('Arrow')) && event.target instanceof HTMLSelectElement) {
+            if ((event.key === 'Enter' || event.key.startsWith('Arrow')) && 
+                        (event.target instanceof HTMLSelectElement || event.target instanceof HTMLAnchorElement)) {
                 event.preventDefault();
             }
             if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
@@ -189,7 +215,12 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
             return true;
         }
         if (event.key === 'Enter') {
-            this.buttonPressed();
+            if (event.ctrlKey) {
+                this.enterPressed();
+            }
+            else {
+                this.buttonPressed();
+            }
             return false;
         }
         if (event.key === 'Escape') {
@@ -220,7 +251,8 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
         Promise.all([
             this.bssApi.getVereniging(verId),
             this.bssApi.getLedenVanVereniging(verId, this.spelId),
-            this.bssApi.getMoyenneKlassenLijst(this.spelId)
+            this.bssApi.getMoyenneKlassenLijst(this.spelId),
+            this.bssApi.getKnbbCompetities(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId)
         ])
             .then(results => {
                 this.klassen = results[2];
@@ -229,6 +261,7 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
                 this.subtitle = `Vereniging ${this.vereniging.naam}`;
                 if (teamId == 'toevoegen') {
                     this.mode = 'add';
+                    this.teamChanged = true;
                     this.teamTitle = 'Team toevoegen';
                     this.createdId = this.spelId;
                     this.existingIds = this.vereniging.teams
@@ -244,6 +277,7 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
                     this.team = team;
                     this.teamTitle = `Team '${this.team.naam}' wijzigen`;
                     this.createdId = this.team.teamId;
+                    this.fillCompKnbbIdAndPoule(results[3]);
                 }
                 this.aantalLeden = this.team.teamLeden.length;
                 this.ledenLijst.fillItems(results[1]);
@@ -263,6 +297,30 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
             .catch((err) => {
                 this.alert.showError(err);
             });
+    }
+
+    private fillCompKnbbIdAndPoule(comps: KnbbCompetitie[]): void {
+        const foundComp = comps.find(comp => {
+            return comp.klasse == this.team.klasse && comp.teams.some(tm => tm.verId == this.team.verId && tm.teamId == this.team.teamId);
+        });
+        if (foundComp) {
+            this.compKnbbId = foundComp.knbbId;
+            if (foundComp.poule > 0) {
+                this.compPoule = '' + foundComp.poule;
+            }
+        }
+    }
+
+    private createBiljartpointLink() {
+        this.biljartPointLink = '';
+        const compId = this.compKnbbId;
+        const teamId = this.knbbId?.value;
+        const poule = this.compPoule;
+        const distrId = this.appData.getDistrict().knbbId;
+        if (compId == '' || !teamId || teamId == '' || poule == '' || distrId == '') {
+            return;
+        }
+        this.biljartPointLink = `https://biljartpoint.nl/index.php?page=teamdetail&team_id=${teamId}&compid=${compId}&poule=${poule}&district=${distrId}`;
     }
 
     private initSelectieLijstScrolling(elm: HTMLDivElement) {
@@ -302,6 +360,16 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
         if (this.mode == 'edit') {
             this.klasse?.disable();
             this.volgNr?.disable();
+            this.knbbId?.valueChanges.subscribe(val => {
+                this.createBiljartpointLink();
+                this.teamChanged = this.hasTeamChanged();
+                this.setEscapeCount();
+            });
+            this.naam?.valueChanges.subscribe(val => {
+                this.teamChanged = this.hasTeamChanged();
+                this.setEscapeCount();
+            });
+
         }
         else {
             this.teamId?.setValue(this.createdId);
@@ -313,6 +381,27 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
                 this.generateTeamId();
             });
         }
+        this.createBiljartpointLink();
+    }
+
+    private hasTeamChanged(): boolean {
+        if (this.mode == 'add') {
+            return true;
+        }
+        if (this.team.knbbId != this.knbbId?.value || this.team.naam != this.naam?.value) {
+            return true;
+        }
+        const selected = this.selectieLijst.filtered.filter(spl => spl.spelerSelected);
+        if (selected.length != this.team.teamLeden.length) {
+            return true;
+        }
+        return !selected.every(spl => {
+            return this.team.teamLeden.some(lidId => lidId == spl.spelerId);
+        });
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = this.teamChanged ? 1 : 0;
     }
 
     private sortKlassen() {

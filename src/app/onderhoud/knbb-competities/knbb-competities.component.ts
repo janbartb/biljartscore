@@ -44,7 +44,7 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
     }
 
     override escapePressed(): void {
-        if (this.compLijst.selectedIdx >= 0) {
+        if (this.compLijst.hoveredIdx >= 0) {
             this.compLijst.clearSelection();
             this.escapeCount--;
             return;
@@ -54,13 +54,13 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
 
     buttonClicked(idx: number) {
         if (idx == 0) {
-            this.wijzigenClicked(this.compLijst.selectedIdx);
+            this.wijzigenClicked();
         }
         else if (idx == 1) {
             this.toevoegenClicked();
         }
         else if (idx == 2) {
-            this.verwijderenClicked(this.compLijst.selectedIdx);
+            this.verwijderenClicked(this.compLijst.hoveredIdx);
         }
     }
 
@@ -68,17 +68,12 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
         if (idx < 0) {
             return;
         }
-        this.compLijst.selectItem(idx);
-        if (this.escapeCount == 0) {
-            this.escapeCount++;
-        }
+        const compId = this.compLijst.filtered[idx].competitieId;
+        this.appData.gotoPage(this.router.url, this.router.url + `/${compId}`);
     }
 
-    wijzigenClicked(idx: number) {
-        if (idx < 0) {
-            return;
-        }
-        this.appData.gotoPage(this.router.url, this.router.url + `/${this.compLijst.getSelectedItem()?.competitieId}`);
+    wijzigenClicked() {
+        this.competitieClicked(this.compLijst.hoveredIdx);
     }
 
     toevoegenClicked() {
@@ -129,10 +124,10 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
         console.log(event.code + ' : ' + event.key);
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.compLijst.selectPreviousItem();
+                this.compLijst.hoverPreviousItem();
             }
             if (event.key === 'ArrowDown') {
-                this.compLijst.selectNextItem();
+                this.compLijst.hoverNextItem();
             }
             if (this.escapeCount == 0) {
                 this.escapeCount++;

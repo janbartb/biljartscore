@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { BaseComponent } from '../../../base/base.component';
 import { KnbbCompetitie } from '../../../model/knbb-competitie';
 import { District } from '../../../model/district';
@@ -38,8 +38,17 @@ export class KnbbCompetitieAddComponent extends BaseComponent implements OnInit 
 
     buttons: Button[] = [new Button('Enter', 'Opslaan', true)];
 
+    htmlInputKnbbId = viewChild<ElementRef<HTMLInputElement>>("knbbid");
+
     competitieForm!: FormGroup;
     duplicateId: boolean = false;
+
+    constructor() {
+        super();
+        effect(() => {
+            this.htmlInputKnbbId()?.nativeElement.focus();
+        });
+    }
 
     buttonPressed(button: Button) {
         if (button.disabled) {

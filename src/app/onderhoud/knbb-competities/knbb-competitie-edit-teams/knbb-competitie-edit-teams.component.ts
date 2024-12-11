@@ -54,6 +54,7 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
     subtitle2: string = '';
     teamAlToegevoegd: boolean = false;
     teamsChanged: boolean = false;
+    escapeCount: number = 0;
 
     enterButtons: Button[] = [
         new Button('Enter', 'Team toevoegen', true),
@@ -78,8 +79,10 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
     }
 
     override escapePressed(): void {
-        if (this.teamLijst.hoveredIdx >= 0) {
-            this.teamLijst.clearSelection();
+        if (this.teamsChanged) {
+            this.getData(this.competitie.competitieId);
+            this.teamsChanged = false;
+            this.setEscapeCount();
             return;
         }
         super.escapePressed();
@@ -202,6 +205,7 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
             this.bssApi.getVerenigingen()
         ])
         .then(results => {
+            this.compTeams = [];
             this.competitie = results[0];
             let teams = this.helper.getCompetitieTeamsData(this.competitie, results[1]);
             teams.forEach(tm => {
@@ -236,6 +240,11 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
                 this.competitie.teams.some((team) => {
                     return this.compTeams.findIndex(ct => ct.key.verId == team.verId && ct.key.teamId == team.teamId) < 0;
                 });
+        this.setEscapeCount();
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = this.teamsChanged ? 1 : 0;
     }
 
     private compareTeams(a: Team, b: Team) {

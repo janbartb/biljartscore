@@ -61,7 +61,7 @@
                 </div>
             </div>
         </div>
-        <app-section-footer-btns [buttons]="buttons" [btnsHide]="[compLijst.selectedIdx < 0, false, compLijst.selectedIdx < 0]" 
+        <app-section-footer-btns [buttons]="buttons" [btnsHide]="[compLijst.hoveredIdx < 0, false, compLijst.hoveredIdx < 0]" 
                 (clickedButton)="buttonClicked($event)" [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
     </div>
 </div>

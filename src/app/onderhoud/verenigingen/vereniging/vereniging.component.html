@@ -101,3 +101,6 @@
         </div>
     </div>
 </div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}
