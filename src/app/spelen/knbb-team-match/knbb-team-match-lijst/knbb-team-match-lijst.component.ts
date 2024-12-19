@@ -35,7 +35,7 @@ export class KnbbTeamMatchLijstComponent extends BaseComponent implements OnInit
                 this.matchRead = true;
             }
             else {
-                console.log('Scorelijst : bestand teammatch.json niet gevonden - terug naar match pagina.');
+                this.alert.showError('ERROR opvragen lijsten : bestand teammatch.json niet gevonden.');
                 this.router.navigate(['teammatch']);
             }
         })

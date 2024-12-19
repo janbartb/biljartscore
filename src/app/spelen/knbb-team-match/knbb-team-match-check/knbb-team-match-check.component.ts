@@ -252,7 +252,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
             }
             else {
                 console.log('teammatch.json niet gevonden! Vreemd...');
-                this.router.navigate(['teammatch/setup/thuis']);
+                this.router.navigate(['teammatch/setup/comp']);
             }
         })
         .catch(err => {

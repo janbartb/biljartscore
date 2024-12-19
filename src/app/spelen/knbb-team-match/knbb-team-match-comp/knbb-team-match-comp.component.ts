@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 import { NgClass } from '@angular/common';
-import { MatchTeam, TeamMatch } from '../../../model/match';
+import { Match, MatchTeam, TeamMatch } from '../../../model/match';
 import { List } from '../../../model/list';
 import { KnbbCompetitie } from '../../../model/knbb-competitie';
 import { BaseComponent } from '../../../base/base.component';
@@ -99,6 +99,11 @@ export class KnbbTeamMatchCompComponent extends BaseComponent implements OnInit 
             if (results[1].gevonden) {
                 this.match = results[1].match;
                 this.preselectComp(this.match.compId);
+            }
+            else {
+                this.match = new TeamMatch();
+                this.match.teams.push(new MatchTeam());
+                this.match.teams.push(new MatchTeam());
             }
         })
         .catch(err => {

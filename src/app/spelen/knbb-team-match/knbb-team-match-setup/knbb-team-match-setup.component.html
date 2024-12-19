@@ -83,8 +83,8 @@
                     </div>
                 </div>
             </div>
-            @if (inputValid || teamChanged) {
-                <app-section-footer-btns [buttons]="pageButtons" [btnsHide]="[!teamChanged, !inputValid]" (clickedButton)="pageButtonClicked($event)"
+            @if (inputValid) {
+                <app-section-footer-btns [buttons]="pageButtons" (clickedButton)="pageButtonClicked()"
                                         [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
             }
         }

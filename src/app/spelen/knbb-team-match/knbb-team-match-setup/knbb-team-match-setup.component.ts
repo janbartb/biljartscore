@@ -63,7 +63,6 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
 
     sectionButtons: Button[] = [new Button('Enter', 'Selecteer', true)];
     pageButtons: Button[] = [
-        new Button('Backspace', 'Reset', true),
         new Button('Ctrl+Enter', 'Ga verder', true)
     ];
 
@@ -84,12 +83,12 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
     }
 
     override escapePressed(): void {
-        if (this.activeSection == 0) {
-            this.previousClicked();
-            return;
+        if (this.escapeCount == 1) {
+            this.resetClicked();
         }
-        this.activeSection--;
-        this.setEscapeCount();
+        else {
+            this.previousClicked();
+        }
     }
 
     buttonPressed(button: Button) {
@@ -120,13 +119,8 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         }
     }
 
-    pageButtonClicked(idx: number) {
-        if (idx == 0) {
-            this.resetClicked();
-        }
-        else if (idx == 1) {
-            this.gaVerderClicked();
-        }
+    pageButtonClicked() {
+        this.gaVerderClicked();
     }
 
     enterSelectClicked() {
@@ -149,14 +143,13 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         }
         this.teamLijst.selectedIdx = this.teamLijst.hoveredIdx = idx;
         let teamToAdd = this.teamLijst.filtered[this.teamLijst.selectedIdx];
-        if (!fromInit || teamToAdd.key.verId != this.activeMatchTeam.verId || teamToAdd.key.teamId != this.activeMatchTeam.teamId) {
+        if (teamToAdd.key.verId != this.activeMatchTeam.verId || teamToAdd.key.teamId != this.activeMatchTeam.teamId) {
             this.activeMatchTeam = new MatchTeam();
             this.activeMatchTeam.teamId = teamToAdd.key.teamId;
             this.activeMatchTeam.teamNaam = teamToAdd.data.naam;
             this.activeMatchTeam.verId = teamToAdd.key.verId;
             this.activeMatchTeam.klasse = teamToAdd.data.klasse;
             this.idxSpeler = 0;
-            this.teamChanged = true;
         }
         let lijst: SpelerWrapper[] = [];
         let team = this.teamLijst.filtered[idx];
@@ -194,20 +187,20 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         targetSpeler.splTsGem = spelerToAdd.getGemiddeldeVanSpel();
         targetSpeler.splTsCar = 0;
         targetSpeler.metWit = this.idxTeam == 0;
-        this.teamChanged = true;
         this.clearScores(this.activeMatchTeam);
         this.clearScores(this.otherMatchTeam);
         this.maakVolgendeSpelerActief();
         this.checkInput();
+        this.setEscapeCount();
     }
 
     resetClicked() {
-        this.teamChanged = false;
         this.initScreen();
         this.setEscapeCount();
     }
 
     gaVerderClicked() {
+        this.checkIfTeamChanged();
         if (this.teamChanged) {
             this.match.idxTeamActief = 0;
             this.match.idxWedActief = 0;
@@ -226,7 +219,6 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
 
     maakSectionActief(idx: number) {
         this.activeSection = idx;
-        this.setEscapeCount();
     }
 
     maakSpelerActief(idx: number) {
@@ -283,7 +275,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         }
         if (event.key === 'Enter') {
             if (event.ctrlKey) {
-                this.buttonPressed(this.pageButtons[1]);
+                this.buttonPressed(this.pageButtons[0]);
                 return false;
             }
             if (this.activeSection < 3) {
@@ -312,7 +304,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         this.idxTeam = (path && path == 'gasten') ? 1 : 0;
         this.idxSpeler = 0;
         this.subtitle = `Selectie spelers ${this.idxTeam == 0 ? 'THUIS' : 'GASTEN'} team`;
-        this.pageButtons[1].text = this.idxTeam == 0 ? 'Naar GASTEN team' : 'Naar controle';
+        this.pageButtons[0].text = this.idxTeam == 0 ? 'Naar GASTEN team' : 'Naar controle';
         this.klasse = this.appData.getKlasse();
 
         Promise.all([
@@ -341,12 +333,8 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
                 return;
             }
             else {
-                this.initMatchTeams();
+                this.router.navigate(['teammatch/setup/comp']);
             }
-            this.initScreen();
-            this.checkInput();
-            this.dataReady = true;
-            this.setupScrolling();
         })
         .catch(err => {
             this.alert.showError(err);
@@ -391,10 +379,15 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         this.inputValid = this.activeMatchTeam.spelers.every(spl => spl.splId != '');
     }
 
-    private checkTeamChanged() {
-        this.teamChanged = this.activeMatchTeam.spelers.some((spl, idx) => {
-            return spl.splId != this.match.teams[this.idxTeam].spelers[idx].splId;
+    private checkIfTeamChanged() {
+        this.teamChanged = !this.activeMatchTeam.spelers.every(spl => {
+            return this.match.teams[this.idxTeam].spelers.some(spl2 => spl2.splId == spl.splId);
         });
+        if (!this.teamChanged) {
+            this.teamChanged = !this.match.teams[this.idxTeam].spelers.every(spl => {
+                return this.activeMatchTeam.spelers.some(spl2 => spl2.splId == spl.splId);
+            });
+        }
     }
 
     private veranderActieveSectie(direction: number) {
@@ -438,7 +431,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
                 const ver = this.appData.getConfig()?.vereniging;
                 if (ver) {
                     idx = this.teamLijst.filtered.findIndex(ctm => ctm.key.verId == ver);
-                    this.teamClicked(idx, true);
+                    this.teamClicked(idx);
                 }
             }
         }
@@ -476,15 +469,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         });
     }
 
-    private initMatchTeams() {
-        if (this.match.teams.length) {
-            return;
-        }
-        this.match.teams.push(new MatchTeam());
-        this.match.teams.push(new MatchTeam());
-    }
-
-    sortTeamSpelers() {
+    private sortTeamSpelers() {
         this.activeMatchTeam.spelers.sort(this.compareTeamSpelers);
         this.idxSpeler = 0;
     }
@@ -512,11 +497,11 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
     }
 
     private setEscapeCount() {
-        this.escapeCount = this.activeSection;
+        this.checkIfTeamChanged();
+        this.escapeCount = this.teamChanged ? 1 : 0;
     }
 
     private saveMatchAndContinue() {
-        console.log(this.match);
         this.bssApi.saveKnbbTeamMatch(this.match)
         .then(() => {
             const url = this.idxTeam == 0 ? 'teammatch/setup/gasten' : 'teammatch/setup/check';

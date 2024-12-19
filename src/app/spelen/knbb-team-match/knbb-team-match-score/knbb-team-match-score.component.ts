@@ -183,8 +183,8 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         this.bssApi.getKnbbTeamMatch()
         .then(resp => {
             if (!resp.gevonden) {
-                console.log('Team match niet gevonden. Vreemd...');
-                this.alert.showError('Team match niet gevonden. Vreemd...');
+                this.alert.showError('ERROR scorebord : bestand teammatch.json niet gevonden.');
+                this.router.navigate(['teammatch']);
                 return;
             }
             this.match = resp.match;
