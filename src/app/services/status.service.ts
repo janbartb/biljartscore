@@ -18,6 +18,16 @@ export class StatusService {
 
     // CONFIG
 
+    isAllowed(allow?: boolean): boolean {
+        if (allow) {
+            return true;
+        }
+        if (localStorage.getItem('notifications') != null) {
+            return false;
+        }
+        return true;
+    }
+
     setConfig(config: Config) {
         localStorage.setItem('config', JSON.stringify(config));
     }
@@ -25,8 +35,8 @@ export class StatusService {
     getConfig(): Config | undefined {
         const conf = localStorage.getItem('config');
         if (!conf) {
-            this.alert.showError('Instellingen niet gevonden in localStorage! Driebanden gekozen.');
-            this.router.navigate(['home']);
+            // this.alert.showError('Instellingen niet gevonden in localStorage! Driebanden gekozen.');
+            // this.router.navigate(['home']);
             return undefined;
         }
         return JSON.parse(conf);

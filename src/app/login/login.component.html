@@ -1,0 +1,16 @@
+<div class="fullviewheight flexbox flexcenter flexmiddle">
+    <div>
+        <div style="text-align: center; font-size: 1.25em;">
+            <span>Eenmalige login</span>
+        </div>
+        <div style="margin-top: 2em;">
+            <span class="label">Wachtwoord </span>
+            <input #pw type="password" style="width: 8em;" [(ngModel)]="pwInput">    
+        </div>
+        <div class="flexbox flexcenter" style="margin-top: .5em;">
+            <div>
+                <app-button [button]="button" (buttonClicked)="enterClicked()"></app-button>
+            </div>
+        </div>
+    </div>
+</div>

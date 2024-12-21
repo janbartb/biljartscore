@@ -8,7 +8,7 @@ export function initializerFactory() {
     let api = inject(ApiService);
     let app = inject(StatusService);
     let spraak = inject(SpeechService);
-    api.getConfig()
+    api.getConfig(true)
     .then(cfg => {
         app.setConfig(cfg);
         console.log('CONFIG INITIALIZED');

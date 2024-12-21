@@ -31,8 +31,10 @@ import { KnbbTeamMatchCompComponent } from './spelen/knbb-team-match/knbb-team-m
 import { WedAantSpelersComponent } from './spelen/wedstrijd/wed-aant-spelers/wed-aant-spelers.component';
 import { KnbbTeamMatchLijstComponent } from './spelen/knbb-team-match/knbb-team-match-lijst/knbb-team-match-lijst.component';
 import { WedLijstComponent } from './spelen/wedstrijd/wed-lijst/wed-lijst.component';
+import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
+    { path: 'login', component: LoginComponent },
     { path: 'home', component: HomeComponent },
     { path: 'teammatch/lijst', component: KnbbTeamMatchLijstComponent },
     { path: 'teammatch/setup', children: [

@@ -1,35 +1,35 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ApiResponse } from '../model/api-response';
 import { Config } from '../model/config';
 import { Spelsoort } from '../model/spelsoort';
 import { Speler, SpelerWrapper } from '../model/speler';
-import { Team, TeamWrapper, Vereniging, VerenigingKort, VerenigingWrapper } from '../model/vereniging';
+import { Team, Vereniging, VerenigingKort, VerenigingWrapper } from '../model/vereniging';
 import { MoyenneTabel } from '../model/moyenne-tabel';
 import { District } from '../model/district';
 import { KnbbCompetitie } from '../model/knbb-competitie';
 import { Seizoenen } from '../model/seizoenen';
 import { Wedstrijd, WedstrijdLeesResultaat } from '../model/wedstrijd';
 import { TeamMatch, TeamMatchLeesResultaat } from '../model/match';
+import { StatusService } from './status.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ApiService {
-    //private http = inject(HttpClient);
+    private stat = inject(StatusService);
 
     private dbUrl: string;
     private myHeaders: Headers = new Headers();
     private options = {};
+    private allowed = false;
 
     constructor() {
         this.dbUrl = 'http://localhost:8080/bssapi';
         this.myHeaders.append("Content-Type", "application/json");
     }
 
-    async getConfig(): Promise<Config> {
-        const result: Config = await this.getResource(this.dbUrl + '/config');
+    async getConfig(allow?: boolean): Promise<Config> {
+        const result: Config = await this.getResource(this.dbUrl + '/config', allow);
         return result;
     }
 
@@ -166,12 +166,37 @@ export class ApiService {
         return result;
     }
 
+    async statsExists(): Promise<boolean> {
+        const result: boolean = await this.getResource(this.dbUrl + `/stats/exists`, true);
+        return result;
+    }
+
+    async getStats(): Promise<any> {
+        const result: any = await this.getResource(this.dbUrl + `/stats`, true);
+        return result;
+    }
+
     // CONFIG
 
     async saveConfig(config: Config): Promise<ApiResponse> {
         const response: Response = await fetch(this.dbUrl + '/config', {
             method: 'POST',
             body: JSON.stringify(config),
+            headers: this.myHeaders
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
+    // STATS
+
+    async createStats(): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + '/stats', {
+            method: 'POST',
+            body: '',
             headers: this.myHeaders
         });
         const json: ApiResponse = await response.json();
@@ -462,7 +487,10 @@ export class ApiService {
 
     // GENERAL
 
-    async getResource(url: string) {
+    async getResource(url: string, allow?: boolean) {
+        if (!this.stat.isAllowed(allow)) {
+            throw new Error('Illegale versie. Ophalen data niet toegestaan');
+        }
         const response: Response = await fetch(url);
         const json: ApiResponse = await response.json();
         if (!response.ok) {

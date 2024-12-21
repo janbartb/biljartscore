@@ -5,6 +5,7 @@ import { MenuComponent } from '../shared/menu/menu.component';
 import { Spelsoort } from '../model/spelsoort';
 import { BaseComponent } from '../base/base.component';
 import { FormsModule } from '@angular/forms';
+import { Config } from '../model/config';
 
 //declare var mySpeechObject: any;
 
@@ -20,6 +21,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
 
     menu: Menu = new Menu();
     spelsoorten: Spelsoort[] = [];
+    screenReady: boolean = false;
+    notAllowed: boolean = false;
 
     enterClicked() {
         const item = this.menu.getSelectedItem();
@@ -81,26 +84,51 @@ export class HomeComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        Promise.all([
-            //this.bssApi.getConfig(), 
-            this.bssApi.getSpelsoorten()
-        ])
-        .then(results => {
-            //this.appData.setConfig(results[0]);
-            this.spelsoorten = results[0];
-            const gekozenSpel = this.appData.getSpel();
-            if (!gekozenSpel) {
-                console.log('Voorkeur spelsoort niet gevonden. Gezet op driebanden.');
-                this.spelId = '3BA';
-                this.spelsoortChanged();
+        this.bssApi.statsExists()
+        .then(exists => {
+            if (!exists) {
+                this.router.navigate(['login']);
+                return;
             }
-            else {
-                this.spelId = gekozenSpel.spelsoortId;
-            }
+            this.screenReady = true;
+            this.bssApi.getStats()
+            .then(stats => {
+                let config: Config | undefined = this.appData.getConfig();
+                if (!config) {
+                    this.alert.showError('Configuratie niet gevonden in App data.');
+                    return;
+                }
+                if (config.id != stats.birthtimeMs) {
+                    this.notAllowed = true;
+                    localStorage.setItem('notifications', '0');
+                    return;
+                }
+                localStorage.removeItem('notifications');
+                this.bssApi.getSpelsoorten()
+                .then(data => {
+                    this.spelsoorten = data;
+                    const gekozenSpel = this.appData.getSpel();
+                    if (!gekozenSpel) {
+                        console.log('Voorkeur spelsoort niet gevonden. Gezet op driebanden.');
+                        this.spelId = '3BA';
+                        this.spelsoortChanged();
+                    }
+                    else {
+                        this.spelId = gekozenSpel.spelsoortId;
+                    }
+                })
+                .catch(err => {
+                    this.alert.showError(err);
+                });
+            })
+            .catch(err => {
+                this.alert.showError(err);
+            });
         })
         .catch(err => {
             this.alert.showError(err);
         });
+        
         this.appData.resetHistory();
         this.menu.addItem(new MenuItem('w', 'Wedstrijd spelen', 'spelkeuze'));
         this.menu.addItem(new MenuItem('o', 'Onderhoud gegevens', 'onderhoud'));
