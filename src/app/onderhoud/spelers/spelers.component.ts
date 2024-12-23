@@ -3,28 +3,29 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { DecimalPipe, NgClass } from '@angular/common';
 import { Speler, SpelerWrapper } from '../../model/speler';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Vereniging, VerenigingKort } from '../../model/vereniging';
+import { Team, Vereniging, VerenigingKort } from '../../model/vereniging';
 import { List } from '../../model/list';
 import { Button } from '../../model/button';
 import { BaseComponent } from '../../base/base.component';
 import { Spelsoort } from '../../model/spelsoort';
 import { ApiResponse } from '../../model/api-response';
-import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
 import { HelperService } from '../../services/helper.service';
 import { Scrolling } from '../../model/scrolling';
 import { ActivatedRoute } from '@angular/router';
+import { KnbbCompetitie } from '../../model/knbb-competitie';
+import { ButtonComponent } from "../../shared/button-group/button/button.component";
 
 @Component({
   selector: 'app-spelers',
   standalone: true,
   imports: [
-    PageHeaderComponent, 
-    SectionFooterBtnsComponent,
-    FormsModule, 
-    NgClass, 
+    PageHeaderComponent,
+    FormsModule,
+    NgClass,
     DecimalPipe,
-    ReactiveFormsModule
-  ],
+    ReactiveFormsModule,
+    ButtonComponent
+],
   templateUrl: './spelers.component.html',
   styleUrl: './spelers.component.css'
 })
@@ -38,11 +39,16 @@ export class SpelersComponent extends BaseComponent implements OnInit {
 
     spelerList: List<SpelerWrapper> = new List<SpelerWrapper>();
     verenigingen: Vereniging[] = [];
+    vereniging: Vereniging = new Vereniging();
     spelsoorten: Spelsoort[] = [];
+    competities: KnbbCompetitie[] = [];
+    competitie: KnbbCompetitie = new KnbbCompetitie();
+    biljartPointLink: string = '';
     naamFilterInit: string = localStorage.getItem('spelersNaamFilter') || '';
     naamFilter: string = localStorage.getItem('spelersNaamFilter') || '';
     verenigingFilterInit: string = '';
     verenigingFilter: string = '';
+    teamFilter: string = '';
     moyenneMode: boolean = false;
     moyenneEdit: number = 0;
     escapeCount: number = 0;
@@ -211,9 +217,23 @@ export class SpelersComponent extends BaseComponent implements OnInit {
 
     verenigingFilterChanged() {
         localStorage.setItem('spelersVerenigingFilter', this.verenigingFilter);
+        if (this.verenigingFilter == '' || this.verenigingFilter == '0') {
+            this.vereniging = new Vereniging();
+        }
+        else {
+            this.vereniging = this.verenigingen.find(ver => ver.verId == this.verenigingFilter) || new Vereniging();
+        }
+        this.sortTeams();
+        this.teamFilter = '';
         this.filtersChanged();
         this.sortSpelers();
         this.htmlVerFilter()?.nativeElement.blur();
+    }
+
+    teamFilterChanged() {
+        this.biljartPointLink = this.teamFilter == '' ? '' : this.getBiljartpointLink();
+        this.filtersChanged();
+        this.sortSpelers();
     }
 
     filtersChanged() {
@@ -233,6 +253,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
                 }
                 return naamOk && verenigingOk;
             });
+            this.applyTeamFilter();
             return;
         }
         if (this.naamFilter.length) {
@@ -252,6 +273,27 @@ export class SpelersComponent extends BaseComponent implements OnInit {
                 return verenigingOk;
             });
         }
+        this.applyTeamFilter();
+    }
+
+    private applyTeamFilter() {
+        if (this.teamFilter == '' || this.vereniging.teams.length == 0) {
+            return;
+        }
+        const team = this.vereniging.teams.find(tm => tm.teamId == this.teamFilter);
+        if (team) {
+            this.spelerList.filtered = this.spelerList.filtered.filter(spl => {
+                return team.teamLeden.some(lidId => lidId == spl.speler.id);
+            }); 
+        }
+    }
+
+    @HostListener('document:keydown', ['$event'])
+    handleKeyDownEvent(event: KeyboardEvent): boolean {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            event.preventDefault();
+        }
+        return true;
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -314,9 +356,11 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         Promise.all([
             this.bssApi.getVerenigingen(),
             this.bssApi.getSpelersLijst(this.spelId),
-            this.bssApi.getSpelsoorten()
+            this.bssApi.getSpelsoorten(),
+            this.bssApi.getKnbbCompetities(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId)
         ])
         .then(results => {
+            this.competities = results[3];
             this.verenigingen = results[0];
             if (this.fromVereniging) {
                 const vereniging = this.verenigingen.find(v => v.verId == this.verenigingFilter);
@@ -327,7 +371,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             this.spelerList.fillItems(results[1]);
             this.spelsoorten = results[2];
             if (this.verenigingFilter != '') {
-                this.filtersChanged();
+                this.verenigingFilterChanged();
             }
             this.sortSpelers();
             const elm = this.htmlSpelerLijst()?.nativeElement;
@@ -373,6 +417,24 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         }
     }
 
+    private getBiljartpointLink(): string {
+        const comp = this.competities.find(cmp => {
+            return cmp.teams.some(tm => tm.verId == this.verenigingFilter && tm.teamId == this.teamFilter);
+        });
+        if (!comp) {
+            return '';
+        }
+        const compId = comp.knbbId;
+        const team = this.vereniging.teams.find(tm => tm.teamId == this.teamFilter);
+        const teamId = team ? team.knbbId : '';
+        const poule = comp.poule == 0 ? '' : '' + comp.poule;
+        const distrId = this.appData.getDistrict().knbbId;
+        if (compId == '' || teamId == '' || poule == '' || distrId == '') {
+            return '';
+        }
+        return `https://biljartpoint.nl/index.php?page=teamdetail&team_id=${teamId}&compid=${compId}&poule=${poule}&district=${distrId}`;
+    }
+
     sortSpelers() {
         this.spelerList.filtered.sort((a, b) => {
             if (a.getGemiddeldeVanSpel() == b.getGemiddeldeVanSpel()) {
@@ -384,6 +446,12 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             else {
                 return b.getGemiddeldeVanSpel() - a.getGemiddeldeVanSpel();
             }
+        });
+    }
+
+    sortTeams() {
+        this.vereniging.teams.sort((a: Team, b: Team) => {
+            return a.teamId < b.teamId ? -1 : 1;
         });
     }
 

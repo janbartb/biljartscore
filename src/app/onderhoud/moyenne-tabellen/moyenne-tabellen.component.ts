@@ -1,6 +1,6 @@
-import { Component, HostListener, OnInit, ViewChild, viewChild } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { List } from '../../model/list';
-import { MoyenneEntryToAdd, MoyenneTabel, MoyenneTabelEntry } from '../../model/moyenne-tabel';
+import { MoyenneTabel, MoyenneTabelEntry } from '../../model/moyenne-tabel';
 import { BaseComponent } from '../../base/base.component';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { NgClass } from '@angular/common';
@@ -24,7 +24,7 @@ import { Alinea, ConfirmDialog } from '../../model/confirm-dialog';
     styleUrl: './moyenne-tabellen.component.css'
 })
 export class MoyenneTabellenComponent extends BaseComponent implements OnInit {
-    subtitle: string = 'KNBB klassen en moyenne tabellen';
+    subtitle: string = 'KNBB klassen en moyennes';
     sectionTitle: string = 'Moyenne tabel';
     menuLijst: List<string> = new List<string>();
     moyenneTabel: MoyenneTabel = new MoyenneTabel();

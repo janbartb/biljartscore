@@ -11,6 +11,7 @@
                 <div class="lijst-col" style="width: 6em;">KNBB ID</div>
                 <div class="lijst-col" style="width: 14em;">Naam</div>
                 <div class="lijst-col" style="width: 8em;">Vereniging</div>
+                <div class="lijst-col" style="width: 6em;">Team</div>
                 <div class="lijst-col" style="width: 7em;">Moyenne</div>
                 <div class="lijst-col" style="width: 2.5em;"></div>
             </div>
@@ -31,6 +32,15 @@
                         <option value="0">Geen</option>
                         @for (ver of verenigingen; track $index) {
                             <option [value]="ver.verId">{{ver.naam}}</option>
+                        }
+                    </select>
+                </div>
+                <div class="lijst-col" style="width: 6em;">
+                    <select #teamfilter class="filter" style="width: 5em; font-weight: normal;" [(ngModel)]="teamFilter" 
+                            (change)="teamFilterChanged()" [disabled]="moyenneMode || fromVereniging">
+                        <option value=""></option>
+                        @for (team of vereniging.teams; track $index) {
+                            <option [value]="team.teamId">{{team.klasse}} - {{team.volgNr}}</option>
                         }
                     </select>
                 </div>
@@ -62,6 +72,7 @@
                                         <span style="font-weight: normal; padding-right: .5em;">{{getKorteVerenigingNaam(id)}}</span>
                                     }
                                 </div>
+                                <div class="lijst-col" style="width: 6em;"></div>
                                 @if (moyenneMode && spelerList.selectedIdx == $index) {
                                     <div class="lijst-col" style="width: 7em; position: relative; left: -.25em;">
                                         <input #moyenne type="number" style="width: 5em;" [(ngModel)]="moyenneEdit"
@@ -84,7 +95,22 @@
                 </div>
             </div>
         </div>
-        <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)"
-                                            [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+        <div class="flexbox flexcenter flexmiddle" style="height: 3em; min-height: 3em; border-top: .25em solid #459c48;">
+            <div style="font-size: 1.25em;">
+                <app-button [button]="buttons[0]" (buttonClicked)="buttonClicked(0)"></app-button>
+            </div>
+            <div style="font-size: 1.25em;">
+                <app-button [button]="buttons[1]" (buttonClicked)="buttonClicked(1)"></app-button>
+            </div>
+            @if (biljartPointLink != '') {
+                <div style="margin-left: 1em; border-radius: .5em; overflow: hidden;">
+                    <a [href]="biljartPointLink" target="_blank">
+                        <img src="biljartpoint.png" alt="" style="height: 2em;">
+                    </a>
+                </div>
+            }
+        </div>
+        <!-- <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)"
+                    [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns> -->
     </div>
 </div>

@@ -1,15 +1,12 @@
-import { Component, effect, ElementRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges, viewChild } from '@angular/core';
-import { MoyenneEntryToAdd, MoyenneTabel, MoyenneTabelEntry } from '../../../model/moyenne-tabel';
+import { Component, Input, OnInit } from '@angular/core';
+import { MoyenneTabel } from '../../../model/moyenne-tabel';
 import { FormsModule } from '@angular/forms';
-import { DecimalPipe, NgClass, SlicePipe } from '@angular/common';
-import { HelperService } from '../../../services/helper.service';
-import { Button } from '../../../model/button';
-import { ButtonComponent } from '../../../shared/button-group/button/button.component';
+import { DecimalPipe, SlicePipe } from '@angular/common';
 
 @Component({
   selector: 'app-moyenne-tabel',
   standalone: true,
-  imports: [FormsModule, NgClass, SlicePipe, DecimalPipe, ButtonComponent],
+  imports: [FormsModule, SlicePipe, DecimalPipe],
   templateUrl: './moyenne-tabel.component.html',
   styleUrl: './moyenne-tabel.component.css'
 })

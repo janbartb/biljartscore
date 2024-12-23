@@ -25,7 +25,7 @@ import { Button } from '../../../model/button';
 export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
 
-    subtitle: string = 'KNBB klassen en moyenne tabellen';
+    subtitle: string = 'KNBB klassen en moyennes';
     sectionTitle: string = 'Klasse en moyenne tabel toevoegen';
 
     tabel: MoyenneTabel = new MoyenneTabel();

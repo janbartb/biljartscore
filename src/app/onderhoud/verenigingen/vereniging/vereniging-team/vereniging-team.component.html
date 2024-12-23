@@ -88,12 +88,16 @@
                                     <span class="view">{{aantalLeden}}</span>
                                 </div>
                                 @if (biljartPointLink != '') {
-                                    <div style="margin-top: 1em;">
-                                        <a [href]="biljartPointLink" target="_blank">
+                                    <div class="flexbox flexmiddle" style="margin-top: 1em;">
+                                        <div style="padding-right: .5em;">
                                             <span class="label">Bekijk team in </span>
-                                            <img src="biljartpoint.png" alt="" style="height: 2em;">
-                                        </a>
-                                    </div>    
+                                        </div>
+                                        <div style="border-radius: .5em; overflow: hidden;">
+                                            <a [href]="biljartPointLink" target="_blank">
+                                                <img src="biljartpoint.png" alt="" style="height: 2em;">
+                                            </a>
+                                        </div>    
+                                    </div>
                                 }
                             }    
                         </div>

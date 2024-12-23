@@ -77,11 +77,11 @@ export class OnderhoudComponent extends BaseComponent implements OnInit {
         this.menu.addItem(new MenuItem('v', 'Verenigingen', 'verenigingen'));
         this.menu.addItem(new MenuItem('s', 'Spelers', 'spelers'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('k', 'KNBB competities', 'knbbcompetities'));
-        this.menu.addItem(new MenuItem('e', 'Eigen competities', 'eigencomps'));
-        this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('m', 'KNBB klassen en moyennetabellen', 'moyennes'));
         this.menu.addItem(new MenuItem('d', 'KNBB districten', 'districten'));
+        this.menu.addItem(new MenuItem('m', 'KNBB klassen en moyennes', 'moyennes'));
+        this.menu.addItem(new MenuItem('k', 'KNBB competities', 'knbbcompetities'));
+        //this.menu.addItem(new MenuItem('e', 'Eigen competities', 'eigencomps'));
+        this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('p', 'Spelsoorten', 'spelsoorten'));
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('i', 'Instellingen', 'instellingen'));

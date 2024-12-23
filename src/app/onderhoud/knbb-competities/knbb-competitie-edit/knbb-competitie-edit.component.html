@@ -73,12 +73,16 @@
                                 </table>        
                             </form>
                             @if (biljartPointLink != '') {
-                                <div style="margin-top: 1em;">
-                                    <a [href]="biljartPointLink" target="_blank">
-                                        <span class="label">Bekijk competitie in </span>
-                                        <img src="biljartpoint.png" alt="" style="height: 2em;">
-                                    </a>
-                                </div>    
+                                <div class="flexbox flexmiddle" style="margin-top: 1em;">
+                                    <div style="padding-right: .5em;">
+                                        <span class="label">Bekijk competitie in</span>
+                                    </div>
+                                    <div style="border-radius: .5em; overflow: hidden;">
+                                        <a [href]="biljartPointLink" target="_blank">
+                                            <img src="biljartpoint.png" alt="" style="height: 2em;">
+                                        </a>
+                                    </div>    
+                                </div>
                             }
                         }
                     </div>

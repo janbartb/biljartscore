@@ -19,6 +19,7 @@ import { Config } from '../model/config';
 export class HomeComponent extends BaseComponent implements OnInit {
     private document = inject(DOCUMENT);
 
+    version: string = '1.0.0';
     menu: Menu = new Menu();
     spelsoorten: Spelsoort[] = [];
     screenReady: boolean = false;

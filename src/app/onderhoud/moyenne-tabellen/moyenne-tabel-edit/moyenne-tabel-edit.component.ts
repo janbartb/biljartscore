@@ -27,15 +27,17 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
     route = inject(ActivatedRoute);
 
-    subtitle: string = 'KNBB klassen en moyenne tabellen';
+    subtitle: string = 'KNBB klassen en moyennes';
     sectionTitle: string = 'Wijzigen moyenne tabel';
 
     tabel: MoyenneTabel = new MoyenneTabel();
+    origTabel: MoyenneTabel = new MoyenneTabel();
     entryToAdd: MoyenneEntryToAdd = new MoyenneEntryToAdd();
     entryToEdit: MoyenneEntryToEdit = new MoyenneEntryToEdit();
     inpMinimum: number = 0;
     idxSelected: number = -1;
     minimumValid: boolean = true;
+    escapeCount: number = 0;
 
     enterButton: Button = new Button('Enter', 'Tabel opslaan', true);
     deleteButton: Button = new Button('Del', 'Entry verwijderen', true);
@@ -58,15 +60,16 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
     }
 
     override escapePressed(): void {
+        if (this.entryToAdd.entry.vanaf != 0 || this.entryToAdd.entry.cars != 0) {
+            this.resetAddClicked();
+            return;
+        }
         if (this.idxSelected >= 0) {
             this.resetSelection();
             return;
         }
-        if (this.entryToAdd.entry.vanaf != 0 || this.entryToAdd.entry.cars != 0 || !this.minimumValid) {
-            if (!this.minimumValid) {
-                this.resetMinClicked();
-            }
-            this.resetAddClicked();
+        if (this.hasTabelChanged()) {
+            this.resetTabel();
             return;
         }
         super.escapePressed();
@@ -120,12 +123,20 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
         this.htmlInputMinimum()?.nativeElement.blur();
         this.idxSelected = -1;
         this.enterButton.text = 'Tabel opslaan';
+        this.setEscapeCount();
     }
 
     resetMinClicked() {
         this.inpMinimum = this.tabel.minimum;
         this.minimumValid = true;
         this.enterButton.text = 'Tabel opslaan';
+        this.setEscapeCount();
+    }
+
+    resetTabel() {
+        this.tabel = this.copyTabel(this.origTabel);
+        this.resetMinClicked();
+        this.setEscapeCount();
     }
 
     deleteClicked() {
@@ -146,6 +157,7 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
         }
         this.entryToEdit = temp;
         this.entryToAdd = new MoyenneEntryToAdd();
+        this.setEscapeCount();
     }
 
     tabelOpslaan() {
@@ -157,7 +169,9 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
             resp.data.moyennes.sort(this.compareMoyennes);
             this.aanvullenEntries(resp.data.moyennes);
             this.tabel = resp.data;
+            this.origTabel = this.copyTabel(this.tabel);
             this.inpMinimum = this.tabel.minimum;
+            this.setEscapeCount();
         })
         .catch(err => {
             this.alert.showError(err);
@@ -196,18 +210,21 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
     resetSelectionAndToAdd() {
         this.resetSelection();
         this.entryToAdd = new MoyenneEntryToAdd();
+        this.setEscapeCount();
     }
 
     resetSelection() {
         this.entryToEdit = new MoyenneEntryToEdit();
         this.idxSelected = -1;
         this.enterButton.text = 'Tabel opslaan';
+        this.setEscapeCount();
     }
 
     verwijderenEntry(idx: number): void {
         this.tabel.moyennes.push(new MoyenneTabelEntry());
         this.tabel.moyennes.splice(idx, 1);
         this.resetSelection();
+        this.setEscapeCount();
     }
 
     validateEntryToAdd() {
@@ -223,6 +240,7 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
         this.entryToAdd.carsValid = this.helper.isValidInteger('' + this.entryToAdd.entry.cars) && this.entryToAdd.entry.cars > this.inpMinimum;
         // validate both
         if (!(this.entryToAdd.vanafValid && this.entryToAdd.carsValid)) {
+            this.setEscapeCount();
             return;
         }
         const entry: MoyenneTabelEntry = new MoyenneTabelEntry();
@@ -248,6 +266,7 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
         if (this.entryToAdd.vanafValid && this.entryToAdd.carsValid) {
             this.enterButton.text = 'Entry toevoegen';
         }
+        this.setEscapeCount();
     }
 
     changeEntrySelection(direction: number) {
@@ -264,9 +283,11 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
             idx = 0;
         }
         this.entryClicked(idx);
+        this.setEscapeCount();
     }
 
     minimumChanged() {
+        this.setEscapeCount();
         this.minimumValid = this.helper.isValidInteger('' + this.inpMinimum);
         if (!this.minimumValid) {
             return;
@@ -336,6 +357,7 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
             result.moyennes.sort(this.compareMoyennes);
             this.aanvullenEntries(result.moyennes);
             this.tabel = result;
+            this.origTabel = this.copyTabel(this.tabel);
             this.inpMinimum = this.tabel.minimum;
         })
         .catch(err => {
@@ -372,5 +394,32 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
 
     private getOnlyFilledEntries(): MoyenneTabelEntry[] {
         return this.tabel.moyennes.filter(e => e.filled);
+    }
+
+    private copyTabel(tab: MoyenneTabel): MoyenneTabel {
+        return JSON.parse(JSON.stringify(tab));
+    }
+
+    private hasTabelChanged(): boolean {
+        return this.tabel.minimum != this.inpMinimum || this.tabel.moyennes.some((entry, idx) => {
+            return this.hasEntryChanged(entry, this.origTabel.moyennes[idx]);
+        });
+    }
+
+    private hasEntryChanged(a: MoyenneTabelEntry, b: MoyenneTabelEntry): boolean {
+        return a.vanaf != b.vanaf || a.cars != b.cars || a.filled != b.filled;
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = 0;
+        if (this.hasTabelChanged()) {
+            this.escapeCount++;
+        }
+        if (this.idxSelected >= 0) {
+            this.escapeCount++;
+        }
+        if (this.entryToAdd.entry.vanaf != 0 || this.entryToAdd.entry.cars != 0) {
+            this.escapeCount++;
+        }
     }
 }
