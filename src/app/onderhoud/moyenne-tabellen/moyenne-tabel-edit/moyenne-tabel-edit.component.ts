@@ -2,13 +2,13 @@ import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild 
 import { HelperService } from '../../../services/helper.service';
 import { MoyenneEntryToAdd, MoyenneEntryToEdit, MoyenneTabel, MoyenneTabelEntry } from '../../../model/moyenne-tabel';
 import { Button } from '../../../model/button';
-import { ButtonComponent } from '../../../shared/button-group/button/button.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { BaseComponent } from '../../../base/base.component';
 import { ActivatedRoute } from '@angular/router';
 import { MoyenneTabelEntriesComponent } from '../moyenne-tabel-entries/moyenne-tabel-entries.component';
+import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
     selector: 'app-moyenne-tabel-edit',
@@ -16,7 +16,7 @@ import { MoyenneTabelEntriesComponent } from '../moyenne-tabel-entries/moyenne-t
     imports: [
         MoyenneTabelEntriesComponent,
         PageHeaderComponent,
-        ButtonComponent, 
+        SectionFooterBtnsComponent,
         FormsModule, 
         NgClass
     ],
@@ -39,10 +39,10 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
     minimumValid: boolean = true;
     escapeCount: number = 0;
 
-    enterButton: Button = new Button('Enter', 'Tabel opslaan', true);
-    deleteButton: Button = new Button('Del', 'Entry verwijderen', true);
-    resetButton: Button = new Button('Esc', 'Reset', true);
-    resetMinButton: Button = new Button('Esc', 'Reset', false);
+    buttons: Button[] = [
+        new Button('Del', 'Entry verwijderen', true),
+        new Button('Enter', 'Tabel opslaan', true)
+    ];
 
     htmlInputMinimum = viewChild<ElementRef<HTMLInputElement>>("minimum");
     htmlInputVanaf = viewChild<ElementRef<HTMLInputElement>>("vanaf");
@@ -75,11 +75,6 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
         super.escapePressed();
     }
 
-    deletePressed(event: KeyboardEvent) {
-        event.stopPropagation();
-        this.deleteClicked();
-    }
-
     buttonPressed(event: KeyboardEvent, button: Button) {
         button.selected = true;
         setTimeout(() => {
@@ -93,6 +88,20 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
         }, 300);
     }
 
+    deletePressed(event: KeyboardEvent) {
+        event.stopPropagation();
+        this.deleteClicked();
+    }
+
+    buttonClicked(idx: number) {
+        if (idx == 0) {
+            this.deleteClicked();
+        }
+        else if (idx == 1) {
+            this.enterClicked();
+        }
+    }
+
     enterClicked() {
         if (!this.minimumValid) {
             return;
@@ -100,7 +109,7 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
         if (this.idxSelected >= 0 && !this.entryToEdit.carsValid) {
             return;
         }
-        switch (this.enterButton.text) {
+        switch (this.buttons[1].text) {
             case 'Tabel opslaan':
                 this.tabelOpslaan();
                 break;
@@ -122,14 +131,14 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
         this.htmlInputCars()?.nativeElement.blur();
         this.htmlInputMinimum()?.nativeElement.blur();
         this.idxSelected = -1;
-        this.enterButton.text = 'Tabel opslaan';
+        this.buttons[1].text = 'Tabel opslaan';
         this.setEscapeCount();
     }
 
     resetMinClicked() {
         this.inpMinimum = this.tabel.minimum;
         this.minimumValid = true;
-        this.enterButton.text = 'Tabel opslaan';
+        this.buttons[1].text = 'Tabel opslaan';
         this.setEscapeCount();
     }
 
@@ -150,10 +159,10 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
             Object.assign(temp.entry, this.tabel.moyennes[idx]);
             temp.carsValid = true;
             temp.index = this.idxSelected;
-            this.enterButton.text = 'Entry wijzigen';
+            this.buttons[1].text = 'Entry wijzigen';
         }
         else {
-            this.enterButton.text = 'Tabel opslaan';
+            this.buttons[1].text = 'Tabel opslaan';
         }
         this.entryToEdit = temp;
         this.entryToAdd = new MoyenneEntryToAdd();
@@ -216,7 +225,7 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
     resetSelection() {
         this.entryToEdit = new MoyenneEntryToEdit();
         this.idxSelected = -1;
-        this.enterButton.text = 'Tabel opslaan';
+        this.buttons[1].text = 'Tabel opslaan';
         this.setEscapeCount();
     }
 
@@ -228,7 +237,7 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
     }
 
     validateEntryToAdd() {
-        this.enterButton.text = 'Tabel opslaan';
+        this.buttons[1].text = 'Tabel opslaan';
         // validate vanaf
         if (!this.helper.isValidNumber('' + this.entryToAdd.entry.vanaf)) {
             this.entryToAdd.vanafValid = false;
@@ -255,6 +264,7 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
             return false;
         });
         if (!this.entryToAdd.vanafValid) {
+            this.setEscapeCount();
             return;
         }
         this.entryToAdd.carsValid = entries.every((entry, i) => {
@@ -264,7 +274,7 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
             return false;
         });
         if (this.entryToAdd.vanafValid && this.entryToAdd.carsValid) {
-            this.enterButton.text = 'Entry toevoegen';
+            this.buttons[1].text = 'Entry toevoegen';
         }
         this.setEscapeCount();
     }
@@ -322,11 +332,11 @@ export class MoyenneTabelEditComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.key === 'Enter') {
-            this.buttonPressed(event, this.enterButton);
+            this.buttonPressed(event, this.buttons[1]);
             return false;
         }
         if (event.key === 'Delete') {
-            this.buttonPressed(event, this.deleteButton);
+            this.buttonPressed(event, this.buttons[0]);
             return false;
         }
         if (event.key === 'Escape') {

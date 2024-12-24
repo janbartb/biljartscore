@@ -1,13 +1,13 @@
 import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { MoyenneTabelEntriesComponent } from '../moyenne-tabel-entries/moyenne-tabel-entries.component';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
-import { ButtonComponent } from '../../../shared/button-group/button/button.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { BaseComponent } from '../../../base/base.component';
 import { MoyenneEntryToAdd, MoyenneEntryToEdit, MoyenneTabel, MoyenneTabelEntry } from '../../../model/moyenne-tabel';
 import { HelperService } from '../../../services/helper.service';
 import { Button } from '../../../model/button';
+import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
     selector: 'app-moyenne-tabel-add',
@@ -15,7 +15,7 @@ import { Button } from '../../../model/button';
     imports: [
         MoyenneTabelEntriesComponent,
         PageHeaderComponent,
-        ButtonComponent,
+        SectionFooterBtnsComponent,
         FormsModule,
         NgClass
     ],
@@ -35,11 +35,12 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
     idxSelected: number = -1;
     klasseValid: boolean = false
     minimumValid: boolean = false;
+    escapeCount: number = 0;
 
-    enterButton: Button = new Button('Enter', 'Tabel opslaan', true);
-    deleteButton: Button = new Button('Del', 'Entry verwijderen', true);
-    resetButton: Button = new Button('Esc', 'Reset', true);
-    resetMinButton: Button = new Button('Esc', 'Reset', false);
+    buttons: Button[] = [
+        new Button('Del', 'Entry verwijderen', true),
+        new Button('Enter', 'Tabel opslaan', true)
+    ];
 
     htmlInputKlasse = viewChild<ElementRef<HTMLInputElement>>("klasse");
     htmlInputMinimum = viewChild<ElementRef<HTMLInputElement>>("minimum");
@@ -58,20 +59,19 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
     }
 
     override escapePressed(): void {
-        if (this.idxSelected >= 0) {
-            this.resetSelection();
-            return;
-        }
         if (this.entryToAdd.entry.vanaf != 0 || this.entryToAdd.entry.cars != 0) {
             this.resetAddClicked();
             return;
         }
+        if (this.idxSelected >= 0) {
+            this.resetSelection();
+            return;
+        }
+        if (this.tabel.klasse != '' || this.tabel.minimum != 0 || this.tabel.moyennes.length) {
+            this.resetTabel();
+            return;
+        }
         super.escapePressed();
-    }
-
-    deletePressed(event: KeyboardEvent) {
-        event.stopPropagation();
-        this.deleteClicked();
     }
 
     buttonPressed(event: KeyboardEvent, button: Button) {
@@ -87,6 +87,20 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
         }, 300);
     }
 
+    deletePressed(event: KeyboardEvent) {
+        event.stopPropagation();
+        this.deleteClicked();
+    }
+
+    buttonClicked(idx: number) {
+        if (idx == 0) {
+            this.deleteClicked();
+        }
+        else if (idx == 1) {
+            this.enterClicked();
+        }
+    }
+
     enterClicked() {
         if (!this.minimumValid) {
             return;
@@ -94,7 +108,7 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
         if (this.idxSelected >= 0 && !this.entryToEdit.carsValid) {
             return;
         }
-        switch (this.enterButton.text) {
+        switch (this.buttons[1].text) {
             case 'Tabel opslaan':
                 this.tabelOpslaan();
                 break;
@@ -117,7 +131,8 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
         this.htmlInputCars()?.nativeElement.blur();
         this.htmlInputMinimum()?.nativeElement.blur();
         this.idxSelected = -1;
-        this.enterButton.text = 'Tabel opslaan';
+        this.buttons[1].text = 'Tabel opslaan';
+        this.setEscapeCount();
     }
 
     deleteClicked() {
@@ -131,13 +146,14 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
             Object.assign(temp.entry, this.tabel.moyennes[idx]);
             temp.carsValid = true;
             temp.index = this.idxSelected;
-            this.enterButton.text = 'Entry wijzigen';
+            this.buttons[1].text = 'Entry wijzigen';
         }
         else {
-            this.enterButton.text = 'Tabel opslaan';
+            this.buttons[1].text = 'Tabel opslaan';
         }
         this.entryToEdit = temp;
         this.entryToAdd = new MoyenneEntryToAdd();
+        this.setEscapeCount();
     }
 
     tabelOpslaan() {
@@ -186,12 +202,21 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
     resetSelectionAndToAdd() {
         this.resetSelection();
         this.entryToAdd = new MoyenneEntryToAdd();
+        this.setEscapeCount();
     }
 
     resetSelection() {
         this.entryToEdit = new MoyenneEntryToEdit();
         this.idxSelected = -1;
-        this.enterButton.text = 'Tabel opslaan';
+        this.buttons[1].text = 'Tabel opslaan';
+        this.setEscapeCount();
+    }
+
+    resetTabel() {
+        this.tabel = new MoyenneTabel();
+        this.aanvullenEntries(this.tabel.moyennes);
+        this.klasseChanged();
+        this.minimumChanged();
     }
 
     verwijderenEntry(idx: number): void {
@@ -201,7 +226,7 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
     }
 
     validateEntryToAdd() {
-        this.enterButton.text = 'Tabel opslaan';
+        this.buttons[1].text = 'Tabel opslaan';
         // validate vanaf
         if (!this.helper.isValidNumber('' + this.entryToAdd.entry.vanaf)) {
             this.entryToAdd.vanafValid = false;
@@ -213,6 +238,7 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
         this.entryToAdd.carsValid = this.helper.isValidInteger('' + this.entryToAdd.entry.cars) && this.entryToAdd.entry.cars > this.tabel.minimum;
         // validate both
         if (!(this.entryToAdd.vanafValid && this.entryToAdd.carsValid)) {
+            this.setEscapeCount();
             return;
         }
         const entry: MoyenneTabelEntry = new MoyenneTabelEntry();
@@ -227,6 +253,7 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
             return false;
         });
         if (!this.entryToAdd.vanafValid) {
+            this.setEscapeCount();
             return;
         }
         this.entryToAdd.carsValid = entries.every((entry, i) => {
@@ -236,8 +263,9 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
             return false;
         });
         if (this.entryToAdd.vanafValid && this.entryToAdd.carsValid) {
-            this.enterButton.text = 'Entry toevoegen';
+            this.buttons[1].text = 'Entry toevoegen';
         }
+        this.setEscapeCount();
     }
 
     changeEntrySelection(direction: number) {
@@ -254,14 +282,17 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
             idx = 0;
         }
         this.entryClicked(idx);
+        this.setEscapeCount();
     }
 
     klasseChanged() {
         const temp = this.tabel.klasse.trim();
         this.klasseValid = temp.length > 0 && !this.existing.some(kl => kl == temp);
+        this.setEscapeCount();
     }
 
     minimumChanged() {
+        this.setEscapeCount();
         this.minimumValid = this.helper.isValidInteger('' + this.tabel.minimum);
         if (!this.minimumValid) {
             return;
@@ -295,11 +326,11 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.key === 'Enter') {
-            this.buttonPressed(event, this.enterButton);
+            this.buttonPressed(event, this.buttons[1]);
             return false;
         }
         if (event.key === 'Delete') {
-            this.buttonPressed(event, this.deleteButton);
+            this.buttonPressed(event, this.buttons[0]);
             return false;
         }
         if (event.key === 'Escape') {
@@ -357,5 +388,18 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
 
     private getOnlyFilledEntries(): MoyenneTabelEntry[] {
         return this.tabel.moyennes.filter(e => e.filled);
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = 0;
+        if (this.tabel.klasse != '' || this.tabel.minimum != 0 || this.tabel.moyennes[0].vanaf != 0) {
+            this.escapeCount++;
+        }
+        if (this.idxSelected >= 0) {
+            this.escapeCount++;
+        }
+        if (this.entryToAdd.entry.vanaf != 0 || this.entryToAdd.entry.cars != 0) {
+            this.escapeCount++;
+        }
     }
 }
