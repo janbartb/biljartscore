@@ -1,0 +1,26 @@
+<div>
+    <div class="flexbox flexcenter">
+        @for (page of speler.dim.pages; track $index) {
+            <div style="padding: 0 .125rem;" [style.font-size]="speler.dim.fontSize + 'rem'">
+                <div style="padding: .25em .5em; background-color: white;">
+                    <table class="tbl-lijst">
+                        <tbody>
+                            @for (brt of speler.scores | slice:(page * speler.dim.pageRows):((page + 1) * speler.dim.pageRows); track $index; let i = $index) {
+                                <tr [style.height]="speler.dim.rowHeight + 'rem'" [ngClass]="{'border': $index > 0}">
+                                    <td [ngClass]="brt.gespeeld ? 'clr-blu' : 'clr-lgr'" style="width: 2em;">
+                                        <span>{{brt.verberg ? '&nbsp;' : ((page * speler.dim.pageRows) + i + 1)}}</span>
+                                    </td>
+                                    <td style="width: 4em; color: gray;">
+                                        <span [hidden]="!brt.gespeeld">{{brt.serie == 0 ? '---' : brt.serie}}</span>
+                                    </td>
+                                    <td style="width: 4em;"><span [hidden]="!brt.gespeeld">{{brt.serie == 0 ? '---' : brt.totaal}}</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>        
+        
+                </div>
+            </div>
+        }
+    </div>    
+</div>

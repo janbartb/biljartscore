@@ -1,6 +1,6 @@
 import { ElementRef, inject, Injectable } from '@angular/core';
 import { WedSpelerStand, Wedstrijd, WedTeamStand } from '../model/wedstrijd';
-import { TeamMatch } from '../model/match';
+import { Match, TeamMatch } from '../model/match';
 import { AlertService } from './alert.service';
 import { KnbbCompetitie } from '../model/knbb-competitie';
 import { Team, Vereniging } from '../model/vereniging';
@@ -110,6 +110,18 @@ export class HelperService {
     isTeamWedstrijdOver(match: TeamMatch, idxWed: number): boolean {
         const spl = match.teams[0].spelers[idxWed];
         const teg = match.teams[1].spelers[idxWed];
+        if (teg.stand.aantBrt === match.maxBeurten) {
+            return true;
+        }
+        if ((spl.stand.aantCar === spl.splTsCar || teg.stand.aantCar === teg.splTsCar) && spl.stand.aantBrt === teg.stand.aantBrt) {
+            return true;
+        }
+        return false;
+    }
+
+    isWedstrijdOver(match: Match): boolean {
+        const spl = match.spelers[0];
+        const teg = match.spelers[1];
         if (teg.stand.aantBrt === match.maxBeurten) {
             return true;
         }

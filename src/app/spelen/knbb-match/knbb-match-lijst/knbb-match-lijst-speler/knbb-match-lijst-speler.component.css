@@ -1,0 +1,20 @@
+.arial { font-family: Arial, Helvetica, sans-serif; }
+
+.tbl-lijst {
+    table-layout: fixed;
+    border: 0;
+	padding: 0;
+	border-spacing: 0;
+    border-collapse: collapse;
+}
+.tbl-lijst tr.border {
+    border-top: 1px solid #bdbdbd;
+}
+.tbl-lijst td {
+    line-height: 1em;
+    padding: .0625em;
+    text-align: right;
+}
+
+.clr-blu {color: #00a2ff;}
+.clr-lgr {opacity: .25;}

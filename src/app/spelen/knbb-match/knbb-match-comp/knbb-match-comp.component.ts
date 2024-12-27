@@ -1,27 +1,27 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { Match } from '../../../model/match';
+import { KnbbCompetitie } from '../../../model/knbb-competitie';
+import { List } from '../../../model/list';
+import { Button } from '../../../model/button';
+import { BaseComponent } from '../../../base/base.component';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 import { NgClass } from '@angular/common';
-import { MatchTeam, TeamMatch } from '../../../model/match';
-import { List } from '../../../model/list';
-import { KnbbCompetitie } from '../../../model/knbb-competitie';
-import { BaseComponent } from '../../../base/base.component';
-import { Button } from '../../../model/button';
 
 @Component({
-    selector: 'app-knbb-team-match-comp',
+    selector: 'app-knbb-match-comp',
     standalone: true,
     imports: [
         PageHeaderComponent,
         SectionFooterBtnsComponent,
         NgClass
     ],
-    templateUrl: './knbb-team-match-comp.component.html',
-    styleUrl: './knbb-team-match-comp.component.css'
+    templateUrl: './knbb-match-comp.component.html',
+    styleUrl: './knbb-match-comp.component.css'
 })
-export class KnbbTeamMatchCompComponent extends BaseComponent implements OnInit {
+export class KnbbMatchCompComponent extends BaseComponent implements OnInit {
     subtitle: string = 'Selectie competitie';
-    match: TeamMatch = new TeamMatch();
+    match: Match = new Match();
     compLijst: List<KnbbCompetitie> = new List<KnbbCompetitie>();
 
     buttons: Button[] = [new Button('Enter', 'Selecteer', true)]
@@ -52,7 +52,7 @@ export class KnbbTeamMatchCompComponent extends BaseComponent implements OnInit 
         }
         const selectedComp = this.compLijst.filtered[idx];
         if (selectedComp.competitieId == this.match.compId) {
-            this.router.navigate(['teammatch/setup/thuis']);
+            this.router.navigate(['match/setup/thuis']);
             return;
         }
         this.initMatch(selectedComp);
@@ -62,7 +62,7 @@ export class KnbbTeamMatchCompComponent extends BaseComponent implements OnInit 
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
-        if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             if (event.key === 'ArrowUp') {
                 this.compLijst.selectPreviousItem();
                 return false;
@@ -91,43 +91,36 @@ export class KnbbTeamMatchCompComponent extends BaseComponent implements OnInit 
     ngOnInit(): void {
         Promise.all([
             this.bssApi.getKnbbCompetities(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId),
-            this.bssApi.getKnbbTeamMatch()
+            this.bssApi.getKnbbMatch()
         ])
-        .then(results => {
-            results[0].sort(this.compareCompetities);
-            this.compLijst.fillItems(results[0]);
-            if (results[1].gevonden) {
-                this.match = results[1].match;
-                this.preselectComp(this.match.compId);
-            }
-            else {
-                this.match = new TeamMatch();
-                this.match.teams.push(new MatchTeam());
-                this.match.teams.push(new MatchTeam());
-            }
-        })
-        .catch(err => {
-            this.alert.showError(err);
-        });
+            .then(results => {
+                results[0].sort(this.compareCompetities);
+                this.compLijst.fillItems(results[0]);
+                if (results[1].gevonden) {
+                    this.match = results[1].match;
+                    this.preselectComp(this.match.compId);
+                }
+            })
+            .catch(err => {
+                this.alert.showError(err);
+            });
     }
 
     private saveMatchAndContinue() {
-        this.bssApi.saveKnbbTeamMatch(this.match)
-        .then(() => {
-            this.router.navigate(['teammatch/setup/thuis']);
-        })
-        .catch(err => {
-            this.alert.showError(err);
-        });
+        this.bssApi.saveKnbbMatch(this.match)
+            .then(() => {
+                this.router.navigate(['match/setup/thuis']);
+            })
+            .catch(err => {
+                this.alert.showError(err);
+            });
     }
 
     private initMatch(comp: KnbbCompetitie) {
-        this.match = new TeamMatch();
+        this.match = new Match();
         this.match.compId = comp.competitieId;
         this.match.klasse = comp.klasse;
         this.match.maxBeurten = comp.maxBeurten;
-        this.match.teams.push(new MatchTeam());
-        this.match.teams.push(new MatchTeam());
     }
 
     private preselectComp(id: string) {

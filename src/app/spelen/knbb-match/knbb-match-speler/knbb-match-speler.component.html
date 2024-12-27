@@ -1,0 +1,95 @@
+<div>
+    <div class="naam-container" [ngClass]="idx == 0 ? 'splcl' : 'tegcl'">
+        <span>{{speler.splNaam}}</span>
+    </div>
+    <div class="sect-header" [ngClass]="idx == 0 ? 'splcl' : 'tegcl'">
+        <span>Te spelen</span>
+    </div>
+    <div style="padding: .5em 1.5em;">
+        <div class="sect-line">
+            <div class="label">
+                <span>Moyenne</span>
+            </div>
+            <div class="data">
+                <span>{{speler.splTsGem | number:'1.3-3':'nl-NL'}}</span>
+            </div>
+        </div>
+        <div class="sect-line">
+            <div class="label">
+                <span>Caramboles</span>
+            </div>
+            <div class="data">
+                <span>{{speler.splTsCar}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="sect-header" [ngClass]="idx == 0 ? 'splcl' : 'tegcl'">
+        <span>Gespeeld</span>
+    </div>
+    <div style="padding: .5em 1.5em;">
+        <div class="sect-line">
+            <div class="label">
+                <span>Caramboles</span>
+            </div>
+            <div class="data">
+                <span>{{speler.stand.aantCar}}</span>
+            </div>
+            @if (speler.stand.aantCar > 0) {
+                <div class="perc">
+                    <span>{{100 * speler.stand.aantCar / speler.splTsCar | number:'1.2-2':'nl-NL'}}%</span>
+                </div>    
+            }
+        </div>
+        <div class="sect-line">
+            <div class="label">
+                <span>Beurten</span>
+            </div>
+            <div class="data">
+                <span>{{speler.stand.aantBrt}}</span>
+            </div>
+            @if (speler.stand.aantBrt > 0) {
+                <div class="perc">
+                    <span>{{100 * speler.stand.aantBrt / match.maxBeurten | number:'1.2-2':'nl-NL'}}%</span>
+                </div>    
+            }
+        </div>
+        <div class="sect-line">
+            <div class="label">
+                <span>Moyenne</span>
+            </div>
+            <div class="data">
+                <span>{{speler.stand.gemiddelde | number:'1.3-3':'nl-NL'}}</span>
+            </div>
+            @if (speler.stand.gemiddelde > 0) {
+                <div class="perc">
+                    <span>{{100 * speler.stand.gemiddelde / speler.splTsGem | number:'1.2-2':'nl-NL'}}%</span>
+                </div>    
+            }
+        </div>
+        <div class="sect-line">
+            <div class="label">
+                <span>Hoogste serie</span>
+            </div>
+            <div class="data">
+                <span>{{speler.stand.hoogSer}}</span>
+            </div>
+        </div>
+        <div class="flexbox flexmiddle" style="margin-top: .5em;">
+            <div class="label" style="width: 10.5em;">
+                <span>Punten</span>
+            </div>
+            <div style="width: 5em;">
+                <div class="flexbox flexright">
+                    <div style="width: 4em; height: 3em; padding: .125em;">
+                        <div class="flexbox flexcenter flexmiddle" [ngClass]="idx == 0 ? 'splbg' : 'tegbg'"
+                                    style="border: .125em solid green; border-radius: .5em;">
+                            <div style="font-size: 2em; line-height: 1.25em; color: black;">
+                                <span [ngClass]="{'clr-red': status == 2 && speler.stand.punten >= teg.stand.punten}">{{speler.stand.punten}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

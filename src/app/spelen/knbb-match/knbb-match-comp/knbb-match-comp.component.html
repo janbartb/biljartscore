@@ -1,0 +1,34 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'KNBB match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
+                        (prevClicked)="escapePressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1 scroll-container">
+            <div #complijst class="scroll-content">
+                <div class="flexbox flexcenter">
+                    <div class="lijst">
+                        @for (comp of compLijst.filtered; track $index) {
+                            <div class="lijst-row selectable" (click)="competitieClicked($index)"
+                                    [ngClass]="{'selected': compLijst.selectedIdx == $index}">
+                                <div class="lijst-col indicator" style="width: 2em;">
+                                    <i class="fas fa-angle-right"></i>
+                                </div>
+                                <div class="lijst-col" style="width: 5em;">
+                                    <span>{{comp.klasse}} - {{comp.volgNr}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 14em;">
+                                    <span>{{comp.naam}}</span>
+                                </div>
+                            </div>
+                        }
+                    </div>    
+                </div>
+            </div>
+        </div>
+        @if (compLijst.selectedIdx >= 0) {
+            <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)" 
+                        [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
+        }
+    </div>
+</div>

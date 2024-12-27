@@ -1,17 +1,16 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
-import { BaseComponent } from '../../../base/base.component';
-import { MatchSpelerStand, MatchTeam, TeamMatch } from '../../../model/match';
-import { MoyenneTabel } from '../../../model/moyenne-tabel';
-import { FormsModule } from '@angular/forms';
-import { NgClass } from '@angular/common';
-import { Button } from '../../../model/button';
-import { DOCUMENT } from '@angular/common';
-import { HelperService } from '../../../services/helper.service';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
+import { FormsModule } from '@angular/forms';
+import { DOCUMENT, NgClass } from '@angular/common';
+import { BaseComponent } from '../../../base/base.component';
+import { HelperService } from '../../../services/helper.service';
+import { MoyenneTabel } from '../../../model/moyenne-tabel';
+import { Match, MatchSpeler, MatchSpelerStand } from '../../../model/match';
+import { Button } from '../../../model/button';
 
 @Component({
-    selector: 'app-knbb-team-match-check',
+    selector: 'app-knbb-match-check',
     standalone: true,
     imports: [
         PageHeaderComponent,
@@ -19,28 +18,27 @@ import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/
         FormsModule,
         NgClass
     ],
-    templateUrl: './knbb-team-match-check.component.html',
-    styleUrl: './knbb-team-match-check.component.css'
+    templateUrl: './knbb-match-check.component.html',
+    styleUrl: './knbb-match-check.component.css'
 })
-export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit {
+export class KnbbMatchCheckComponent extends BaseComponent implements OnInit {
     private helper = inject(HelperService);
     private document = inject(DOCUMENT);
 
-    match: TeamMatch = new TeamMatch();
-    teams: MatchTeam[] = [];
+    match: Match = new Match();
+    spelers: MatchSpeler[] = [];
     moyTabel: MoyenneTabel = new MoyenneTabel();
-    idxTeam: number = -1;
     idxSpeler: number = -1;
     matchGestart: boolean = false;
     matchChanged: boolean = false;
     namesChanged: boolean = false;
     matchValid: boolean = false;
-    naamValid: boolean[][] = [[true, true, true], [true, true, true]];
-    moyValid: boolean[][] = [[true, true, true], [true, true, true]];
-    carValid: boolean[][] = [[true, true, true], [true, true, true]];
+    naamValid: boolean[] = [true, true];
+    moyValid: boolean[] = [true, true];
+    carValid: boolean[] = [true, true];
     escapeCount: number = 0;
-    wedStatus: number[] = [0, 0, 0];
-    voortgang: string[] = ['0%', '0%', '0%'];
+    wedStatus: number = 0;
+    voortgang: string = '0%';
     dataReady: boolean = false;
 
     buttons: Button[] = [
@@ -50,8 +48,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     ];
 
     override escapePressed(): void {
-        if (this.idxTeam >= 0) {
-            this.idxTeam = -1;
+        if (this.idxSpeler >= 0) {
             this.idxSpeler = -1;
             this.setEscapeCount();
         }
@@ -92,7 +89,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     }
 
     previousClicked() {
-        this.router.navigate(['teammatch/setup/gasten']);
+        this.router.navigate(['match/setup/gasten']);
     }
 
     enterClicked() {
@@ -100,11 +97,11 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
             return;
         }
         if (this.matchChanged) {
-            this.match.teams = this.teams;
+            this.match.spelers = this.spelers;
             this.clearMatchScores();
         }
         else if (this.namesChanged) {
-            this.match.teams = this.teams;
+            this.match.spelers = this.spelers;
         }
         this.saveMatchAndContinue();
     }
@@ -114,34 +111,32 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
             return;
         }
         if (this.namesChanged) {
-            this.match.teams = this.teams;
+            this.match.spelers = this.spelers;
         }
         this.clearMatchScores();
         this.saveMatchAndContinue();
     }
 
     resetClicked() {
-        this.idxTeam = -1;
         this.idxSpeler = -1;
-        this.copyTeams();
+        this.copySpelers();
         this.hasMatchChanged();
         this.isMatchValid();
     }
 
-    maakSpelerActief(idxT: number, idxS: number) {
-        this.idxTeam = idxT;
-        this.idxSpeler = idxS;
-        const elmId = 'naam' + idxT + idxS;
+    maakSpelerActief(idx: number) {
+        this.idxSpeler = idx;
+        const elmId = 'naam' + idx;
         let elm = <HTMLInputElement> this.document.getElementById(elmId);
         setTimeout(() => {
             elm.focus();
         }, 100);
     }
 
-    keyupMoyenne(idxT:number, idxS: number) {
-        let spl = this.teams[idxT].spelers[idxS];
-        this.moyValid[idxT][idxS] = this.helper.isValidNumber('' + spl.splTsGem);
-        if (this.moyValid[idxT][idxS]) {
+    keyupMoyenne(idx: number) {
+        let spl = this.spelers[idx];
+        this.moyValid[idx] = this.helper.isValidNumber('' + spl.splTsGem);
+        if (this.moyValid[idx]) {
             spl.splTsGem = Number(spl.splTsGem);
             spl.splTsCar = this.bepaalAantalCaramboles(spl.splTsGem);
             this.isMatchValid();
@@ -152,10 +147,10 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         this.hasMatchChanged();
     }
 
-    keyupCaramboles(idxT:number, idxS: number) {
-        let spl = this.teams[idxT].spelers[idxS];
-        this.carValid[idxT][idxS] = this.helper.isValidInteger('' + spl.splTsCar);
-        if (this.carValid[idxT][idxS]) {
+    keyupCaramboles(idx: number) {
+        let spl = this.spelers[idx];
+        this.carValid[idx] = this.helper.isValidInteger('' + spl.splTsCar);
+        if (this.carValid[idx]) {
             spl.splTsCar = Number(spl.splTsCar);
             this.isMatchValid();
         }
@@ -165,10 +160,10 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         this.hasMatchChanged();
     }
 
-    keyupNaam(idxT:number, idxS: number) {
-        let spl = this.teams[idxT].spelers[idxS];
-        this.naamValid[idxT][idxS] = spl.splBordNaam != '';
-        if (this.naamValid[idxT][idxS]) {
+    keyupNaam(idx: number) {
+        let spl = this.spelers[idx];
+        this.naamValid[idx] = spl.splBordNaam != '';
+        if (this.naamValid[idx]) {
             this.isMatchValid();
         }
         else {
@@ -203,20 +198,11 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         console.log(event.code + ' : ' + event.key);
         if (event.key ==='ArrowLeft' || event.key ==='ArrowRight') {
             if (!fromInput || event.ctrlKey) {
-                this.veranderVanTeam(event.key ==='ArrowLeft' ? -1 : 1);
+                this.veranderVanSpeler(event.key ==='ArrowLeft' ? -1 : 1);
                 this.setEscapeCount();
                 return false;    
             }
             return true;
-        }
-        if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
-            if (event.ctrlKey) {
-                this.moveSpeler(event.key ==='ArrowUp' ? -1 : 1);
-                return false;
-            }
-            this.veranderVanSpeler(event.key ==='ArrowUp' ? -1 : 1);
-            this.setEscapeCount();
-            return false; 
         }
         if (event.key === 'Enter') {
             if (event.ctrlKey) {
@@ -246,7 +232,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     }
 
     ngOnInit(): void {
-        this.bssApi.getKnbbTeamMatch()
+        this.bssApi.getKnbbMatch()
         .then(resp => {
             if (resp.gevonden) {
                 this.match = resp.match;
@@ -255,7 +241,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
                 .then(result => {
                     this.moyTabel = result;
                     this.initBepaalAantalCaramboles();
-                    this.copyTeams();
+                    this.copySpelers();
                     this.isMatchValid();
                     this.bepaalMatchStatusEnVoortgang();
                     this.dataReady = true;
@@ -275,146 +261,83 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     }
 
     private isMatchAlGestart() {
-        this.matchGestart = this.match.teams[0].spelers.some(spl => spl.stand.aantBrt > 0);
+        this.matchGestart = this.match.spelers[0].stand.aantBrt > 0;
     }
 
     private isMatchValid() {
-        this.matchValid = this.teams.every((team, idxT) => {
-            return team.spelers.every((spl, idxS) => {
-                if (spl.splTsGem > 0 && spl.splTsCar > 0 && spl.splBordNaam != '') {
-                    if (idxS == 0) {
-                        return true;
-                    }
-                    const prevAantCar = this.teams[idxT].spelers[idxS - 1].splTsCar;
-                    if (spl.splTsCar >= prevAantCar) {
-                        return true;
-                    }
-                    return false;
-                }
-                else {
-                    return false;
-                }
-            });
+        this.matchValid = this.spelers.every((spl) => {
+            return spl.splTsGem > 0 && spl.splTsCar > 0 && spl.splBordNaam != '';
         });
     }
 
     private hasMatchChanged() {
         this.namesChanged = false;
         this.matchChanged = false;
-        [0, 1, 2].forEach(idxWed => {
-            if (this.hasWedstrijdChanged(idxWed)) {
-                this.matchChanged = true;
-                this.wedStatus[idxWed] = 0;
-                this.voortgang[idxWed] = '0%';
-            }
-            else {
-                this.bepaalWedstrijdStatusEnVoortgang(idxWed);
-            }
-        })
+        if (this.hasWedstrijdChanged()) {
+            this.matchChanged = true;
+            this.wedStatus = 0;
+            this.voortgang = '0%';
+        }
+        else {
+            this.bepaalMatchStatusEnVoortgang();
+        }
         if (!this.matchChanged) {
             this.haveNamesChanged();
         }
         this.setEscapeCount();
     }
 
-    private hasWedstrijdChanged(idxWed: number): boolean {
-        return this.teams.some(((team, idxTeam) => {
-            const spl = team.spelers[idxWed];
-            const origSpl = this.match.teams[idxTeam].spelers[idxWed];
+    private hasWedstrijdChanged(): boolean {
+        return this.spelers.some(((spl, idxS) => {
+            const origSpl = this.match.spelers[idxS];
             return spl.splId != origSpl.splId || spl.splTsGem != origSpl.splTsGem || spl.splTsCar != origSpl.splTsCar;
         }))
     }
 
     private haveNamesChanged() {
-        this.namesChanged = this.teams.some((team, idxT) => {
-            return team.spelers.some((spl, idxS) => {
-                const origSpl = this.match.teams[idxT].spelers[idxS];
-                return spl.splBordNaam != origSpl.splBordNaam;
-            });
+        this.namesChanged = this.spelers.some((spl, idxS) => {
+            const origSpl = this.match.spelers[idxS];
+            return spl.splBordNaam != origSpl.splBordNaam;
         });
-    }
-
-    private moveSpeler(direction: number) {
-        if (this.idxTeam < 0 || this.idxSpeler < 0) {
-            return;
-        }
-        let idxOld = this.idxSpeler;
-        let idxNew = idxOld + direction;
-        if (idxNew < 0 || idxNew > 2) {
-            return;
-        }
-        let team = this.teams[this.idxTeam];
-        let tempSpl = team.spelers[idxNew];
-        team.spelers[idxNew] = team.spelers[idxOld];
-        team.spelers[idxOld] = tempSpl;
-        this.idxSpeler = idxNew;
-        this.isMatchValid();
-        this.hasMatchChanged();
-    }
-
-    private veranderVanTeam(direction: number) {
-        let idxS = this.idxSpeler;
-        if (idxS < 0) {
-            idxS = 0;
-        }
-        let idxT = this.idxTeam;
-        idxT += direction;
-        if (idxT < 0) {
-            idxT = 1;
-        }
-        if (idxT > 1) {
-            idxT = 0;
-        }
-        this.maakSpelerActief(idxT, idxS);
     }
 
     private veranderVanSpeler(direction: number) {
-        let idxT = this.idxTeam;
-        if (idxT < 0) {
-            idxT = 0;
+        let idx = this.idxSpeler;
+        idx += direction;
+        if (idx < 0) {
+            idx = 1;
         }
-        let idxS = this.idxSpeler;
-        idxS += direction;
-        if (idxS < 0) {
-            idxS = 2;
+        if (idx > 1) {
+            idx = 0;
         }
-        if (idxS > 2) {
-            idxS = 0;
-        }
-        this.maakSpelerActief(idxT, idxS);
+        this.maakSpelerActief(idx);
     }
 
     private bepaalMatchStatusEnVoortgang(): void {
-        [0 ,1, 2].forEach(idxWed => {
-            this.bepaalWedstrijdStatusEnVoortgang(idxWed);
-        });
-    }
-
-    private bepaalWedstrijdStatusEnVoortgang(idxWed: number): void {
         // status
-        const spl = this.match.teams[0].spelers[idxWed];
-        this.wedStatus[idxWed] = 0;
+        const spl = this.match.spelers[0];
+        this.wedStatus = 0;
         if (spl.stand.aantBrt > 0) {
-            this.wedStatus[idxWed] = 1;
+            this.wedStatus = 1;
         }
-        if (this.match.gameOver[idxWed]) {
-            this.wedStatus[idxWed] = 2;
+        if (this.match.matchOver) {
+            this.wedStatus = 2;
         }
         // voortgang
         const maxBrt = this.match.maxBeurten;
         let vg = 0;
-        const teg = this.match.teams[1].spelers[idxWed];
-        if (this.wedStatus[idxWed] == 0) {
+        const teg = this.match.spelers[1];
+        if (this.wedStatus == 0) {
             vg = 0;
         }
-        else if (this.wedStatus[idxWed] == 2) {
+        else if (this.wedStatus == 2) {
             vg = 100;
         }
         else {
             vg = Math.max(spl.stand.aantCar / spl.splTsCar, teg.stand.aantCar / teg.splTsCar, (spl.stand.aantBrt + teg.stand.aantBrt) / (2 * maxBrt)) * 100;
         }
-        this.voortgang[idxWed] = vg + '%';
-     }
+        this.voortgang = vg + '%';
+    }
 
     private bepaalAantalCaramboles(moy: number): number {
         let result = this.moyTabel.minimum;
@@ -429,28 +352,23 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     }
 
     private initBepaalAantalCaramboles() {
-        this.match.teams.forEach((team) => {
-            team.spelers.forEach((spl) => {
-                if (spl.splTsCar == 0) {
-                    spl.splTsCar = this.bepaalAantalCaramboles(spl.splTsGem);
-                }
-            })
+        this.match.spelers.forEach((spl) => {
+            if (spl.splTsCar == 0) {
+                spl.splTsCar = this.bepaalAantalCaramboles(spl.splTsGem);
+            }
         })
     }
 
     private clearMatchScores() {
         this.match.matchOver = false;
-        this.match.gameOver = [false, false, false];
-        this.match.teams.forEach(team => {
-            team.spelers.forEach(spl => {
-                spl.isActief = false;
-                spl.stand = new MatchSpelerStand();
-            });
+        this.match.spelers.forEach(spl => {
+            spl.isActief = false;
+            spl.stand = new MatchSpelerStand();
         });
-    }
+}
 
-    private copyTeams() {
-        this.teams = JSON.parse(JSON.stringify(this.match.teams));
+    private copySpelers() {
+        this.spelers = JSON.parse(JSON.stringify(this.match.spelers));
         this.matchChanged = false;
     }
 
@@ -459,9 +377,9 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     }
 
     private saveMatchAndContinue() {
-        this.bssApi.saveKnbbTeamMatch(this.match)
+        this.bssApi.saveKnbbMatch(this.match)
         .then(() => {
-            this.router.navigate(['teammatch']);
+            this.router.navigate(['match']);
         })
         .catch(err => {
             this.alert.showError(err);

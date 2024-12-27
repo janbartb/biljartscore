@@ -1,0 +1,17 @@
+<div class="fullviewheight flexbox flexaround" style="background-color: lightgray;">
+    @if (matchRead) {
+        @for (lijst of spelerLijsten; track $index) {
+            <div class="flexbox flexcolumn">
+                <div class="speler-header">
+                    <span>{{lijst.naam}}</span>
+                    @if (lijst.tsCar > 0) {
+                        <span style="font-size: 1rem; padding-left: 1em; color: #666666;">({{lijst.tsCar}})</span>
+                    }
+                </div>
+                <div class="flexgrow1 speler-lijst">
+                    <app-knbb-match-lijst-speler [speler]="lijst"></app-knbb-match-lijst-speler>
+                </div>
+            </div>
+        }
+    }
+</div>

@@ -1,0 +1,23 @@
+.thermo-start {
+    height: 100%;
+    border: .0625em solid darkgreen;
+    border-radius: .5em;
+    background-color: white;
+}
+.thermo-end {
+    height: 100%;
+    border: .125em solid darkgreen;
+    border-radius: .5em;
+    background-color: darkgreen;
+}
+.thermo {
+    height: 100%;
+    border: .125em solid darkgreen;
+    border-radius: .5em;
+    background-color: lightgray;
+}
+.thermo.filler {
+    background-position: bottom;
+    background-repeat: repeat-x;
+    overflow: hidden;
+}

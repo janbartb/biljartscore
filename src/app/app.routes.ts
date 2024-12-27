@@ -32,10 +32,26 @@ import { WedAantSpelersComponent } from './spelen/wedstrijd/wed-aant-spelers/wed
 import { KnbbTeamMatchLijstComponent } from './spelen/knbb-team-match/knbb-team-match-lijst/knbb-team-match-lijst.component';
 import { WedLijstComponent } from './spelen/wedstrijd/wed-lijst/wed-lijst.component';
 import { LoginComponent } from './login/login.component';
+import { KnbbMatchComponent } from './spelen/knbb-match/knbb-match.component';
+import { KnbbMatchCompComponent } from './spelen/knbb-match/knbb-match-comp/knbb-match-comp.component';
+import { KnbbMatchSetupComponent } from './spelen/knbb-match/knbb-match-setup/knbb-match-setup.component';
+import { KnbbMatchCheckComponent } from './spelen/knbb-match/knbb-match-check/knbb-match-check.component';
+import { KnbbMatchScoreComponent } from './spelen/knbb-match/knbb-match-score/knbb-match-score.component';
+import { KnbbMatchLijstComponent } from './spelen/knbb-match/knbb-match-lijst/knbb-match-lijst.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'home', component: HomeComponent },
+    { path: 'match/lijst/:wedNr', component: KnbbMatchLijstComponent },
+    { path: 'match/lijst', component: KnbbMatchLijstComponent },
+    { path: 'match/setup', children: [
+        { path: 'thuis', component: KnbbMatchSetupComponent },
+        { path: 'gasten', component: KnbbMatchSetupComponent }
+    ]},
+    { path: 'match/setup/comp', component: KnbbMatchCompComponent },
+    { path: 'match/setup/check', component: KnbbMatchCheckComponent },
+    { path: 'match/score', component: KnbbMatchScoreComponent },
+    { path: 'match', component: KnbbMatchComponent },
     { path: 'teammatch/lijst', component: KnbbTeamMatchLijstComponent },
     { path: 'teammatch/setup', children: [
         { path: 'thuis', component: KnbbTeamMatchSetupComponent },

@@ -1,31 +1,28 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
-import { MatchSpeler, TeamMatch } from '../../../model/match';
-import { ModalMessage } from '../../../model/modal-message';
-import { ActivatedRoute } from '@angular/router';
-import { HelperService } from '../../../services/helper.service';
 import { BaseComponent } from '../../../base/base.component';
-import { KnbbTeamMatchScoreSpelerComponent } from './knbb-team-match-score-speler/knbb-team-match-score-speler.component';
+import { KnbbTeamMatchScoreSpelerComponent } from '../../knbb-team-match/knbb-team-match-score/knbb-team-match-score-speler/knbb-team-match-score-speler.component';
 import { NgClass } from '@angular/common';
+import { HelperService } from '../../../services/helper.service';
 import { SpeechService } from '../../../services/speech.service';
+import { Match, MatchSpeler } from '../../../model/match';
+import { ModalMessage } from '../../../model/modal-message';
 
 @Component({
-    selector: 'app-knbb-team-match-score',
+    selector: 'app-knbb-match-score',
     standalone: true,
     imports: [
         KnbbTeamMatchScoreSpelerComponent,
         NgClass
     ],
-    templateUrl: './knbb-team-match-score.component.html',
-    styleUrl: './knbb-team-match-score.component.css'
+    templateUrl: './knbb-match-score.component.html',
+    styleUrl: './knbb-match-score.component.css'
 })
-export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit {
-    route = inject(ActivatedRoute);
+export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
     spraak = inject(SpeechService);
 
-    match: TeamMatch = new TeamMatch();
+    match: Match = new Match();
     matchRead: boolean = false;
-    idxWed: number = -1;
     idxSpeler: number = -1;
     activeSpeler: MatchSpeler = new MatchSpeler();
     oldPunten: number[] = [0, 0];
@@ -36,7 +33,7 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
     busy: boolean = false;
 
     enterPressed(): void {
-        if (this.match.gameOver[this.idxWed]) {
+        if (this.match.matchOver) {
             return;
         }
         // werk score bij
@@ -65,12 +62,12 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         this.oldPunten[this.idxSpeler] = this.activeSpeler.stand.punten;
         // check for end of game
         if (this.idxSpeler === 1) {
-            if (this.helper.isTeamWedstrijdOver(this.match, this.idxWed)) {
-                this.match.teams.forEach((team) => {
-                    team.spelers[this.idxWed].stand.punten = this.getPunten(team.spelers[this.idxWed]);
+            if (this.helper.isWedstrijdOver(this.match)) {
+                this.match.spelers.forEach((spl) => {
+                    spl.stand.punten = this.getPunten(spl);
                 });
-                this.match.gameOver[this.idxWed] = true;
-                this.match.teams.forEach(team => team.spelers[this.idxWed].isActief = true);
+                this.match.matchOver = true;
+                this.match.spelers.forEach(spl => spl.isActief = true);
                 this.saveMatch(this.match);
                 const modalMsg = new ModalMessage('success', ['▪ ▪ ▪ ▪ EINDE WEDSTRIJD ▪ ▪ ▪ ▪'], 'Einde wedstrijd', 3);
                 this.modals.push(modalMsg);
@@ -82,9 +79,9 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         // switch actieve speler
         this.activeSpeler.isActief = false;
         this.idxSpeler = Math.abs(this.idxSpeler - 1);
-        this.activeSpeler = this.match.teams[this.idxSpeler].spelers[this.idxWed];
+        this.activeSpeler = this.match.spelers[this.idxSpeler];
         this.activeSpeler.isActief = true;
-        const copyOfMatch: TeamMatch = JSON.parse(JSON.stringify(this.match));
+        const copyOfMatch: Match = JSON.parse(JSON.stringify(this.match));
         this.verhoogBeurtenEnBerekenData(this.activeSpeler);
         this.oldPunten[this.idxSpeler] = this.activeSpeler.stand.punten;
         this.checkForSpelerMessages(false, true);
@@ -114,7 +111,7 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
                 this.closeHelp();
             }
             else {
-                this.router.navigate(['teammatch']);
+                this.router.navigate(['match']);
             }
             return false;
         }
@@ -123,14 +120,14 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
             return false;
         }
         if (event.code === 'KeyL' || event.key === '*') {
-            this.appData.gotoPage(this.router.url, `match/lijst/${this.idxWed + 1}`);
+            this.appData.gotoPage(this.router.url, 'match/lijst');
             return false;
         }
         if (event.key === 'Delete' || event.code === 'NumpadDecimal') {
             this.undoLaatsteBeurt();
             return false;
         }
-        if (!this.match.gameOver[this.idxWed]) {
+        if (!this.match.matchOver) {
             if (event.key === 'Enter') {
                 this.enterPressed();
                 return false;
@@ -164,23 +161,7 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
     }
 
     ngOnInit(): void {
-        //this.appStat.getConfig();
-        let idx = this.route.snapshot.paramMap.get('wedNr');
-        if (!idx) {
-            idx = 'a';
-        }
-        if (!this.helper.isValidInteger(idx)) {
-            this.router.navigate(['teammatch']);
-            return;
-        }
-        const wedIdx = Number(idx) - 1;
-        console.log(wedIdx);
-        if (wedIdx < 0 || wedIdx > 2) {
-            this.router.navigate(['teammatch']);
-            return;
-        }
-        this.idxWed = wedIdx;
-        this.bssApi.getKnbbTeamMatch()
+        this.bssApi.getKnbbMatch()
         .then(resp => {
             if (!resp.gevonden) {
                 this.alert.showError('ERROR scorebord : bestand teammatch.json niet gevonden.');
@@ -188,20 +169,20 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
                 return;
             }
             this.match = resp.match;
-            if (this.match.gameOver[this.idxWed]) {
-                this.oldPunten[0] = this.match.teams[0].spelers[this.idxWed].stand.punten;
-                this.oldPunten[1] = this.match.teams[1].spelers[this.idxWed].stand.punten;
+            if (this.match.matchOver) {
+                this.oldPunten[0] = this.match.spelers[0].stand.punten;
+                this.oldPunten[1] = this.match.spelers[1].stand.punten;
                 const modalMsg = new ModalMessage('success', ['▪ ▪ ▪ ▪ EINDE WEDSTRIJD ▪ ▪ ▪ ▪'], '', 3);
                 this.modals.push(modalMsg);
                 this.showModal();
             }
             else {
-                this.idxSpeler = this.getIndexActieveSpeler(this.match, this.idxWed);
-                this.activeSpeler = this.match.teams[this.idxSpeler].spelers[this.idxWed];
+                this.idxSpeler = this.getIndexActieveSpeler(this.match);
+                this.activeSpeler = this.match.spelers[this.idxSpeler];
                 this.activeSpeler.isActief = true;
                 this.verhoogBeurtenEnBerekenData(this.activeSpeler);
-                this.oldPunten[0] = this.match.teams[0].spelers[this.idxWed].stand.punten;
-                this.oldPunten[1] = this.match.teams[1].spelers[this.idxWed].stand.punten;
+                this.oldPunten[0] = this.match.spelers[0].stand.punten;
+                this.oldPunten[1] = this.match.spelers[1].stand.punten;
                 this.checkForSpelerMessages();
             }
             this.matchRead = true;
@@ -289,16 +270,15 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
     }
 
     private undoLaatsteBeurt(): boolean {
-        if (this.match.teams[1].spelers[this.idxWed].stand.aantBrt == 0) {
+        if (this.match.spelers[1].stand.aantBrt == 0) {
             return false;
         }
-        let wasGameOver = this.match.gameOver[this.idxWed];
-        if (this.match.gameOver[this.idxWed]) {
-            this.match.gameOver[this.idxWed] = false;
+        let wasGameOver = this.match.matchOver;
+        if (this.match.matchOver) {
             this.match.matchOver = false;
             this.idxSpeler = 1;
-            this.match.teams[0].spelers[this.idxWed].isActief = false;
-            this.activeSpeler = this.match.teams[1].spelers[this.idxWed];
+            this.match.spelers[0].isActief = false;
+            this.activeSpeler = this.match.spelers[1];
             this.activeSpeler.isActief = true;
         }
         else {
@@ -311,7 +291,7 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
             // maak vorige speler de huidige speler
             this.activeSpeler.isActief = false;
             this.idxSpeler = Math.abs(this.idxSpeler - 1);
-            this.activeSpeler = this.match.teams[this.idxSpeler].spelers[this.idxWed];
+            this.activeSpeler = this.match.spelers[this.idxSpeler];
             this.activeSpeler.isActief = true;
         }
         let laatsteSerie = this.activeSpeler.stand.score.pop();
@@ -323,8 +303,8 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         this.oldPunten[this.idxSpeler] = this.getOldPunten(this.activeSpeler);
         // indien het gameover was werk punten bij van alle spelers
         if (wasGameOver) {
-            this.match.teams.forEach(team => {
-                team.spelers[this.idxWed].stand.punten = this.getPunten(team.spelers[this.idxWed]);
+            this.match.spelers.forEach(spl => {
+                spl.stand.punten = this.getPunten(spl);
             })
         }
         // werk hoogste serie bij
@@ -348,8 +328,8 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
             }
         }
         this.activeSpeler.stand.laatste5brt = laatste5;
-        const copyOfMatch: TeamMatch = JSON.parse(JSON.stringify(this.match));
-        let actSpl = copyOfMatch.teams[this.idxSpeler].spelers[this.idxWed];
+        const copyOfMatch: Match = JSON.parse(JSON.stringify(this.match));
+        let actSpl = copyOfMatch.spelers[this.idxSpeler];
         this.verminderBeurtenEnBerekenData(actSpl);
         this.checkForSpelerMessages();
         this.saveMatch(copyOfMatch);
@@ -378,14 +358,14 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
     }
 
     private eenVanDeSpelersHeeftAantalBereikt(): boolean {
-        return this.match.teams.some((team) => {
-            return this.spelerAantalBereikt(team.spelers[this.idxWed]);
+        return this.match.spelers.some((spl) => {
+            return this.spelerAantalBereikt(spl);
         });
     }
 
     private tegenstanderHeeftAantalBereikt(idxSpl: number): boolean {
         const idxTeg = Math.abs(idxSpl - 1);
-        const tegenstander = this.match.teams[idxTeg].spelers[this.idxWed];
+        const tegenstander = this.match.spelers[idxTeg];
         return this.spelerAantalBereikt(tegenstander);
     }
 
@@ -418,15 +398,15 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         return false;
     }
 
-    private getIndexActieveSpeler(match: TeamMatch, idxWed: number): number {
-        const spl = match.teams[0].spelers[idxWed];
-        const teg = match.teams[1].spelers[idxWed];
+    private getIndexActieveSpeler(match: Match): number {
+        const spl = match.spelers[0];
+        const teg = match.spelers[1];
         return (spl.stand.aantBrt == teg.stand.aantBrt) ? 0 : 1;
     }
 
-    private saveMatch(match: TeamMatch) {
+    private saveMatch(match: Match) {
         this.busy = true;
-        this.bssApi.saveKnbbTeamMatch(match)
+        this.bssApi.saveKnbbMatch(match)
         .then(() => {
             this.busy = false;
         })

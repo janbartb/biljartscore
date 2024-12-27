@@ -5,6 +5,11 @@ export class Match {
     matchOver: boolean = false;
     idxSpelerActief: number = 0;
     spelers: MatchSpeler[] = [];
+
+    constructor() {
+        this.spelers.push(new MatchSpeler());
+        this.spelers.push(new MatchSpeler());
+    }
 }
 
 export class TeamMatch {
@@ -37,6 +42,8 @@ export class MatchTeam {
 export class MatchSpeler {
     splId: string = '';
     splNaam: string = '';
+    verId: string = '';
+    teamId: string = '';
     splBordNaam: string = '';
     splSpreekNaam: string = '';
     isActief: boolean = false;

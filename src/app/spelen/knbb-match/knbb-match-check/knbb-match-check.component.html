@@ -1,0 +1,88 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'KNBB match'" [subtitle]="'Controle selectie spelers'" [spel]="appData.getSpelNaam()"
+                    [escCount]="escapeCount" (escClicked)="escapePressed()" (prevClicked)="previousClicked()"></app-page-header>
+        </div>
+        @if (dataReady) {
+            <div class="flexgrow1 flexbox flexstretch">
+                <div style="font-size: 1.25em;">
+                    <div style="padding: 0 1.5em;">
+                        <div class="label nowrap" style="margin-top: 6.5em;">Wedstrijd</div>
+                   </div>
+                </div>
+                <div class="flexbox flexcenter" style="width: 2em;">
+                    <div style="width: 1em; padding-top: 5.5em;">
+                        <div style="height: 7em; padding: .5em 0;">
+                            @switch (wedStatus) {
+                                @case (0) {
+                                    <div class="thermo-start"></div>
+                                }
+                                @case (1) {
+                                    <div class="thermo filler filler-lgreen" 
+                                            [style.background-size]="'100% ' + voortgang"></div>
+                                }
+                                @case (2) {
+                                    <div class="thermo-end"></div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="flexgrow1 flexbox flexstretch">
+                    @for (spl of spelers; track $index; let idxS = $index) {
+                        <div class="flex50perc">
+                            <div class="label" style="text-align: center; line-height: 1.2; padding-top: 2em;">
+                                <span style="font-size: 1.5em;">{{idxS == 0 ? 'THUIS' : 'GAST'}}</span>
+                            </div>
+                            <div class="flexbox flexcenter" style="padding-top: 2em;">
+                                <div>
+                                    <div class="wedspeler" [ngClass]="{'active': idxSpeler == idxS}" 
+                                            (click)="maakSpelerActief(idxS)" style="margin-bottom: .5em;">
+                                        <div class="naam" style="font-size: 1.25em;">
+                                            <span>{{spl.splNaam}}</span>
+                                        </div>
+                                        <div class="flexbox flexbetween">
+                                            <div>
+                                                <div class="label"><span>Bordnaam</span></div>
+                                                <div style="font-size: 1.25em; line-height: 1.4;">
+                                                    <input [id]="'naam' + idxS" type="text" style="width: 6em;" [(ngModel)]="spl.splBordNaam"
+                                                            [disabled]="!(idxSpeler == idxS)"
+                                                            (keyup)="keyupNaam(idxS)" (click)="stopPropagation($event)"
+                                                            [ngClass]="{'invalid': !naamValid[idxS]}" autocomplete="off">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="label"><span>Moy</span></div>
+                                                <div style="font-size: 1.25em; line-height: 1.4;">
+                                                    <input [id]="'moy' + idxS" type="text" style="width: 4em;" [(ngModel)]="spl.splTsGem"
+                                                            [disabled]="!(idxSpeler == idxS)" 
+                                                            (keyup)="keyupMoyenne(idxS)" (click)="stopPropagation($event)"
+                                                            [ngClass]="{'invalid': !moyValid[idxS]}" autocomplete="off">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="label"><span>Car</span></div>
+                                                <div style="font-size: 1.25em; line-height: 1.4;">
+                                                    <input [id]="'car' + idxS" type="text" class="car" style="width: 3em;" [(ngModel)]="spl.splTsCar"
+                                                            [disabled]="!(idxSpeler == idxS)" 
+                                                            (keyup)="keyupCaramboles(idxS)" (click)="stopPropagation($event)"
+                                                            [ngClass]="{'invalid': !carValid[idxS]}" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            @if (matchChanged || namesChanged || matchValid) {
+                <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)"
+                        [btnsHide]="[!(matchChanged || namesChanged), !(matchGestart && matchValid && !matchChanged), !matchValid]"
+                        [cssFooter]="'w3-green-bdr-d2'" [cssButtons]="'font125'"></app-section-footer-btns>
+            }
+        }
+    </div>
+</div>

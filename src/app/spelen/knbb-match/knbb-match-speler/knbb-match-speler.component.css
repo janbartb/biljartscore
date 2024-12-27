@@ -1,0 +1,38 @@
+.naam-container {
+    background-color: black;
+    text-align: center;
+    font-size: 1.5em;
+    line-height: 1.75;
+}
+
+.sect-header {
+    background-color: green;
+    padding-left: 1em;
+    font-size: 1.25em;
+    line-height: 1.8;
+}
+
+.sect-line {
+    display: flex;
+    line-height: 2;
+}
+.sect-line .label {
+    width: 9em;
+    color: green;
+}
+.sect-line .data {
+    width: 5em;
+    color: black;
+    text-align: right;
+}
+.sect-line .perc {
+    flex-grow: 1;
+    color: grey;
+    text-align: right;
+}
+
+.splcl { color: white; }
+.tegcl { color: yellow; }
+
+.splbg { background-color: white; }
+.tegbg { background-color: yellow; }

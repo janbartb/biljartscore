@@ -9,7 +9,7 @@ import { District } from '../model/district';
 import { KnbbCompetitie } from '../model/knbb-competitie';
 import { Seizoenen } from '../model/seizoenen';
 import { Wedstrijd, WedstrijdLeesResultaat } from '../model/wedstrijd';
-import { TeamMatch, TeamMatchLeesResultaat } from '../model/match';
+import { Match, MatchLeesResultaat, TeamMatch, TeamMatchLeesResultaat } from '../model/match';
 import { StatusService } from './status.service';
 
 @Injectable({
@@ -158,6 +158,11 @@ export class ApiService {
 
     async getWedstrijd(): Promise<WedstrijdLeesResultaat> {
         const result: WedstrijdLeesResultaat = await this.getResource(this.dbUrl + `/wedstrijd`);
+        return result;
+    }
+
+    async getKnbbMatch(): Promise<MatchLeesResultaat> {
+        const result: MatchLeesResultaat = await this.getResource(this.dbUrl + `/match`);
         return result;
     }
 
@@ -446,6 +451,21 @@ export class ApiService {
         const response: Response = await fetch(this.dbUrl + `/wedstrijd`, {
             method: 'POST',
             body: JSON.stringify(wedstrijd),
+            headers: this.myHeaders
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
+    // SINGLE MATCH
+
+    async saveKnbbMatch(match: Match): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + `/match`, {
+            method: 'POST',
+            body: JSON.stringify(match),
             headers: this.myHeaders
         });
         const json: ApiResponse = await response.json();

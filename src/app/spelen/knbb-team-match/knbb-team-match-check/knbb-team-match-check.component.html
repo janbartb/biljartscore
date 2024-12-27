@@ -114,19 +114,9 @@
                 </div>
             </div>
             @if (matchChanged || namesChanged || matchValid) {
-                <div style="border-top: .25em solid green">
-                    <div class="flexbox flexcenter" style="font-size: 1.25em; padding: .125em 0;">
-                        @if (matchChanged || namesChanged) {
-                            <app-button [button]="resetButton" (buttonClicked)="resetClicked()"></app-button>
-                        }
-                        @if (matchGestart && matchValid && !matchChanged) {
-                            <app-button [button]="opnieuwButton" (buttonClicked)="opnieuwClicked()"></app-button>
-                        }
-                        @if (matchValid) {
-                            <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
-                        }
-                    </div>
-                </div>
+                <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)"
+                        [btnsHide]="[!(matchChanged || namesChanged), !(matchGestart && matchValid && !matchChanged), !matchValid]"
+                        [cssFooter]="'w3-green-bdr-d2'" [cssButtons]="'font125'"></app-section-footer-btns>
             }
         }
     </div>
