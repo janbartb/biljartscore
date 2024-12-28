@@ -17,7 +17,7 @@
                                     @for (team of teamLijst.filtered; track $index) {
                                         <div class="lijst-row selectable" (click)="teamClicked($index)"
                                                 [ngClass]="{'selected': teamLijst.selectedIdx == $index, 
-                                                            'hovered': activeSection == 0 && teamLijst.hoveredIdx == $index}">
+                                                            'hovered': teamLijst.hoveredIdx == $index}">
                                             <div class="lijst-col indicator" style="width: 1.5em;">
                                                 <i class="fas fa-angle-right"></i>
                                             </div>
@@ -45,7 +45,7 @@
                                     @for (spl of spelerLijst.filtered; track $index) {
                                         <div class="lijst-row selectable" (click)="spelerClicked($index)"
                                                 [ngClass]="{'selected': spelerLijst.selectedIdx == $index, 
-                                                            'hovered': activeSection == 1 && spelerLijst.hoveredIdx == $index}">
+                                                            'hovered': spelerLijst.hoveredIdx == $index}">
                                             <div class="lijst-col indicator" style="width: 1.5em;">
                                                 <i class="fas fa-angle-right"></i>
                                             </div>
@@ -80,7 +80,7 @@
                     </div>
                 </div>
             </div>
-            @if (inputValid) {
+            @if (inputValid && teamLijst.hoveredIdx < 0 && spelerLijst.hoveredIdx < 0) {
                 <app-section-footer-btns [buttons]="pageButtons" (clickedButton)="pageButtonClicked()"
                                         [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
             }
