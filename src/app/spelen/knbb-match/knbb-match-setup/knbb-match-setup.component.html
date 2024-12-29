@@ -64,17 +64,20 @@
                     }
                 </div>
                 <div class="flex35perc flexbox flexcolumn">
-                    <app-section-header [title]="(idxSpeler == 0 ? 'THUIS' : 'GAST') + ' speler'" [cssClasses]="'w3-green-l3'" 
+                    <app-section-header [title]="'Spelers'" [cssClasses]="'w3-green-l3'" 
                                     [active]="activeSection == 2" (headerClicked)="maakSectionActief(2)"></app-section-header>
                     <div class="flexbox flexcenter">
                         <div>
                             <div style="margin-top: .5em;">
-                                <div class="wedspeler active" style="margin-bottom: .5em;">
-                                    <div class="label">Speler</div>
-                                    <div class="naam">
-                                        <span>{{activeMatchSpeler.splNaam}}</span>
+                                @for (spl of matchSpelers; track $index) {
+                                    <div class="wedspeler" [ngClass]="{'active': idxSpeler == $index}" (click)="maakSpelerActief($index)"
+                                            style="margin-bottom: .5em;">
+                                        <div class="label">{{$index == 0 ? 'THUIS' : 'GAST'}} speler</div>
+                                        <div class="naam">
+                                            <span>{{spl.splNaam}}</span>
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>

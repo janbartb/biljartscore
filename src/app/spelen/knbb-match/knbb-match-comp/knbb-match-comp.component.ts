@@ -52,7 +52,7 @@ export class KnbbMatchCompComponent extends BaseComponent implements OnInit {
         }
         const selectedComp = this.compLijst.filtered[idx];
         if (selectedComp.competitieId == this.match.compId) {
-            this.router.navigate(['match/setup/thuis']);
+            this.router.navigate(['match/setup/spelers']);
             return;
         }
         this.initMatch(selectedComp);
@@ -109,7 +109,7 @@ export class KnbbMatchCompComponent extends BaseComponent implements OnInit {
     private saveMatchAndContinue() {
         this.bssApi.saveKnbbMatch(this.match)
             .then(() => {
-                this.router.navigate(['match/setup/thuis']);
+                this.router.navigate(['match/setup/spelers']);
             })
             .catch(err => {
                 this.alert.showError(err);

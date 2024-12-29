@@ -137,11 +137,11 @@ export class KnbbMatchComponent extends BaseComponent implements OnInit {
                 return;
             }
             if (this.match.spelers.length < 2) {
-                this.router.navigate(['match/setup/thuis']);
+                this.router.navigate(['match/setup/spelers']);
                 return;
             }
             if (!(this.match.spelers.every(sp => sp.splId != ''))) {
-                this.router.navigate(['match/setup/thuis']);
+                this.router.navigate(['match/setup/spelers']);
                 return;
             }
             if (this.match.spelers[0].splTsCar == 0) {

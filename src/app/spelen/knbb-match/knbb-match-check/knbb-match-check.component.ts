@@ -89,7 +89,7 @@ export class KnbbMatchCheckComponent extends BaseComponent implements OnInit {
     }
 
     previousClicked() {
-        this.router.navigate(['match/setup/gasten']);
+        this.router.navigate(['match/setup/spelers']);
     }
 
     enterClicked() {

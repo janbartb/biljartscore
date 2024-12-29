@@ -63,7 +63,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
 
     sectionButtons: Button[] = [new Button('Enter', 'Selecteer', true)];
     pageButtons: Button[] = [
-        new Button('Ctrl+Enter', 'Ga verder', true)
+        new Button('Enter', 'Ga verder', true)
     ];
 
     scrollElmTeams!: HTMLDivElement;
@@ -83,6 +83,11 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
     }
 
     override escapePressed(): void {
+        if (this.teamLijst.hoveredIdx >= 0 || this.spelerLijst.hoveredIdx >= 0) {
+            this.teamLijst.hoveredIdx = this.spelerLijst.hoveredIdx = -1;
+            this.setEscapeCount();
+            return;
+        }
         if (this.escapeCount == 1) {
             this.resetClicked();
         }
@@ -99,13 +104,14 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         setTimeout(() => {
             button.selected = false;
             if (button.key == 'Enter') {
-                this.enterSelectClicked();
-            }
-            else if (button.key == 'Backspace') {
-                this.resetClicked();
-            }
-            else if (button.key == 'Ctrl+Enter') {
-                this.gaVerderClicked();
+                if (this.teamLijst.hoveredIdx < 0 && this.spelerLijst.hoveredIdx < 0) {
+                    if (this.inputValid) {
+                        this.gaVerderClicked();
+                    }
+                }
+                else {
+                    this.enterSelectClicked();
+                }
             }
         }, 300);
     }
@@ -141,7 +147,8 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
             this.setEscapeCount();
             return;
         }
-        this.teamLijst.selectedIdx = this.teamLijst.hoveredIdx = idx;
+        this.teamLijst.selectedIdx = idx;
+        this.teamLijst.hoveredIdx = -1;
         let teamToAdd = this.teamLijst.filtered[this.teamLijst.selectedIdx];
         if (teamToAdd.key.verId != this.activeMatchTeam.verId || teamToAdd.key.teamId != this.activeMatchTeam.teamId) {
             this.activeMatchTeam = new MatchTeam();
@@ -163,7 +170,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         this.spelerLijst.fillItems(lijst);
         if (this.spelerLijst.isFilled()) {
             this.activeSection = 1;
-            this.spelerLijst.hoveredIdx = 0;
+            this.spelerLijst.hoveredIdx = -1;
         }
         else {
             this.activeSection = 0;
@@ -173,7 +180,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
     }
 
     spelerClicked(idx: number) {
-        this.spelerLijst.selectedIdx = this.spelerLijst.hoveredIdx = idx;
+        this.spelerLijst.hoveredIdx = -1;
         let spelerToAdd = this.spelerLijst.filtered[idx];
         let targetSpeler = this.activeMatchTeam.spelers[this.idxSpeler];
         if (spelerToAdd.speler.id == targetSpeler.splId) {
@@ -219,6 +226,8 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
 
     maakSectionActief(idx: number) {
         this.activeSection = idx;
+        this.teamLijst.hoveredIdx = this.spelerLijst.hoveredIdx = -1;
+        this.setEscapeCount();
     }
 
     maakSpelerActief(idx: number) {
@@ -250,10 +259,12 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
                 else if (this.activeSection == 0) {
                     this.teamLijst.hoverPreviousItem();
                     this.teamScrolling.scrollUp(this.teamLijst.hoveredIdx);
+                    this.setEscapeCount();
                 }
                 else if (this.activeSection == 1) {
                     this.spelerLijst.hoverPreviousItem();
                     this.ledenScrolling.scrollUp(this.spelerLijst.hoveredIdx);
+                    this.setEscapeCount();
                 }
                 return false;
             }
@@ -264,29 +275,29 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
                 else if (this.activeSection == 0) {
                     this.teamLijst.hoverNextItem();
                     this.teamScrolling.scrollDown(this.teamLijst.hoveredIdx);
+                    this.setEscapeCount();
                 }
                 else if (this.activeSection == 1) {
                     this.spelerLijst.hoverNextItem();
                     this.ledenScrolling.scrollDown(this.spelerLijst.hoveredIdx);
+                    this.setEscapeCount();
                 }
                 return false;
             }
             return true;
         }
         if (event.key === 'Enter') {
-            if (event.ctrlKey) {
+            if (this.teamLijst.hoveredIdx < 0 && this.spelerLijst.hoveredIdx < 0 && this.inputValid) {
                 this.buttonPressed(this.pageButtons[0]);
+                this.setEscapeCount();
                 return false;
             }
-            if (this.activeSection < 3) {
+            if (this.teamLijst.hoveredIdx >= 0 || this.spelerLijst.hoveredIdx >= 0) {
                 this.buttonPressed(this.sectionButtons[0]);
+                this.setEscapeCount();
                 return false;
             }
             return true;
-        }
-        if (event.key === 'Backspace') {
-            this.buttonPressed(this.pageButtons[0]);
-            return false;    
         }
         if (event.key === 'Escape') {
             this.escapePressed();
@@ -363,12 +374,10 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
     private initLijstScrolling(elm: HTMLDivElement, lijst: string) {
         if (elm) {
             if (lijst == 'teams') {
-                this.teamLijst.hoveredIdx = this.teamLijst.selectedIdx >= 0 ? this.teamLijst.selectedIdx : 0;
                 this.teamScrolling = new Scrolling(elm, elm.offsetHeight, this.teamLijst.filtered.length, this.teamLijst.selectedIdx);
                 console.log('resize event - pos = ' + this.teamScrolling.scrollPos);
             }
             else {
-                this.spelerLijst.hoveredIdx = this.spelerLijst.selectedIdx >= 0 ? this.spelerLijst.selectedIdx : 0;
                 this.ledenScrolling = new Scrolling(elm, elm.offsetHeight, this.spelerLijst.filtered.length, this.spelerLijst.selectedIdx);
                 console.log('resize event - pos = ' + this.ledenScrolling.scrollPos);
             }
@@ -394,9 +403,9 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         let idx = this.activeSection;
         idx += direction;
         if (idx < 0) {
-            idx = 3;
+            idx = 2;
         }
-        if (idx > 3) {
+        if (idx > 2) {
             idx = 0;
         }
         this.maakSectionActief(idx);
@@ -499,6 +508,9 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
     private setEscapeCount() {
         this.checkIfTeamChanged();
         this.escapeCount = this.teamChanged ? 1 : 0;
+        if (this.teamLijst.hoveredIdx >= 0 || this.spelerLijst.hoveredIdx >= 0) {
+            this.escapeCount++;
+        }
     }
 
     private saveMatchAndContinue() {

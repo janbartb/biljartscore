@@ -49,8 +49,7 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     competitie: KnbbCompetitie = new KnbbCompetitie();
     verenigingen: Vereniging[] = [];
     match: Match = new Match();
-    activeMatchSpeler: MatchSpeler = new MatchSpeler();
-    otherMatchSpeler: MatchSpeler = new MatchSpeler();
+    matchSpelers: MatchSpeler[] = [];
     selectedTeam: CompTeam = new CompTeam(new Team());
     teamLijst: List<CompTeam> = new List<CompTeam>();
     spelerLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
@@ -59,12 +58,10 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     escapeCount: number = 0;
     dataReady: boolean = false;
     inputValid: boolean = false;
-    spelerChanged: boolean = false;
+    spelersChanged: boolean = false;
 
     sectionButtons: Button[] = [new Button('Enter', 'Selecteer', true)];
-    pageButtons: Button[] = [
-        new Button('Enter', 'Ga verder', true)
-    ];
+    pageButtons: Button[] = [new Button('Enter', 'Naar controle', true)];
 
     scrollElmTeams!: HTMLDivElement;
     teamScrolling!: Scrolling;
@@ -113,19 +110,11 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
                     this.enterSelectClicked();
                 }
             }
-            else if (button.key == 'Backspace') {
-                this.resetClicked();
-            }
         }, 300);
     }
 
     previousClicked() {
-        if (this.idxSpeler == 0) {
-            this.router.navigate(['match/setup/comp']);
-        }
-        else {
-            this.router.navigate(['match/setup/thuis']);
-        }
+        this.router.navigate(['match/setup/comp']);
     }
 
     pageButtonClicked() {
@@ -155,8 +144,8 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
         let lijst: SpelerWrapper[] = [];
         let team = this.teamLijst.filtered[idx];
         this.selectedTeam = team;
-        if (this.selectedTeam.key.verId != this.activeMatchSpeler.verId || this.selectedTeam.key.teamId != this.activeMatchSpeler.teamId) {
-            this.activeMatchSpeler = new MatchSpeler();
+        if (this.selectedTeam.key.verId != this.matchSpelers[this.idxSpeler].verId || this.selectedTeam.key.teamId != this.matchSpelers[this.idxSpeler].teamId) {
+            this.matchSpelers[this.idxSpeler] = new MatchSpeler();
         }
         team.data.teamLeden.forEach(lidId => {
             const index = this.spelers.findIndex(s => s.speler.id == lidId);
@@ -180,7 +169,7 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     spelerClicked(idx: number) {
         this.spelerLijst.hoveredIdx = -1;
         let spelerToAdd = this.spelerLijst.filtered[idx];
-        let targetSpeler = this.activeMatchSpeler;
+        let targetSpeler = this.matchSpelers[this.idxSpeler];
         if (spelerToAdd.speler.id == targetSpeler.splId) {
             return;
         }
@@ -193,9 +182,9 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
         targetSpeler.splTsGem = spelerToAdd.getGemiddeldeVanSpel();
         targetSpeler.splTsCar = 0;
         targetSpeler.metWit = this.idxSpeler == 0;
-        this.clearScores(this.activeMatchSpeler);
-        this.clearScores(this.otherMatchSpeler);
+        this.clearScores();
         this.checkInput();
+        this.idxSpeler = (this.idxSpeler == 0) ? 1 : 0;
         this.setEscapeCount();
     }
 
@@ -205,17 +194,15 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     }
 
     gaVerderClicked() {
-        this.checkIfSpelerChanged();
-        if (this.spelerChanged) {
+        this.checkIfSpelersChanged();
+        if (this.spelersChanged) {
             this.match.idxSpelerActief = 0;
             this.match.matchOver = false;
-            this.match.spelers[this.idxSpeler] = this.activeMatchSpeler;
-            this.match.spelers[this.idxSpeler == 0 ? 1 : 0] = this.otherMatchSpeler;
+            this.match.spelers = this.copySpelers(this.matchSpelers);
             this.saveMatchAndContinue();
         }
         else {
-            const url = this.idxSpeler == 0 ? 'match/setup/gasten' : 'match/setup/check';
-            this.router.navigate([url]);
+            this.router.navigate(['match/setup/check']);
         }
     }
 
@@ -223,6 +210,10 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
         this.activeSection = idx;
         this.teamLijst.hoveredIdx = this.spelerLijst.hoveredIdx = -1;
         this.setEscapeCount();
+    }
+
+    maakSpelerActief(idx: number) {
+        this.idxSpeler = idx;
     }
 
     @HostListener('document:keydown', ['$event'])
@@ -254,6 +245,9 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
                     this.ledenScrolling.scrollUp(this.spelerLijst.hoveredIdx);
                     this.setEscapeCount();
                 }
+                else if (this.activeSection == 2) {
+                    this.idxSpeler = (this.idxSpeler == 0) ? 1 : 0;
+                }
                 return false;
             }
             if (event.key === 'ArrowDown') {
@@ -266,6 +260,9 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
                     this.spelerLijst.hoverNextItem();
                     this.ledenScrolling.scrollDown(this.spelerLijst.hoveredIdx);
                     this.setEscapeCount();
+                }
+                else if (this.activeSection == 2) {
+                    this.idxSpeler = (this.idxSpeler == 0) ? 1 : 0;
                 }
                 return false;
             }
@@ -296,10 +293,8 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        const path = this.route.snapshot.routeConfig?.path;
-        this.idxSpeler = (path && path == 'gasten') ? 1 : 0;
-        this.subtitle = `Selectie ${this.idxSpeler == 0 ? 'THUIS' : 'GAST'} speler`;
-        this.pageButtons[0].text = this.idxSpeler == 0 ? 'Naar GASTEN team' : 'Naar controle';
+        this.idxSpeler = 0;
+        this.subtitle = `Selectie spelers`;
         this.klasse = this.appData.getKlasse();
 
         Promise.all([
@@ -358,14 +353,10 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     private initLijstScrolling(elm: HTMLDivElement, lijst: string) {
         if (elm) {
             if (lijst == 'teams') {
-                //this.teamLijst.hoveredIdx = this.teamLijst.selectedIdx >= 0 ? this.teamLijst.selectedIdx : 0;
-                //this.teamLijst.hoveredIdx = -1;
                 this.teamScrolling = new Scrolling(elm, elm.offsetHeight, this.teamLijst.filtered.length, this.teamLijst.selectedIdx);
                 console.log('resize event - pos = ' + this.teamScrolling.scrollPos);
             }
             else {
-                //this.spelerLijst.hoveredIdx = this.spelerLijst.selectedIdx >= 0 ? this.spelerLijst.selectedIdx : 0;
-                //this.spelerLijst.hoveredIdx = -1;
                 this.ledenScrolling = new Scrolling(elm, elm.offsetHeight, this.spelerLijst.filtered.length, this.spelerLijst.selectedIdx);
                 console.log('resize event - pos = ' + this.ledenScrolling.scrollPos);
             }
@@ -373,11 +364,11 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     }
 
     private checkInput() {
-        this.inputValid = this.activeMatchSpeler.splId != '';
+        this.inputValid = this.matchSpelers.every(spl => spl.splId != '');
     }
 
-    private checkIfSpelerChanged() {
-        this.spelerChanged = this.activeMatchSpeler.splId != this.match.spelers[this.idxSpeler].splId;
+    private checkIfSpelersChanged() {
+        this.spelersChanged = this.matchSpelers.some((spl, idx) => spl.splId != this.match.spelers[idx].splId);
     }
 
     private veranderActieveSectie(direction: number) {
@@ -393,11 +384,11 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     }
 
     private initScreen() {
-        this.activeMatchSpeler = this.copySpeler(this.match.spelers[this.idxSpeler]);
-        this.otherMatchSpeler = this.copySpeler(this.match.spelers[this.idxSpeler == 0 ? 1 : 0]);
+        this.idxSpeler = 0;
+        this.matchSpelers = this.copySpelers(this.match.spelers);
         this.fillTeamLijst();
         let idx = -1;
-        if (this.activeMatchSpeler.teamId == '') {
+        if (this.matchSpelers[0].teamId == '') {
             // preselect team op basis van voorkeur vereniging
             const ver = this.appData.getConfig()?.vereniging;
             if (ver) {
@@ -407,7 +398,7 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
         }
         else {
             // preselect team op basis van het team in de match
-            idx = this.teamLijst.filtered.findIndex(ctm => ctm.key.verId == this.activeMatchSpeler.verId && ctm.key.teamId == this.activeMatchSpeler.teamId);
+            idx = this.teamLijst.filtered.findIndex(ctm => ctm.key.verId == this.matchSpelers[0].verId && ctm.key.teamId == this.matchSpelers[0].teamId);
             this.teamClicked(idx, true);
         }
         if (idx < 0) {
@@ -427,13 +418,15 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
         this.teamLijst.fillItems(compTeams);
     }
 
-    private copySpeler(spl: MatchSpeler): MatchSpeler {
-        return JSON.parse(JSON.stringify(spl));
+    private copySpelers(splrs: MatchSpeler[]): MatchSpeler[] {
+        return JSON.parse(JSON.stringify(splrs));
     }
 
-    private clearScores(spl: MatchSpeler) {
-        spl.isActief = false;
-        spl.stand = new MatchSpelerStand();
+    private clearScores() {
+        this.matchSpelers.forEach(spl => {
+            spl.isActief = false;
+            spl.stand = new MatchSpelerStand();    
+        });
     }
 
     private compareSpelers(a: SpelerWrapper, b: SpelerWrapper): number {
@@ -450,8 +443,8 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     }
 
     private setEscapeCount() {
-        this.checkIfSpelerChanged();
-        this.escapeCount = this.spelerChanged ? 1 : 0;
+        this.checkIfSpelersChanged();
+        this.escapeCount = this.spelersChanged ? 1 : 0;
         if (this.teamLijst.hoveredIdx >= 0 || this.spelerLijst.hoveredIdx >= 0) {
             this.escapeCount++;
         }
@@ -460,8 +453,7 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     private saveMatchAndContinue() {
         this.bssApi.saveKnbbMatch(this.match)
         .then(() => {
-            const url = this.idxSpeler == 0 ? 'match/setup/gasten' : 'match/setup/check';
-            this.router.navigate([url]);
+            this.router.navigate(['match/setup/check']);
         })
         .catch(err => {
             this.alert.showError(err);

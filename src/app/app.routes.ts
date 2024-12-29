@@ -44,10 +44,7 @@ export const routes: Routes = [
     { path: 'home', component: HomeComponent },
     { path: 'match/lijst/:wedNr', component: KnbbMatchLijstComponent },
     { path: 'match/lijst', component: KnbbMatchLijstComponent },
-    { path: 'match/setup', children: [
-        { path: 'thuis', component: KnbbMatchSetupComponent },
-        { path: 'gasten', component: KnbbMatchSetupComponent }
-    ]},
+    { path: 'match/setup/spelers', component: KnbbMatchSetupComponent },
     { path: 'match/setup/comp', component: KnbbMatchCompComponent },
     { path: 'match/setup/check', component: KnbbMatchCheckComponent },
     { path: 'match/score', component: KnbbMatchScoreComponent },
