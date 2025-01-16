@@ -38,6 +38,13 @@ import { KnbbMatchSetupComponent } from './spelen/knbb-match/knbb-match-setup/kn
 import { KnbbMatchCheckComponent } from './spelen/knbb-match/knbb-match-check/knbb-match-check.component';
 import { KnbbMatchScoreComponent } from './spelen/knbb-match/knbb-match-score/knbb-match-score.component';
 import { KnbbMatchLijstComponent } from './spelen/knbb-match/knbb-match-lijst/knbb-match-lijst.component';
+import { BpCompetitiesComponent } from './bpoint/bp-competities/bp-competities.component';
+import { BpHomeComponent } from './bpoint/bp-home/bp-home.component';
+import { BpDistrictenComponent } from './bpoint/bp-districten/bp-districten.component';
+import { BpDistrictComponent } from './bpoint/bp-districten/bp-district/bp-district.component';
+import { BpMoyennesComponent } from './bpoint/bp-moyennes/bp-moyennes.component';
+import { BpCompetitieComponent } from './bpoint/bp-competities/bp-competitie/bp-competitie.component';
+import { BpCompetitieTeamComponent } from './bpoint/bp-competities/bp-competitie/bp-competitie-team/bp-competitie-team.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -86,6 +93,13 @@ export const routes: Routes = [
     { path: 'wedstrijd/spelers', component: WedSpelersComponent },
     { path: 'wedstrijd/aantspl', component: WedAantSpelersComponent },
     { path: 'wedstrijd', component: WedstrijdComponent },
+    { path: 'bpoint/home', component: BpHomeComponent },
+    { path: 'bpoint/districten', component: BpDistrictenComponent },
+    { path: 'bpoint/district', component: BpDistrictComponent },
+    { path: 'bpoint/competitie', component: BpCompetitieComponent },
+    { path: 'bpoint/competities', component: BpCompetitiesComponent },
+    { path: 'bpoint/compteam', component: BpCompetitieTeamComponent },
+    { path: 'bpoint/moyennes', component: BpMoyennesComponent },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];

@@ -1,0 +1,15 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="title" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="label" style="padding: 1em 0; text-align: center;">
+            Via deze opties kunt u gegevens ophalen uit de Biljartpoint site<br>en deze opslaan in de B.S.S. applicatie.
+            <br>
+            Dit werkt momenteel alleen voor driebanden-klein en district Kempenland.
+        </div>
+        <div class="flexbox flexcenter" style="font-size: 1.25em; margin-top: 3em;">
+            <app-menu [menu]="menu" (menuItemClicked)="menuItemClicked($event)"></app-menu>
+        </div>
+    </div>
+</div>

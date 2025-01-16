@@ -111,7 +111,7 @@ export class KnbbCompetitieAddComponent extends BaseComponent implements OnInit 
         this.subtitle = 'KNBB competities ' + this.competitie.seizoen;
 
         Promise.all([
-            this.bssApi.getExistingKnbbCompetitieIds(this.competitie.seizoen, this.competitie.district, this.competitie.spelsoort),
+            this.bssApi.getExistingKnbbCompetitieIds(this.competitie.district, this.competitie.spelsoort),
             this.bssApi.getMoyenneKlassenLijst(this.spelId),
             this.bssApi.getKnbbDistricten(),
             this.bssApi.getSpelsoorten()

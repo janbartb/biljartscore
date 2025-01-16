@@ -308,7 +308,7 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
             if (results[2].gevonden) {
                 this.match = results[2].match;
                 console.log(this.match);
-                this.bssApi.getKnbbCompetitie(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId, this.match.compId)
+                this.bssApi.getKnbbCompetitie(this.appData.getDistrict().disId, this.spelId, this.match.compId)
                 .then(data => {
                     this.competitie = data;
                     this.compTitle = `Competitie ${data.klasse}-${data.volgNr} ${data.naam}`;
@@ -375,9 +375,9 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
         let idx = this.activeSection;
         idx += direction;
         if (idx < 0) {
-            idx = 1;
+            idx = 2;
         }
-        if (idx > 1) {
+        if (idx > 2) {
             idx = 0;
         }
         this.maakSectionActief(idx);

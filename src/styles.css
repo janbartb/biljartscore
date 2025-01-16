@@ -221,6 +221,7 @@ select:disabled, select.disabled {
 /* ICON BUTTONS */
 
 .iconbtn { color: gray; cursor: pointer; padding: 0 .25em;}
+.iconbtn.nopad { padding: 0 .125em 0 0;}
 .iconbtn:hover, .iconbtn.selected { 
     color: green; 
     scale: 1.25;

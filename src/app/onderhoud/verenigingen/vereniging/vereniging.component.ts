@@ -200,7 +200,7 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
         Promise.all([
             this.bssApi.getVereniging(id),
             this.bssApi.getLedenVanVereniging(id, this.spelId),
-            this.bssApi.getKnbbCompetities(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId)
+            this.bssApi.getKnbbCompetities(this.appData.getDistrict().disId, this.spelId)
         ])
             .then(results => {
                 this.vereniging = results[0];

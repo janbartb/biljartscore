@@ -90,7 +90,7 @@ export class KnbbTeamMatchCompComponent extends BaseComponent implements OnInit 
 
     ngOnInit(): void {
         Promise.all([
-            this.bssApi.getKnbbCompetities(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId),
+            this.bssApi.getKnbbCompetities(this.appData.getDistrict().disId, this.spelId),
             this.bssApi.getKnbbTeamMatch()
         ])
         .then(results => {

@@ -10,7 +10,7 @@
 .opties.selectable.selected {
     opacity: 1;
 }
-.opties.selectable:not(.selected).hovered {
+.opties.selectable.hovered {
     border-color: green;
 }
 .opties.selectable:hover {
@@ -36,7 +36,7 @@
 .subopties .selectable.selected {
     opacity: 1;
 }
-.subopties .selectable:not(.selected).hovered {
+.subopties .selectable.hovered {
     border-color: green;
 }
 .subopties .selectable:hover {

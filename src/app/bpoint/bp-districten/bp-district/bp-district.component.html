@@ -1,0 +1,90 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Biljartpoint'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                        (escClicked)="escapePressed()" (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1">
+            <div class="flexbox flexcenter" style="padding-top: 1em;">
+                <div>
+                    @if (districtForm) {
+                        <form [formGroup]="districtForm">
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label>Biljartpoint ID</label>
+                                        </td>
+                                        <td>
+                                            <span>{{district.knbbId}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="disId">BSS ID<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input #bssid type="text" id="disId" style="width: 4em;" formControlName="disId" autocomplete="off"
+                                                [ngClass]="{'invalid': disId?.invalid, 'valid': disId?.valid}"
+                                                (blur)="disId?.setValue(disId?.value.trim())">
+                                        </td>
+                                    </tr>    
+                                    @if (disId?.hasError('noDuplicates')) {
+                                        <tr class="input-msg error">
+                                            <td></td>
+                                            <td><span>ID wordt al gebruikt</span></td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td>
+                                            <label>Biljartpoint naam</label>
+                                        </td>
+                                        <td>
+                                            <span>{{district.naam}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="naam">BSS naam<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input #bssnaam type="text" id="naam" style="width: 15em;" formControlName="disNaam" autocomplete="off"
+                                                [ngClass]="{'invalid': disNaam?.invalid, 'valid': disNaam?.valid}"
+                                                (blur)="disNaam?.setValue(disNaam?.value.trim())">
+                                            <span class="label" style="font-size: .75em; padding-left: 1em;">(max 30 tekens)</span>
+                                        </td>
+                                    </tr>
+                                    <tr><td style="height: 1em;"></td></tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            @if (district.isDefault) {
+                                                <span class="label">
+                                                    <i class="fas fa-check"></i>
+                                                    <span style="padding-left: .5em;">Dit is het voorkeur district</span>
+                                                </span>
+                                            }
+                                            @else {
+                                                <span class="label">
+                                                    <i class="far" [ngClass]="voorkeur?.value ? 'fa-check-square' : 'fa-square'" 
+                                                            style="color: black;" (click)="voorkeurChanged()"></i>
+                                                    <span style="padding-left: .5em;">Maak van deze het voorkeur district</span>
+                                                </span>
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    }        
+                </div>
+            </div>
+        </div>
+        @if (districtForm) {
+            <div>
+                <app-section-footer-btns [buttons]="buttons" [btnsDisabled]="[!(districtForm.valid && districtChanged)]"
+                        (clickedButton)="opslaanClicked()" [cssFooter]="'w3-green-bdr-d3'" [cssButtons]="'font125'"></app-section-footer-btns>
+            </div>
+        }
+    </div>
+</div>

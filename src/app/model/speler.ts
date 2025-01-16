@@ -6,6 +6,7 @@ export class Speler {
     tvoeg: string = '';
     spreeknaam: string = '';
     gemiddeldes: SpelerGemiddelde[] = [];
+    knbbMoy: string = '';
     verenigingIds: string[] = [];
 }
 
@@ -48,4 +49,10 @@ export class SpelerSelectie {
     spelerNaam: string = '';
     spelerMoy: number = 0;
     spelerSelected: boolean = false;
+}
+
+export class SpelerKnbbData {
+    id: string = '';
+    naam: string = '';
+    gem: string = '';
 }

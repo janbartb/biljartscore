@@ -11,6 +11,7 @@ import { Seizoenen } from '../model/seizoenen';
 import { Wedstrijd, WedstrijdLeesResultaat } from '../model/wedstrijd';
 import { Match, MatchLeesResultaat, TeamMatch, TeamMatchLeesResultaat } from '../model/match';
 import { StatusService } from './status.service';
+import { BpCompetitie, BpDistrict, BpMoyTabel, CompTemp, TeamPageData } from '../model/bpoint';
 
 @Injectable({
     providedIn: 'root'
@@ -26,6 +27,36 @@ export class ApiService {
     constructor() {
         this.dbUrl = 'http://localhost:8080/bssapi';
         this.myHeaders.append("Content-Type", "application/json");
+    }
+
+    async getTeamFromBiljartpoint(teamId: string, compId: string, poule: string, distId: string): Promise<TeamPageData> {
+        const url = `/bpoint/team/${teamId}/${compId}/${poule}/${distId}`;
+        const result: TeamPageData = await this.getResource(this.dbUrl + url);
+        return result;
+    }
+
+    async getCompsFromBiljartpoint(distId: string): Promise<BpCompetitie[]> {
+        const url = `/bpoint/comps/${distId}`;
+        const result: BpCompetitie[] = await this.getResource(this.dbUrl + url);
+        return result;
+    }
+
+    async getCompFromBiljartpoint(poule: string, compId: string, distId: string): Promise<CompTemp> {
+        const url = `/bpoint/comp/${poule}/${compId}/${distId}`;
+        const result: CompTemp = await this.getResource(this.dbUrl + url);
+        return result;
+    }
+
+    async getDistrictenFromBiljartpoint(distId: string): Promise<BpDistrict[]> {
+        const url = `/bpoint/distr/${distId}`;
+        const result: BpDistrict[] = await this.getResource(this.dbUrl + url);
+        return result;
+    }
+
+    async getMoyenneTabelFromBiljartpoint(klasse: string): Promise<BpMoyTabel> {
+        const url = `/bpoint/moyennes/${klasse}`;
+        const result: BpMoyTabel = await this.getResource(this.dbUrl + url);
+        return result;
     }
 
     async getConfig(allow?: boolean): Promise<Config> {
@@ -45,6 +76,12 @@ export class ApiService {
 
     async getSpelersLijst(spelId: string): Promise<SpelerWrapper[]> {
         const result: Speler[] = await this.getResource(this.dbUrl + '/spelers');
+        return result.map(sp => new SpelerWrapper(sp, spelId));
+    }
+
+    async getSpelersLijstVanTeam(spelId: string, spelerIds: string[]): Promise<SpelerWrapper[]> {
+        const spelers: Speler[] = await this.getResource(this.dbUrl + '/spelers');
+        const result = spelers.filter(spl => spelerIds.some(id => id == spl.id));
         return result.map(sp => new SpelerWrapper(sp, spelId));
     }
 
@@ -117,18 +154,18 @@ export class ApiService {
         return result;
     }
 
-    async getKnbbCompetities(seizoen: string, district: string, spel: string): Promise<KnbbCompetitie[]> {
-        const result: KnbbCompetitie[] = await this.getResource(this.dbUrl + `/knbb/${seizoen}/${district}/${spel}`);
+    async getKnbbCompetities(district: string, spel: string): Promise<KnbbCompetitie[]> {
+        const result: KnbbCompetitie[] = await this.getResource(this.dbUrl + `/knbb/${district}/${spel}`);
         return result;
     }
 
-    async getKnbbCompetitie(seizoen: string, district: string, spel: string, id: string): Promise<KnbbCompetitie> {
-        const result: KnbbCompetitie = await this.getResource(this.dbUrl + `/knbb/${seizoen}/${district}/${spel}/${id}`);
+    async getKnbbCompetitie(district: string, spel: string, id: string): Promise<KnbbCompetitie> {
+        const result: KnbbCompetitie = await this.getResource(this.dbUrl + `/knbb/${district}/${spel}/${id}`);
         return result;
     }
 
-    async getExistingKnbbCompetitieIds(seizoen: string, district: string, spel: string): Promise<string[]> {
-        const comps: KnbbCompetitie[] = await this.getResource(this.dbUrl + `/knbb/${seizoen}/${district}/${spel}`);
+    async getExistingKnbbCompetitieIds(district: string, spel: string): Promise<string[]> {
+        const comps: KnbbCompetitie[] = await this.getResource(this.dbUrl + `/knbb/${district}/${spel}`);
         return comps.map(comp => comp.competitieId);
     }
 
@@ -252,10 +289,10 @@ export class ApiService {
 
     // SPELER
 
-    async addSpeler(speler: Speler): Promise<ApiResponse> {
+    async addSpelers(spelers: Speler[]): Promise<ApiResponse> {
         const response: Response = await fetch(this.dbUrl + '/spelers', {
             method: 'POST',
-            body: JSON.stringify(speler),
+            body: JSON.stringify(spelers),
             headers: this.myHeaders
         });
         const json: ApiResponse = await response.json();
@@ -269,6 +306,19 @@ export class ApiService {
         const response: Response = await fetch(this.dbUrl + `/spelers/${speler.id}`, {
             method: 'PUT',
             body: JSON.stringify(speler),
+            headers: this.myHeaders
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
+    async updateSpelers(spelers: Speler[]): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + '/spelers', {
+            method: 'PUT',
+            body: JSON.stringify(spelers),
             headers: this.myHeaders
         });
         const json: ApiResponse = await response.json();
@@ -409,7 +459,7 @@ export class ApiService {
     // KNBB COMPETITIES
 
     async addKnbbCompetitie(comp: KnbbCompetitie): Promise<ApiResponse> {
-        const response: Response = await fetch(this.dbUrl + `/knbb/${comp.seizoen}/${comp.district}/${comp.spelsoort}`, {
+        const response: Response = await fetch(this.dbUrl + `/knbb/${comp.district}/${comp.spelsoort}`, {
             method: 'POST',
             body: JSON.stringify(comp),
             headers: this.myHeaders
@@ -422,7 +472,7 @@ export class ApiService {
     }
 
     async updateKnbbCompetitie(comp: KnbbCompetitie): Promise<ApiResponse> {
-        const response: Response = await fetch(this.dbUrl + `/knbb/${comp.seizoen}/${comp.district}/${comp.spelsoort}/${comp.competitieId}`, {
+        const response: Response = await fetch(this.dbUrl + `/knbb/${comp.district}/${comp.spelsoort}/${comp.competitieId}`, {
             method: 'PUT',
             body: JSON.stringify(comp),
             headers: this.myHeaders
@@ -435,7 +485,7 @@ export class ApiService {
     }
 
     async deleteKnbbCompetitie(comp: KnbbCompetitie): Promise<ApiResponse> {
-        const response: Response = await fetch(this.dbUrl + `/knbb/${comp.seizoen}/${comp.district}/${comp.spelsoort}/${comp.competitieId}`, {
+        const response: Response = await fetch(this.dbUrl + `/knbb/${comp.district}/${comp.spelsoort}/${comp.competitieId}`, {
             method: 'DELETE'
         });
         const json: ApiResponse = await response.json();

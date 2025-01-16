@@ -252,7 +252,7 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
             this.bssApi.getVereniging(verId),
             this.bssApi.getLedenVanVereniging(verId, this.spelId),
             this.bssApi.getMoyenneKlassenLijst(this.spelId),
-            this.bssApi.getKnbbCompetities(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId)
+            this.bssApi.getKnbbCompetities(this.appData.getDistrict().disId, this.spelId)
         ])
             .then(results => {
                 this.klassen = results[2];

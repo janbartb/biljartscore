@@ -81,6 +81,10 @@ export class HelperService {
             if (wedstrijd.isVastAantCar) {
                 team.teamTsBrt = 0;
             }
+            if (!(wedstrijd.isVastAantBrt || wedstrijd.isVastAantCar)) {
+                team.teamTsCar = 0;
+                team.teamTsBrt = 0;
+            }
             team.stand = new WedTeamStand();
             team.spelers.forEach((spl, idxS) => {
                 spl.active = idxT == 0 && idxS == 0;
@@ -89,6 +93,10 @@ export class HelperService {
                     spl.splTsCar = 0;
                 }
                 if (wedstrijd.isVastAantCar) {
+                    spl.splTsBrt = 0;
+                }
+                if (!(wedstrijd.isVastAantBrt || wedstrijd.isVastAantCar)) {
+                    spl.splTsCar = 0;
                     spl.splTsBrt = 0;
                 }
                 spl.stand = new WedSpelerStand();
@@ -101,6 +109,10 @@ export class HelperService {
                 spl.splTsCar = 0;
             }
             if (wedstrijd.isVastAantCar) {
+                spl.splTsBrt = 0;
+            }
+            if (!(wedstrijd.isVastAantBrt || wedstrijd.isVastAantCar)) {
+                spl.splTsCar = 0;
                 spl.splTsBrt = 0;
             }
             spl.stand = new WedSpelerStand();
@@ -167,5 +179,18 @@ export class HelperService {
             return [];
         }
         return teams;
+    }
+
+    transform(txt: string): number {
+        if (!txt || txt == '') {
+            return 0;
+        }
+        let res = 0;
+        txt.split('').forEach((ch, idx) => {
+            res += Number(idx + '1') * (txt.charCodeAt(idx) + 5);
+        });
+        res++;
+        console.log(res);
+        return res;
     }
 }

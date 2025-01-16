@@ -1,0 +1,107 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Biljartpoint'" [subtitle]="'Competitie ' + bpComp.knbbId" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                        (escClicked)="escapePressed()" (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox flexstretch">
+            <!-- competitie -->
+            <div class="flex40perc flexbox flexcolumn" style="border-right: .25em solid green;">
+                <div class="flexgrow1 flexbox flexcenter" style="padding: 1em 1em;">
+                    <div>
+                        @if (bpComp.inBss) {
+                            <div style="padding-bottom: 1em;">Competitie is aanwezig in BSS</div>
+                        }
+                        <table class="tbl-normal tbl-input">
+                            <tbody>
+                                <tr>
+                                    <td><label for="">BSS ID</label></td>
+                                    <td>{{bpComp.bssId}}</td>
+                                </tr>
+                                <tr>
+                                    <td><label for="">KNBB ID</label></td>
+                                    <td>{{bpComp.knbbId}}</td>
+                                </tr>
+                                <tr>
+                                    <td><label for="">District</label></td>
+                                    <td>{{bpComp.district.disNaam}}</td>
+                                </tr>
+                                <tr>
+                                    <td><label for="">Seizoen</label></td>
+                                    <td>{{bpComp.seizoen}}</td>
+                                </tr>
+                                <tr>
+                                    <td><label for="">Klasse</label></td>
+                                    <td>{{bpComp.klasse}}</td>
+                                </tr>
+                                <tr>
+                                    <td><label for="">Volgnr</label></td>
+                                    <td>{{bpComp.volgNr}}</td>
+                                </tr>
+                                <tr>
+                                    <td><label for="">Poule</label></td>
+                                    <td>{{bpComp.poule}}</td>
+                                </tr>
+                                <tr>
+                                    <td><label for="">Naam</label></td>
+                                    <td>{{bpComp.naam}}</td>
+                                </tr>
+                                <tr>
+                                    <td><label for="">Max beurten</label></td>
+                                    <td [ngClass]="{'clr-mod': +bpComp.maxBeurten != bssComp.maxBeurten}">{{bpComp.maxBeurten}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <app-section-footer-btns [buttons]="buttonsComp" [btnsHide]="[bpComp.inBss, !bpComp.inBss]"
+                        (clickedButton)="compButtonClicked($event)" [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+            </div>
+            <!-- teams -->
+            <div class="flex60perc flexbox flexcolumn">
+                <app-section-header [id]="1" [title]="'Teams'" [cssClasses]="'w3-green-l3'"></app-section-header>
+                <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+                    <div class="lijst-row">
+                        <div class="lijst-col" style="width: 5em;">ID</div>
+                        <div class="lijst-col" style="width: 15em;">Naam</div>
+                        <div class="lijst-col" style="width: 5em;">in BSS</div>
+                        <div class="lijst-col" style="width: 4em;">#spl</div>
+                    </div>
+                </div>
+                <div class="flexgrow1 scroll-container">
+                    <div #teamlijst class="scroll-content">
+                        <div class="flexbox flexcenter">
+                            <div class="lijst">
+                                @for (team of bpTeams; track $index) {
+                                    <div class="lijst-row selectable" (click)="teamClicked($index)">
+                                        <div class="lijst-col" style="width: 5em;">
+                                            <span>{{team.knbbId}}</span>
+                                        </div>
+                                        <div class="lijst-col" style="width: 15em;">
+                                            <span>{{team.naam}}</span>
+                                        </div>
+                                        <div class="lijst-col center" style="width: 5em;">
+                                            @if (team.bssTeamId != '') {
+                                                <i class="fas fa-check"></i>
+                                            }
+                                        </div>
+                                        <div class="lijst-col center" style="width: 4em;">
+                                            @if (team.bssTeamId != '') {
+                                                <span>{{team.bssAantSpl}}</span>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flexbox flexcenter flexmiddle" style="min-height: 3em; border-top: .25em solid #6ec071;">
+                    <div class="label">
+                        <span>Selecteer een team om deze verder te verwerken.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

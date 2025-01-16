@@ -2,8 +2,6 @@ import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { PageHeaderComponent } from '../shared/page-header/page-header.component';
 import { MenuComponent } from '../shared/menu/menu.component';
 import { Menu, MenuItem } from '../model/menu';
-import { Router } from '@angular/router';
-import { AlertService } from '../services/alert.service';
 import { BaseComponent } from '../base/base.component';
 
 @Component({

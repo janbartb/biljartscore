@@ -10,7 +10,7 @@ export class AlertService {
 
     constructor() { }
 
-    showAlert(msg: any, type: string, dur?: number) {
+    showAlert(msg: string, type: string, dur?: number) {
         if (type == 'error') {
             console.error(msg);
         }
@@ -20,7 +20,7 @@ export class AlertService {
         this.alert.duration = dur ? dur : 0;
         this.visible = true;
         if (!this.alert.duration && this.alert.type != 'error') {
-            this.alert.duration = 4;
+            this.alert.duration = 3;
         } 
         if (this.alert.duration) {
             setTimeout(() => {
@@ -30,7 +30,7 @@ export class AlertService {
     }
 
     showError(err: string) {
-        this.showAlert(err, 'error');
+        this.showAlert(err, 'error', 8);
     }
 
     private getClass(type: string): string {

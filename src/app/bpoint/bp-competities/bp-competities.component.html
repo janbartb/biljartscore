@@ -1,0 +1,72 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Biljartpoint'" [subtitle]="'Competities'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                        (escClicked)="escapePressed()" (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexbox flexmiddle" style="min-height: 3em; border-bottom: .25em solid green;">
+            <div class="label" style="padding-left: 1em;">
+                <span>Kies een district</span>
+            </div>
+            <div style="padding-left: .5em;">
+                <select [(ngModel)]="district" (change)="districtChanged()">
+                    @for (distr of districten; track $index) {
+                        <option [ngValue]="distr">{{distr.disNaam}}</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+            <div class="lijst-row">
+                <div class="lijst-col" style="width: 4.5em;">in BSS</div>
+                <div class="lijst-col" style="width: 5em;">BSS ID</div>
+                <div class="lijst-col num" style="width: 4em;">BP ID</div>
+                <div class="lijst-col" style="width: 1em;"></div>
+                <div class="lijst-col" style="width: 4.5em;">Klasse</div>
+                <div class="lijst-col" style="width: 4.5em;">Volgnr</div>
+                <div class="lijst-col" style="width: 15em;">Naam</div>
+                <div class="lijst-col" style="width: 4.5em;">Poule</div>
+                <div class="lijst-col" style="width: 8em;">Seizoen</div>
+            </div>
+        </div>
+        <div class="flexgrow1 scroll-container">
+            <div #districtlijst class="scroll-content">
+                <div class="flexbox flexcenter">
+                    <div class="lijst">
+                        @for (comp of bpCompetities; track $index) {
+                            <div class="lijst-row selectable" (click)="competitieClicked($index)">
+                                <div class="lijst-col center" style="width: 4.5em;">
+                                    @if (comp.inBss) {
+                                        <i class="fas fa-check"></i>
+                                    }
+                                </div>
+                                <div class="lijst-col" style="width: 5em;">
+                                    <span>{{comp.bssId}}</span>
+                                </div>
+                                <div class="lijst-col num" style="width: 4em;">
+                                    <span>{{comp.knbbId}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 1em;"></div>
+                                <div class="lijst-col" style="width: 4.5em;">
+                                    <span>{{comp.klasse}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 4.5em;">
+                                    <span>{{comp.volgNr}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 15em;">
+                                    <span>{{comp.naam}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 4.5em;">
+                                    <span>{{comp.poule}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 8em;">
+                                    <span>{{comp.seizoen}}</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

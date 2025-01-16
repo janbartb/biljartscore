@@ -3,7 +3,7 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { DecimalPipe, NgClass } from '@angular/common';
 import { Speler, SpelerWrapper } from '../../model/speler';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Team, Vereniging, VerenigingKort } from '../../model/vereniging';
+import { Team, Vereniging } from '../../model/vereniging';
 import { List } from '../../model/list';
 import { Button } from '../../model/button';
 import { BaseComponent } from '../../base/base.component';
@@ -14,6 +14,7 @@ import { Scrolling } from '../../model/scrolling';
 import { ActivatedRoute } from '@angular/router';
 import { KnbbCompetitie } from '../../model/knbb-competitie';
 import { ButtonComponent } from "../../shared/button-group/button/button.component";
+import { TeamPageData } from '../../model/bpoint';
 
 @Component({
   selector: 'app-spelers',
@@ -49,7 +50,9 @@ export class SpelersComponent extends BaseComponent implements OnInit {
     verenigingFilterInit: string = '';
     verenigingFilter: string = '';
     teamFilter: string = '';
+    knbbTeamData: TeamPageData = new TeamPageData();
     moyenneMode: boolean = false;
+    showKnbbMoys: boolean = false;
     moyenneEdit: number = 0;
     escapeCount: number = 0;
     scrollElm!: HTMLDivElement;
@@ -69,6 +72,30 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             this.htmlVerFilter()?.nativeElement;
             this.htmlSpelerLijst()?.nativeElement;
         });
+    }
+
+    async getTeamFromKnbbSite() {
+        const comp = this.competities.find(cmp => {
+            return cmp.teams.some(tm => tm.verId == this.verenigingFilter && tm.teamId == this.teamFilter);
+        });
+        if (!comp) {
+            return;
+        }
+        const compId = comp.knbbId;
+        const team = this.vereniging.teams.find(tm => tm.teamId == this.teamFilter);
+        const teamId = team ? team.knbbId : '';
+        const poule = comp.poule == 0 ? '' : '' + comp.poule;
+        const distrId = this.appData.getDistrict().knbbId;
+        if (compId == '' || teamId == '' || poule == '' || distrId == '') {
+            return;
+        }
+        try {
+            this.knbbTeamData = await this.bssApi.getTeamFromBiljartpoint(teamId, compId, poule, distrId);
+            console.log(this.knbbTeamData);
+        }
+        catch (err) {
+            console.log(err);
+        }
     }
 
     enterPressed() {
@@ -145,7 +172,9 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         })
     }
 
-    moyennesWijzigenClicked() {
+    async moyennesWijzigenClicked() {
+        this.knbbTeamData = new TeamPageData();
+        this.showKnbbMoys = false;
         if (!this.spelerList.filtered.length) {
             return;
         }
@@ -156,6 +185,18 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             this.sortSpelers();
         }
         else {
+            if (this.biljartPointLink != '') {
+                await this.getTeamFromKnbbSite();
+                this.spelerList.filtered.forEach(spl => {
+                    if (spl.speler.knbbId != '') {
+                        const dat = this.knbbTeamData.spelers.find(item => item.splKnbbId == spl.speler.knbbId);
+                        if (dat) {
+                            spl.speler.knbbMoy = dat.splMoyenne;
+                            this.showKnbbMoys = true;
+                        }
+                    }
+                });
+            } 
             this.buttons[1].selected = true;
             const idx = this.spelerList.selectedIdx < 0 ? 0 : this.spelerList.selectedIdx;
             this.spelerList.selectItem(idx);
@@ -165,6 +206,17 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             }, 200);
         }
         this.setEscapeCount();
+    }
+
+    wijzigSpelerMoyenne(spl: SpelerWrapper) {
+        spl.speler.gemiddeldes[spl.idxMoyenne].gemiddelde = +spl.speler.knbbMoy;
+        this.bssApi.updateSpeler(spl.speler)
+        .then(resp => {
+            this.alert.showAlert(resp.message, 'success')
+        })
+        .catch(err => {
+            this.alert.showAlert(err, 'error');
+        });
     }
 
     keydownMoyenne(event: KeyboardEvent) {
@@ -217,6 +269,8 @@ export class SpelersComponent extends BaseComponent implements OnInit {
 
     verenigingFilterChanged() {
         localStorage.setItem('spelersVerenigingFilter', this.verenigingFilter);
+        this.teamFilter = '';
+        this.biljartPointLink = '';
         if (this.verenigingFilter == '' || this.verenigingFilter == '0') {
             this.vereniging = new Vereniging();
         }
@@ -357,7 +411,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             this.bssApi.getVerenigingen(),
             this.bssApi.getSpelersLijst(this.spelId),
             this.bssApi.getSpelsoorten(),
-            this.bssApi.getKnbbCompetities(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId)
+            this.bssApi.getKnbbCompetities(this.appData.getDistrict().disId, this.spelId)
         ])
         .then(results => {
             this.competities = results[3];

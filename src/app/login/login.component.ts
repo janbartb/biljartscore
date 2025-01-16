@@ -1,9 +1,10 @@
-import { Component, effect, ElementRef, HostListener, OnInit, viewChild } from '@angular/core';
+import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { BaseComponent } from '../base/base.component';
 import { Config } from '../model/config';
 import { Button } from '../model/button';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from "../shared/button-group/button/button.component";
+import { HelperService } from '../services/helper.service';
 
 @Component({
     selector: 'app-login',
@@ -16,8 +17,10 @@ import { ButtonComponent } from "../shared/button-group/button/button.component"
     styleUrl: './login.component.css'
 })
 export class LoginComponent extends BaseComponent implements OnInit {
-    pwTxt: string = 'b.v.d.';
-    pw: string = '';
+    helper = inject(HelperService);
+
+    // pwTxt: string = 'bvd';
+    pw: number = 3662;
     pwInput: string = '';
 
     button: Button = new Button('Enter', 'Login', true);
@@ -43,7 +46,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
         if (this.pwInput == '') {
             return;
         }
-        if (this.pwInput === this.pw) {
+        const w = this.helper.transform(this.pwInput);
+        if (w === this.pw) {
             this.createStats();
         }
         else {
@@ -53,7 +57,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
 
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
-        console.log(event.code + ' : ' + event.key);
+        //console.log(event.code + ' : ' + event.key);
         if (event.key === 'Enter') {
             this.enterPressed();
             return false;
@@ -62,13 +66,13 @@ export class LoginComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.pw = this.pwTxt.replaceAll('.', '');
+        
     }
 
     private createStats() {
         this.bssApi.createStats()
         .then(resp => {
-            console.log(resp.data);
+            //console.log(resp.data);
             let config: Config | undefined = this.appData.getConfig();
             if (!config) {
                 return;

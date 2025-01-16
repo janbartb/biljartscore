@@ -99,7 +99,7 @@ export class SpelerComponent extends BaseComponent implements OnInit {
     }
 
     addSpeler() {
-        this.bssApi.addSpeler(this.speler)
+        this.bssApi.addSpelers([this.speler])
         .then((resp: ApiResponse) => {
             this.alert.showAlert(resp.message, 'success');
             this.escapePressed();

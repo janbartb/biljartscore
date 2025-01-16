@@ -329,7 +329,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
             if (results[2].gevonden) {
                 this.match = results[2].match;
                 console.log(this.match);
-                this.bssApi.getKnbbCompetitie(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId, this.match.compId)
+                this.bssApi.getKnbbCompetitie(this.appData.getDistrict().disId, this.spelId, this.match.compId)
                 .then(data => {
                     this.competitie = data;
                     this.compTitle = `Competitie ${data.klasse}-${data.volgNr} ${data.naam}`;

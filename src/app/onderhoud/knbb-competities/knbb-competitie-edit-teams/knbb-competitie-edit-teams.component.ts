@@ -201,7 +201,7 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
 
     private getData(id: string) {
         Promise.all([
-            this.bssApi.getKnbbCompetitie(this.appData.getSeizoen(), this.appData.getDistrict().disId, this.spelId, id),
+            this.bssApi.getKnbbCompetitie(this.appData.getDistrict().disId, this.spelId, id),
             this.bssApi.getVerenigingen()
         ])
         .then(results => {

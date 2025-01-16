@@ -83,7 +83,7 @@
                 <div class="flexgrow1"></div>
             </div>
         </div>
-        @if (inputValid) {
+        @if (inputValid && optieLijst.hoveredIdx < 0 && subOptieLijst.hoveredIdx < 0) {
             <div style="border-top: .25em solid green">
                 <div class="flexbox flexcenter" style="font-size: 1.25em; padding: .125em 0;">
                     <app-button [button]="enterButton" (buttonClicked)="gaVerderClicked()"></app-button>

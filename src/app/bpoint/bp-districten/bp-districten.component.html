@@ -1,0 +1,57 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Biljartpoint'" [subtitle]="'Districten'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                        (escClicked)="escapePressed()" (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+            <div class="lijst-row">
+                <div class="lijst-col" style="width: 6em;">Voorkeur</div>
+                <div class="lijst-col" style="width: 5em;">BSS ID</div>
+                <div class="lijst-col num" style="width: 4em;">BP ID</div>
+                <div class="lijst-col" style="width: 1em;"></div>
+                <div class="lijst-col" style="width: 30em;">Naam</div>
+            </div>
+        </div>
+        <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+            <div class="lijst-row filter-row">
+                <div class="lijst-col" style="width: 6em;"></div>
+                <div class="lijst-col" style="width: 5em;"></div>
+                <div class="lijst-col" style="width: 4em;"></div>
+                <div class="lijst-col" style="width: 1em;"></div>
+                <div class="lijst-col" style="width: 30em;">
+                    <input id="naamfilter" class="filter" type="text" style="width: 15em;" [(ngModel)]="naamFilter" autocomplete="off"
+                                        (keyup)="naamFilterChanged($event)">
+                </div>
+            </div>
+        </div>
+        <div class="flexgrow1 scroll-container">
+            <div #districtlijst class="scroll-content">
+                <div class="flexbox flexcenter">
+                    <div class="lijst">
+                        @for (item of districtLijst.filtered; track $index) {
+                            <div class="lijst-row selectable" (click)="districtClicked($index)"
+                                    [ngClass]="{'selected': districtLijst.selectedIdx == $index, 'hovered': districtLijst.hoveredIdx == $index}">
+                                <div class="lijst-col center" style="width: 6em;">
+                                    @if (item.isDefault) {
+                                        <i class="fas fa-check"></i>
+                                    }
+                                </div>
+                                <div class="lijst-col" style="width: 5em;">
+                                    <span>{{item.bssId}}</span>
+                                </div>
+                                <div class="lijst-col num" style="width: 4em;">
+                                    <span>{{item.knbbId}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 1em;"></div>
+                                <div class="lijst-col" style="width: 30em;">
+                                    <span>{{item.naam}}</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

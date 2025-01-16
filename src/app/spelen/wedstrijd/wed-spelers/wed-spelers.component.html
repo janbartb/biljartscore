@@ -16,7 +16,7 @@
                                     @for (ver of verenigingLijst.filtered; track $index) {
                                         <div class="lijst-row selectable" (click)="verenigingClicked($index)"
                                                 [ngClass]="{'selected': verenigingLijst.selectedIdx == $index, 
-                                                            'hovered': activeSection == 0 && verenigingLijst.hoveredIdx == $index}">
+                                                            'hovered': verenigingLijst.hoveredIdx == $index}">
                                             <div class="lijst-col">
                                                 <span class="indicator fas fa-angle-right"> </span>
                                                 <span> {{ver.naam}}</span>
@@ -44,7 +44,7 @@
                                     @for (spl of spelerLijst.filtered; track $index) {
                                         <div class="lijst-row selectable" (click)="spelerClicked($index)"
                                                 [ngClass]="{'selected': spelerLijst.selectedIdx == $index, 
-                                                            'hovered': activeSection == 1 && spelerLijst.hoveredIdx == $index}">
+                                                            'hovered': spelerLijst.hoveredIdx == $index}">
                                             <div class="lijst-col">
                                                 <span class="indicator fas fa-angle-right"> </span>
                                                 <span> {{spl.getNaam()}}</span>
@@ -101,9 +101,9 @@
                 }
             </div>
         </div>
-        @if (wedstrijdChanged || spelersFilled) {
-            <app-section-footer-btns [buttons]="pageButtons" [btnsHide]="[!wedstrijdChanged, !spelersFilled]"
-                            (clickedButton)="pageButtonClicked($event)" [cssFooter]="'w3-green-bdr-d2'" [cssButtons]="'font125'"></app-section-footer-btns>
+        @if (spelersFilled && verenigingLijst.hoveredIdx < 0 && spelerLijst.hoveredIdx < 0) {
+            <app-section-footer-btns [buttons]="pageButtons"
+                            (clickedButton)="pageButtonClicked()" [cssFooter]="'w3-green-bdr-d2'" [cssButtons]="'font125'"></app-section-footer-btns>
         }
     </div>
 </div>

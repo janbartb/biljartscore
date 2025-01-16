@@ -133,6 +133,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
         this.appData.resetHistory();
         this.menu.addItem(new MenuItem('w', 'Wedstrijd spelen', 'spelkeuze'));
         this.menu.addItem(new MenuItem('o', 'Onderhoud gegevens', 'onderhoud'));
+        this.menu.addItem(new MenuItem('b', 'Biljartpoint', 'bpoint/home'));
         this.closeFullscreen();
     }
 

@@ -51,7 +51,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     activeLijst: number = 0;
     escapeCount: number = 0;
 
-    enterButton: Button = new Button('Ctrl+Enter', 'Ga verder', true);
+    enterButton: Button = new Button('Enter', 'Ga verder', true);
 
     vastBrt: InpNumber = new InpNumber(0);
     vastCar: InpNumber = new InpNumber(0);
@@ -70,7 +70,6 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             this.htmlVastBrt()?.nativeElement.focus();
             this.htmlVastCar()?.nativeElement.focus();
             this.htmlGemBrt()?.nativeElement.focus();
-            this.htmlMaxBrt()?.nativeElement.focus();
         });
     }
 
@@ -105,7 +104,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         button.selected = true;
         setTimeout(() => {
             button.selected = false;
-            if (button.key == 'Ctrl+Enter') {
+            if (button.key == 'Enter') {
                 this.gaVerderClicked();
             }
         }, 300);
@@ -121,26 +120,24 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         }
         if (idxActive == 0) {
             this.activeLijst = 0;
+            this.optieLijst.hoveredIdx = -1;
             this.subOptieLijst.selectedIdx = this.subOptieLijst.hoveredIdx = -1;
             if (idxOptie == 1) {
-                this.optieLijst.hoverItem(idxOptie);
                 this.optieLijst.selectItem(idxOptie);
                 this.activeLijst = 1;
                 if (this.subOptieLijst.selectedIdx < 0) {
-                    this.subOptieLijst.hoverItem(0);
                     this.subOptieLijst.selectItem(0);
                     this.helper.setFocus(this.htmlVastCar()?.nativeElement);
                 }
             }
             else {
-                this.optieLijst.hoverItem(idxOptie);
                 this.optieLijst.selectItem(idxOptie);
                 this.helper.setFocus(this.htmlVastBrt()?.nativeElement);
             }
         }
         else {
-            this.subOptieLijst.hoverItem(idxOptie);
             this.subOptieLijst.selectItem(idxOptie);
+            this.subOptieLijst.hoveredIdx = -1;
             if (idxOptie == 0) {
                 this.helper.setFocus(this.htmlVastCar()?.nativeElement);
             }
@@ -251,13 +248,15 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             return true;
         }
         if (event.key === 'Enter') {
-            if (event.ctrlKey) {
+            if (this.inputValid && this.optieLijst.hoveredIdx < 0 && this.subOptieLijst.hoveredIdx < 0) {
                 this.buttonPressed(this.enterButton);
+                return false;
             }
-            else {
+            if (this.optieLijst.hoveredIdx >= 0 || this.subOptieLijst.hoveredIdx >= 0) {
                 this.enterPressed();
+                return false;
             }
-            return false;
+            return true;
         }
         if (event.key === 'Escape') {
             this.escapePressed();
@@ -288,16 +287,20 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             if (this.wedstrijd.aantSpelers == 5) {
                 subOpts = ['Een vast aantal caramboles voor ieder team', 'Bereken aantal caramboles op basis van moyenne van team'];
             }
+            console.log(this.wedstrijd);
             this.subOptieLijst.fillItems(subOpts);
             if (this.wedstrijd.isVastAantBrt) {
                 this.activeLijst = 0;
-                this.optieLijst.selectedIdx = this.optieLijst.hoveredIdx = 0;
+                this.optieLijst.selectedIdx = 0;
+                this.optieLijst.hoveredIdx = -1;
                 this.vastBrt = new InpNumber(this.wedstrijd.tsBeurten);
             }
             else {
-                this.optieLijst.selectedIdx = this.optieLijst.hoveredIdx = 1;
+                this.optieLijst.selectedIdx = 1;
+                this.optieLijst.hoveredIdx = -1;
                 this.activeLijst = 1;
-                this.subOptieLijst.selectedIdx = this.subOptieLijst.hoveredIdx = this.wedstrijd.isVastAantCar ? 0 : 1;
+                this.subOptieLijst.selectedIdx = this.wedstrijd.isVastAantCar ? 0 : 1;
+                this.subOptieLijst.hoveredIdx = -1;
                 this.maxBrt = new InpNumber(this.wedstrijd.maxBeurten);
                 if (this.wedstrijd.isVastAantCar) {
                     this.vastCar = new InpNumber(this.wedstrijd.tsCaramboles);

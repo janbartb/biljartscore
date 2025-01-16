@@ -1,0 +1,65 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Biljartpoint'" [subtitle]="'Moyenne tabellen'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                        (escClicked)="escapePressed()" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexbox flexmiddle" style="height: 3em;">
+            <div class="label" style="padding-left: 1em;">
+                <span>Kies een tabelklasse</span>
+            </div>
+            <div style="padding-left: .5em;">
+                <select [(ngModel)]="option" (change)="optionChanged()">
+                    @for (opt of options; track $index) {
+                        <option [ngValue]="opt">{{opt.txt}}</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="flexbox flexmiddle" style="height: 3em; border-top: .25em solid green;">
+            <div class="label" style="padding-left: 1em;">
+                <span>Klasse</span>
+            </div>
+            <div style="padding-left: .5em;">
+                <span>{{bpTabel.klasse}}</span>
+            </div>
+            <div class="label" style="padding-left: 5em;">
+                <span>Minimum</span>
+            </div>
+            <div style="padding-left: .5em;">
+                <span>{{bpTabel.minimum}}</span>
+            </div>
+        </div>
+        <div class="flexgrow1 scroll-container" style="border-top: .125em solid green;">
+            <div #entrylijst class="scroll-content">
+                <div class="flexbox flexcenter">
+                    <div class="lijst">
+                        @for (entry of bpTabel.entries; track $index) {
+                            <div class="lijst-row selectable">
+                                <div class="lijst-col" style="width: 4em;">
+                                    <span class="label">vanaf</span>
+                                </div>
+                                <div class="lijst-col num" style="width: 5em;">
+                                    <span>{{entry.vanaf}}</span>
+                                </div>
+                                <div class="lijst-col num" style="width: 5em;"></div>
+                                <div class="lijst-col" style="width: 3.5em;">
+                                    <span class="label">cars</span>
+                                </div>
+                                <div class="lijst-col num" style="width: 3em;">
+                                    <span>{{entry.cars}}</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            @if (option.val != '') {
+                <app-section-footer-btns [buttons]="buttons" [btnsHide]="[bpTabel.klasse != '', bpTabel.klasse == '' || !tableValid]" 
+                        (clickedButton)="buttonClicked($event)" [cssFooter]="'w3-green-bdr-d3'" [cssButtons]="'font125'"></app-section-footer-btns>
+            }
+        </div>
+    </div>
+</div>
