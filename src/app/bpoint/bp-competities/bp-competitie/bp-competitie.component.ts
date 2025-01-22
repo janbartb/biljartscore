@@ -143,6 +143,7 @@ export class BpCompetitieComponent extends BaseComponent implements OnInit {
                 }
                 this.bpTeams.push(bpTeam);
             });
+            this.bpTeams.sort(this.compareBpTeams);
         })
         .catch(err => {
             console.log(err);
@@ -160,5 +161,12 @@ export class BpCompetitieComponent extends BaseComponent implements OnInit {
             });
         });
         return result;
+    }
+
+    private compareBpTeams(a: BpTeam, b: BpTeam): number {
+        if (a.naam == b.naam) {
+            return 0;
+        }
+        return (a.naam > b.naam) ? 1 : -1;
     }
 }

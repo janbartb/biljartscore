@@ -190,7 +190,6 @@ export class HelperService {
             res += Number(idx + '1') * (txt.charCodeAt(idx) + 5);
         });
         res++;
-        console.log(res);
         return res;
     }
 }

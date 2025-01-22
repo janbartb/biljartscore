@@ -44,7 +44,12 @@ export class StatusService {
 
     getSeizoen(): string {
         const conf = this.getConfig();
-        return conf ? conf.seizoen : this.getHuidigSeizoen();
+        let result = this.getHuidigSeizoen();
+        if (conf && conf.seizoen != result) {
+            conf.seizoen = result;
+            this.setConfig(conf);
+        }
+        return result;
     }
 
     getDistrict(): District {
@@ -132,11 +137,12 @@ export class StatusService {
         localStorage.setItem('spel', JSON.stringify(spel));
     }
 
-    getSpel(): Spelsoort | undefined {
-        const spel = localStorage.getItem('spel');
+    getSpel(): Spelsoort {
+        let spel = localStorage.getItem('spel');
         if (!spel) {
-            this.router.navigate(['home']);
-            return undefined;
+            let spelsoort = new Spelsoort('3BA', 'Driebanden', false);
+            this.setSpel(spelsoort);
+            return spelsoort;
         }
         return JSON.parse(spel);
     }

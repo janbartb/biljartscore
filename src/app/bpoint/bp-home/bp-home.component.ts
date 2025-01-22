@@ -69,8 +69,8 @@ export class BpHomeComponent extends BaseComponent implements OnInit {
         const filler = true;
         this.menu.centered = true;
         this.menu.addItem(new MenuItem('v', 'Districten', 'bpoint/districten'));
-        this.menu.addItem(new MenuItem('c', 'Competities', 'bpoint/competities'));
         this.menu.addItem(new MenuItem('m', 'Moyenne tabellen (driebanden klein B1-B2)', 'bpoint/moyennes'));
+        this.menu.addItem(new MenuItem('c', 'Competities', 'bpoint/competities'));
     }
 
 }

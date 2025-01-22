@@ -163,6 +163,9 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
     }
 
     private getKnbbCompetities() {
+        console.log(this.appData.getConfig());
+        console.log(this.appData.getDistrict());
+        console.log(this.spelId);
         this.bssApi.getKnbbCompetities(this.appData.getDistrict().disId, this.spelId)
         .then(result => {
             result.sort(this.compareCompetities);

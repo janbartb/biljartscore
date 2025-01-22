@@ -8,6 +8,7 @@ export function initializerFactory() {
     let api = inject(ApiService);
     let app = inject(StatusService);
     let spraak = inject(SpeechService);
+    //localStorage.removeItem('config');
     api.getConfig(true)
     .then(cfg => {
         app.setConfig(cfg);
@@ -15,10 +16,10 @@ export function initializerFactory() {
         spraak.speechOn = cfg.speech;
         spraak.initialize(app.getInitVoiceName());
         console.log('SPEECH INITIALIZED');
-        console.log('END INITIALIZING');
+        console.log('END INITIALIZING');    
     })
     .catch(err => {
         console.log('ERROR INITIALIZING CONFIG : ' + err);
-    });
+    });        
     
 }

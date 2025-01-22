@@ -45,6 +45,7 @@ import { BpDistrictComponent } from './bpoint/bp-districten/bp-district/bp-distr
 import { BpMoyennesComponent } from './bpoint/bp-moyennes/bp-moyennes.component';
 import { BpCompetitieComponent } from './bpoint/bp-competities/bp-competitie/bp-competitie.component';
 import { BpCompetitieTeamComponent } from './bpoint/bp-competities/bp-competitie/bp-competitie-team/bp-competitie-team.component';
+import { ErrorPageComponent } from './error-page/error-page.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -100,6 +101,7 @@ export const routes: Routes = [
     { path: 'bpoint/competities', component: BpCompetitiesComponent },
     { path: 'bpoint/compteam', component: BpCompetitieTeamComponent },
     { path: 'bpoint/moyennes', component: BpMoyennesComponent },
+    { path: 'error/:condition', component: ErrorPageComponent },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];

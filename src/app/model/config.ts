@@ -10,4 +10,5 @@ export class Config {
     speech: boolean = true;
     stem: string = '';
     notify: boolean = false;
+    version: string = '1.0.0';
 }

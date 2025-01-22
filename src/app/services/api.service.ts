@@ -59,6 +59,11 @@ export class ApiService {
         return result;
     }
 
+    async configExists(): Promise<boolean> {
+        const result: boolean = await this.getResource(this.dbUrl + `/config/exists`, true);
+        return result;
+    }
+
     async getConfig(allow?: boolean): Promise<Config> {
         const result: Config = await this.getResource(this.dbUrl + '/config', allow);
         return result;

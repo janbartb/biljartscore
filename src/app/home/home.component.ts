@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, Inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Menu, MenuItem } from '../model/menu';
 import { MenuComponent } from '../shared/menu/menu.component';
@@ -96,15 +96,18 @@ export class HomeComponent extends BaseComponent implements OnInit {
             .then(stats => {
                 let config: Config | undefined = this.appData.getConfig();
                 if (!config) {
-                    this.alert.showError('Configuratie niet gevonden in App data.');
+                    this.router.navigate(['error/config']);
+                    //this.alert.showError('Configuratie niet gevonden in App data.');
                     return;
                 }
                 if (config.id != stats.birthtimeMs) {
                     this.notAllowed = true;
                     localStorage.setItem('notifications', '0');
+                    this.router.navigate(['error/illegal']);
                     return;
                 }
                 localStorage.removeItem('notifications');
+                this.version = config.version;
                 this.bssApi.getSpelsoorten()
                 .then(data => {
                     this.spelsoorten = data;

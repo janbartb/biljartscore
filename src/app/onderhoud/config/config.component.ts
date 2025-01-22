@@ -117,6 +117,9 @@ export class ConfigComponent extends BaseComponent implements OnInit {
             if (!cfg) {
                 this.config = results[4];
             }
+            if (this.config.seizoen == '') {
+                this.config.seizoen = this.appData.getSeizoen();
+            }
             this.spraak.getVoices()
             .then((data => {
                 this.voices = data;

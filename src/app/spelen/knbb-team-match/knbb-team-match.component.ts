@@ -180,7 +180,6 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
                 this.match = resp.match;
             }
             else {
-                this.alert.showError('ERROR match resultaat : bestand teammatch.json niet gevonden.');
                 this.nieuwClicked();
                 return;
             }

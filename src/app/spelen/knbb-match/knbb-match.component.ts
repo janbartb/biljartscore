@@ -132,7 +132,6 @@ export class KnbbMatchComponent extends BaseComponent implements OnInit {
                 this.match = resp.match;
             }
             else {
-                this.alert.showError('ERROR match resultaat : bestand match.json niet gevonden.');
                 this.nieuwClicked();
                 return;
             }

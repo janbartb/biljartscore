@@ -399,6 +399,11 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         if (!config) {
             return;
         }
+        if (this.appData.getDistrict().disId == '') {
+            this.alert.showAlert('Er is nog geen voorkeur district ingesteld.', 'warning', 6);
+            this.router.navigate(['home']);
+            return;
+        }
         this.verenigingFilter = this.verenigingFilterInit = localStorage.getItem('spelersVerenigingFilter') || config.vereniging;
         this.fromVereniging = this.router.url.startsWith('/onderhoud/verenigingen');
         if (this.fromVereniging) {

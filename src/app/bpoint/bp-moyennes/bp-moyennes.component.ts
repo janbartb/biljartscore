@@ -73,7 +73,36 @@ export class BpMoyennesComponent extends BaseComponent implements OnInit {
             }
             this.bssTabel.moyennes.push(bssEntry);
         });
-        this.bssApi
+        const exists = this.existing.some(kl => kl == this.bssTabel.klasse);
+        if (exists) {
+            this.tabelWijzigen();
+        }
+        else {
+            this.tabelToevoegen();
+        }
+    }
+
+    private tabelToevoegen() {
+        this.bssApi.addMoyenneTabel(this.bssTabel)
+        .then(resp => {
+            this.alert.showAlert(resp.message, 'success');
+            this.existing.push(this.bssTabel.klasse);
+            this.bpTabel = new BpMoyTabel();
+            this.bssTabel = new MoyenneTabel();
+        })
+        .catch(err => {
+            this.alert.showError(err);
+        });
+    }
+
+    private tabelWijzigen() {
+        this.bssApi.updateMoyenneTabel(this.bssTabel)
+        .then(resp => {
+            this.alert.showAlert(resp.message, 'success');
+        })
+        .catch(err => {
+            this.alert.showError(err);
+        });
     }
 
     getMoyenneTabelFromBpoint() {

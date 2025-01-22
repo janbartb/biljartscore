@@ -123,6 +123,34 @@
                                     </form>    
                                 </div>
                             }
+                            @else {
+                                <div style="padding-left: 1em;">
+                                    <table class="tbl-normal tbl-input">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 8em;"></td>
+                                                <td style="line-height: 2.5em;">
+                                                    <label for="">Vereniging</label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="verNaam">Naam</label>
+                                                </td>
+                                                <td>
+                                                    <span>{{bssVereniging.naam}}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <app-button [button]="verButton" (buttonClicked)="nieuweVerenigingClicked()"></app-button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
                             @if (teamForm) {
                                 <div style="padding-left: 1em;">
                                     <form [formGroup]="teamForm">
@@ -181,22 +209,31 @@
                                 <div class="lijst">
                                     @for (spl of spelersToProcess; track $index) {
                                         <div class="lijst-row" style="color: gray;">
-                                            <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS}" style="width: 2em;">
-                                                <span>{{spl.inBSS ? '' : '+'}}</span>
+                                            <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS, 'clr-del': !spl.inBp}" style="width: 2em;">
+                                                <span>{{spl.inBSS ? (spl.inBp ? '' : '-') : '+'}}</span>
                                             </div>
-                                            <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS}" style="width: 5em;">
+                                            <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS, 'clr-del': !spl.inBp}" style="width: 5em;">
                                                 <span>{{spl.bssSpeler.speler.id}}</span>
                                             </div>
                                             <div class="lijst-col" style="width: 5em;"
-                                                    [ngClass]="{'clr-mod': !spl.inBSS || spl.bssSpeler.speler.knbbId != spl.bpSpeler.splKnbbId}">
+                                                    [ngClass]="{
+                                                        'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.speler.knbbId != spl.bpSpeler.splKnbbId),
+                                                        'clr-del': !spl.inBp
+                                                    }">
                                                 <span>{{spl.bssSpeler.speler.knbbId}}</span>
                                             </div>
                                             <div class="lijst-col" style="width: 13em;"
-                                                    [ngClass]="{'clr-mod': !spl.inBSS || spl.bssSpeler.getNaam() != spl.bpSpeler.splNaam}">
+                                                    [ngClass]="{
+                                                        'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.getNaam() != spl.bpSpeler.splNaam),
+                                                        'clr-del': !spl.inBp
+                                                    }">
                                                 <span>{{spl.bssSpeler.getNaam()}}</span>
                                             </div>
                                             <div class="lijst-col num" style="width: 4em;"
-                                                    [ngClass]="{'clr-mod': !spl.inBSS || spl.bssSpeler.getGemiddeldeVanSpel() != +spl.bpSpeler.splMoyenne}">
+                                                    [ngClass]="{
+                                                        'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.getGemiddeldeVanSpel() != +spl.bpSpeler.splMoyenne),
+                                                        'clr-del': !spl.inBp
+                                                    }">
                                                 <span>{{spl.bssSpeler.getGemiddeldeVanSpel() | number:'1.3-3':'nl-NL'}}</span>
                                             </div>
                                         </div>

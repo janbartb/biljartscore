@@ -11,9 +11,11 @@ import { SectionHeaderComponent } from '../../../../shared/section-header/sectio
 import { Speler, SpelerGemiddelde, SpelerWrapper } from '../../../../model/speler';
 import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-btns/section-footer-btns.component';
 import { KnbbCompetitie, KnbbCompTeam } from '../../../../model/knbb-competitie';
+import { ButtonComponent } from '../../../../shared/button-group/button/button.component';
 
 class SpelerToProcess {
     inBSS: boolean = false;
+    inBp: boolean = false;
     bpSpeler: TeamPageSpeler = new TeamPageSpeler();
     bssSpeler: SpelerWrapper = new SpelerWrapper(new Speler());
 }
@@ -25,6 +27,7 @@ class SpelerToProcess {
         PageHeaderComponent,
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
+        ButtonComponent,
         ReactiveFormsModule,
         NgClass,
         DecimalPipe
@@ -59,6 +62,7 @@ export class BpCompetitieTeamComponent extends BaseComponent implements OnInit {
 
     verenigingForm!: FormGroup | null;
     teamForm!: FormGroup | null;
+    verButton: Button = new Button('', 'Andere vereniging', false);
     teamButtons: Button[] = [new Button('', 'Team toevoegen', false)];
     splButtons: Button[] = [
         new Button('', 'Spelers verwerken in BSS', false)
@@ -169,13 +173,20 @@ export class BpCompetitieTeamComponent extends BaseComponent implements OnInit {
         });
     }
 
+    nieuweVerenigingClicked() {
+        this.bssVereniging = new Vereniging();
+        this.existingTeamIds = this.bssVereniging.teams.map(tm => tm.teamId);
+        this.bssTeam = this.getBssTeam(this.bssVereniging.teams, this.bpTeam.knbbId);
+        this.initialize();
+    }
+
     verwerkSpelers() {
         let team = this.bssVereniging.teams.find(tm => tm.teamId == this.bssTeam.teamId);
         if (!team) {
             this.alert.showError(`Team '${this.bssTeam.naam}' niet gevonden in vereniging '${this.bssVereniging.naam}'.`);
             return;
         }
-        team.teamLeden = this.spelersToProcess.map(sp => sp.bssSpeler.speler.id);
+        team.teamLeden = this.spelersToProcess.filter(sp => sp.inBp).map(sp => sp.bssSpeler.speler.id);
         console.log(team);
         if (this.spelersToAdd.length) {
             this.bssApi.addSpelers(this.spelersToAdd)
@@ -324,20 +335,20 @@ export class BpCompetitieTeamComponent extends BaseComponent implements OnInit {
                 this.sectionTitle = 'Te verwerken spelers';
                 this.spelersToProcess = this.getSpelersToProcess();
                 console.log(this.spelersToProcess);
-                let bpTeamSpelers = this.spelersToProcess.map(sp => sp.bssSpeler.speler.id);
+                let bpTeamSpelers = this.spelersToProcess.filter(sp => sp.inBp).map(sp => sp.bssSpeler.speler.id);
                 bpTeamSpelers.sort();
                 let bssTeamSpelers: String[] = JSON.parse(JSON.stringify(this.bssTeam.teamLeden));
                 bssTeamSpelers.sort();
                 this.bssTeamSpelersOk = JSON.stringify(bpTeamSpelers) == JSON.stringify(bssTeamSpelers);
                 this.fillSpelersToAddOrUpdate();
-            }
+            }    
         }
     }
 
     private fillSpelersToAddOrUpdate() {
         this.spelersToAdd = [];
         this.spelersToUpd = [];
-        this.spelersToProcess.forEach(spl => {
+        this.spelersToProcess.filter(spl => spl.inBp).forEach(spl => {
             if (!spl.inBSS) {
                 this.spelersToAdd.push(spl.bssSpeler.speler);
             }
@@ -371,6 +382,9 @@ export class BpCompetitieTeamComponent extends BaseComponent implements OnInit {
 
     private getVereniging(verenigingen: Vereniging[], knbbId: string): Vereniging {
         let foundVereniging = verenigingen.find(ver => ver.knbbId == knbbId);
+        if (this.bpTeam.bssVerId != '') {
+            foundVereniging = verenigingen.find(ver => ver.verId == this.bpTeam.bssVerId);
+        }
         return foundVereniging ? foundVereniging : new Vereniging();
     }
 
@@ -413,6 +427,7 @@ export class BpCompetitieTeamComponent extends BaseComponent implements OnInit {
         let result: SpelerToProcess[] = [];
         this.pageData.spelers.forEach(bpSpl => {
             let spelerToProcess: SpelerToProcess = new SpelerToProcess();
+            spelerToProcess.inBp = true;
             spelerToProcess.bpSpeler = JSON.parse(JSON.stringify(bpSpl));
             spelerToProcess.bpSpeler.splNaamOrig = spelerToProcess.bpSpeler.splNaam;
             spelerToProcess.bpSpeler.splNaam = spelerToProcess.bpSpeler.splNaam.replaceAll('  ', ' ');
@@ -435,7 +450,30 @@ export class BpCompetitieTeamComponent extends BaseComponent implements OnInit {
                 }
             }
         });
+        const tempResult: SpelerToProcess[] = JSON.parse(JSON.stringify(result));
+        this.bssTeam.teamLeden.forEach(bssSplId => {
+            let foundSpeler = this.allSpelers.find(sp => sp.speler.id == bssSplId);
+            if (foundSpeler) {
+                if (this.bssSpelerNotInBpTeam(foundSpeler, tempResult)) {
+                    let spelerToProcess: SpelerToProcess = new SpelerToProcess();
+                    spelerToProcess.inBSS = true;
+                    spelerToProcess.bssSpeler = foundSpeler;
+                    result.push(spelerToProcess);
+                }
+            }
+        });
         return result;
+    }
+
+    private bssSpelerNotInBpTeam(bssSpeler: SpelerWrapper, splsToProcess: SpelerToProcess[]): boolean {
+        let inBpTeam = false;
+        if (bssSpeler.speler.knbbId != '') {
+            inBpTeam = splsToProcess.some(stp => stp.bpSpeler.splKnbbId == bssSpeler.speler.knbbId);
+        }
+        if (!inBpTeam) {
+            inBpTeam = splsToProcess.some(stp => stp.bpSpeler.splNaam == bssSpeler.getNaam());
+        }
+        return !inBpTeam;
     }
 
     private createNieuweSpeler(spl: TeamPageSpeler): SpelerWrapper {
@@ -450,10 +488,6 @@ export class BpCompetitieTeamComponent extends BaseComponent implements OnInit {
         moy1.spelId = '3BA';
         moy1.gemiddelde = +spl.splMoyenne;
         speler.gemiddeldes.push(moy1);
-        const moy2: SpelerGemiddelde = new SpelerGemiddelde();
-        moy2.spelId = 'LIB';
-        moy2.gemiddelde = 0;
-        speler.gemiddeldes.push(moy2);
         return new SpelerWrapper(speler, '3BA');
     }
 
