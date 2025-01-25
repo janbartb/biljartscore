@@ -1,11 +1,11 @@
 <div>
-    <div class="cmp-menu" [style.text-align]="menu.centered ? 'center' : ''">
-        <div class="flexbox flexcolumn flexcenter">
-            @for (item of menu.items; track $index) {
-                <div>
+    <div class="cmp-menu" [style.text-align]="menu.centered ? '' : ''">
+        <div class="flexbox flexcenter">
+            <div>
+                @for (item of menu.items; track $index) {
                     <app-menu-item [menuItem]="item" [selected]="menu.selectedIdx == $index" (itemClicked)="itemClicked(item)"></app-menu-item>
-                </div>
-            }    
+                }        
+            </div>
         </div>
     </div>
 </div>

@@ -25,11 +25,18 @@ export class HomeComponent extends BaseComponent implements OnInit {
     screenReady: boolean = false;
     notAllowed: boolean = false;
 
-    enterClicked() {
-        const item = this.menu.getSelectedItem();
-        if (item) {
-            this.menuItemClicked(item);
+    buttonPressed(shortcut: string) {
+        let item = this.menu.getSelectedItem();
+        if (shortcut != '') {
+            item = this.menu.getItem(shortcut);
         }
+        if (item) {
+            const idx = this.menu.getIndex(item);
+            this.menu.selectedIdx = idx;
+            setTimeout(() => {
+                this.menuItemClicked(item);                
+            }, 300);
+         }    
     }
 
     escapeClicked() {
@@ -44,7 +51,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
     menuItemClicked(item: MenuItem) {
         this.menu.selectedIdx = this.menu.getIndex(item);
         console.log('menu item clicked : ' + item.text);
-        if (item.shortcut == 'w') {
+        if (item.shortcut == '1') {
             this.openFullscreen();
             this.router.navigate([item.navigateTo]);
             return;
@@ -74,11 +81,23 @@ export class HomeComponent extends BaseComponent implements OnInit {
             return true;
         }
         if (event.key === 'Enter') {
-            this.enterClicked();
+            this.buttonPressed('');
             return false;
         }
         if (event.key === 'Escape') {
             this.escapeClicked();
+            return false;
+        }
+        if (event.code === 'Digit1' || event.code === 'Numpad1') {
+            this.buttonPressed('1');
+            return false;
+        }
+        if (event.code === 'Digit2' || event.code === 'Numpad2') {
+            this.buttonPressed('2');
+            return false;
+        }
+        if (event.code === 'Digit3' || event.code === 'Numpad3') {
+            this.buttonPressed('3');
             return false;
         }
         return true;
@@ -134,9 +153,11 @@ export class HomeComponent extends BaseComponent implements OnInit {
         });
         
         this.appData.resetHistory();
-        this.menu.addItem(new MenuItem('w', 'Wedstrijd spelen', 'spelkeuze'));
-        this.menu.addItem(new MenuItem('o', 'Onderhoud gegevens', 'onderhoud'));
-        this.menu.addItem(new MenuItem('b', 'Biljartpoint', 'bpoint/home'));
+        const filler = true;
+        this.menu.addItem(new MenuItem('1', 'Wedstrijd spelen', 'spelkeuze'));
+        this.menu.addItem(new MenuItem('2', 'Onderhoud gegevens', 'onderhoud'));
+        this.menu.addItem(new MenuItem('', '', '', filler));
+        this.menu.addItem(new MenuItem('3', 'Biljartpoint', 'bpoint/home'));
         this.closeFullscreen();
     }
 

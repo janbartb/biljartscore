@@ -17,11 +17,18 @@ import { Menu, MenuItem } from '../../model/menu';
 export class SpelkeuzeComponent extends BaseComponent implements OnInit {
     menu: Menu = new Menu();
 
-    enterPressed() {
-        const item = this.menu.getSelectedItem();
-        if (item) {
-            this.menuItemClicked(item);
+    buttonPressed(shortcut: string) {
+        let item = this.menu.getSelectedItem();
+        if (shortcut != '') {
+            item = this.menu.getItem(shortcut);
         }
+        if (item) {
+            const idx = this.menu.getIndex(item);
+            this.menu.selectedIdx = idx;
+            setTimeout(() => {
+                this.menuItemClicked(item);                
+            }, 300);
+         }    
     }
 
     override escapePressed(): void {
@@ -49,11 +56,23 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
             return true;
         }
         if (event.key === 'Enter') {
-            this.enterPressed();
+            this.buttonPressed('');
             return false;
         }
         if (event.key === 'Escape') {
             this.escapePressed();
+            return false;
+        }
+        if (event.code === 'Digit1' || event.code === 'Numpad1') {
+            this.buttonPressed('1');
+            return false;
+        }
+        if (event.code === 'Digit2' || event.code === 'Numpad2') {
+            this.buttonPressed('2');
+            return false;
+        }
+        if (event.code === 'Digit3' || event.code === 'Numpad3') {
+            this.buttonPressed('3');
             return false;
         }
         if (event.key === 'Home') {
@@ -66,9 +85,9 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         const filler = true;
         this.menu.centered = true;
-        this.menu.addItem(new MenuItem('m', 'KNBB competitie team match', 'teammatch'));
-        this.menu.addItem(new MenuItem('m', 'KNBB competitie single match', 'match'));
+        this.menu.addItem(new MenuItem('1', 'KNBB competitie team match', 'teammatch'));
+        this.menu.addItem(new MenuItem('2', 'KNBB competitie single match', 'match'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('w', 'Oefen wedstrijd', 'wedstrijd/aantspl'));
+        this.menu.addItem(new MenuItem('3', 'Oefen wedstrijd', 'wedstrijd/aantspl'));
     }
 }

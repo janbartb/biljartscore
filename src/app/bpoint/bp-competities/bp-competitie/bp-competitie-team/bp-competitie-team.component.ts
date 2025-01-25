@@ -83,7 +83,8 @@ export class BpCompetitieTeamComponent extends BaseComponent implements OnInit {
         this.bssVereniging.knbbId = this.verKnbbId?.value;
         this.bssVereniging.naam = this.verNaam?.value;
         this.bssVereniging.korteNaam = this.verKorteNaam?.value;
-        this.bssVereniging.locatie = this.bpLokaliteit.naam;
+        this.bssVereniging.locatie = this.verLokatie?.value;
+        this.bssVereniging.plaats = this.verPlaats?.value;
         
         this.bssTeam = new Team();
         this.bssTeam.verId = this.bssVereniging.verId;
@@ -296,14 +297,18 @@ export class BpCompetitieTeamComponent extends BaseComponent implements OnInit {
         ])
         .then(results => {
             this.pageData = results[0];
+            const lokdat = this.pageData.lokData.replaceAll('\t', '');
+            const lokdatArr = lokdat.split('\n');
             this.pageData.spelers.forEach(spl => {
                 spl.splNaam = spl.splNaam.replaceAll('*', '');
             });
             this.allSpelers = results[2];
             this.existingSpelerIds = this.allSpelers.map(sw => sw.speler.id);
-            const pos = this.pageData.lokData.indexOf(' ');
-            this.bpLokaliteit.knbbId = this.pageData.lokData.substring(0, pos);
-            this.bpLokaliteit.naam = this.pageData.lokData.substring(pos + 1);
+            const pos = lokdatArr[0].indexOf(' ');
+            this.bpLokaliteit.knbbId = lokdatArr[0].substring(0, pos);
+            this.bpLokaliteit.naam = lokdatArr[0].substring(pos + 1);
+            let plaats = lokdatArr[5].toLowerCase().trim();
+            this.bpLokaliteit.plaats = plaats.substring(0, 1).toUpperCase() + plaats.substring(1);
             this.existingVerIds = results[1].map(ver => ver.verId);
             this.bssVereniging = this.getVereniging(results[1], this.bpLokaliteit.knbbId);
             this.existingTeamIds = this.bssVereniging.teams.map(tm => tm.teamId);
@@ -399,6 +404,7 @@ export class BpCompetitieTeamComponent extends BaseComponent implements OnInit {
             verKnbbId: [lokaliteit.knbbId, [Validators.required, notEmpty()]],
             verNaam: [this.bpTeam.naam, [Validators.required, notEmpty()]],
             verLokatie: [lokaliteit.naam],
+            verPlaats: [lokaliteit.plaats],
             verKorteNaam: ['', [Validators.required, notEmpty()]]
         });
     }
@@ -607,11 +613,11 @@ export class BpCompetitieTeamComponent extends BaseComponent implements OnInit {
     get verLokatie() {
         return this.verenigingForm?.get('verLokatie');
     }
+    get verPlaats() {
+        return this.verenigingForm?.get('verPlaats');
+    }
     get verKorteNaam() {
         return this.verenigingForm?.get('verKorteNaam');
-    }
-    get verLocatie() {
-        return this.verenigingForm?.get('verLocatie');
     }
 
     get teamVolgNr() {

@@ -54,6 +54,7 @@ export class BpLokaliteit {
     knbbId: string = '';
     bssId: string = '';
     naam: string = '';
+    plaats: string = '';
 }
 
 export class CompTemp {

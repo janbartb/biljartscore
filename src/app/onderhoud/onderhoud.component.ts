@@ -19,11 +19,18 @@ export class OnderhoudComponent extends BaseComponent implements OnInit {
     subtitle: string = 'Hoofdmenu';
     menu: Menu = new Menu();
 
-    enterPressed() {
-        const item = this.menu.getSelectedItem();
-        if (item) {
-            this.menuItemClicked(item);
+    buttonPressed(shortcut: string) {
+        let item = this.menu.getSelectedItem();
+        if (shortcut != '') {
+            item = this.menu.getItem(shortcut);
         }
+        if (item) {
+            const idx = this.menu.getIndex(item);
+            this.menu.selectedIdx = idx;
+            setTimeout(() => {
+                this.menuItemClicked(item);                
+            }, 300);
+         }    
     }
 
     menuItemClicked(item: MenuItem) {
@@ -55,11 +62,39 @@ export class OnderhoudComponent extends BaseComponent implements OnInit {
             return true;
         }
         if (event.key === 'Enter') {
-            this.enterPressed();
+            this.buttonPressed('');
             return false;
         }
         if (event.key === 'Escape') {
             this.escapePressed();
+            return false;
+        }
+        if (event.code === 'Digit1' || event.code === 'Numpad1') {
+            this.buttonPressed('1');
+            return false;
+        }
+        if (event.code === 'Digit2' || event.code === 'Numpad2') {
+            this.buttonPressed('2');
+            return false;
+        }
+        if (event.code === 'Digit3' || event.code === 'Numpad3') {
+            this.buttonPressed('3');
+            return false;
+        }
+        if (event.code === 'Digit4' || event.code === 'Numpad4') {
+            this.buttonPressed('4');
+            return false;
+        }
+        if (event.code === 'Digit5' || event.code === 'Numpad5') {
+            this.buttonPressed('5');
+            return false;
+        }
+        if (event.code === 'Digit6' || event.code === 'Numpad6') {
+            this.buttonPressed('6');
+            return false;
+        }
+        if (event.code === 'Digit7' || event.code === 'Numpad7') {
+            this.buttonPressed('7');
             return false;
         }
         if (event.key === 'Home') {
@@ -72,16 +107,16 @@ export class OnderhoudComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         const filler = true;
         this.menu.centered = true;
-        this.menu.addItem(new MenuItem('v', 'Verenigingen', 'verenigingen'));
-        this.menu.addItem(new MenuItem('s', 'Spelers', 'spelers'));
+        this.menu.addItem(new MenuItem('1', 'Verenigingen', 'verenigingen'));
+        this.menu.addItem(new MenuItem('2', 'Spelers', 'spelers'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('d', 'KNBB districten', 'districten'));
-        this.menu.addItem(new MenuItem('m', 'KNBB klassen en moyennes', 'moyennes'));
-        this.menu.addItem(new MenuItem('k', 'KNBB competities', 'knbbcompetities'));
+        this.menu.addItem(new MenuItem('3', 'KNBB districten', 'districten'));
+        this.menu.addItem(new MenuItem('4', 'KNBB klassen en moyennes', 'moyennes'));
+        this.menu.addItem(new MenuItem('5', 'KNBB competities', 'knbbcompetities'));
         //this.menu.addItem(new MenuItem('e', 'Eigen competities', 'eigencomps'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('p', 'Spelsoorten', 'spelsoorten'));
+        this.menu.addItem(new MenuItem('6', 'Spelsoorten', 'spelsoorten'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('i', 'Instellingen', 'instellingen'));
+        this.menu.addItem(new MenuItem('7', 'Instellingen', 'instellingen'));
     }
 }

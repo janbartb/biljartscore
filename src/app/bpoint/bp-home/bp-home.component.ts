@@ -19,11 +19,18 @@ export class BpHomeComponent extends BaseComponent implements OnInit {
     subtitle: string = 'Menu';
     menu: Menu = new Menu();
 
-    enterPressed() {
-        const item = this.menu.getSelectedItem();
-        if (item) {
-            this.menuItemClicked(item);
+    buttonPressed(shortcut: string) {
+        let item = this.menu.getSelectedItem();
+        if (shortcut != '') {
+            item = this.menu.getItem(shortcut);
         }
+        if (item) {
+            const idx = this.menu.getIndex(item);
+            this.menu.selectedIdx = idx;
+            setTimeout(() => {
+                this.menuItemClicked(item);                
+            }, 300);
+         }    
     }
 
     menuItemClicked(item: MenuItem) {
@@ -51,11 +58,23 @@ export class BpHomeComponent extends BaseComponent implements OnInit {
             return true;
         }
         if (event.key === 'Enter') {
-            this.enterPressed();
+            this.buttonPressed('');
             return false;
         }
         if (event.key === 'Escape') {
             this.escapePressed();
+            return false;
+        }
+        if (event.code === 'Digit1' || event.code === 'Numpad1') {
+            this.buttonPressed('1');
+            return false;
+        }
+        if (event.code === 'Digit2' || event.code === 'Numpad2') {
+            this.buttonPressed('2');
+            return false;
+        }
+        if (event.code === 'Digit3' || event.code === 'Numpad3') {
+            this.buttonPressed('3');
             return false;
         }
         if (event.key === 'Home') {
@@ -68,9 +87,9 @@ export class BpHomeComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         const filler = true;
         this.menu.centered = true;
-        this.menu.addItem(new MenuItem('v', 'Districten', 'bpoint/districten'));
-        this.menu.addItem(new MenuItem('m', 'Moyenne tabellen (driebanden klein B1-B2)', 'bpoint/moyennes'));
-        this.menu.addItem(new MenuItem('c', 'Competities', 'bpoint/competities'));
+        this.menu.addItem(new MenuItem('1', 'Districten', 'bpoint/districten'));
+        this.menu.addItem(new MenuItem('2', 'Moyenne tabellen (driebanden klein B1-B2)', 'bpoint/moyennes'));
+        this.menu.addItem(new MenuItem('3', 'Competities', 'bpoint/competities'));
     }
 
 }

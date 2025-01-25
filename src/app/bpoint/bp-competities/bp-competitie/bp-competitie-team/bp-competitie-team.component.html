@@ -110,6 +110,16 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
+                                                        <label for="verPlaats">Plaats</label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="verPlaats" style="width: 12em;" formControlName="verPlaats" autocomplete="off"
+                                                            [ngClass]="{'invalid': verPlaats?.invalid && (verPlaats?.dirty), 'valid': verPlaats?.valid && (verPlaats?.dirty)}"
+                                                            (blur)="verPlaats?.setValue(verPlaats?.value.trim())">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
                                                         <label for="verKorteNaam">Korte naam<span class="req"> *</span></label>
                                                     </td>
                                                     <td>
