@@ -2,12 +2,21 @@ import { Speler } from "./speler";
 
 export class Vereniging {
     verId: string = '';
-    knbbId: string = '';
     naam: string = '';
     korteNaam: string = '';
     locatie: string = '';
-    plaats: string = '';
     teams: Team[] = []; 
+}
+
+export class Lokaliteit {
+    lokId: string = '';
+    knbbId: string = '';
+    naam: string = '';
+    adres: string = '';
+    postcode: string = '';
+    plaats: string = '';
+    telefoon: string = '';
+    email: string = '';
 }
 
 export class Team {
@@ -36,10 +45,12 @@ export class VerenigingKort {
 
 export class VerenigingWrapper {
     vereniging: Vereniging = new Vereniging();
+    lokaliteit: Lokaliteit = new Lokaliteit();
     leden: Speler[] = [];
 
-    constructor(vereniging: Vereniging, leden?: Speler[]) {
+    constructor(vereniging: Vereniging, lokaliteit: Lokaliteit, leden?: Speler[]) {
         this.vereniging = vereniging;
+        this.lokaliteit = lokaliteit;
         if (leden) {
             this.leden = leden;
         }

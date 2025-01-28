@@ -90,19 +90,14 @@ export class VerenigingAddComponent extends BaseComponent implements OnInit {
     private createVerenigingForm() {
         this.verenigingForm = this.fb.nonNullable.group({
             verId: [this.vereniging.verId, [Validators.required, notEmpty(), noDuplicates(this.existingVerenigingIds)]],
-            knbbId: [this.vereniging.knbbId],
             naam: [this.vereniging.naam, [Validators.required, notEmpty()]],
             korteNaam: [this.vereniging.korteNaam, [Validators.required, notEmpty()]],
             locatie: [this.vereniging.locatie],
-            plaats: [this.vereniging.plaats]
         });
     }
 
     get verId() {
         return this.verenigingForm.get('verId');
-    }
-    get knbbId() {
-        return this.verenigingForm.get('knbbId');
     }
     get naam() {
         return this.verenigingForm.get('naam');
@@ -112,9 +107,6 @@ export class VerenigingAddComponent extends BaseComponent implements OnInit {
     }
     get locatie() {
         return this.verenigingForm.get('locatie');
-    }
-    get plaats() {
-        return this.verenigingForm.get('plaats');
     }
 
 }

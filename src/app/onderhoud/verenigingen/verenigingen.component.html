@@ -7,9 +7,9 @@
         <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
             <div class="lijst-row">
                 <div class="lijst-col" style="width: 2em;"></div>
-                <div class="lijst-col" style="width: 13em;">Naam</div>
-                <div class="lijst-col" style="width: 11em;">Locatie</div>
-                <div class="lijst-col" style="width: 11em;">Plaats</div>
+                <div class="lijst-col" style="width: 12em;">Naam</div>
+                <div class="lijst-col" style="width: 13em;">Locatie</div>
+                <div class="lijst-col" style="width: 12em;">Plaats</div>
                 <div class="lijst-col" style="width: 5em;" title="Aantal leden">Leden</div>
                 <div class="lijst-col" style="width: 5em;" title="Aantal teams">Teams</div>
             </div>
@@ -17,12 +17,12 @@
         <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
             <div class="lijst-row filter-row">
                 <div class="lijst-col" style="width: 2em;"></div>
-                <div class="lijst-col" style="width: 13em;">
+                <div class="lijst-col" style="width: 12em;">
                     <input class="filter" type="text" style="width: 10em;" [(ngModel)]="naamFilter" autocomplete="off"
                                         (keyup)="naamFilterChanged($event)">
                 </div>
-                <div class="lijst-col" style="width: 11em;"></div>
-                <div class="lijst-col" style="width: 11em;"></div>
+                <div class="lijst-col" style="width: 13em;"></div>
+                <div class="lijst-col" style="width: 12em;"></div>
                 <div class="lijst-col" style="width: 5em;"></div>
                 <div class="lijst-col" style="width: 5em;"></div>
             </div>
@@ -37,14 +37,14 @@
                                 <div class="lijst-col indicator" style="width: 2em;">
                                     <i class="fas fa-angle-right"></i>
                                 </div>
-                                <div class="lijst-col" style="width: 13em;">
+                                <div class="lijst-col" style="width: 12em;">
                                     <span>{{item.vereniging.naam}}</span>
                                 </div>
-                                <div class="lijst-col" style="width: 11em;">
-                                    <span>{{item.vereniging.locatie}}</span>
+                                <div class="lijst-col" style="width: 13em;">
+                                    <span>{{item.lokaliteit.naam}}</span>
                                 </div>
-                                <div class="lijst-col" style="width: 11em;">
-                                    <span>{{item.vereniging.plaats}}</span>
+                                <div class="lijst-col" style="width: 12em;">
+                                    <span>{{item.lokaliteit.plaats}}</span>
                                 </div>
                                 <div class="lijst-col" style="width: 5em;">
                                     <span>{{item.leden.length}}</span>

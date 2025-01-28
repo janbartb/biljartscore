@@ -97,6 +97,10 @@ export class OnderhoudComponent extends BaseComponent implements OnInit {
             this.buttonPressed('7');
             return false;
         }
+        if (event.code === 'Digit8' || event.code === 'Numpad8') {
+            this.buttonPressed('8');
+            return false;
+        }
         if (event.key === 'Home') {
             this.homePressed();
             return false;
@@ -107,16 +111,17 @@ export class OnderhoudComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         const filler = true;
         this.menu.centered = true;
-        this.menu.addItem(new MenuItem('1', 'Verenigingen', 'verenigingen'));
-        this.menu.addItem(new MenuItem('2', 'Spelers', 'spelers'));
+        this.menu.addItem(new MenuItem('1', 'Lokaliteiten', 'lokaliteiten'));
+        this.menu.addItem(new MenuItem('2', 'Verenigingen', 'verenigingen'));
+        this.menu.addItem(new MenuItem('3', 'Spelers', 'spelers'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('3', 'KNBB districten', 'districten'));
-        this.menu.addItem(new MenuItem('4', 'KNBB klassen en moyennes', 'moyennes'));
-        this.menu.addItem(new MenuItem('5', 'KNBB competities', 'knbbcompetities'));
+        this.menu.addItem(new MenuItem('4', 'KNBB districten', 'districten'));
+        this.menu.addItem(new MenuItem('5', 'KNBB klassen en moyennes', 'moyennes'));
+        this.menu.addItem(new MenuItem('6', 'KNBB competities', 'knbbcompetities'));
         //this.menu.addItem(new MenuItem('e', 'Eigen competities', 'eigencomps'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('6', 'Spelsoorten', 'spelsoorten'));
+        this.menu.addItem(new MenuItem('7', 'Spelsoorten', 'spelsoorten'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('7', 'Instellingen', 'instellingen'));
+        this.menu.addItem(new MenuItem('8', 'Instellingen', 'instellingen'));
     }
 }

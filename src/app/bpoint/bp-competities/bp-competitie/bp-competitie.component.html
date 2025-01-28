@@ -6,11 +6,14 @@
         </div>
         <div class="flexgrow1 flexbox flexstretch">
             <!-- competitie -->
-            <div class="flex40perc flexbox flexcolumn" style="border-right: .25em solid green;">
+            <div class="flex35perc flexbox flexcolumn" style="border-right: .25em solid green;">
                 <div class="flexgrow1 flexbox flexcenter" style="padding: 1em 1em;">
                     <div>
                         @if (bpComp.inBss) {
                             <div style="padding-bottom: 1em;">Competitie is aanwezig in BSS</div>
+                        }
+                        @else {
+                            <div style="padding-bottom: 1em; color: red;">Competitie niet aanwezig in BSS</div>
                         }
                         <table class="tbl-normal tbl-input">
                             <tbody>
@@ -58,12 +61,13 @@
                         (clickedButton)="compButtonClicked($event)" [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
             </div>
             <!-- teams -->
-            <div class="flex60perc flexbox flexcolumn">
+            <div class="flex65perc flexbox flexcolumn">
                 <app-section-header [id]="1" [title]="'Teams'" [cssClasses]="'w3-green-l3'"></app-section-header>
                 <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
                     <div class="lijst-row">
                         <div class="lijst-col" style="width: 5em;">ID</div>
                         <div class="lijst-col" style="width: 15em;">Naam</div>
+                        <div class="lijst-col" style="width: 5.5em;">in Comp</div>
                         <div class="lijst-col" style="width: 5em;">in BSS</div>
                         <div class="lijst-col" style="width: 4em;">#spl</div>
                     </div>
@@ -79,6 +83,11 @@
                                         </div>
                                         <div class="lijst-col" style="width: 15em;">
                                             <span>{{team.naam}}</span>
+                                        </div>
+                                        <div class="lijst-col center" style="width: 5.5em;">
+                                            @if (team.inBssComp) {
+                                                <i class="fas fa-check"></i>
+                                            }
                                         </div>
                                         <div class="lijst-col center" style="width: 5em;">
                                             @if (team.bssTeamId != '') {

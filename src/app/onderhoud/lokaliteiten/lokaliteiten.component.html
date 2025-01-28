@@ -1,0 +1,62 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="'Lokaliteiten'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+            <div class="lijst-row">
+                <div class="lijst-col" style="width: 2em;"></div>
+                <div class="lijst-col" style="width: 4em;">ID</div>
+                <div class="lijst-col" style="width: 6em;">KNBB ID</div>
+                <div class="lijst-col" style="width: 13em;">Naam</div>
+                <div class="lijst-col" style="width: 11em;">Plaats</div>
+            </div>
+        </div>
+        <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+            <div class="lijst-row filter-row">
+                <div class="lijst-col" style="width: 2em;"></div>
+                <div class="lijst-col" style="width: 4em;"></div>
+                <div class="lijst-col" style="width: 6em;"></div>
+                <div class="lijst-col" style="width: 13em;">
+                    <input class="filter" type="text" style="width: 10em;" [(ngModel)]="naamFilter" autocomplete="off"
+                                        (keyup)="naamFilterChanged($event)">
+                </div>
+                <div class="lijst-col" style="width: 11em;">
+                    <input class="filter" type="text" style="width: 10em;" [(ngModel)]="plaatsFilter" autocomplete="off"
+                                        (keyup)="plaatsFilterChanged($event)">
+                </div>
+            </div>
+        </div>
+        <div class="flexgrow1 scroll-container">
+            <div #loklijst class="scroll-content">
+                <div class="flexbox flexcenter">
+                    <div class="lijst">
+                        @for (item of lokLijst.filtered; track $index) {
+                            <div class="lijst-row selectable" (click)="lokaliteitClicked($index)"
+                                    [ngClass]="{'selected': lokLijst.selectedIdx == $index, 'hovered': lokLijst.hoveredIdx == $index}">
+                                <div class="lijst-col indicator" style="width: 2em;">
+                                    <i class="fas fa-angle-right"></i>
+                                </div>
+                                <div class="lijst-col" style="width: 4em;">
+                                    <span>{{item.lokId}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 6em;">
+                                    <span>{{item.knbbId}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 13em;">
+                                    <span>{{item.naam}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 11em;">
+                                    <span>{{item.plaats}}</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-section-footer-btns [buttons]="buttons" (clickedButton)="lokaliteitToevoegenClicked()"
+                        [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+    </div>
+</div>

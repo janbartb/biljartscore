@@ -46,6 +46,8 @@ import { BpMoyennesComponent } from './bpoint/bp-moyennes/bp-moyennes.component'
 import { BpCompetitieComponent } from './bpoint/bp-competities/bp-competitie/bp-competitie.component';
 import { BpCompetitieTeamComponent } from './bpoint/bp-competities/bp-competitie/bp-competitie-team/bp-competitie-team.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
+import { LokaliteitenComponent } from './onderhoud/lokaliteiten/lokaliteiten.component';
+import { LokaliteitComponent } from './onderhoud/lokaliteiten/lokaliteit/lokaliteit.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -72,6 +74,8 @@ export const routes: Routes = [
     { path: 'onderhoud/verenigingen/:verId/spelers', component: SpelersComponent },
     { path: 'onderhoud/verenigingen/:verId', component: VerenigingComponent },
     { path: 'onderhoud/verenigingen', component: VerenigingenComponent },
+    { path: 'onderhoud/lokaliteiten/:lokId', component: LokaliteitComponent },
+    { path: 'onderhoud/lokaliteiten', component: LokaliteitenComponent },
     { path: 'onderhoud/spelers/toevoegen/:verId', component: SpelerComponent },
     { path: 'onderhoud/spelers/toevoegen', component: SpelerComponent },
     { path: 'onderhoud/spelers/:spelerId', component: SpelerComponent },

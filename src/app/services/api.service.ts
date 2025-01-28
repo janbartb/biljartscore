@@ -3,7 +3,7 @@ import { ApiResponse } from '../model/api-response';
 import { Config } from '../model/config';
 import { Spelsoort } from '../model/spelsoort';
 import { Speler, SpelerWrapper } from '../model/speler';
-import { Team, Vereniging, VerenigingKort, VerenigingWrapper } from '../model/vereniging';
+import { Lokaliteit, Team, Vereniging, VerenigingKort, VerenigingWrapper } from '../model/vereniging';
 import { MoyenneTabel } from '../model/moyenne-tabel';
 import { District } from '../model/district';
 import { KnbbCompetitie } from '../model/knbb-competitie';
@@ -108,10 +108,12 @@ export class ApiService {
     async getVerenigingenLijst(): Promise<VerenigingWrapper[]> {
         const verenigingen: Vereniging[] = await this.getResource(this.dbUrl + '/verenigingen');
         const spelers: Speler[] = await this.getResource(this.dbUrl + '/spelers');
+        const lokaliteiten: Lokaliteit[] = await this.getResource(this.dbUrl + '/lokaliteiten');
         let result: VerenigingWrapper[] = [];
         verenigingen.forEach(ver => {
             const leden: Speler[] = spelers.filter(spl => spl.verenigingIds.some(id => id == ver.verId));
-            result.push(new VerenigingWrapper(ver, leden));
+            let lokaliteit = lokaliteiten.find(lok => lok.lokId == ver.locatie) || new Lokaliteit();
+            result.push(new VerenigingWrapper(ver, lokaliteit, leden));
         })
         return result;
     }
@@ -144,9 +146,33 @@ export class ApiService {
         return result;
     }
 
+    async getVerenigingFull(id: string): Promise<VerenigingWrapper> {
+        let lok: Lokaliteit = new Lokaliteit();
+        const ver: Vereniging = await this.getResource(this.dbUrl + '/verenigingen/' + id);
+        if (ver.locatie != '') {
+            lok = await this.getLokaliteit(ver.locatie);
+        }
+        return new VerenigingWrapper(ver, lok);
+    }
+
     async getLedenVanVereniging(verId: string, spel: string): Promise<SpelerWrapper[]> {
         const result: Speler[] = await this.getResource(this.dbUrl + '/spelers?verId=' + verId);
         return result.map(sp => new SpelerWrapper(sp, spel));
+    }
+
+    async getLokaliteiten(): Promise<Lokaliteit[]> {
+        const result: Lokaliteit[] = await this.getResource(this.dbUrl + '/lokaliteiten');
+        return result;
+    }
+
+    async getLokaliteit(id: string): Promise<Lokaliteit> {
+        const result: Lokaliteit = await this.getResource(this.dbUrl + '/lokaliteiten/' + id);
+        return result;
+    }
+
+    async getExistingLokaliteitIds(): Promise<string[]> {
+        const result: Lokaliteit[] = await this.getResource(this.dbUrl + '/lokaliteiten');
+        return result.map(lok => lok.lokId);
     }
 
     async getMoyenneKlassenLijst(spelsoortId: string): Promise<string[]> {
@@ -374,6 +400,45 @@ export class ApiService {
 
     async deleteVereniging(vereniging: Vereniging): Promise<ApiResponse> {
         const response: Response = await fetch(this.dbUrl + `/verenigingen/${vereniging.verId}`, {
+            method: 'DELETE'
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
+    // LOKALITEIT
+
+    async addLokaliteit(lokaliteit: Lokaliteit): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + '/lokaliteiten', {
+            method: 'POST',
+            body: JSON.stringify(lokaliteit),
+            headers: this.myHeaders
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
+    async updateLokaliteit(lokaliteit: Lokaliteit): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + `/lokaliteiten/${lokaliteit.lokId}`, {
+            method: 'PUT',
+            body: JSON.stringify(lokaliteit),
+            headers: this.myHeaders
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
+    async deleteLokaliteit(lokaliteit: Lokaliteit): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + `/lokaliteiten/${lokaliteit.lokId}`, {
             method: 'DELETE'
         });
         const json: ApiResponse = await response.json();

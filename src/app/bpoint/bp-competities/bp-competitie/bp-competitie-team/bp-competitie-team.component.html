@@ -1,65 +1,246 @@
 <div class="fullviewheight">
-    <div class="fullheight flexbox flexcolumn">
-        <div>
-            <app-page-header [title]="'Biljartpoint'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
-                        (escClicked)="escapePressed()" (prevClicked)="previousPressed()"></app-page-header>
-        </div>
-        @if (bssVereniging.verId != '') {
-            <div class="flexbox flexmiddle" style="min-height: 2em; padding-left: 1em; border-bottom: .25em solid #357a38;">
-                <div class="label" style="width: 11em;">Vereniging in BSS</div>
-                <div>{{bssVereniging.naam}}</div>
-            </div>    
-        }
-        @if (bssTeam.teamId != '') {
-            <div class="flexbox flexmiddle" style="min-height: 2em; padding-left: 1em; border-bottom: .25em solid #357a38;">
-                <div class="label" style="width: 11em;">Team in BSS</div>
-                <div>{{bssTeam.klasse}}-{{bssTeam.volgNr}}</div>
-                <div style="padding-left: 1em;">{{bssTeam.naam}}</div>
-            </div>    
-        }
-        <div class="flexgrow1 flexbox flexstretch">
-            <div class="flex45perc flexbox flexcolumn" style="border-right: .125em solid #357a38;">
-                <app-section-header [title]="'Spelers in Biljartpoint'" [cssClasses]="'w3-green-l1'"></app-section-header>
-                @if (verenigingForm || teamForm) {
-                    <div style="padding: 3em;">
-                        <div class="label">
-                            <div>Voeg eerst het team toe.</div>
-                            <div style="padding-top: 1em;">Daarna kunnen de spelers worden toegevoegd.</div>    
+    @if (dataReady) {
+        <div class="fullheight flexbox flexcolumn">
+            <div>
+                <app-page-header [title]="'Biljartpoint'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                            (escClicked)="escapePressed()" (prevClicked)="previousPressed()"></app-page-header>
+            </div>
+            @if (bssLokaliteit.lokId != '' || bssVereniging.verId != '' || bssTeam.teamId != '') {
+                <div class="flexbox flexmiddle" style="min-height: 2em; padding-left: 1em; border-bottom: .25em solid #357a38;">
+                    @if (bssLokaliteit.lokId != '') {
+                        <div class="label" style="padding-right: .75em;">
+                            <span style="padding-right: .5em;">BSS :</span>
+                            <span>lokaliteit</span>
                         </div>
-                    </div>
-                }
-                @else {
-                    <div class="flexgrow1 scroll-container">
-                        <div #pbspelers class="scroll-content">
-                            <div class="flexbox flexcenter">
-                                <div class="lijst">
-                                    @for (spl of spelersToProcess; track $index) {
-                                        <div class="lijst-row selectable">
-                                            <div class="lijst-col" style="width: 5em;">
-                                                <span>{{spl.bpSpeler.splKnbbId}}</span>
-                                            </div>
-                                            <div class="lijst-col" style="width: 13em;">
-                                                <span>{{spl.bpSpeler.splNaam}}</span>
-                                            </div>
-                                            <div class="lijst-col num" style="width: 4em;">
-                                                <span>{{spl.bpSpeler.splMoyenne}}</span>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
+                        <div>{{bssLokaliteit.naam}}</div>
+                        <div style="width: 3em;"></div>    
+                    }
+                    @if (bssVereniging.verId != '') {
+                        <div class="label" style="padding-right: .75em;">vereniging</div>
+                        <div>{{bssVereniging.naam}}</div>
+                        <div style="width: 3em;"></div>    
+                    }
+                    @if (bssTeam.teamId != '') {
+                        <div class="label" style="padding-right: .75em;">team</div>
+                        <div>{{bssTeam.klasse}}-{{bssTeam.volgNr}}</div>
+                        <div style="padding-left: .5em;">{{bssTeam.naam}}</div>
+                    }
+                </div>    
+            }
+            <div class="flexgrow1 flexbox flexstretch">
+                <div class="flex45perc flexbox flexcolumn" style="border-right: .125em solid #357a38;">
+                    @if (!(lokaliteitForm || verenigingForm || teamForm || !bpTeam.inBssComp)) {
+                        <app-section-header [title]="'Spelers in Biljartpoint'" [cssClasses]="'w3-green-l1'"></app-section-header>
+                    }
+                    @if (lokaliteitForm) {
+                        <div style="padding: 3em;">
+                            <div class="label">
+                                <div>Voeg de lokaliteit toe aan BSS.</div>
                             </div>
                         </div>
-                    </div>    
-                }
-            </div>
-            <div class="flex55perc flexbox flexcolumn" style="border-left: .125em solid #357a38;">
-                <app-section-header [title]="sectionTitle" [cssClasses]="'w3-green-l1'"></app-section-header>
-                @if (verenigingForm || teamForm) {
-                    <div class="flexgrow1 flexbox flexcenter">
-                        <div>
-                            @if (verenigingForm) {
-                                <div style="padding-left: 1em;">
-                                    <form [formGroup]="verenigingForm">
+                    }
+                    @else if (verenigingForm || teamForm) {
+                        <div style="padding: 3em;">
+                            <div class="label">
+                                <div>Voeg team (en vereniging) toe aan BSS.</div>
+                            </div>
+                        </div>
+                    }
+                    @else if (!bpTeam.inBssComp) {
+                        <div style="padding: 3em;">
+                            <div class="label">
+                                <div>Voeg team toe aan BSS competitie.</div>
+                            </div>
+                        </div>
+                    }
+                    @else {
+                        <div class="flexgrow1 scroll-container">
+                            <div #pbspelers class="scroll-content">
+                                <div class="flexbox flexcenter">
+                                    <div class="lijst">
+                                        @for (spl of spelersToProcess; track $index) {
+                                            <div class="lijst-row selectable">
+                                                <div class="lijst-col" style="width: 5em;">
+                                                    <span>{{spl.bpSpeler.splKnbbId}}</span>
+                                                </div>
+                                                <div class="lijst-col" style="width: 13em;">
+                                                    <span>{{spl.bpSpeler.splNaam}}</span>
+                                                </div>
+                                                <div class="lijst-col num" style="width: 4em;">
+                                                    <span>{{spl.bpSpeler.splMoyenne}}</span>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>    
+                    }
+                </div>
+                <div class="flex55perc flexbox flexcolumn" style="border-left: .125em solid #357a38;">
+                    <app-section-header [title]="sectionTitle" [cssClasses]="'w3-green-l1'"></app-section-header>
+                    @if (lokaliteitForm) {
+                        <div class="flexgrow1 flexbox flexcenter">
+                            <div style="padding-left: 1em;">
+                                <form [formGroup]="lokaliteitForm">
+                                    <table class="tbl-normal tbl-input">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 8em;"></td>
+                                                <td style="line-height: 2.5em;">
+                                                    <label for="">Lokaliteit</label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="lokId">ID<span class="req"> *</span></label>
+                                                </td>
+                                                <td>
+                                                    <input #lokid type="text" id="lokId" style="width: 4em;" formControlName="lokId" autocomplete="off"
+                                                        [ngClass]="{'invalid': lokId?.invalid && (lokId?.dirty), 'valid': lokId?.valid && (lokId?.dirty)}"
+                                                        (blur)="lokId?.setValue(lokId?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="lokKnbbId">KNBB ID<span class="req"> *</span></label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="lokKnbbId" style="width: 6em;" formControlName="lokKnbbId" autocomplete="off"
+                                                        [ngClass]="{'invalid': lokKnbbId?.invalid && (lokKnbbId?.dirty), 'valid': lokKnbbId?.valid && (lokKnbbId?.dirty)}"
+                                                        (blur)="lokKnbbId?.setValue(lokKnbbId?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="lokNaam">Naam<span class="req"> *</span></label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="lokNaam" style="width: 14em;" formControlName="lokNaam" autocomplete="off"
+                                                        [ngClass]="{'invalid': lokNaam?.invalid && (lokNaam?.dirty), 'valid': lokNaam?.valid && (lokNaam?.dirty)}"
+                                                        (blur)="lokNaam?.setValue(lokNaam?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="lokAdres">Straat + nr.</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="lokAdres" style="width: 14em;" formControlName="lokAdres" autocomplete="off"
+                                                        [ngClass]="{'invalid': lokAdres?.invalid && (lokAdres?.dirty), 'valid': lokAdres?.valid && (lokAdres?.dirty)}"
+                                                        (blur)="lokAdres?.setValue(lokAdres?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="lokPostcode">Postcode</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="lokPostcode" style="width: 6em;" formControlName="lokPostcode" autocomplete="off"
+                                                        [ngClass]="{'invalid': lokPostcode?.invalid && (lokPostcode?.dirty), 'valid': lokPostcode?.valid && (lokPostcode?.dirty)}"
+                                                        (blur)="lokPostcode?.setValue(lokPostcode?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="lokPlaats">Plaats</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="lokPlaats" style="width: 12em;" formControlName="lokPlaats" autocomplete="off"
+                                                        [ngClass]="{'invalid': lokPlaats?.invalid && (lokPlaats?.dirty), 'valid': lokPlaats?.valid && (lokPlaats?.dirty)}"
+                                                        (blur)="lokPlaats?.setValue(lokPlaats?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="lokTelefoon">Telefoon</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="lokTelefoon" style="width: 9em;" formControlName="lokTelefoon" autocomplete="off"
+                                                        [ngClass]="{'invalid': lokTelefoon?.invalid && (lokTelefoon?.dirty), 'valid': lokTelefoon?.valid && (lokTelefoon?.dirty)}"
+                                                        (blur)="lokTelefoon?.setValue(lokTelefoon?.value.trim())">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="lokEmail">E-mail</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="lokEmail" style="width: 14em;" formControlName="lokEmail" autocomplete="off"
+                                                        [ngClass]="{'invalid': lokEmail?.invalid && (lokEmail?.dirty), 'valid': lokEmail?.valid && (lokEmail?.dirty)}"
+                                                        (blur)="lokEmail?.setValue(lokEmail?.value.trim())">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </div>
+                        </div>
+                        @if (lokaliteitForm && lokaliteitForm.valid) {
+                            <app-section-footer-btns [buttons]="lokButtons" (clickedButton)="lokaliteitToevoegen()"
+                                    [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                        }
+    
+                    }
+                    @else if (verenigingForm || teamForm || !bpTeam.inBssComp) {
+                        <div class="flexgrow1 flexbox flexcenter">
+                            <div>
+                                @if (verenigingForm) {
+                                    <div style="padding-left: 1em;">
+                                        <form [formGroup]="verenigingForm">
+                                            <table class="tbl-normal tbl-input">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="width: 8em;"></td>
+                                                        <td style="line-height: 2.5em;">
+                                                            <label for="">Vereniging</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="verId">ID<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <input #verenigingid type="text" id="verId" style="width: 4em;" formControlName="verId" autocomplete="off"
+                                                                [ngClass]="{'invalid': verId?.invalid && (verId?.dirty), 'valid': verId?.valid && (verId?.dirty)}"
+                                                                (blur)="verId?.setValue(verId?.value.trim())">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="verNaam">Naam<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" id="verNaam" style="width: 12em;" formControlName="verNaam" autocomplete="off"
+                                                                [ngClass]="{'invalid': verNaam?.invalid && (verNaam?.dirty), 'valid': verNaam?.valid && (verNaam?.dirty)}"
+                                                                (blur)="verNaam?.setValue(verNaam?.value.trim())">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="verLokatie">Locatie</label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{bssLokaliteit.naam}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="verKorteNaam">Korte naam<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" id="verKorteNaam" style="width: 5em;" formControlName="verKorteNaam" autocomplete="off"
+                                                                [ngClass]="{'invalid': verKorteNaam?.invalid && (verKorteNaam?.dirty), 'valid': verKorteNaam?.valid && (verKorteNaam?.dirty)}"
+                                                                (blur)="verKorteNaam?.setValue(verKorteNaam?.value.trim())">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </form>    
+                                    </div>
+                                }
+                                @else {
+                                    <div style="padding-left: 1em;">
                                         <table class="tbl-normal tbl-input">
                                             <tbody>
                                                 <tr>
@@ -70,100 +251,72 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <label for="verId">ID<span class="req"> *</span></label>
+                                                        <label for="verNaam">Naam</label>
                                                     </td>
                                                     <td>
-                                                        <input #verenigingid type="text" id="verId" style="width: 4em;" formControlName="verId" autocomplete="off"
-                                                            [ngClass]="{'invalid': verId?.invalid && (verId?.dirty), 'valid': verId?.valid && (verId?.dirty)}"
-                                                            (blur)="verId?.setValue(verId?.value.trim())">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="verKnbbId">KNBB ID<span class="req"> *</span></label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="verKnbbId" style="width: 6em;" formControlName="verKnbbId" autocomplete="off"
-                                                            [ngClass]="{'invalid': verKnbbId?.invalid && (verKnbbId?.dirty), 'valid': verKnbbId?.valid && (verKnbbId?.dirty)}"
-                                                            (blur)="verKnbbId?.setValue(verKnbbId?.value.trim())">
+                                                        <select [(ngModel)]="bssVereniging" (change)="bssVerenigingChanged()">
+                                                            @for (ver of bssVerenigingen; track $index) {
+                                                                <option [ngValue]="ver">{{ver.naam}}</option>
+                                                            }
+                                                        </select>
                                                     </td>
                                                 </tr>
                                                 <tr>
+                                                    <td></td>
                                                     <td>
-                                                        <label for="verNaam">Naam<span class="req"> *</span></label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="verNaam" style="width: 12em;" formControlName="verNaam" autocomplete="off"
-                                                            [ngClass]="{'invalid': verNaam?.invalid && (verNaam?.dirty), 'valid': verNaam?.valid && (verNaam?.dirty)}"
-                                                            (blur)="verNaam?.setValue(verNaam?.value.trim())">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="verLokatie">Locatie</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="verLokatie" style="width: 12em;" formControlName="verLokatie" autocomplete="off"
-                                                            [ngClass]="{'invalid': verLokatie?.invalid && (verLokatie?.dirty), 'valid': verLokatie?.valid && (verLokatie?.dirty)}"
-                                                            (blur)="verLokatie?.setValue(verLokatie?.value.trim())">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="verPlaats">Plaats</label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="verPlaats" style="width: 12em;" formControlName="verPlaats" autocomplete="off"
-                                                            [ngClass]="{'invalid': verPlaats?.invalid && (verPlaats?.dirty), 'valid': verPlaats?.valid && (verPlaats?.dirty)}"
-                                                            (blur)="verPlaats?.setValue(verPlaats?.value.trim())">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="verKorteNaam">Korte naam<span class="req"> *</span></label>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" id="verKorteNaam" style="width: 5em;" formControlName="verKorteNaam" autocomplete="off"
-                                                            [ngClass]="{'invalid': verKorteNaam?.invalid && (verKorteNaam?.dirty), 'valid': verKorteNaam?.valid && (verKorteNaam?.dirty)}"
-                                                            (blur)="verKorteNaam?.setValue(verKorteNaam?.value.trim())">
+                                                        <app-button [button]="verButton" (buttonClicked)="nieuweVerenigingClicked()"></app-button>
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </form>    
-                                </div>
-                            }
-                            @else {
-                                <div style="padding-left: 1em;">
-                                    <table class="tbl-normal tbl-input">
-                                        <tbody>
-                                            <tr>
-                                                <td style="width: 8em;"></td>
-                                                <td style="line-height: 2.5em;">
-                                                    <label for="">Vereniging</label>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label for="verNaam">Naam</label>
-                                                </td>
-                                                <td>
-                                                    <span>{{bssVereniging.naam}}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td>
-                                                    <app-button [button]="verButton" (buttonClicked)="nieuweVerenigingClicked()"></app-button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            }
-                            @if (teamForm) {
-                                <div style="padding-left: 1em;">
-                                    <form [formGroup]="teamForm">
+                                    </div>
+                                }
+                                @if (teamForm) {
+                                    <div style="padding-left: 1em;">
+                                        <form [formGroup]="teamForm">
+                                            <table class="tbl-normal tbl-input">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="width: 8em;"></td>
+                                                        <td style="line-height: 2.5em;">
+                                                            <label for="">Team</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="teamId">ID</label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{bssTeamId}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="teamVolgNr">Volgnr.<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <input #teamid type="number" id="teamVolgNr" style="width: 3em;" formControlName="teamVolgNr" autocomplete="off"
+                                                                [ngClass]="{'invalid': (teamVolgNr?.invalid || !bssTeamIdOk) && teamVolgNr?.dirty, 
+                                                                        'valid': (teamVolgNr?.valid && bssTeamIdOk) && teamVolgNr?.dirty}">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="teamNaam">Naam<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" id="teamNaam" style="width: 12em;" formControlName="teamNaam" autocomplete="off"
+                                                                [ngClass]="{'invalid': teamNaam?.invalid && (teamNaam?.dirty), 'valid': teamNaam?.valid && (teamNaam?.dirty)}"
+                                                                (blur)="teamNaam?.setValue(teamNaam?.value.trim())">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </form>    
+                                    </div>
+                                }
+                                @else {
+                                    <div style="padding-left: 1em;">
                                         <table class="tbl-normal tbl-input">
                                             <tbody>
                                                 <tr>
@@ -177,17 +330,7 @@
                                                         <label for="teamId">ID</label>
                                                     </td>
                                                     <td>
-                                                        <span>{{bssTeamId}}</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <label for="teamVolgNr">Volgnr.<span class="req"> *</span></label>
-                                                    </td>
-                                                    <td>
-                                                        <input #teamid type="number" id="teamVolgNr" style="width: 3em;" formControlName="teamVolgNr" autocomplete="off"
-                                                            [ngClass]="{'invalid': (teamVolgNr?.invalid || !bssTeamIdOk) && teamVolgNr?.dirty, 
-                                                                    'valid': (teamVolgNr?.valid && bssTeamIdOk) && teamVolgNr?.dirty}">
+                                                        <span>{{bssTeam.teamId}}</span>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -195,76 +338,74 @@
                                                         <label for="teamNaam">Naam<span class="req"> *</span></label>
                                                     </td>
                                                     <td>
-                                                        <input type="text" id="teamNaam" style="width: 12em;" formControlName="teamNaam" autocomplete="off"
-                                                            [ngClass]="{'invalid': teamNaam?.invalid && (teamNaam?.dirty), 'valid': teamNaam?.valid && (teamNaam?.dirty)}"
-                                                            (blur)="teamNaam?.setValue(teamNaam?.value.trim())">
+                                                        <span>{{bssTeam.naam}}</span>
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </form>    
-                                </div>
-                            }
+                                    </div>
+                                }
+                            </div>
                         </div>
-                    </div>
-                    @if ((!verenigingForm || verenigingForm.valid) && teamForm && teamForm.valid && bssTeamIdOk) {
-                        <app-section-footer-btns [buttons]="teamButtons" (clickedButton)="teamToevoegen()"
-                                [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                        @if (!bpTeam.inBssComp || ((!verenigingForm || verenigingForm.valid) && teamForm && teamForm.valid && bssTeamIdOk)) {
+                            <app-section-footer-btns [buttons]="teamButtons" (clickedButton)="teamToevoegen()"
+                                    [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                        }
                     }
-                }
-                @else {
-                    <div class="flexgrow1 scroll-container">
-                        <div #pbspelers class="scroll-content">
-                            <div class="flexbox flexcenter">
-                                <div class="lijst">
-                                    @for (spl of spelersToProcess; track $index) {
-                                        <div class="lijst-row" style="color: gray;">
-                                            <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS, 'clr-del': !spl.inBp}" style="width: 2em;">
-                                                <span>{{spl.inBSS ? (spl.inBp ? '' : '-') : '+'}}</span>
+                    @else {
+                        <div class="flexgrow1 scroll-container">
+                            <div #pbspelers class="scroll-content">
+                                <div class="flexbox flexcenter">
+                                    <div class="lijst">
+                                        @for (spl of spelersToProcess; track $index) {
+                                            <div class="lijst-row" style="color: gray;">
+                                                <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS, 'clr-del': !spl.inBp}" style="width: 2em;">
+                                                    <span>{{spl.inBSS ? (spl.inBp ? '' : '-') : '+'}}</span>
+                                                </div>
+                                                <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS, 'clr-del': !spl.inBp}" style="width: 5em;">
+                                                    <span>{{spl.bssSpeler.speler.id}}</span>
+                                                </div>
+                                                <div class="lijst-col" style="width: 5em;"
+                                                        [ngClass]="{
+                                                            'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.speler.knbbId != spl.bpSpeler.splKnbbId),
+                                                            'clr-del': !spl.inBp
+                                                        }">
+                                                    <span>{{spl.bssSpeler.speler.knbbId}}</span>
+                                                </div>
+                                                <div class="lijst-col" style="width: 13em;"
+                                                        [ngClass]="{
+                                                            'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.getNaam() != spl.bpSpeler.splNaam),
+                                                            'clr-del': !spl.inBp
+                                                        }">
+                                                    <span>{{spl.bssSpeler.getNaam()}}</span>
+                                                </div>
+                                                <div class="lijst-col num" style="width: 4em;"
+                                                        [ngClass]="{
+                                                            'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.getGemiddeldeVanSpel() != +spl.bpSpeler.splMoyenne),
+                                                            'clr-del': !spl.inBp
+                                                        }">
+                                                    <span>{{spl.bssSpeler.getGemiddeldeVanSpel() | number:'1.3-3':'nl-NL'}}</span>
+                                                </div>
                                             </div>
-                                            <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS, 'clr-del': !spl.inBp}" style="width: 5em;">
-                                                <span>{{spl.bssSpeler.speler.id}}</span>
-                                            </div>
-                                            <div class="lijst-col" style="width: 5em;"
-                                                    [ngClass]="{
-                                                        'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.speler.knbbId != spl.bpSpeler.splKnbbId),
-                                                        'clr-del': !spl.inBp
-                                                    }">
-                                                <span>{{spl.bssSpeler.speler.knbbId}}</span>
-                                            </div>
-                                            <div class="lijst-col" style="width: 13em;"
-                                                    [ngClass]="{
-                                                        'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.getNaam() != spl.bpSpeler.splNaam),
-                                                        'clr-del': !spl.inBp
-                                                    }">
-                                                <span>{{spl.bssSpeler.getNaam()}}</span>
-                                            </div>
-                                            <div class="lijst-col num" style="width: 4em;"
-                                                    [ngClass]="{
-                                                        'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.getGemiddeldeVanSpel() != +spl.bpSpeler.splMoyenne),
-                                                        'clr-del': !spl.inBp
-                                                    }">
-                                                <span>{{spl.bssSpeler.getGemiddeldeVanSpel() | number:'1.3-3':'nl-NL'}}</span>
-                                            </div>
-                                        </div>
-                                    }
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
-            </div>
-        </div>
-        @if (!(verenigingForm || teamForm)) {
-            @if (spelersToAdd.length || spelersToUpd.length || !bssTeamSpelersOk) {
-                <app-section-footer-btns [buttons]="splButtons" (clickedButton)="verwerkSpelers()"
-                                    [cssFooter]="'w3-green-bdr-d3'" [cssButtons]="'font125'"></app-section-footer-btns>
-            }
-            @else {
-                <div class="flexbox flexcenter flexmiddle" style="height: 3em; border-top: .25em solid #357a38;">
-                    <div class="label">Verwerken niet nodig. Alle data van dit team in BSS is in orde.</div>
+                    }
                 </div>
-            }    
-        }
-    </div>
+            </div>
+            @if (!(lokaliteitForm || verenigingForm || teamForm || !bpTeam.inBssComp)) {
+                @if (spelersToAdd.length || spelersToUpd.length || !bssTeamSpelersOk) {
+                    <app-section-footer-btns [buttons]="splButtons" (clickedButton)="verwerkSpelers()"
+                                        [cssFooter]="'w3-green-bdr-d3'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+                @else {
+                    <div class="flexbox flexcenter flexmiddle" style="height: 3em; border-top: .25em solid #357a38;">
+                        <div class="label">Verwerken niet nodig. Alle data van dit team in BSS is in orde.</div>
+                    </div>
+                }    
+            }
+        </div>    
+    }
 </div>

@@ -97,7 +97,9 @@ export class HomeComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.code === 'Digit3' || event.code === 'Numpad3') {
-            this.buttonPressed('3');
+            if (this.spelId == '3BA') {
+                this.buttonPressed('3');
+            }
             return false;
         }
         return true;
@@ -156,8 +158,10 @@ export class HomeComponent extends BaseComponent implements OnInit {
         const filler = true;
         this.menu.addItem(new MenuItem('1', 'Wedstrijd spelen', 'spelkeuze'));
         this.menu.addItem(new MenuItem('2', 'Onderhoud gegevens', 'onderhoud'));
-        this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('3', 'Biljartpoint', 'bpoint/home'));
+        if (this.spelId == '3BA') {
+            this.menu.addItem(new MenuItem('', '', '', filler));
+            this.menu.addItem(new MenuItem('3', 'Biljartpoint (Kempenland)', 'bpoint/home'));    
+        }
         this.closeFullscreen();
     }
 

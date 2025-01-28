@@ -115,11 +115,18 @@ export class BpCompetitieComponent extends BaseComponent implements OnInit {
             this.bssApi.getKnbbCompetitie(this.bpComp.district.disId, this.bpComp.spelsoortId, this.bpComp.bssId)
             .then(result => {
                 this.bssComp = result;
+                this.initialize();
             })
             .catch(err => {
                 this.alert.showError(err);
             });
         }
+        else {
+            this.initialize();
+        }
+    }
+
+    private initialize() {
         Promise.all([
             this.bssApi.getCompFromBiljartpoint(this.bpComp.poule, this.bpComp.knbbId, '86'),
             this.bssApi.getVerenigingen()
@@ -137,9 +144,14 @@ export class BpCompetitieComponent extends BaseComponent implements OnInit {
                 bpTeam.knbbId = bpTeam.bpUrl.substring(idPosStart, idPosEnd);
                 const foundBssTeam = this.bssTeams.find(tm => tm.knbbId == bpTeam.knbbId);
                 if (foundBssTeam) {
+                    console.log(bpTeam);
+                    console.log(foundBssTeam);
                     bpTeam.bssVerId = foundBssTeam.verId;
                     bpTeam.bssTeamId = foundBssTeam.teamId;
                     bpTeam.bssAantSpl = foundBssTeam.teamLeden.length;
+                    if (this.bssComp.competitieId != '') {
+                        bpTeam.inBssComp = this.bssComp.teams.some(tm => tm.verId == bpTeam.bssVerId && tm.teamId == bpTeam.bssTeamId);
+                    }
                 }
                 this.bpTeams.push(bpTeam);
             });

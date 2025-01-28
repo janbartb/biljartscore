@@ -28,16 +28,6 @@
                                 }
                                 <tr>
                                     <td>
-                                        <label for="knbbId">KNBB ID</label>
-                                    </td>
-                                    <td>
-                                        <input type="text" id="knbbId" style="width: 6em;" formControlName="knbbId" autocomplete="off"
-                                            [ngClass]="{'invalid': knbbId?.invalid && (knbbId?.dirty), 'valid': knbbId?.valid && (knbbId?.dirty)}"
-                                            (blur)="knbbId?.setValue(knbbId?.value.trim())">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
                                         <label for="naam">Naam<span class="req"> *</span></label>
                                     </td>
                                     <td>
@@ -64,16 +54,6 @@
                                         <input type="text" id="locatie" style="width: 12em;" formControlName="locatie" autocomplete="off"
                                             [ngClass]="{'invalid': locatie?.invalid && (locatie?.dirty), 'valid': locatie?.valid && (locatie?.dirty)}"
                                             (blur)="locatie?.setValue(locatie?.value.trim())">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label for="plaats">Plaats</label>
-                                    </td>
-                                    <td>
-                                        <input type="text" id="plaats" style="width: 10em;" formControlName="plaats" autocomplete="off"
-                                            [ngClass]="{'invalid': plaats?.invalid && (plaats?.dirty), 'valid': plaats?.valid && (plaats?.dirty)}"
-                                            (blur)="plaats?.setValue(plaats?.value.trim())">
                                     </td>
                                 </tr>
                             </tbody>

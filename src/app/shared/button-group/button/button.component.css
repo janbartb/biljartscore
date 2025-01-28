@@ -41,6 +41,13 @@
     border-color: black;
 }
 
+.cmp-button.disabled .cmp-button-key {
+    color: gray;
+    background-color: lightgray;
+    border-color: gray;
+    cursor: not-allowed;
+}
+
 .cmp-button-txt {
     font-weight: bold;
     text-align: center;

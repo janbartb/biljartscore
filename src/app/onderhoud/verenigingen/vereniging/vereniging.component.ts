@@ -2,7 +2,7 @@ import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BaseComponent } from '../../../base/base.component';
-import { Team, Vereniging } from '../../../model/vereniging';
+import { Lokaliteit, Team, Vereniging } from '../../../model/vereniging';
 import { List } from '../../../model/list';
 import { SpelerWrapper } from '../../../model/speler';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
@@ -35,9 +35,11 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
     subtitle: string = "Vereniging"
     sections: string[] = ['Vereniging', 'Teams', 'Leden'];
     vereniging: Vereniging = new Vereniging();
+    verLokaliteit: Lokaliteit = new Lokaliteit();
     teamLijst: List<Team> = new List<Team>();
     ledenLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
     comps: KnbbCompetitie[] = [];
+    lokaliteiten: Lokaliteit[] = [];
     idxToDelete: number = -1;
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
 
@@ -200,7 +202,8 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
         Promise.all([
             this.bssApi.getVereniging(id),
             this.bssApi.getLedenVanVereniging(id, this.spelId),
-            this.bssApi.getKnbbCompetities(this.appData.getDistrict().disId, this.spelId)
+            this.bssApi.getKnbbCompetities(this.appData.getDistrict().disId, this.spelId),
+            this.bssApi.getLokaliteiten()
         ])
             .then(results => {
                 this.vereniging = results[0];
@@ -210,6 +213,12 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
                 this.ledenLijst.fillItems(results[1]);
                 this.sortLeden();
                 this.comps = results[2];
+                this.lokaliteiten = results[3];
+                this.sortLokaliteiten();
+                const idx = this.lokaliteiten.findIndex(lok => lok.lokId == this.vereniging.locatie);
+                if (idx >= 0) {
+                    this.verLokaliteit = this.lokaliteiten[idx];
+                }
                 this.subtitle = `Vereniging '${this.vereniging.naam}'`;
             })
             .catch((err) => {
@@ -235,6 +244,17 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
             }
             else {
                 return (a.getNaam() > b.getNaam()) ? 1 : -1;
+            }
+        });
+    }
+
+    private sortLokaliteiten() {
+        this.lokaliteiten.sort((a: Lokaliteit, b: Lokaliteit) => {
+            if (a.naam == b.naam) {
+                return 0;
+            }
+            else {
+                return (a.naam > b.naam) ? 1 : -1;
             }
         });
     }

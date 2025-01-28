@@ -1,0 +1,171 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount"
+                        (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()" (escClicked)="escapePressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox flexstretch" style="padding-top: 2em;">
+            <div class="flexgrow1 flexbox flexcenter">
+                @if (lokForm) {
+                    <form [formGroup]="lokForm">
+                        <table class="tbl-normal tbl-input">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="lokId">ID<span class="req"> *</span></label>
+                                    </td>
+                                    <td>
+                                        @if (mode == 'view') {
+                                            <span>{{lokId?.value}}</span>
+                                        }
+                                        @else {
+                                            <input type="text" id="lokId" style="width: 4em;" formControlName="lokId" autocomplete="off"
+                                                    [ngClass]="{'invalid': lokId?.invalid && (lokId?.dirty), 'valid': lokId?.valid && (lokId?.dirty)}"
+                                                    (blur)="lokId?.setValue(lokId?.value.trim())">
+                                        } 
+                                    </td>
+                                </tr>
+                                @if (lokId?.hasError('noDuplicates')) {
+                                    <tr class="input-msg error">
+                                        <td></td>
+                                        <td><span>ID wordt al gebruikt</span></td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td>
+                                        <label for="knbbId">KNBB ID</label>
+                                    </td>
+                                    <td>
+                                        @if (mode == 'view') {
+                                            <span>{{knbbId?.value}}</span>
+                                        }
+                                        @else {
+                                            <input type="text" id="knbbId" style="width: 6em;" formControlName="knbbId" autocomplete="off"
+                                                    [ngClass]="{'invalid': knbbId?.invalid && (knbbId?.dirty), 'valid': knbbId?.valid && (knbbId?.dirty)}"
+                                                    (blur)="knbbId?.setValue(knbbId?.value.trim())">
+                                        } 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="naam">Lokatie<span class="req"> *</span></label>
+                                    </td>
+                                    <td>
+                                        @if (mode == 'view') {
+                                            <span>{{naam?.value}}</span>
+                                        }
+                                        @else {
+                                            <input type="text" id="naam" style="width: 12em;" formControlName="naam" autocomplete="off"
+                                                    [ngClass]="{'invalid': naam?.invalid && (naam?.dirty), 'valid': naam?.valid && (naam?.dirty)}"
+                                                    (blur)="naam?.setValue(naam?.value.trim())">
+                                        } 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="adres">Straat + huisnr.</label>
+                                    </td>
+                                    <td>
+                                        @if (mode == 'view') {
+                                            <span>{{adres?.value}}</span>
+                                        }
+                                        @else {
+                                            <input type="text" id="adres" style="width: 12em;" formControlName="adres" autocomplete="off"
+                                                    [ngClass]="{'invalid': adres?.invalid && (adres?.dirty), 'valid': adres?.valid && (adres?.dirty)}"
+                                                    (blur)="adres?.setValue(adres?.value.trim())">
+                                        } 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="postcode">Postcode</label>
+                                    </td>
+                                    <td>
+                                        @if (mode == 'view') {
+                                            <span>{{postcode?.value}}</span>
+                                        }
+                                        @else {
+                                            <input type="text" id="postcode" style="width: 6em;" formControlName="postcode" autocomplete="off"
+                                                    [ngClass]="{'invalid': postcode?.invalid && (postcode?.dirty), 'valid': postcode?.valid && (postcode?.dirty)}"
+                                                    (blur)="postcode?.setValue(postcode?.value.trim())">
+                                        } 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="plaats">Plaats</label>
+                                    </td>
+                                    <td>
+                                        @if (mode == 'view') {
+                                            <span>{{plaats?.value}}</span>
+                                        }
+                                        @else {
+                                            <input type="text" id="plaats" style="width: 10em;" formControlName="plaats" autocomplete="off"
+                                                    [ngClass]="{'invalid': plaats?.invalid && (plaats?.dirty), 'valid': plaats?.valid && (plaats?.dirty)}"
+                                                    (blur)="plaats?.setValue(plaats?.value.trim())">
+                                        } 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="telefoon">Telefoon</label>
+                                    </td>
+                                    <td>
+                                        @if (mode == 'view') {
+                                            <span>{{telefoon?.value}}</span>
+                                        }
+                                        @else {
+                                            <input type="text" id="telefoon" style="width: 8em;" formControlName="telefoon" autocomplete="off"
+                                                    [ngClass]="{'invalid': telefoon?.invalid && (telefoon?.dirty), 'valid': telefoon?.valid && (telefoon?.dirty)}"
+                                                    (blur)="telefoon?.setValue(telefoon?.value.trim())">
+                                        } 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="email">E-mail</label>
+                                    </td>
+                                    <td>
+                                        @if (mode == 'view') {
+                                            <span>{{email?.value}}</span>
+                                        }
+                                        @else {
+                                            <input type="text" id="email" style="width: 12em;" formControlName="email" autocomplete="off"
+                                                    [ngClass]="{'invalid': email?.invalid && (email?.dirty), 'valid': email?.valid && (email?.dirty)}"
+                                                    (blur)="email?.setValue(email?.value.trim())">
+                                        } 
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                }    
+            </div>
+            @if (mode == 'view' && lokVerenigingen.length) {
+                <div style="padding-right: 4em;">
+                    <div class="label">
+                        <span>Verenigingen in deze lokaliteit</span>
+                    </div>
+                    <div style="padding-top: 1em;">
+                        @for (ver of lokVerenigingen; track $index) {
+                            <div>
+                                <span>{{ver.naam}}</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        @if (mode == 'view') {
+            <app-section-footer-btns [buttons]="viewButtons" (clickedButton)="buttonClicked($event)" [btnsHide]="[false, lokVerenigingen.length > 0]"
+                                [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+        }
+        @else {
+            <app-section-footer-btns [buttons]="opslaanButtons" [btnsDisabled]="[!lokForm || !lokForm.valid]" (clickedButton)="opslaanClicked()"
+                                [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+        }
+    </div>
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}

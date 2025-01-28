@@ -23,6 +23,7 @@ export class BpTeam {
     bssVerId: string = '';
     bssTeamId: string = '';
     bssAantSpl: number = 0;
+    inBssComp: boolean = false;
 }
 
 export class BpSpeler {
@@ -54,7 +55,11 @@ export class BpLokaliteit {
     knbbId: string = '';
     bssId: string = '';
     naam: string = '';
+    adres: string = '';
+    postcode: string = '';
     plaats: string = '';
+    telefoon: string = '';
+    email: string = '';
 }
 
 export class CompTemp {
