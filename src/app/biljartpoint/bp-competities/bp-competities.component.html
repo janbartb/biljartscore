@@ -2,7 +2,7 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'Biljartpoint'" [subtitle]="'Competities'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
-                        (escClicked)="escapePressed()" (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()"></app-page-header>
+                        (escClicked)="escapePressed()" (hdrClicked)="gotoBiljartpoint()" (prevClicked)="previousPressed()"></app-page-header>
         </div>
         <div class="flexbox flexmiddle" style="min-height: 3em; border-bottom: .25em solid green;">
             <div class="label" style="padding-left: 1em;">
@@ -20,7 +20,7 @@
             <div class="lijst-row">
                 <div class="lijst-col" style="width: 4.5em;">in BSS</div>
                 <div class="lijst-col" style="width: 5em;">BSS ID</div>
-                <div class="lijst-col num" style="width: 4em;">BP ID</div>
+                <div class="lijst-col num" style="width: 5.5em;">KNBB ID</div>
                 <div class="lijst-col" style="width: 1em;"></div>
                 <div class="lijst-col" style="width: 4.5em;">Klasse</div>
                 <div class="lijst-col" style="width: 4.5em;">Volgnr</div>
@@ -41,9 +41,11 @@
                                     }
                                 </div>
                                 <div class="lijst-col" style="width: 5em;">
-                                    <span>{{comp.bssId}}</span>
+                                    @if (comp.inBss) {
+                                        <span>{{comp.bssId}}</span>
+                                    }
                                 </div>
-                                <div class="lijst-col num" style="width: 4em;">
+                                <div class="lijst-col" style="width: 5.5em;">
                                     <span>{{comp.knbbId}}</span>
                                 </div>
                                 <div class="lijst-col" style="width: 1em;"></div>

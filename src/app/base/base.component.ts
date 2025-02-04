@@ -39,6 +39,10 @@ export class BaseComponent {
         this.router.navigate(['onderhoud']);
     }
 
+    gotoBiljartpoint() {
+        this.router.navigate(['bpoint/home']);
+    }
+
     isRequired(form: FormGroup, field: string): boolean {
         if (!form) return false;
         return form.controls[field]?.hasValidator(Validators.required);

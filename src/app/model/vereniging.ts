@@ -28,6 +28,7 @@ export class Team {
     volgNr: number = 0;
     naam: string = '';
     teamLeden: string[] = [];
+    inBpoint?: boolean = false;
 }
 
 export class VerenigingKort {

@@ -28,6 +28,12 @@
     white-space: nowrap;
 }
 
+.ellips {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* INPUT */
 
 label {

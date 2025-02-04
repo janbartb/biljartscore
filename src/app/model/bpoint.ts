@@ -22,6 +22,7 @@ export class BpTeam {
     bpUrl: string = '';
     bssVerId: string = '';
     bssTeamId: string = '';
+    bssLokId: string = '';
     bssAantSpl: number = 0;
     inBssComp: boolean = false;
 }
@@ -70,6 +71,11 @@ export class CompTemp {
 export class TeamTemp {
     naam: string = '';
     bpUrl: string = '';
+}
+
+export class CompPageData {
+    maxBeurten: string = '';
+    teams: TeamTemp[] = [];
 }
 
 export class TeamPageData {

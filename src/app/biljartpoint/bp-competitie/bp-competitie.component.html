@@ -1,0 +1,197 @@
+<div class="fullviewheight">
+    @if (dataReady) {
+        <div class="fullheight flexbox flexcolumn">
+            <div>
+                <app-page-header [title]="'Biljartpoint'" [subtitle]="'Competitie ' + bpComp.knbbId" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                            (escClicked)="escapePressed()" (hdrClicked)="gotoBiljartpoint()" (prevClicked)="previousPressed()"></app-page-header>
+            </div>
+            <div class="flexgrow1 flexbox flexstretch">
+                <div class="flex50perc flexbox flexcolumn" style="border-right: .25em solid green;">
+                    <app-section-header [title]="'in Biljartpoint'" [cssClasses]="'w3-green-l3'"></app-section-header>
+                    <div class="flexgrow1 flexbox flexcenter" style="padding: 1em 1em;">
+                        <div>
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="">KNBB ID</label></td>
+                                        <td>{{bpComp.knbbId}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="">District</label></td>
+                                        <td>{{bpComp.district.disNaam}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="">Seizoen</label></td>
+                                        <td>{{bpComp.seizoen}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="">Klasse</label></td>
+                                        <td>{{bpComp.klasse}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="">Volgnr</label></td>
+                                        <td>{{bpComp.volgNr}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="">Poule</label></td>
+                                        <td>{{bpComp.poule}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="">Naam</label></td>
+                                        <td>{{bpComp.naam}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="">Max beurten</label></td>
+                                        <td>{{bpComp.maxBeurten}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="">Aantal teams</label></td>
+                                        <td>{{bpComp.teams.length}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex50perc flexbox flexcolumn">
+                    <app-section-header [title]="sectTitle" [cssClasses]="'w3-green-l3'"></app-section-header>
+                    <div class="flexgrow1 flexbox flexcenter">
+                        <div>
+                            @if (mode == 'view' && !bpComp.inBss) {
+                                <div class="label" style="padding-top: 5em;">Competitie niet aanwezig in BSS</div>
+                            }
+                            @else {
+                                <div style="padding-top: 1em;">
+                                    @if (compForm) {
+                                        <form [formGroup]="compForm">
+                                            <table class="tbl-normal tbl-input">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="compId">BSS ID<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{competitieId?.value}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="knbbId">KNBB ID<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{knbbId?.value}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="seizoen">Seizoen<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{seizoen?.value}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="district">District<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{bpComp.district.disNaam}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="spelsoort">Spelsoort<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{appData.getSpelNaam()}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="klasse">Klasse<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{klasse?.value}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="volgNr">Volgnr.<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{volgNr?.value}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="poule">Poule<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{poule?.value}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="naam">Naam<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            @if (mode == 'view') {
+                                                                <span>{{naam?.value}}</span>
+                                                            }
+                                                            @else {
+                                                                <input type="text" id="naam" style="width: 12em;" formControlName="naam" autocomplete="off"
+                                                                    [ngClass]="{'invalid': naam?.invalid && (naam?.dirty), 'valid': naam?.valid && (naam?.dirty)}"
+                                                                    (blur)="naam?.setValue(naam?.value.trim())">
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="maxBeurten">Max beurten<span class="req"> *</span></label>
+                                                        </td>
+                                                        <td>
+                                                            @if (mode == 'view') {
+                                                                <span>{{maxBeurten?.value}}</span>
+                                                            }
+                                                            @else {
+                                                                <input type="number" id="maxBeurten" style="width: 4em;" formControlName="maxBeurten" autocomplete="off"
+                                                                    [ngClass]="{'invalid': maxBeurten?.invalid && (maxBeurten?.dirty), 'valid': maxBeurten?.valid && (maxBeurten?.dirty)}"
+                                                                    (blur)="maxBeurten?.setValue(maxBeurten?.value.trim())">
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label>Aantal teams</label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{{bssComp.teams.length}}</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>    
+                                        </form>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    @if (mode != 'view' && compForm && compForm.valid) {
+                        <app-section-footer-btns [buttons]="saveButtons" (clickedButton)="opslaanClicked()" 
+                                    [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                    }
+                </div>
+            </div>
+            @if (mode == 'view') {
+                @if (bpComp.inBss) {
+                    <app-section-footer-btns [buttons]="pageButtons" [btnsHide]="[false, false]"
+                                (clickedButton)="pageButtonClicked($event)" [cssFooter]="'w3-green-bdr-d3'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+                @else {
+                    <app-section-footer-btns [buttons]="addButtons" (clickedButton)="toevoegenClicked()" 
+                                [cssFooter]="'w3-green-bdr-d3'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+            }
+        </div>    
+    }
+</div>

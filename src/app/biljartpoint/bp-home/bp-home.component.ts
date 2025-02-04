@@ -40,7 +40,7 @@ export class BpHomeComponent extends BaseComponent implements OnInit {
             this.alert.showAlert(`Maak eerst via de optie 'Districten' het standaard district aan.`, 'info', 8);
             return;
         }
-        this.appData.gotoPage('bpoint/home', item.navigateTo);
+        this.appData.gotoPage(this.router.url, item.navigateTo);
     }
 
     @HostListener('document:keyup', ['$event'])

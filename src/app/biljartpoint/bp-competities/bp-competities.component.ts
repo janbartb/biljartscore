@@ -33,7 +33,7 @@ export class BpCompetitiesComponent extends BaseComponent implements OnInit {
         const clickedComp = this.bpCompetities[idx];
         console.log(`Competitie '${clickedComp.naam}' clicked`);
         localStorage.setItem('bpComp', JSON.stringify(clickedComp));
-        this.appData.gotoPage('bpoint/competities', 'bpoint/competitie');
+        this.appData.gotoPage(this.router.url, 'bpoint/competitie');
     }
 
     getCompetitiesFromBpoint() {
@@ -107,7 +107,7 @@ export class BpCompetitiesComponent extends BaseComponent implements OnInit {
         comp.poule = queryParts[1];
         queryParts = queries[2].split('=');
         comp.knbbId = queryParts[1];
-        comp.bpUrl = 'https://biljartpoint.nl/' + entry.bpUrl;
+        comp.bpUrl = entry.bpUrl;
         comp.bssId = comp.klasse + '-' + comp.volgNr + '-' + comp.poule;
         comp.inBss = this.bssCompetities.some(bssComp => bssComp.competitieId == comp.bssId);
         return comp;

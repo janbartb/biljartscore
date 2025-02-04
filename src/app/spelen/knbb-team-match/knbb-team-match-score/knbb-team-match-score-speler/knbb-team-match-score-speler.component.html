@@ -79,7 +79,7 @@
         <div class="flexgrow1" style="height: 7em; padding: .25em 1.5em 0 0;">
             <div class="flexbox flexbetween">
                 <div>
-                    <span style="font-size: 2.5em; color: gray; line-height: 1.25;">Perc.</span>
+                    <span class="label" style="font-size: 2.5em; line-height: 1.25;">Perc.</span>
                 </div>
                 <div style="font-size: 3em; line-height: 1;">
                     @if (speler.stand.serie > 0) {
@@ -95,7 +95,7 @@
             </div>
             <div class="flexbox flexbetween">
                 <div>
-                    <span style="font-size: 2.5em; color: gray; line-height: 1.25;">Hoog. ser.</span>
+                    <span class="label" style="font-size: 2.5em; line-height: 1.25;">Hoog. ser.</span>
                 </div>
                 <div [ngClass]="{'changes': speler.stand.serie > speler.stand.hoogSer}" style="font-size: 3em; line-height: 1;">
                     <span>{{speler.stand.serie > speler.stand.hoogSer ? speler.stand.serie : speler.stand.hoogSer}}</span>
@@ -103,8 +103,8 @@
             </div>
         </div>
         <div class="aantpunten flexbox flexmiddle" [ngClass]="{'active': speler.isActief, 'geel': !speler.metWit}" style="height: 7em;">
-            <div style="color: gray; padding: 0 .5em;">
-                <span style="font-size: 2.25em;">Pnt</span>
+            <div style="padding: 0 .5em;">
+                <span class="label" style="font-size: 2.25em;">Pnt</span>
             </div>
             <div class="aantpunten-container flexbox flexcenter flexmiddle" [ngClass]="{'changes': speler.stand.punten != oldPunten}">
                 <div style="font-size: 5em; line-height: 1;">{{speler.stand.punten}}</div>

@@ -57,7 +57,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
             return;
         }
         this.openFullscreen();
-        this.appData.gotoPage('home', item.navigateTo);
+        this.appData.gotoPage(this.router.url, item.navigateTo);
     }
 
     keyupSpelsoort(event: KeyboardEvent) {

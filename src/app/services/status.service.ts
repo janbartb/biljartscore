@@ -103,6 +103,18 @@ export class StatusService {
         this.router.navigate([to]);
     }
 
+    goBackToPage(to: string) {
+        if (!this.urlHistory) {
+            this.urlHistory = this.getUrlHistory();
+        }
+        const idx = this.urlHistory.findIndex(url => url == to || url == ('/' + to));
+        if (idx >= 0) {
+            this.urlHistory.length = idx;
+            this.writeUrlHistory();
+        }
+        this.router.navigate([to]);
+    }
+
     previousPage() {
         if (!this.urlHistory) {
             this.urlHistory = this.getUrlHistory();

@@ -2,7 +2,7 @@
 .bal.geel { background-color: yellow; }
 .bal.wit { background-color: white; }
 
-.spelerdata { background-color: black; color: gray; opacity: .5;}
+.spelerdata { background-color: black; color: gray;}
 .spelerdata.active { opacity: 1; }
 .spelerdata .wit { color: white; }
 .spelerdata .geel { color: yellow; }
@@ -22,49 +22,51 @@
     border-radius: .5em;
 }
 .aantbrt.serie {
-    background-color: #3d8b40;
+    min-width: 8.5em;
+    text-align: center;
+    background-color: blue;
     color: white;
 }
 .aantbrt span {
     font-size: 5em; 
 }
 
-.scoredata { opacity: .5; }
-.scoredata.active { opacity: 1; }
+.scoredata { background-color: gray; }
+.scoredata.active { background-color: white; }
 .scoredata.active.geel { background-color: yellow; }
-.scoredata.active .changes { color: #3d8b40; }
+.scoredata.active .changes { color: blue; }
 .scoredata.active .scale { scale: 1.5; }
 
-.laatste5 { opacity: .5; }
+.laatste5 { opacity: 1; }
 .laatste5 .laatste5data { color: gray; }
 .laatste5.active { opacity: 1; }
 .laatste5.active .laatste5data { color: white; }
 .laatste5.active.geel .laatste5data { color: yellow; }
 
-.extradata {
-    opacity: .5;
-}
+.extradata { background-color: gray; }
 .extradata .clr-red { color: red; }
-.extradata.active { opacity: 1; }
-.extradata.active .changes { color: #3d8b40; }
+.extradata.active { background-color: white; }
+.extradata.active .changes { color: blue; }
 .extradata.active.geel { background-color: yellow; }
 
-.aantpunten {
-    opacity: .5;
-}
-.aantpunten.active {
-    opacity: 1;
-}
+.extradata .label { color: #444444; }
+
+.aantpunten .label { color: #444444; }
 .aantpunten-container {
     width: 7em;
     background-color: black;
-    color: white;
+    color: grey;
+    border: .25em solid black;
     border-radius: .5em;
     padding: 0 .5em 0 .25em;
 }
-.aantpunten.active .aantpunten-container.changes, .aantpunten.active.geel .aantpunten-container.changes {
-    background-color: #6ec071;
-    color: black;
+.aantpunten.active .aantpunten-container.changes {
+    background-color: white;
+    color: blue;
+}
+.aantpunten.active.geel .aantpunten-container.changes {
+    background-color: yellow;
+    color: blue;
 }
 .aantpunten.active.geel .aantpunten-container {
     color: yellow;
