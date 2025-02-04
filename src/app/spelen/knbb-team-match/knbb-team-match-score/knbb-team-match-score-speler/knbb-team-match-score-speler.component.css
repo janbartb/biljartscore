@@ -44,7 +44,7 @@
 .laatste5.active.geel .laatste5data { color: yellow; }
 
 .extradata { background-color: gray; }
-.extradata .clr-red { color: red; }
+.extradata .clr-red { color: #a30000; }
 .extradata.active { background-color: white; }
 .extradata.active .changes { color: blue; }
 .extradata.active.geel { background-color: yellow; }
@@ -60,6 +60,12 @@
     border-radius: .5em;
     padding: 0 .5em 0 .25em;
 }
+.aantpunten.active .aantpunten-container {
+    color: white;
+}
+.aantpunten.active.geel .aantpunten-container {
+    color: yellow;
+}
 .aantpunten.active .aantpunten-container.changes {
     background-color: white;
     color: blue;
@@ -67,7 +73,4 @@
 .aantpunten.active.geel .aantpunten-container.changes {
     background-color: yellow;
     color: blue;
-}
-.aantpunten.active.geel .aantpunten-container {
-    color: yellow;
 }

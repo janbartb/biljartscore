@@ -85,11 +85,9 @@
                     @if (speler.stand.serie > 0) {
                         <span class="changes">{{(100 * speler.stand.gemiddelde / speler.splTsGem) | number:'1.2-2':'nl-NL'}}</span>
                     }
-                    @else if ((speler.stand.gemiddelde / speler.splTsGem) <= 1) {
-                        <span class="clr-red">{{(100 * speler.stand.gemiddelde / speler.splTsGem) | number:'1.2-2':'nl-NL'}}</span>
-                    }
                     @else {
-                        <span>{{(100 * speler.stand.gemiddelde / speler.splTsGem) | number:'1.2-2':'nl-NL'}}</span>
+                        <span [ngClass]="{'clr-red': speler.stand.aantCar > 0 && (speler.stand.gemiddelde / speler.splTsGem) <= 1}"
+                            >{{(100 * speler.stand.gemiddelde / speler.splTsGem) | number:'1.2-2':'nl-NL'}}</span>
                     }
                 </div>
             </div>
