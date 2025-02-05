@@ -8,7 +8,7 @@ import { Button } from '../../model/button';
 import { ButtonComponent } from '../../shared/button-group/button/button.component';
 import { MoyenneTabelComponent } from './moyenne-tabel/moyenne-tabel.component';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
-import { Alinea, ConfirmDialog } from '../../model/confirm-dialog';
+import { Alinea, ConfirmDialog } from '../../model/dialogs';
 
 @Component({
     selector: 'app-moyenne-tabellen',

@@ -1,0 +1,62 @@
+<div class="dialog-overlay flexbox flexcenter flexmiddle">
+    <div class="dialog">
+        <div class="dialog-header w3-green-d2">
+            <span>{{title}}</span>
+        </div>
+        <div class="dialog-body w3-text-green">
+            <div class="flexbox flexcenter">
+                <div>
+                    @if (namenForm) {
+                        <form [formGroup]="namenForm">
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label for="bordNaam">Bordnaam<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="bordNaam" style="width: 8em;" formControlName="bordNaam" autocomplete="off"
+                                                [ngClass]="{'invalid': bordNaam?.invalid && (bordNaam?.dirty), 'valid': bordNaam?.valid && (bordNaam?.dirty)}"
+                                                (blur)="bordNaam?.setValue(bordNaam?.value.trim())">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="spreekNaam">Spreeknaam<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="spreekNaam" style="width: 8em;" formControlName="spreekNaam" autocomplete="off"
+                                                [ngClass]="{'invalid': spreekNaam?.invalid && (spreekNaam?.dirty), 'valid': spreekNaam?.valid && (spreekNaam?.dirty)}"
+                                                (blur)="spreekNaam?.setValue(spreekNaam?.value.trim())">
+                                        </td>
+                                        @if (spreekNaam?.valid) {
+                                            <td style="padding-left: .5em;">
+                                                <i class="fas fa-volume-up iconbtn" (click)="spreekClicked()"></i>
+                                            </td>
+                                        }
+                                    </tr>
+                                    @if (spreekNaam?.valid) {
+                                        <tr>
+                                            <td></td>
+                                            <td class="label" style="font-size: 10pt; text-align: center;">
+                                                <span>Ctrl+Spatie = spreek naam uit</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </form>
+                    }
+                    <div style="padding-top: .5em;">
+                        <span class="label">Wijziging opslaan ?</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="separator w3-green-d2"></div>
+        <div class="dialog-footer flexbox flexright">
+            <app-button [button]="dialog.rejectButton" (buttonClicked)="rejectClicked()"></app-button>
+            <app-button [button]="dialog.acceptButton" [disabled]="!namenForm || !namenForm.valid" (buttonClicked)="acceptClicked()"></app-button>
+        </div>
+    </div>    
+</div>

@@ -9,7 +9,7 @@ import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/
 import { NgClass } from '@angular/common';
 import { Button } from '../../../model/button';
 import { ConfirmComponent } from '../../../shared/confirm/confirm.component';
-import { Alinea, ConfirmDialog } from '../../../model/confirm-dialog';
+import { Alinea, ConfirmDialog } from '../../../model/dialogs';
 
 @Component({
     selector: 'app-lokaliteit',

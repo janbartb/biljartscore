@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Button } from '../../model/button';
 import { ButtonComponent } from '../button-group/button/button.component';
-import { ConfirmDialog } from '../../model/confirm-dialog';
+import { ConfirmDialog } from '../../model/dialogs';
 
 @Component({
     selector: 'app-confirm',

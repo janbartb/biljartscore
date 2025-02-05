@@ -4,7 +4,7 @@ import { List } from '../../model/list';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { NgClass } from '@angular/common';
 import { KnbbCompetitie } from '../../model/knbb-competitie';
-import { Alinea, ConfirmDialog } from '../../model/confirm-dialog';
+import { Alinea, ConfirmDialog } from '../../model/dialogs';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { Button } from '../../model/button';
 import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';

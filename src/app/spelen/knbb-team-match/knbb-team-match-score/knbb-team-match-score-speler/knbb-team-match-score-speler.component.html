@@ -4,7 +4,7 @@
         <div class="fullheight" style="width: 20em; overflow: hidden;">
             <div class="nowrap" style="height: 6em; padding: .5em; line-height: 5em;">
                 <span [ngClass]="{'wit': speler.isActief && speler.metWit, 'geel': speler.isActief && !speler.metWit}"
-                        style="font-size: 4em;">{{speler.splBordNaam}}</span>
+                        style="font-size: 4em;" [title]="speler.splBordNaam">{{speler.splBordNaam}}</span>
             </div>
             <div style="height: 3em; padding: 0 .5em 0 .5em; line-height: 2.5em; position: relative;">
                 <div style="position: relative; top: -.5em;">

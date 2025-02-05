@@ -7,7 +7,7 @@ import { List } from '../../model/list';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { SectionHeaderComponent } from '../../shared/section-header/section-header.component';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
-import { Alinea, ConfirmDialog } from '../../model/confirm-dialog';
+import { Alinea, ConfirmDialog } from '../../model/dialogs';
 
 @Component({
     selector: 'app-bp-competitie-teams',

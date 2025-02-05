@@ -17,8 +17,13 @@ export class KnbbTeamMatchScoreSpelerComponent {
     @Input() teamIdx: number = 0;
     @Input() oldPunten: number = 0;
     @Output() undoBusy: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() spelerClicked: EventEmitter<MatchSpeler> = new EventEmitter<MatchSpeler>();
 
     balClicked() {
         this.undoBusy.emit(true);
+    }
+
+    naamClicked() {
+        this.spelerClicked.emit(this.speler);
     }
 }

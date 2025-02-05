@@ -33,7 +33,8 @@
                             "src/fontawesome/css/all.css",
                             "src/styles.css",
                             "src/tables.css",
-                            "src/modals.css"
+                            "src/modals.css",
+                            "src/dialogs.css"
                         ],
                         "scripts": []
                     },

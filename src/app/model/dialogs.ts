@@ -1,4 +1,5 @@
 import { Button } from "./button";
+import { MatchSpeler } from "./match";
 
 export class ConfirmDialog {
     id: string = '';
@@ -12,6 +13,18 @@ export class ConfirmDialog {
         this.actie = act;
         this.inhoud = inh;
         this.id = id ? id : 'dialog';
+    }
+}
+
+export class MatchSpelerDialog {
+    speler: MatchSpeler = new MatchSpeler();
+    actie: string = '';
+
+    acceptButton: Button = new Button('Enter', 'Ja', true);
+    rejectButton: Button = new Button('Esc', 'Nee', true);
+
+    constructor(spl: MatchSpeler) {
+        this.speler = spl;
     }
 }
 

@@ -12,7 +12,7 @@ import { SectionHeaderComponent } from '../../../shared/section-header/section-h
 import { SectionFooterBtnsComponent } from "../../../shared/section-footer-btns/section-footer-btns.component";
 import { KnbbCompetitie } from '../../../model/knbb-competitie';
 import { ConfirmComponent } from '../../../shared/confirm/confirm.component';
-import { Alinea, ConfirmDialog } from '../../../model/confirm-dialog';
+import { Alinea, ConfirmDialog } from '../../../model/dialogs';
 
 @Component({
     selector: 'app-vereniging',

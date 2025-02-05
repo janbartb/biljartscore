@@ -7,12 +7,15 @@ import { BaseComponent } from '../../../base/base.component';
 import { KnbbTeamMatchScoreSpelerComponent } from './knbb-team-match-score-speler/knbb-team-match-score-speler.component';
 import { NgClass } from '@angular/common';
 import { SpeechService } from '../../../services/speech.service';
+import { SpelerNamenComponent } from '../../../shared/speler-namen/speler-namen.component';
+import { MatchSpelerDialog } from '../../../model/dialogs';
 
 @Component({
     selector: 'app-knbb-team-match-score',
     standalone: true,
     imports: [
         KnbbTeamMatchScoreSpelerComponent,
+        SpelerNamenComponent,
         NgClass
     ],
     templateUrl: './knbb-team-match-score.component.html',
@@ -29,6 +32,7 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
     idxSpeler: number = -1;
     activeSpeler: MatchSpeler = new MatchSpeler();
     oldPunten: number[] = [0, 0];
+    namenDialog: MatchSpelerDialog = new MatchSpelerDialog(new MatchSpeler());
     modals: ModalMessage[] = [];
     modalVisible: boolean = false;
     helpVisible: boolean = false;
@@ -91,21 +95,42 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         this.saveMatch(copyOfMatch);
     }
 
-    serieClicked(idx: number): void {
-        const nrToAdd = (idx === this.idxSpeler) ? 1 : -1;
-        this.addNumberToSerie('' + nrToAdd);
+    // serieClicked(idx: number): void {
+    //     const nrToAdd = (idx === this.idxSpeler) ? 1 : -1;
+    //     this.addNumberToSerie('' + nrToAdd);
+    // }
+
+    // spelerClicked(idx: number): void {
+    //     if (idx === this.idxSpeler) {
+    //         return;
+    //     }
+    //     this.enterPressed();
+    // }
+
+    wijzigNaamPressed() {
+        this.naamClicked(this.activeSpeler);
     }
 
-    spelerClicked(idx: number): void {
-        if (idx === this.idxSpeler) {
-            return;
+    naamClicked(spl: MatchSpeler) {
+        console.log('naam clicked ' + spl.splNaam);
+        this.namenDialog = new MatchSpelerDialog(spl);
+        this.isDialogOpen = true;
+    }
+
+    namenDialogReplied(save: boolean) {
+        if (save) {
+            this.activeSpeler = this.namenDialog.speler;
+            this.saveMatch(this.match);
         }
-        this.enterPressed();
+        this.isDialogOpen = false;
     }
 
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
+        if (this.isDialogOpen) {
+            return false;
+        }
         if (this.busy) {
             return false;
         }
@@ -116,6 +141,10 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
             else {
                 this.router.navigate(['teammatch']);
             }
+            return false;
+        }
+        if (event.code === 'KeyW') {
+            this.wijzigNaamPressed();
             return false;
         }
         if (event.code === 'KeyH' || event.key === '/') {

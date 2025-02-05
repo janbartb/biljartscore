@@ -100,45 +100,6 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
         this.router.navigate(['teammatch/setup/comp']);
     }
 
-    fillMatchAndWedStatus(): void {
-        let wedStatusTotaal = 0;
-        [0 ,1, 2].forEach(idxWed => {
-            const spl = this.match.teams[0].spelers[idxWed];
-            this.wedStatus[idxWed] = 0;
-            if (spl.stand.aantBrt > 0) {
-                this.wedStatus[idxWed] = 1;
-            }
-            if (this.match.gameOver[idxWed]) {
-                this.wedStatus[idxWed] = 2;
-            }
-            wedStatusTotaal += this.wedStatus[idxWed];
-        });
-        this.wedStatus[3] = 0;
-        if (wedStatusTotaal > 0) {
-            this.wedStatus[3] = wedStatusTotaal === 6 ? 2 : 1;
-        }
-    }
-
-    fillMatchAndWedVoortgang(): void {
-        const maxBrt = this.match.maxBeurten;
-        let vg = [0, 0, 0];
-        [0 ,1, 2].forEach(idxWed => {
-            const spl = this.match.teams[0].spelers[idxWed];
-            const teg = this.match.teams[1].spelers[idxWed];
-            if (this.wedStatus[idxWed] == 0) {
-                vg[idxWed] = 0;
-            }
-            else if (this.wedStatus[idxWed] == 2) {
-                vg[idxWed] = 100;
-            }
-            else {
-                vg[idxWed] = Math.max(spl.stand.aantCar / spl.splTsCar, teg.stand.aantCar / teg.splTsCar, (spl.stand.aantBrt + teg.stand.aantBrt) / (2 * maxBrt)) * 100;
-            }
-            this.voortgang[idxWed] = vg[idxWed] + '%';
-        });
-        this.voortgang[3] = ((vg[0] + vg[1] + vg[2]) / 3) + '%';
-    }
-
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
@@ -206,6 +167,7 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
             else {
                 this.subtitle = 'Tussenresultaat';
             }
+            console.log(this.match);
             this.matchRead = true;
             this.buttonGroup.addButton(new Button('1', 'Wedstrijd 1', true, true));
             this.buttonGroup.addButton(new Button('2', 'Wedstrijd 2', true, true));
@@ -217,4 +179,44 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
             this.alert.showError(err);
         });
     }
+
+    private fillMatchAndWedStatus(): void {
+        let wedStatusTotaal = 0;
+        [0 ,1, 2].forEach(idxWed => {
+            const spl = this.match.teams[0].spelers[idxWed];
+            this.wedStatus[idxWed] = 0;
+            if (spl.stand.aantBrt > 0) {
+                this.wedStatus[idxWed] = 1;
+            }
+            if (this.match.gameOver[idxWed]) {
+                this.wedStatus[idxWed] = 2;
+            }
+            wedStatusTotaal += this.wedStatus[idxWed];
+        });
+        this.wedStatus[3] = 0;
+        if (wedStatusTotaal > 0) {
+            this.wedStatus[3] = wedStatusTotaal === 6 ? 2 : 1;
+        }
+    }
+
+    private fillMatchAndWedVoortgang(): void {
+        const maxBrt = this.match.maxBeurten;
+        let vg = [0, 0, 0];
+        [0 ,1, 2].forEach(idxWed => {
+            const spl = this.match.teams[0].spelers[idxWed];
+            const teg = this.match.teams[1].spelers[idxWed];
+            if (this.wedStatus[idxWed] == 0) {
+                vg[idxWed] = 0;
+            }
+            else if (this.wedStatus[idxWed] == 2) {
+                vg[idxWed] = 100;
+            }
+            else {
+                vg[idxWed] = Math.max(spl.stand.aantCar / spl.splTsCar, teg.stand.aantCar / teg.splTsCar, (spl.stand.aantBrt + teg.stand.aantBrt) / (2 * maxBrt)) * 100;
+            }
+            this.voortgang[idxWed] = vg[idxWed] + '%';
+        });
+        this.voortgang[3] = ((vg[0] + vg[1] + vg[2]) / 3) + '%';
+    }
+
 }

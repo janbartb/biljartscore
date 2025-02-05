@@ -6,7 +6,7 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { NgClass } from '@angular/common';
 import { List } from '../../model/list';
 import { BaseComponent } from '../../base/base.component';
-import { Alinea, ConfirmDialog } from '../../model/confirm-dialog';
+import { Alinea, ConfirmDialog } from '../../model/dialogs';
 import { Button } from '../../model/button';
 import { ButtonComponent } from '../../shared/button-group/button/button.component';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';

@@ -8,7 +8,7 @@ import { ButtonComponent } from '../../shared/button-group/button/button.compone
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { noDuplicates, notEmpty } from '../../directives/validators.directive';
-import { Alinea, ConfirmDialog } from '../../model/confirm-dialog';
+import { Alinea, ConfirmDialog } from '../../model/dialogs';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { SectionHeaderComponent } from '../../shared/section-header/section-header.component';
 import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
