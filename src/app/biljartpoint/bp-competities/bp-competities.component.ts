@@ -33,7 +33,7 @@ export class BpCompetitiesComponent extends BaseComponent implements OnInit {
         const clickedComp = this.bpCompetities[idx];
         console.log(`Competitie '${clickedComp.naam}' clicked`);
         localStorage.setItem('bpComp', JSON.stringify(clickedComp));
-        this.appData.gotoPage(this.router.url, 'bpoint/competitie');
+        this.router.navigate(['bpoint/competitie']);
     }
 
     getCompetitiesFromBpoint() {

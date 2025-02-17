@@ -364,7 +364,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         }
         speler.splId = spelerToAdd.speler.id;
         speler.splNaam = spelerToAdd.getNaam();
-        speler.splBordNaam = spelerToAdd.speler.vnaam;
+        speler.splBordNaam = spelerToAdd.speler.bordnaam && spelerToAdd.speler.bordnaam.length ? spelerToAdd.speler.bordnaam : spelerToAdd.speler.vnaam;
         speler.splSpreekNaam = (spelerToAdd.speler.spreeknaam != '') ? spelerToAdd.speler.spreeknaam : speler.splBordNaam;
         speler.splTsGem = spelerToAdd.getGemiddeldeVanSpel();
         speler.stand = new WedSpelerStand();

@@ -15,7 +15,7 @@
                                 <tbody>
                                     <tr>
                                         <td><label>ID</label></td>
-                                        <td class="view" style="min-width: 10em;">{{vereniging.verId}}</td>
+                                        <td class="view" style="width: 10em;">{{vereniging.verId}}</td>
                                     </tr>
                                     <tr>
                                         <td><label>Naam</label></td>
@@ -27,7 +27,7 @@
                                     </tr>
                                     <tr>
                                         <td><label>Locatie</label></td>
-                                        <td class="view">{{verLokaliteit.naam}}</td>
+                                        <td class="view ellips" style="max-width: 10em;" [title]="verLokaliteit.naam">{{verLokaliteit.naam}}</td>
                                     </tr>
                                     <tr>
                                         <td><label>Plaats</label></td>

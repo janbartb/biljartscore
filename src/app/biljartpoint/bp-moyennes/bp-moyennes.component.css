@@ -1,0 +1,7 @@
+.bss-badge {
+    line-height: 1.25;
+    background-color: green; 
+    color: white; 
+    border-radius: .25em;
+    padding: 0 .25em;
+}

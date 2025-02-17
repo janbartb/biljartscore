@@ -6,6 +6,7 @@ import { Alert } from '../model/alert';
 })
 export class AlertService {
     visible: boolean = false;
+    helpVisible: boolean = false;
     alert: Alert = new Alert();
 
     constructor() { }
@@ -31,6 +32,14 @@ export class AlertService {
 
     showError(err: string) {
         this.showAlert(err, 'error', 8);
+    }
+
+    showHelp() {
+        this.helpVisible = true;
+    }
+
+    hideHelp() {
+        this.helpVisible = false;
     }
 
     private getClass(type: string): string {

@@ -10,16 +10,22 @@ import { Vereniging, VerenigingKort } from '../../../model/vereniging';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { greaterZero, noDuplicates, notEmpty } from '../../../directives/validators.directive';
 import { Button } from '../../../model/button';
-import { ButtonComponent } from '../../../shared/button-group/button/button.component';
 import { ApiResponse } from '../../../model/api-response';
 import { SpeechService } from '../../../services/speech.service';
+import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
-  selector: 'app-speler',
-  standalone: true,
-  imports: [PageHeaderComponent, ButtonComponent, NgClass, FormsModule, ReactiveFormsModule],
-  templateUrl: './speler.component.html',
-  styleUrl: './speler.component.css'
+    selector: 'app-speler',
+    standalone: true,
+    imports: [
+        PageHeaderComponent, 
+        SectionFooterBtnsComponent,
+        NgClass, 
+        FormsModule, 
+        ReactiveFormsModule
+    ],
+    templateUrl: './speler.component.html',
+    styleUrl: './speler.component.css'
 })
 export class SpelerComponent extends BaseComponent implements OnInit {
     route = inject(ActivatedRoute);
@@ -38,7 +44,7 @@ export class SpelerComponent extends BaseComponent implements OnInit {
     spelerVerenigingen: VerenigingKort[] = [];
     existingSpelerIds: string[] = [];
     activeSection: number = 0;
-    enterButton: Button = new Button('Enter', 'Opslaan', true);
+    enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
 
     spelerForm!: FormGroup;
 
@@ -51,19 +57,23 @@ export class SpelerComponent extends BaseComponent implements OnInit {
         });
     }
 
-    enterPressed() {
-        this.enterClicked();
-    }
-
     override escapePressed(): void {
         if (this.mode == 'edit') {
             if (this.spelerForm.dirty || JSON.stringify(this.speler.verenigingIds) != JSON.stringify(this.spelerVerenigingen.map(sv => sv.verId))) {
                 this.spelerForm.reset();
                 this.setVerenigingenVanSpeler();
                 return;
-            }    
+            }
         }
         super.escapePressed();
+    }
+
+    buttonPressed(button: Button) {
+        button.selected = true;
+        setTimeout(() => {
+            button.selected = false;
+            this.enterClicked();
+        }, 300);
     }
 
     enterClicked() {
@@ -100,25 +110,25 @@ export class SpelerComponent extends BaseComponent implements OnInit {
 
     addSpeler() {
         this.bssApi.addSpelers([this.speler])
-        .then((resp: ApiResponse) => {
-            this.alert.showAlert(resp.message, 'success');
-            this.escapePressed();
-        })
-        .catch(err => {
-            this.alert.showAlert(err, 'error');
-        });
+            .then((resp: ApiResponse) => {
+                this.alert.showAlert(resp.message, 'success');
+                this.escapePressed();
+            })
+            .catch(err => {
+                this.alert.showAlert(err, 'error');
+            });
     }
 
     updateSpeler() {
         this.bssApi.updateSpeler(this.speler)
-        .then((resp: ApiResponse) => {
-            this.alert.showAlert(resp.message, 'success');
-            this.subtitle = this.getSubtitle();
-            this.createSpelerForm();
-        })
-        .catch(err => {
-            this.alert.showAlert(err, 'error');
-        });
+            .then((resp: ApiResponse) => {
+                this.alert.showAlert(resp.message, 'success');
+                this.subtitle = this.getSubtitle();
+                this.createSpelerForm();
+            })
+            .catch(err => {
+                this.alert.showAlert(err, 'error');
+            });
     }
 
     addVereniging() {
@@ -139,7 +149,7 @@ export class SpelerComponent extends BaseComponent implements OnInit {
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
-        if (event.key ==='ArrowLeft' || event.key ==='ArrowRight') {
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
             // if (event.key === 'ArrowLeft') {
             //     this.activateOtherSection(--this.activeSection);
             // }
@@ -149,7 +159,7 @@ export class SpelerComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.key === 'Enter') {
-            this.enterPressed();
+            this.buttonPressed(this.enterButtons[0]);
             return false;
         }
         if (event.key === 'Escape') {
@@ -163,7 +173,7 @@ export class SpelerComponent extends BaseComponent implements OnInit {
         if (event.key === 'Home') {
             this.homePressed();
             return false;
-        }    
+        }
         return true;
     }
 
@@ -198,47 +208,55 @@ export class SpelerComponent extends BaseComponent implements OnInit {
             this.bssApi.getSpelsoorten(),
             this.bssApi.getVerenigingen()
         ])
-        .then((results) => {
-            this.spelsoorten = results[0];
-            if (this.mode == 'edit') {
-                this.subtitle += 'wijzigen';
-                this.bssApi.getSpeler(this.initSplId)
-                .then((result: Speler) => {
-                    this.speler = result;
-                    this.subtitle = this.getSubtitle();
-                    this.verenigingen = results[1].map((result: Vereniging) => {
-                        let verKort = new VerenigingKort(result);
-                        verKort.inTeam = result.teams.some(team => team.teamLeden.some(lid => lid == this.speler.id));
-                        return verKort;
-                    });
-                    this.setVerenigingenVanSpeler();
-                    this.createSpelerForm();
+            .then((results) => {
+                this.spelsoorten = results[0];
+                if (this.mode == 'edit') {
+                    this.subtitle += 'wijzigen';
+                    this.bssApi.getSpeler(this.initSplId)
+                        .then((result: Speler) => {
+                            this.speler = result;
+                            this.subtitle = this.getSubtitle();
+                            this.verenigingen = results[1].map((result: Vereniging) => {
+                                let verKort = new VerenigingKort(result);
+                                verKort.inTeam = result.teams.some(team => team.teamLeden.some(lid => lid == this.speler.id));
+                                return verKort;
+                            });
+                            this.verenigingen.sort(this.compareVerenigingen);
+                            this.setVerenigingenVanSpeler();
+                            this.createSpelerForm();
 
-                })
-                .catch((err) => {
-                    this.alert.showAlert(err, 'error');
-                });
-            }
-            else {
-                this.mode = 'add';
-                this.subtitle += 'toevoegen';
-                this.verenigingen = results[1].map((result) => new VerenigingKort(result));
-                if (this.initVerId.length) {
-                    this.presetVerenigingVanSpeler(this.initVerId);
+                        })
+                        .catch((err) => {
+                            this.alert.showAlert(err, 'error');
+                        });
                 }
-                this.bssApi.getExistingSpelerIds()
-                .then((result: string[]) => {
-                    this.existingSpelerIds = result;
-                    this.createSpelerForm();
-                })
-                .catch((err) => {
-                    this.alert.showAlert(err, 'error');
-                });
-            }
-        })
-        .catch((err) => {
-            this.alert.showAlert(err, 'error');
-        });
+                else {
+                    this.mode = 'add';
+                    this.subtitle += 'toevoegen';
+                    this.verenigingen = results[1].map((result) => new VerenigingKort(result));
+                    if (this.initVerId.length) {
+                        this.presetVerenigingVanSpeler(this.initVerId);
+                    }
+                    this.bssApi.getExistingSpelerIds()
+                        .then((result: string[]) => {
+                            this.existingSpelerIds = result;
+                            this.createSpelerForm();
+                        })
+                        .catch((err) => {
+                            this.alert.showAlert(err, 'error');
+                        });
+                }
+            })
+            .catch((err) => {
+                this.alert.showAlert(err, 'error');
+            });
+    }
+
+    compareVerenigingen(a: VerenigingKort, b: VerenigingKort): number {
+        if (a.naam == b.naam) {
+            return 0;
+        }
+        return (a.naam > b.naam) ? 1 : -1;
     }
 
     createSpelerForm() {
@@ -248,6 +266,7 @@ export class SpelerComponent extends BaseComponent implements OnInit {
             vnaam: [this.speler.vnaam, [Validators.required, notEmpty()]],
             tvoeg: [this.speler.tvoeg],
             anaam: [this.speler.anaam, [Validators.required, notEmpty()]],
+            bordnaam: [this.speler.bordnaam && this.speler.bordnaam.length ? this.speler.bordnaam : this.speler.vnaam],
             spreeknaam: [this.speler.spreeknaam.length ? this.speler.spreeknaam : this.speler.vnaam],
             moyenne: [this.getSpelsoortGemiddelde(this.spelId), [Validators.required, greaterZero()]]
         });
@@ -296,6 +315,9 @@ export class SpelerComponent extends BaseComponent implements OnInit {
     }
     get anaam() {
         return this.spelerForm.get('anaam');
+    }
+    get bordnaam() {
+        return this.spelerForm.get('bordnaam');
     }
     get spreeknaam() {
         return this.spelerForm.get('spreeknaam');

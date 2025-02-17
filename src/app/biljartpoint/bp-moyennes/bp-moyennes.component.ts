@@ -1,12 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { BaseComponent } from '../../base/base.component';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { FormsModule } from '@angular/forms';
 import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
 import { Button } from '../../model/button';
-import { BpMoyTabel } from '../../model/bpoint';
+import { BpMoyTabel, BpMoyTabelEntry } from '../../model/bpoint';
 import { MoyenneTabel, MoyenneTabelEntry } from '../../model/moyenne-tabel';
 import { HelperService } from '../../services/helper.service';
+import { Config } from '../../model/config';
+import { DecimalPipe, NgClass, SlicePipe } from '@angular/common';
+import { ApiResponse } from '../../model/api-response';
 
 class Option {
     val: string = '';
@@ -18,13 +21,24 @@ class Option {
     }
 }
 
+class MoyEntry {
+    bp: BpMoyTabelEntry = new BpMoyTabelEntry();
+    bpNum: MoyenneTabelEntry = new MoyenneTabelEntry();
+    bss: BpMoyTabelEntry = new BpMoyTabelEntry();
+    bssNum: MoyenneTabelEntry = new MoyenneTabelEntry();
+    bssOk: boolean = true;
+}
+
 @Component({
     selector: 'app-bp-moyennes',
     standalone: true,
     imports: [
         PageHeaderComponent,
         SectionFooterBtnsComponent,
-        FormsModule
+        FormsModule,
+        SlicePipe,
+        DecimalPipe,
+        NgClass
     ],
     templateUrl: './bp-moyennes.component.html',
     styleUrl: './bp-moyennes.component.css'
@@ -34,9 +48,13 @@ export class BpMoyennesComponent extends BaseComponent implements OnInit {
 
     bpTabel: BpMoyTabel = new BpMoyTabel();
     bssTabel: MoyenneTabel = new MoyenneTabel();
+    comboTabel: MoyEntry[] = [];
     existing: string[] = [];
+    config: Config = new Config();
+    voorkeur: boolean = false;
     options: Option[] = [];
     option: Option = new Option('', '');
+    tabelInBssIsOk: boolean = true;
     escapeCount: number = 0;
     tableValid: boolean = false;
 
@@ -48,6 +66,7 @@ export class BpMoyennesComponent extends BaseComponent implements OnInit {
     optionChanged() {
         this.bpTabel = new BpMoyTabel();
         this.bssTabel = new MoyenneTabel();
+        this.comboTabel = [];
         this.tableValid = false;
     }
 
@@ -60,15 +79,20 @@ export class BpMoyennesComponent extends BaseComponent implements OnInit {
         }
     }
 
+    voorkeurClicked() {
+        this.voorkeur = !this.voorkeur;
+    }
+
     opslaanClicked() {
         this.bssTabel.tabId = '3BA-' + this.bpTabel.klasse;
         this.bssTabel.spelsoort = '3BA';
         this.bssTabel.klasse = this.bpTabel.klasse;
-        this.bssTabel.minimum = Number(this.bpTabel.minimum);
+        this.bssTabel.minimum = +this.bpTabel.minimum;
+        this.bssTabel.moyennes = [];
         this.bpTabel.entries.forEach(entry => {
             const bssEntry: MoyenneTabelEntry = {
-                vanaf: Number(entry.vanaf),
-                cars: Number(entry.cars),
+                vanaf: +entry.vanaf,
+                cars: +entry.cars,
                 filled: true
             }
             this.bssTabel.moyennes.push(bssEntry);
@@ -83,12 +107,18 @@ export class BpMoyennesComponent extends BaseComponent implements OnInit {
     }
 
     private tabelToevoegen() {
-        this.bssApi.addMoyenneTabel(this.bssTabel)
-        .then(resp => {
-            this.alert.showAlert(resp.message, 'success');
+        let promises: Promise<ApiResponse>[] = [this.bssApi.addMoyenneTabel(this.bssTabel)];
+        if (this.voorkeur) {
+            this.config.klasse = this.bssTabel.klasse;
+            promises.push(this.bssApi.saveConfig(this.config));
+        }
+        Promise.all(promises)
+        .then(resps => {
+            this.alert.showAlert(`Moyenne tabel voor klasse '${this.bssTabel.klasse}' is toegevoegd.`, 'success');
+            this.bssTabel = resps[0].data;
             this.existing.push(this.bssTabel.klasse);
-            this.bpTabel = new BpMoyTabel();
-            this.bssTabel = new MoyenneTabel();
+            this.tabelInBssIsOk = true;
+            this.fillComboTabel();
         })
         .catch(err => {
             this.alert.showError(err);
@@ -96,9 +126,17 @@ export class BpMoyennesComponent extends BaseComponent implements OnInit {
     }
 
     private tabelWijzigen() {
-        this.bssApi.updateMoyenneTabel(this.bssTabel)
-        .then(resp => {
-            this.alert.showAlert(resp.message, 'success');
+        let promises: Promise<ApiResponse>[] = [this.bssApi.updateMoyenneTabel(this.bssTabel)];
+        if (this.voorkeur) {
+            this.config.klasse = this.bssTabel.klasse;
+            promises.push(this.bssApi.saveConfig(this.config));
+        }
+        Promise.all(promises)
+        .then(resps => {
+            this.alert.showAlert(`Moyenne tabel voor klasse '${this.bssTabel.klasse}' is gewijzigd.`, 'success');
+            this.bssTabel = resps[0].data;
+            this.tabelInBssIsOk = true;
+            this.fillComboTabel();
         })
         .catch(err => {
             this.alert.showError(err);
@@ -106,6 +144,7 @@ export class BpMoyennesComponent extends BaseComponent implements OnInit {
     }
 
     getMoyenneTabelFromBpoint() {
+        this.voorkeur = false;
         this.bssApi.getMoyenneTabelFromBiljartpoint(this.option.val)
         .then(result => {
             this.bpTabel = result;
@@ -116,25 +155,166 @@ export class BpMoyennesComponent extends BaseComponent implements OnInit {
             else {
                 const exists = this.existing.some(klasse => klasse == this.bpTabel.klasse);
                 this.buttons[1].text = exists ? 'Wijzigen in BSS' : 'Toevoegen aan BSS';
+                if (exists) {
+                    this.bssApi.getMoyenneTabel('3BA-' + this.option.val)
+                    .then(data => {
+                        this.bssTabel = data;
+                        this.fillComboTabel();
+                        if (+this.bpTabel.minimum != this.bssTabel.minimum) {
+                            this.tabelInBssIsOk = false;
+                        }
+                    })
+                    .catch(err => {
+                        this.alert.showError(err);
+                    });
+                }
+                else {
+                    this.bssTabel = new MoyenneTabel();
+                    this.tabelInBssIsOk = false;
+                    this.fillComboTabel();
+                }
             }
         })
         .catch(err => {
             this.alert.showError('ERROR - (zie console)');
             console.log(err);
-        }) 
+        });
+    }
+
+    @HostListener('document:keyup', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent): boolean {
+        console.log(event.code + ' : ' + event.key);
+        if (event.key === 'Escape') {
+            this.escapePressed();
+            return false;
+        }
+        if (event.key === 'Home') {
+            this.homePressed();
+            return false;
+        }
+        return true;
     }
 
     ngOnInit(): void {
         this.options.push(new Option('B1', 'Driebanden klein B1'));
         this.options.push(new Option('B2', 'Driebanden klein B2'));
         this.option = this.options[0];
-        this.bssApi.getMoyenneKlassenLijst('3BA')
-        .then(result => {
-            this.existing = result;
+        Promise.all([
+            this.bssApi.getMoyenneKlassenLijst('3BA'),
+            this.bssApi.getConfig()
+        ])
+        .then(results => {
+            this.existing = results[0];
+            this.config = results[1];
         })
         .catch(err => {
             this.alert.showError(err);
         });
+    }
+
+    private fillComboTabel() {
+        this.comboTabel = [];
+        let eofBp = this.bpTabel.entries.length == 0;
+        let eofBss = this.bssTabel.moyennes.length == 0;
+        let keyBp = eofBp ? 99999 : 0;
+        let keyBss = eofBss ? 99999 : 0;
+        let idxBp = -1;
+        let idxBss = -1;
+        let comboTemp = new MoyEntry();
+        while(!(eofBp && eofBss)) {
+            if (keyBp == keyBss) {
+                idxBp++;
+                idxBss++;
+                comboTemp.bp = this.bpTabel.entries[idxBp];
+                comboTemp.bpNum = this.getNumericEntry(comboTemp.bp);
+                keyBp = comboTemp.bpNum.vanaf;
+                comboTemp.bssNum = this.bssTabel.moyennes[idxBss];
+                comboTemp.bss = this.getStringEntry(comboTemp.bssNum);
+                keyBss = comboTemp.bssNum.vanaf;
+            }
+            else if (keyBp < keyBss) {
+                idxBp++;
+                comboTemp.bp = this.bpTabel.entries[idxBp];
+                comboTemp.bpNum = this.getNumericEntry(comboTemp.bp);
+                keyBp = comboTemp.bpNum.vanaf;
+            }
+            else {
+                idxBss++;
+                comboTemp.bssNum = this.bssTabel.moyennes[idxBss];
+                comboTemp.bss = this.getStringEntry(comboTemp.bssNum);
+                keyBss = comboTemp.bssNum.vanaf;
+            }
+            let comboEntry = new MoyEntry();
+            if (keyBp == keyBss) {
+                comboEntry.bp = comboTemp.bp;
+                comboEntry.bpNum = comboTemp.bpNum;
+                comboEntry.bss = comboTemp.bss;
+                comboEntry.bssNum = comboTemp.bssNum;
+                this.comboTabel.push(comboEntry);
+                eofBp = (idxBp + 1) >= this.bpTabel.entries.length;
+                eofBss = (idxBss + 1) >= this.bssTabel.moyennes.length;
+                keyBp = eofBp ? 99999 : keyBp;
+                keyBss = eofBss ? 99999 : keyBss;
+            }
+            else if (keyBp > keyBss) {
+                comboEntry.bss = comboTemp.bss;
+                comboEntry.bssNum = comboTemp.bssNum;
+                this.comboTabel.push(comboEntry);
+                eofBss = (idxBss + 1) >= this.bssTabel.moyennes.length;
+                keyBss = eofBss ? 99999 : keyBss;
+                if (eofBss && !eofBp) {
+                    let comboEntry = new MoyEntry();
+                    comboEntry.bp = comboTemp.bp;
+                    comboEntry.bpNum = comboTemp.bpNum;
+                    comboEntry.bssOk = false;
+                    this.comboTabel.push(comboEntry); 
+                    eofBp = (idxBp + 1) >= this.bpTabel.entries.length;
+                    keyBp = eofBp ? 99999 : keyBp;   
+                }
+            }
+            else {
+                comboEntry.bp = comboTemp.bp;
+                comboEntry.bpNum = comboTemp.bpNum;
+                this.comboTabel.push(comboEntry);
+                eofBp = (idxBp + 1) >= this.bpTabel.entries.length;
+                keyBp = eofBp ? 99999 : keyBp;
+                if (eofBp && !eofBss) {
+                    let comboEntry = new MoyEntry();
+                    comboEntry.bss = comboTemp.bss;
+                    comboEntry.bssNum = comboTemp.bssNum;
+                    comboEntry.bssOk = false;
+                    this.comboTabel.push(comboEntry);
+                    eofBss = (idxBss + 1) >= this.bssTabel.moyennes.length;
+                    keyBss = eofBss ? 99999 : keyBss;
+                }
+            }
+            if (comboEntry.bpNum.vanaf != comboEntry.bssNum.vanaf || comboEntry.bpNum.cars != comboEntry.bssNum.cars) {
+                comboEntry.bssOk = false;
+                this.tabelInBssIsOk = false;
+            }
+        }
+        // aanvullen tot 40 entries
+        if (this.comboTabel.length > 40) {
+            this.comboTabel.length = 40;
+        }
+        const nrToAdd = 40 - this.comboTabel.length;
+        for (let i = 0; i < nrToAdd; i++) {
+            this.comboTabel.push(new MoyEntry());
+        }
+    }
+
+    private getStringEntry(entry: MoyenneTabelEntry): BpMoyTabelEntry {
+        let result = new BpMoyTabelEntry();
+        result.vanaf = entry.vanaf == 0 ? '' : '' + entry.vanaf;
+        result.cars = entry.cars == 0 ? '' : '' + entry.cars;
+        return result;
+    }
+
+    private getNumericEntry(entry: BpMoyTabelEntry): MoyenneTabelEntry {
+        let result = new MoyenneTabelEntry();
+        result.vanaf = entry.vanaf == '' ? 0 : +entry.vanaf;
+        result.cars = entry.cars == '' ? 0 : +entry.cars;
+        return result;
     }
 
     private validateTable() {

@@ -36,10 +36,48 @@
 
 /* INPUT */
 
+.inputform {
+    display: flex;
+}
+.inputform .labels {
+    padding-right: .5em;
+}
+.inputform .labels .inp-row {
+    color: green;
+    line-height: 1.5;
+    padding: .125em 0;
+}
+.inputform .labels .inp-row label {
+    padding-right: 0;
+}
+.inputform .labels .inp-row span.req {
+    color: red;
+    font-size: .75em;
+}
+.inputform .fields .inp-row {
+    padding: .0625em 0;
+}
+.inputform .labels .errmsg {
+    height: 1.25em;
+}
+.inputform .fields .errmsg {
+    color: red;
+    height: 1.25em;
+    line-height: 1.25;
+}
+.inputform .fields .errmsg span {
+    font-size: .75em;
+}
+
 label {
     color: green;
     padding-right: 1em;
 }
+.label span.req, label span.req {
+    color: red;
+    font-size: .75em;
+}
+
 
 input[type="text"], input[type="number"], input[type="password"], select {
     padding: 0 .25em;
@@ -70,9 +108,13 @@ input[type="text"].filter {
     background-color: lightblue;
 }
 select {
+    padding-top: .125em;
+    padding-bottom: .125em;
     border-width: 2px;
 }
 select.filter {
+    padding-top: 0;
+    padding-bottom: 0;
     background-color: lightblue;
 }
 select>option {
@@ -185,6 +227,11 @@ select:disabled, select.disabled {
     white-space: nowrap;
     overflow-x: hidden;
     text-overflow: ellipsis;
+}
+.lijst-row .lijst-col.ellipsed:hover { 
+    color: black;
+    opacity: 1;
+    overflow-x: visible;
 }
 .lijst-row .lijst-col.num { text-align: right; }
 .lijst-row .lijst-col.center { text-align: center; }

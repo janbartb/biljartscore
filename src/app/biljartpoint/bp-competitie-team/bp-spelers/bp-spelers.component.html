@@ -3,7 +3,7 @@
         <div class="fullheight flexbox flexcolumn">
             <div>
                 <app-page-header [title]="'Biljartpoint'" 
-                            [subtitle]="'Competitie ' + bpComp.knbbId + '&nbsp; - &nbsp;Team ' + bpTeam.knbbId + ' : ' + bpTeam.naam" 
+                            [subtitle]="'Competitie ' + bpComp.knbbId + '&nbsp; - &nbsp;Team ' + bpTeam.knbbId + ' : ' + bssTeam.naam" 
                             [spel]="appData.getSpelNaam()" [escCount]="escapeCount" (escClicked)="escapePressed()" 
                             (hdrClicked)="gotoBiljartpoint()" (prevClicked)="previousPressed()"></app-page-header>
             </div>
@@ -20,8 +20,8 @@
                                             <div class="lijst-col" style="width: 5em;">
                                                 <span>{{spl.bpSpeler.splKnbbId}}</span>
                                             </div>
-                                            <div class="lijst-col" style="width: 12em;" title="spl.bpSpeler.splNaam">
-                                                <span [title]="spl.bpSpeler.splNaam">{{spl.bpSpeler.splNaam}}</span>
+                                            <div class="lijst-col ellipsed" style="width: 12em;">
+                                                <span>{{spl.bpSpeler.splNaam}}</span>
                                             </div>
                                             <div class="lijst-col num" style="width: 4em;">
                                                 <span>{{spl.bpSpeler.splMoyenne}}</span>
@@ -67,7 +67,7 @@
                                                 <!-- <div>{{spl.inBp ? (spl.inTeam ? '' : '+') : '-'}}</div>
                                                 <div style="font-size: .75em;">{{spl.inBSS ? '' : '(BSS)'}}</div> -->
                                             </div>
-                                            <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS, 'clr-del': !spl.inBp}" style="width: 4em;">
+                                            <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS, 'clr-del': !spl.inBp}" style="width: 5em;">
                                                 <span>{{spl.bssSpeler.speler.id}}</span>
                                             </div>
                                             <div class="lijst-col" style="width: 5em;"
@@ -77,7 +77,7 @@
                                                     }">
                                                 <span>{{spl.bssSpeler.speler.knbbId}}</span>
                                             </div>
-                                            <div class="lijst-col" style="width: 12em;"
+                                            <div class="lijst-col ellipsed" style="width: 12em;"
                                                     [ngClass]="{
                                                         'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.getNaam() != spl.bpSpeler.splNaam),
                                                         'clr-del': !spl.inBp
@@ -104,7 +104,7 @@
                             [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
             }
             @else {
-                <div class="flexbox flexcenter flexmiddle" style="height: 3em; border-top: .25em solid #459c48;">
+                <div class="flexbox flexcenter flexmiddle" style="height: 2em; border-top: .25em solid #459c48;">
                     <div class="label">Verwerken niet nodig. Alle data van dit team in BSS is in orde.</div>
                 </div>
                 <app-section-footer-btns [buttons]="backButtons" (clickedButton)="terugNaarTeams()"

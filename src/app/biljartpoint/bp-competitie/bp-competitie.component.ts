@@ -52,7 +52,7 @@ export class BpCompetitieComponent extends BaseComponent implements OnInit {
             this.setEscapeCount();
             return;
         }
-        super.escapePressed();
+        this.router.navigate(['bpoint/competities']);
     }
 
     buttonPressed(button: Button) {
@@ -102,7 +102,7 @@ export class BpCompetitieComponent extends BaseComponent implements OnInit {
     }
 
     naarTeamsClicked() {
-        this.appData.gotoPage(this.router.url, 'bpoint/compteams');
+        this.router.navigate(['bpoint/compteams']);
     }
 
     opslaanClicked() {
@@ -211,6 +211,10 @@ export class BpCompetitieComponent extends BaseComponent implements OnInit {
                 const foundBssComp = bssComps.find(cmp => cmp.competitieId == this.bpComp.bssId);
                 if (foundBssComp) {
                     this.bssComp = foundBssComp;
+                    if (this.bssCompEqualsBpComp()) {
+                        this.naarTeamsClicked();
+                        return;
+                    }
                 }
                 this.createCompForm();
             }
@@ -219,6 +223,22 @@ export class BpCompetitieComponent extends BaseComponent implements OnInit {
         .catch(err => {
             this.alert.showError(err);
         });
+    }
+
+    private bssCompEqualsBpComp(): boolean {
+        if (this.bpComp.district.disId != this.bssComp.district || this.bpComp.seizoen != this.bssComp.seizoen) {
+            return false;
+        }
+        if (this.bpComp.spelsoortId != this.bssComp.spelsoort || this.bpComp.knbbId != this.bssComp.knbbId) {
+            return false;
+        }
+        if (this.bpComp.klasse != this.bssComp.klasse || +this.bpComp.volgNr != this.bssComp.volgNr || +this.bpComp.poule != this.bssComp.poule) {
+            return false;
+        }
+        if (this.bpComp.naam != this.bssComp.naam || +this.bpComp.maxBeurten != this.bssComp.maxBeurten) {
+            return false;
+        }
+        return true;
     }
 
     private createBpTeam(tm: TeamTemp): BpTeam {

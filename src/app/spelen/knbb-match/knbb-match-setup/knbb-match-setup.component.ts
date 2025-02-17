@@ -177,7 +177,7 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
         targetSpeler.splNaam = spelerToAdd.getNaam();
         targetSpeler.verId = this.selectedTeam.key.verId;
         targetSpeler.teamId = this.selectedTeam.key.teamId;
-        targetSpeler.splBordNaam = spelerToAdd.speler.vnaam;
+        targetSpeler.splBordNaam = spelerToAdd.speler.bordnaam && spelerToAdd.speler.bordnaam.length ? spelerToAdd.speler.bordnaam : spelerToAdd.speler.vnaam;
         targetSpeler.splSpreekNaam = spelerToAdd.speler.spreeknaam == '' ? spelerToAdd.speler.vnaam : spelerToAdd.speler.spreeknaam;
         targetSpeler.splTsGem = spelerToAdd.getGemiddeldeVanSpel();
         targetSpeler.splTsCar = 0;

@@ -51,11 +51,27 @@
                                         <label for="locatie">Locatie</label>
                                     </td>
                                     <td>
-                                        <input type="text" id="locatie" style="width: 12em;" formControlName="locatie" autocomplete="off"
-                                            [ngClass]="{'invalid': locatie?.invalid && (locatie?.dirty), 'valid': locatie?.valid && (locatie?.dirty)}"
-                                            (blur)="locatie?.setValue(locatie?.value.trim())">
+                                        <select id="locatie" formControlName="locatie" style="width: 15em;">
+                                            <option value=""></option>
+                                            @for (lok of lokaliteiten; track $index) {
+                                                <option [ngValue]="lok.lokId">{{lok.naam}}</option>
+                                            }
+                                        </select>
                                     </td>
                                 </tr>
+                                @if (vereniging.verId != config.vereniging) {
+                                    <tr><td style="height: 1em;"></td></tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <span class="label" (click)="voorkeurClicked()">
+                                                <i class="far" [ngClass]="voorkeur?.value ? 'fa-check-square' : 'fa-square'" 
+                                                        style="color: black;"></i>
+                                                <span style="padding-left: .5em;">Zet deze als voorkeur vereniging</span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </form>

@@ -44,7 +44,7 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
 
     enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
-    toevoegButtons: Button[] = [new Button('+', 'Toevoegen', true)];
+    toevoegButtons: Button[] = [new Button('Ins', 'Toevoegen', true)];
     verwijderButtons: Button[] = [new Button('Del', 'Verwijderen', true)];
 
     districtForm!: FormGroup;
@@ -143,8 +143,8 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
         this.bssApi.addDistrict(this.district)
         .then(resp => {
             this.alert.showAlert(resp.message, 'success');
+            this.resetScreen();
             this.getDistricten();
-            this.toevoegenClicked();
         })
         .catch(err => {
             this.alert.showError(err);
@@ -232,7 +232,7 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
             this.buttonPressed(this.verwijderButtons[0]);
             return false;
         }
-        if (event.key === 'Insert') {
+        if (event.key === 'Insert' || event.code == 'Equal') {
             this.buttonPressed(this.toevoegButtons[0]);
             return false;
         }

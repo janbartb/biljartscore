@@ -29,6 +29,10 @@ export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit 
     dataReady: boolean = false;
     escapeCount: number = 0;
 
+    override escapePressed(): void {
+        this.router.navigate(['bpoint/competities']);
+    }
+
     bpTeamClicked(idx: number) {
         localStorage.setItem('bpTeam', JSON.stringify(this.bpComp.teams[idx]));
         this.appData.gotoPage(this.router.url, 'bpoint/lokaliteit');

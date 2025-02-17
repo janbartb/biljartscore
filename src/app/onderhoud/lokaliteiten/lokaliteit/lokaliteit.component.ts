@@ -46,14 +46,7 @@ export class LokaliteitComponent extends BaseComponent implements OnInit {
 
     lokForm!: FormGroup;
 
-    enterPressed() {
-        this.opslaanClicked(); 
-    }
-
     buttonPressed(button: Button) {
-        if (this.mode != 'view') {
-            return;
-        }
         button.selected = true;
         setTimeout(() => {
             button.selected = false;
@@ -62,6 +55,9 @@ export class LokaliteitComponent extends BaseComponent implements OnInit {
             }
             else if (button.key == 'Del') {
                 this.verwijderenClicked();
+            }
+            else if (button.text == 'Opslaan') {
+                this.opslaanClicked();
             }
         }, 300);
     }
@@ -73,6 +69,7 @@ export class LokaliteitComponent extends BaseComponent implements OnInit {
         if (this.mode == 'edit') {
             this.lokForm.reset();
             this.mode = 'view';
+            this.subtitle = 'Lokaliteit';
             this.setEscapeCount();
             return;
         }
@@ -128,6 +125,7 @@ export class LokaliteitComponent extends BaseComponent implements OnInit {
         .then(resp => {
             this.alert.showAlert(resp.message, 'success');
             this.mode = 'view';
+            this.subtitle = 'Lokaliteit';
             this.createForm();
         })
         .catch(err => {
@@ -161,18 +159,18 @@ export class LokaliteitComponent extends BaseComponent implements OnInit {
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
         if (event.key === 'Enter') {
-            this.enterPressed();
+            this.buttonPressed(this.opslaanButtons[0]);
             return false;
         }
         if (event.key === 'Escape') {
             this.escapePressed();
             return false;
         }
-        if (event.code === 'KeyW') {
+        if (event.code === 'KeyW' && this.mode == 'view') {
             this.buttonPressed(this.viewButtons[0]);
             return false;
         }
-        if (event.code === 'Delete') {
+        if (event.code === 'Delete' && this.mode == 'view' && this.lokVerenigingen.length == 0) {
             this.buttonPressed(this.viewButtons[1]);
             return false;
         }

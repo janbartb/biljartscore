@@ -261,6 +261,7 @@ export class ApiService {
         if (!response.ok) {
             throw new Error(json.message);
         }
+        this.stat.setConfig(config);
         return json;
     }
 

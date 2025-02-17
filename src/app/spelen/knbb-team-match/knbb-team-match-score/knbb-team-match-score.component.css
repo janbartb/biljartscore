@@ -10,7 +10,7 @@
 }
 
 .speler-container {
-    border: .5em solid #505050;
+    border: .5em solid black;
 }
 .speler-container.thuis {
     border-color: white;
@@ -20,61 +20,4 @@
 }
 .speler-container div {
     overflow: hidden;
-}
-
-.help {
-    position: fixed;
-    width: 42em;
-    top: 3em;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    box-shadow: .375em .375em .1875em #aaaaaa;
-    font-weight: bold;
-    background-color: white;
-    border-radius: .375em;
-    padding: .125em;
-    z-index: 20;
-}
-.help-inner {
-    border: .125em solid black;
-    border-radius: .375em;
-    padding: 1em;
-}
-.helptext {
-    height: 1em;
-    line-height: .75em;
-    opacity: .6;
-}
-.helptext span {
-    font-size: .75em;
-    letter-spacing: -.05em;
-}
-.help-btn-key {
-    width: 1em;
-    height: 1em;
-    line-height: .5em;
-    background-color: lightgrey;
-    border: 1px solid black;
-    border-radius: .2em;
-    text-align: center;
-    cursor: pointer;
-}
-.help-btn-key:hover {
-    background-color: grey;
-}
-.help-btn-key.help-btn-key-wide {
-    width: 2em;
-}
-.help-btn-key span {
-    font-size: .5em;
-}
-.help-btn-equ {
-    width: 1em;
-    height: 1em;
-    line-height: .5em;
-    text-align: center;
-}
-.help-btn-equ span {
-    font-size: .5em;
 }

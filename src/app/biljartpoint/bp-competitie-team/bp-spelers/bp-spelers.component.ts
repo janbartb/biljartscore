@@ -48,11 +48,28 @@ export class BpSpelersComponent extends BaseComponent implements OnInit {
     escapeCount: number = 0;
 
     procButtons: Button[] = [
-        new Button('', 'Spelers verwerken in BSS', false)
+        new Button('Enter', 'Spelers verwerken in BSS', true)
     ];
     backButtons: Button[] = [
-        new Button('', 'Terug naar teams', false)
+        new Button('Enter', 'Terug naar teams', true)
     ];
+
+    override escapePressed(): void {
+        this.router.navigate(['bpoint/compteams']);
+    }
+
+    buttonPressed(button: Button) {
+        button.selected = true;
+        setTimeout(() => {
+            button.selected = false;
+            if (button.text == 'Terug naar teams') {
+                this.terugNaarTeams();
+            }
+            else {
+                this.verwerkSpelers();
+            }
+        }, 300);
+    }
 
     verwerkSpelers() {
         let team = this.bssVereniging.teams.find(tm => tm.teamId == this.bssTeam.teamId);
@@ -125,7 +142,7 @@ export class BpSpelersComponent extends BaseComponent implements OnInit {
     }
 
     terugNaarTeams() {
-        this.appData.goBackToPage('bpoint/compteams');
+        this.router.navigate(['bpoint/compteams']);
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -137,6 +154,15 @@ export class BpSpelersComponent extends BaseComponent implements OnInit {
                 return true;
             }
             this.escapePressed();
+            return false;
+        }
+        if (event.key === 'Enter') {
+            if (this.spelersToAdd.length || this.spelersToUpd.length || !this.bssTeamSpelersOk) {
+                this.buttonPressed(this.procButtons[0]);
+            }
+            else {
+                this.buttonPressed(this.backButtons[0]);
+            }
             return false;
         }
         if (event.key === 'Home') {
@@ -234,8 +260,6 @@ export class BpSpelersComponent extends BaseComponent implements OnInit {
                 }
             }
         });
-        console.log(this.spelersToAdd);
-        console.log(this.spelersToUpd);
     }
 
     private getSpelersToProcess(): SpelerToProcess[] {
@@ -299,6 +323,7 @@ export class BpSpelersComponent extends BaseComponent implements OnInit {
         this.existingSplIds.push(speler.id);
         speler.knbbId = spl.splKnbbId;
         this.fillSpelerNaam(spl.splNaamOrig, speler);
+        speler.bordnaam = speler.vnaam;
         speler.spreeknaam = speler.vnaam;
         speler.verenigingIds.push(this.bssVereniging.verId);
         const moy1: SpelerGemiddelde = new SpelerGemiddelde();

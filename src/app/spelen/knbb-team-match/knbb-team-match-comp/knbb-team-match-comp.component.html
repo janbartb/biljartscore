@@ -4,6 +4,11 @@
             <app-page-header [title]="'KNBB team match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
                         (prevClicked)="escapePressed()"></app-page-header>
         </div>
+        @if (compLijst.isEmpty()) {
+            <div class="label" style="padding-top: 5em; text-align: center;">
+                <span>Er zijn nog geen KNBB competities in BSS aanwezig.</span>
+            </div>
+        }
         <div class="flexgrow1 scroll-container">
             <div #complijst class="scroll-content">
                 <div class="flexbox flexcenter">

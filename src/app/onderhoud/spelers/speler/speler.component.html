@@ -87,6 +87,16 @@
                                             <tr><td style="padding: .5em 0;"></td></tr>
                                             <tr>
                                                 <td>
+                                                    <label for="bordnaam">Bordnaam</label>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="bordnaam" style="width: 8em;" formControlName="bordnaam" autocomplete="off"
+                                                        [ngClass]="{'invalid': bordnaam?.invalid && (bordnaam?.dirty), 'valid': bordnaam?.valid && (bordnaam?.dirty)}"
+                                                        (blur)="bordnaam?.setValue(bordnaam?.value.trim())" [placeholder]="vnaam?.value">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
                                                     <label for="spreeknaam">Spreeknaam</label>
                                                 </td>
                                                 <td>
@@ -157,11 +167,8 @@
 
         </div>
         @if (spelerForm && spelerForm.valid) {
-            <div class="page-footer flexbox flexcenter">
-                <div style="font-size: 1.25em;">
-                    <app-button [button]="enterButton" (buttonClicked)="enterClicked()"></app-button>
-                </div>
-            </div>    
+            <app-section-footer-btns [buttons]="enterButtons" (clickedButton)="enterClicked()"
+                    [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
         }
     </div>
 </div>

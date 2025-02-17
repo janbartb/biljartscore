@@ -52,72 +52,92 @@
                 <div class="lijst-col" style="width: 2.5em;"></div>
             </div>
         </div>
-        <div class="flexgrow1 scroll-container">
-            <div #spelerlijst class="scroll-content">
-                <div class="flexbox flexcenter">
-                    <div class="lijst">
-                        @for (item of spelerList.filtered; track $index) {
-                            <div class="lijst-row selectable" (click)="spelerClicked($index)"
-                                    [ngClass]="{'selected': spelerList.selectedIdx == $index, 'hovered': spelerList.hoveredIdx == $index}">
-                                <div class="lijst-col indicator" style="width: 2em;">
-                                    <i class="fas fa-angle-right"></i>
-                                </div>
-                                <div class="lijst-col" style="width: 5em;">
-                                    <span>{{item.speler.id}}</span>
-                                </div>
-                                <div class="lijst-col" style="width: 6em;">
-                                    <span>{{item.speler.knbbId}}</span>
-                                </div>
-                                <div class="lijst-col" style="width: 14em;">
-                                    <span>{{item.getNaam()}}</span>
-                                </div>
-                                <div class="lijst-col" style="width: 8em;">
-                                    @for (id of item.speler.verenigingIds; track $index) {
-                                        <span style="font-weight: normal; padding-right: .5em;">{{getKorteVerenigingNaam(id)}}</span>
-                                    }
-                                </div>
-                                @if (moyenneMode && spelerList.selectedIdx == $index) {
-                                    <div class="lijst-col" style="width: 7em; position: relative; left: -.25em;">
-                                        <input #moyenne type="number" style="width: 5em;" [(ngModel)]="moyenneEdit"
-                                            (keyup)="keyupMoyenne($event)" (keydown)="keydownMoyenne($event)" (click)="$event.stopPropagation()">
-                                    </div>
-                                }
-                                @else {
-                                    <div class="lijst-col" style="width: 7em;">
-                                        <span>{{item.getGemiddeldeVanSpel() | number:'1.3-3':'nl-NL'}}</span>
-                                    </div>
-                                }
-                                @if (showKnbbMoys) {
-                                    <div class="lijst-col" style="width: 7em;">
-                                        <span style="padding-right: .5em;">
-                                            @if (item.getGemiddeldeVanSpel() == +item.speler.knbbMoy) {
-                                                <i class="fas fa-check" style="color: green;"></i>
-                                            }
-                                            @else {
-                                                <i class="fas fa-caret-square-left iconbtn nopad" (click)="wijzigSpelerMoyenne(item)"></i>
-                                            }
-                                        </span>
-                                        <span>{{item.speler.knbbMoy | number:'1.3-3':'nl-NL'}}</span>
-                                    </div>
-                                }
-                                <div class="lijst-col num" style="width: 2.5em;">
-                                    @if (!moyenneMode && !spelerZitInTeam(item.speler)) {
-                                        <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="spelerVerwijderenClicked($event, item.speler)"></i>
-                                    }
-                                </div>
-                            </div>
-                        }
-                    </div>
+        @if (spelerList.isEmpty()) {
+            <div class="flexgrow1">
+                <div class="label" style="padding-top: 5em; text-align: center;">
+                    <span>Er zijn nog geen spelers aanwezig in BSS.</span>
                 </div>
             </div>
-        </div>
+        }
+        @else {
+            @if (spelerList.filtered.length == 0) {
+                <div class="flexgrow1">
+                    <div class="label" style="padding-top: 5em; text-align: center;">
+                        <span>Er zijn geen spelers die voldoen aan de filters.</span>
+                    </div>
+                </div>    
+            }
+            @else {
+                <div class="flexgrow1 scroll-container">
+                    <div #spelerlijst class="scroll-content">
+                        <div class="flexbox flexcenter">
+                            <div class="lijst">
+                                @for (item of spelerList.filtered; track $index) {
+                                    <div class="lijst-row selectable" (click)="spelerClicked($index)"
+                                            [ngClass]="{'selected': spelerList.selectedIdx == $index, 'hovered': spelerList.hoveredIdx == $index}">
+                                        <div class="lijst-col indicator" style="width: 2em;">
+                                            <i class="fas fa-angle-right"></i>
+                                        </div>
+                                        <div class="lijst-col" style="width: 5em;">
+                                            <span>{{item.speler.id}}</span>
+                                        </div>
+                                        <div class="lijst-col" style="width: 6em;">
+                                            <span>{{item.speler.knbbId}}</span>
+                                        </div>
+                                        <div class="lijst-col" style="width: 14em;">
+                                            <span>{{item.getNaam()}}</span>
+                                        </div>
+                                        <div class="lijst-col" style="width: 8em;">
+                                            @for (id of item.speler.verenigingIds; track $index) {
+                                                <span style="font-weight: normal; padding-right: .5em;">{{getKorteVerenigingNaam(id)}}</span>
+                                            }
+                                        </div>
+                                        @if (moyenneMode && spelerList.selectedIdx == $index) {
+                                            <div class="lijst-col" style="width: 7em; position: relative; left: -.25em;">
+                                                <input #moyenne type="number" style="width: 5em;" [(ngModel)]="moyenneEdit"
+                                                    (keyup)="keyupMoyenne($event)" (keydown)="keydownMoyenne($event)" (click)="$event.stopPropagation()">
+                                            </div>
+                                        }
+                                        @else {
+                                            <div class="lijst-col" style="width: 7em;">
+                                                <span>{{item.getGemiddeldeVanSpel() | number:'1.3-3':'nl-NL'}}</span>
+                                            </div>
+                                        }
+                                        @if (showKnbbMoys) {
+                                            <div class="lijst-col" style="width: 7em;">
+                                                <span style="padding-right: .5em;">
+                                                    @if (item.getGemiddeldeVanSpel() == +item.knbbMoy) {
+                                                        <i class="fas fa-check" style="color: green;"></i>
+                                                    }
+                                                    @else {
+                                                        <i class="fas fa-caret-square-left iconbtn nopad" (click)="wijzigSpelerMoyenne(item)"></i>
+                                                    }
+                                                </span>
+                                                <span>{{item.knbbMoy | number:'1.3-3':'nl-NL'}}</span>
+                                            </div>
+                                        }
+                                        <div class="lijst-col num" style="width: 2.5em;">
+                                            @if (!moyenneMode && !spelerZitInTeam(item.speler)) {
+                                                <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="spelerVerwijderenClicked($event, item.speler)"></i>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>        
+            }
+        }
         <div class="flexbox flexcenter flexmiddle" style="height: 3em; min-height: 3em; border-top: .25em solid #459c48;">
             <div style="font-size: 1.25em;">
                 <app-button [button]="buttons[0]" (buttonClicked)="buttonClicked(0)"></app-button>
             </div>
-            <div style="font-size: 1.25em;">
-                <app-button [button]="buttons[1]" (buttonClicked)="buttonClicked(1)"></app-button>
-            </div>
+            @if (spelerList.filtered.length > 0) {
+                <div style="font-size: 1.25em;">
+                    <app-button [button]="buttons[1]" (buttonClicked)="buttonClicked(1)"></app-button>
+                </div>    
+            }
             @if (biljartPointLink != '') {
                 <div style="margin-left: 1em; border-radius: .5em; overflow: hidden;">
                     <a [href]="biljartPointLink" target="_blank">
@@ -125,13 +145,6 @@
                     </a>
                 </div>
             }
-            <!-- @if (biljartPointLink != '') {
-                <div style="margin-left: 1em; border-radius: .5em; overflow: hidden;">
-                        <img src="biljartpoint.png" alt="" style="height: 2em;" (click)="getTeamFromKnbbSite()">
-                </div>
-            } -->
         </div>
-        <!-- <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)"
-                    [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns> -->
     </div>
 </div>

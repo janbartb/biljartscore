@@ -3,12 +3,17 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { NgClass } from '@angular/common';
 import { BaseComponent } from '../../base/base.component';
 import { List } from '../../model/list';
-import { VerenigingWrapper } from '../../model/vereniging';
+import { Vereniging, VerenigingWrapper } from '../../model/vereniging';
 import { FormsModule } from '@angular/forms';
 import { Button } from '../../model/button';
 import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/section-footer-btns.component';
 import { HelperService } from '../../services/helper.service';
 import { Scrolling } from '../../model/scrolling';
+import { Alinea, ConfirmDialog } from '../../model/dialogs';
+import { Speler } from '../../model/speler';
+import { ConfirmComponent } from '../../shared/confirm/confirm.component';
+import { Config } from '../../model/config';
+import { ApiResponse } from '../../model/api-response';
 
 @Component({
     selector: 'app-verenigingen',
@@ -16,6 +21,7 @@ import { Scrolling } from '../../model/scrolling';
     imports: [
         PageHeaderComponent, 
         SectionFooterBtnsComponent,
+        ConfirmComponent,
         FormsModule,
         NgClass
     ],
@@ -29,6 +35,9 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
     subtitle: string = 'Verenigingen';
     thisUrl = 'onderhoud/verenigingen';
     verenigingLijst: List<VerenigingWrapper> = new List<VerenigingWrapper>();
+    config: Config = new Config();
+    idxToDelete: number = -1;
+    confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
     naamFilter: string = '';
     escapeCount: number = 0;
     scrollElm!: HTMLDivElement;
@@ -91,6 +100,68 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
         this.appData.gotoPage(this.thisUrl, this.thisUrl + '/toevoegen')
     }
 
+    verenigingVerwijderenClicked(event: any, idx: number) {
+        event?.stopPropagation();
+        if (this.verenigingLijst.isIndexWithinRange(idx)) {
+            //TODO: first confirm and save if confirmed
+            const itemToRemove = this.verenigingLijst.filtered[idx];
+            if (itemToRemove.vereniging.teams.length) {
+                this.alert.showAlert(`Deze vereniging heeft nog teams. Verwijder deze eerst.`, 'warning', 5);
+                return;
+            }
+            this.idxToDelete = idx;
+            this.confirmVerwijderen(itemToRemove.vereniging);
+        }
+    }
+
+    private confirmVerwijderen(vereniging: Vereniging) {
+        console.log('confirm');
+        let inhoud: Alinea[] = [];
+        let lines = [`Vereniging '${vereniging.naam}' verwijderen.`];
+        if (vereniging.verId == this.config.vereniging) {
+            lines.push('Dit is uw voorkeur vereniging.');
+        }
+        inhoud.push(new Alinea(lines));
+        inhoud.push(new Alinea([`Weet u het zeker?`]));
+        this.confirmDialog = new ConfirmDialog('verwijderen', inhoud);
+        this.isDialogOpen = true;
+    }
+
+    confirmReplied(confirmed: boolean) {
+        if (confirmed) {
+            const itemToRemove = this.verenigingLijst.filtered[this.idxToDelete];
+            const verenigingToRemove = itemToRemove.vereniging;
+            this.verenigingLijst.items = this.verenigingLijst.items.filter(ver => ver.vereniging.verId != verenigingToRemove.verId);
+            this.verenigingLijst.filtered.splice(this.idxToDelete, 1);
+            this.verenigingLijst.clearSelection();
+            let spelersToUpdate: Speler[] = [];
+            itemToRemove.leden.forEach(spl => {
+                const idx = spl.verenigingIds.findIndex(id => id == verenigingToRemove.verId);
+                if (idx >= 0) {
+                    spl.verenigingIds.splice(idx, 1);
+                    spelersToUpdate.push(spl);
+                }
+            });
+            let promises: Promise<ApiResponse>[] = [this.bssApi.deleteVereniging(verenigingToRemove)];
+            if (spelersToUpdate.length) {
+                promises.push(this.bssApi.updateSpelers(spelersToUpdate));
+            }
+            if (verenigingToRemove.verId == this.config.vereniging) {
+                this.config.vereniging = '';
+                promises.push(this.bssApi.saveConfig(this.config));
+            }
+            Promise.all(promises)
+            .then(resps => {
+                console.log('aantal promises : ' + resps.length);
+                this.alert.showAlert(`Vereniging '${verenigingToRemove.naam}' is verwijderd.`, 'success');
+            })
+            .catch(err => {
+                this.alert.showError(err);
+            });
+        }
+        this.isDialogOpen = false;
+    }
+
     naamFilterChanged(event?: KeyboardEvent) {
         if (event) {
             if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Enter' || event.key === 'Escape') {
@@ -134,6 +205,9 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
+        if (this.isDialogOpen) {
+            return false;
+        }
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.key === 'ArrowUp') {
                 this.verenigingLijst.selectPreviousItem();
@@ -166,21 +240,25 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.bssApi.getVerenigingenLijst()
-            .then(result => {
-                this.verenigingLijst.fillItems(result);
-                this.sortVerenigingen();
-                const elm = this.htmlVerLijst()?.nativeElement;
-                if (elm) {
-                    this.scrollElm = elm;
-                    new ResizeObserver(() => { 
-                        this.initVerLijstScrolling(this.scrollElm);
-                    }).observe(this.scrollElm);
-                }
-            })
-            .catch((err) => {
-                this.alert.showAlert(err, 'error');
-            });
+        Promise.all([
+            this.bssApi.getVerenigingenLijst(),
+            this.bssApi.getConfig()
+        ])
+        .then(results => {
+            this.verenigingLijst.fillItems(results[0]);
+            this.config = results[1];
+            this.sortVerenigingen();
+            const elm = this.htmlVerLijst()?.nativeElement;
+            if (elm) {
+                this.scrollElm = elm;
+                new ResizeObserver(() => { 
+                    this.initVerLijstScrolling(this.scrollElm);
+                }).observe(this.scrollElm);
+            }
+        })
+        .catch((err) => {
+            this.alert.showAlert(err, 'error');
+        });
     }
 
     private setEscapeCount() {

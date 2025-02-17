@@ -136,7 +136,7 @@
                                                         </td>
                                                         <td>
                                                             @if (mode == 'view') {
-                                                                <span>{{naam?.value}}</span>
+                                                                <span [style.color]="bpComp.naam != naam?.value ? 'red' : ''">{{naam?.value}}</span>
                                                             }
                                                             @else {
                                                                 <input type="text" id="naam" style="width: 12em;" formControlName="naam" autocomplete="off"
@@ -151,7 +151,7 @@
                                                         </td>
                                                         <td>
                                                             @if (mode == 'view') {
-                                                                <span>{{maxBeurten?.value}}</span>
+                                                                <span [style.color]="bpComp.maxBeurten != maxBeurten?.value ? 'red' : ''">{{maxBeurten?.value}}</span>
                                                             }
                                                             @else {
                                                                 <input type="number" id="maxBeurten" style="width: 4em;" formControlName="maxBeurten" autocomplete="off"

@@ -1,0 +1,11 @@
+@if (alertService.helpVisible) {
+    <div class="help-container flexbox flexcenter flexmiddle">
+        <div class="help-card" (click)="alertService.hideHelp()">
+            <div class="help-card-inner">
+                <div>
+                    <ng-content></ng-content>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -191,7 +191,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
                     if (spl.speler.knbbId != '') {
                         const dat = this.knbbTeamData.spelers.find(item => item.splKnbbId == spl.speler.knbbId);
                         if (dat) {
-                            spl.speler.knbbMoy = dat.splMoyenne;
+                            spl.knbbMoy = dat.splMoyenne;
                             this.showKnbbMoys = true;
                         }
                     }
@@ -209,7 +209,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
     }
 
     wijzigSpelerMoyenne(spl: SpelerWrapper) {
-        spl.speler.gemiddeldes[spl.idxMoyenne].gemiddelde = +spl.speler.knbbMoy;
+        spl.speler.gemiddeldes[spl.idxMoyenne].gemiddelde = +spl.knbbMoy;
         this.bssApi.updateSpeler(spl.speler)
         .then(resp => {
             this.alert.showAlert(resp.message, 'success')
@@ -384,6 +384,9 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             if (fromInput && (<HTMLInputElement> event.target).id == 'naamfilter') {
                 return true;
             }
+            if (this.spelerList.filtered.length == 0) {
+                return true;
+            }
             this.buttonPressed(1);
             return false;
         }
@@ -421,6 +424,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         .then(results => {
             this.competities = results[3];
             this.verenigingen = results[0];
+            this.verenigingen.sort(this.compareVerenigingen);
             if (this.fromVereniging) {
                 const vereniging = this.verenigingen.find(v => v.verId == this.verenigingFilter);
                 if (vereniging) {
@@ -464,6 +468,13 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             this.sortSpelers();
             this.initListScrolling(this.scrollElm);
         }
+    }
+
+    compareVerenigingen(a: Vereniging, b: Vereniging): number {
+        if (a.naam == b.naam) {
+            return 0;
+        }
+        return (a.naam > b.naam) ? 1 : -1;
     }
 
     private setEscapeCount() {

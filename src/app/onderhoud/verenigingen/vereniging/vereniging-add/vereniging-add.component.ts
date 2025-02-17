@@ -1,12 +1,14 @@
 import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { PageHeaderComponent } from '../../../../shared/page-header/page-header.component';
 import { BaseComponent } from '../../../../base/base.component';
-import { Vereniging } from '../../../../model/vereniging';
+import { Lokaliteit, Vereniging } from '../../../../model/vereniging';
 import { Button } from '../../../../model/button';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { noDuplicates, notEmpty } from '../../../../directives/validators.directive';
 import { NgClass } from '@angular/common';
 import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-btns/section-footer-btns.component';
+import { Config } from '../../../../model/config';
+import { ApiResponse } from '../../../../model/api-response';
 
 @Component({
     selector: 'app-vereniging-add',
@@ -26,6 +28,8 @@ export class VerenigingAddComponent extends BaseComponent implements OnInit {
     subtitle: string = 'Vereniging toevoegen';
     vereniging: Vereniging = new Vereniging();
     existingVerenigingIds: string[] = [];
+    lokaliteiten: Lokaliteit[] = [];
+    config: Config = new Config();
     buttons: Button[] = [new Button('Enter', 'Opslaan', true)];
 
     verenigingForm!: FormGroup;
@@ -47,15 +51,29 @@ export class VerenigingAddComponent extends BaseComponent implements OnInit {
         if (!this.verenigingForm.valid) {
             return;
         }
-        Object.assign(this.vereniging, this.verenigingForm.value);
-        this.bssApi.addVereniging(this.vereniging)
-            .then(resp => {
-                this.alert.showAlert(resp.message, 'success');
-                this.escapePressed();
-            })
-            .catch(err => {
-                this.alert.showAlert(err, 'error');
-            });
+        this.vereniging.verId = this.verId?.value;
+        this.vereniging.naam = this.naam?.value;
+        this.vereniging.korteNaam = this.korteNaam?.value;
+        this.vereniging.locatie = this.locatie?.value;
+        let promises: Promise<ApiResponse>[] = [this.bssApi.addVereniging(this.vereniging)];
+        if (this.voorkeur?.value) {
+            this.config.vereniging = this.vereniging.verId;
+            promises.push(this.bssApi.saveConfig(this.config));
+        }
+        Promise.all(promises)
+        .then(resps => {
+            let msg = `Vereniging '${this.vereniging.naam}' is toegevoegd`;
+            msg += (this.voorkeur?.value) ? ' en als voorkeur gezet.' : '.';
+            this.alert.showAlert(msg, 'success');
+            this.escapePressed();
+        })
+        .catch(err => {
+            this.alert.showAlert(err, 'error');
+        });        
+    }
+
+    voorkeurClicked() {
+        this.voorkeur?.setValue(!this.voorkeur.value);
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -77,14 +95,28 @@ export class VerenigingAddComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.bssApi.getExistingVerenigingIds()
-            .then(result => {
-                this.existingVerenigingIds = result;
-                this.createVerenigingForm();
-            })
-            .catch(err => {
-                this.alert.showAlert(err, 'error');
-            });
+        Promise.all([
+            this.bssApi.getExistingVerenigingIds(),
+            this.bssApi.getLokaliteiten(),
+            this.bssApi.getConfig()
+        ])
+        .then(results => {
+            this.existingVerenigingIds = results[0];
+            this.lokaliteiten = results[1];
+            this.lokaliteiten.sort(this.compareLokaliteiten);
+            this.config = results[2];
+            this.createVerenigingForm();
+        })
+        .catch(err => {
+            this.alert.showAlert(err, 'error');
+        });
+    }
+
+    private compareLokaliteiten(a: Lokaliteit, b: Lokaliteit): number {
+        if (a.naam == b.naam) {
+            return 0;
+        }
+        return (a.naam > b.naam) ? 1 : -1;
     }
 
     private createVerenigingForm() {
@@ -92,7 +124,8 @@ export class VerenigingAddComponent extends BaseComponent implements OnInit {
             verId: [this.vereniging.verId, [Validators.required, notEmpty(), noDuplicates(this.existingVerenigingIds)]],
             naam: [this.vereniging.naam, [Validators.required, notEmpty()]],
             korteNaam: [this.vereniging.korteNaam, [Validators.required, notEmpty()]],
-            locatie: [this.vereniging.locatie],
+            locatie: [''],
+            voorkeur: [false]
         });
     }
 
@@ -107,6 +140,9 @@ export class VerenigingAddComponent extends BaseComponent implements OnInit {
     }
     get locatie() {
         return this.verenigingForm.get('locatie');
+    }
+    get voorkeur() {
+        return this.verenigingForm.get('voorkeur');
     }
 
 }

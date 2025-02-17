@@ -17,16 +17,18 @@
                 <div class="lijst-col" style="width: 3em;"></div>
             </div>
         </div>
-        <div class="flexgrow1 scroll-container">
-            <div class="scroll-content">
-                <div class="flexbox flexcenter">
-                    <div class="lijst">
-                        @if (compLijst.isEmpty()) {
-                            <div style="padding: 2em 0; color: gray;">
-                                <span>Geen competities</span>
-                            </div>
-                        }
-                        @else {
+        @if (compLijst.isEmpty()) {
+            <div class="flexgrow1">
+                <div class="label" style="padding-top: 5em; text-align: center;">
+                    <span>Er zijn nog geen KNBB competities aanwezig in BSS.</span>
+                </div>
+            </div>
+        }
+        @else {
+            <div class="flexgrow1 scroll-container">
+                <div class="scroll-content">
+                    <div class="flexbox flexcenter">
+                        <div class="lijst">
                             @for (comp of compLijst.filtered; track $index) {
                                 <div class="lijst-row selectable" (click)="competitieClicked($index)"
                                         [ngClass]="{'selected': compLijst.selectedIdx == $index, 'hovered': compLijst.hoveredIdx == $index}">
@@ -56,11 +58,11 @@
                                     </div>
                                 </div>
                             }
-                        }
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div>    
+        }
         <app-section-footer-btns [buttons]="buttons" [btnsHide]="[compLijst.hoveredIdx < 0, false, compLijst.hoveredIdx < 0]" 
                 (clickedButton)="buttonClicked($event)" [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
     </div>

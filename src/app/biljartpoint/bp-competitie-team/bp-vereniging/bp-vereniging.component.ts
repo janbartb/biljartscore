@@ -70,7 +70,7 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
             this.escapeCount = 0;
             return;
         }
-        super.escapePressed();
+        this.router.navigate(['bpoint/compteams']);
     }
 
     buttonPressed(button: Button) {
@@ -87,7 +87,7 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
     }
 
     naarSpelersClicked() {
-        this.appData.gotoPage(this.router.url, 'bpoint/spelers');
+        this.router.navigate(['bpoint/spelers']);
     }
 
     opslaanClicked() {
@@ -271,6 +271,10 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
                 this.teamInComp = this.bssComp.teams.some(tm => tm.verId == this.bssTeam.verId && tm.teamId == this.bssTeam.teamId);
                 if (!this.teamInComp) {
                     this.sectTitleTeam = 'BSS team toevoegen';
+                }
+                if (this.teamInBss && this.teamInComp) {
+                    this.naarSpelersClicked();
+                    return;
                 }
                 this.createVerenigingForm();
                 this.createTeamForm();

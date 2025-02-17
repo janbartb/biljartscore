@@ -54,7 +54,7 @@ export class BpLokaliteitComponent extends BaseComponent implements OnInit {
             this.setEscapeCount();
             return;
         }
-        super.escapePressed();
+        this.router.navigate(['bpoint/compteams']);
     }
 
     buttonPressed(button: Button) {
@@ -67,7 +67,7 @@ export class BpLokaliteitComponent extends BaseComponent implements OnInit {
             else {
                 if (this.mode == 'view') {
                     if (this.bssLokaliteit.lokId != '') {
-                        this.naarTeamsClicked();
+                        this.naarTeamClicked();
                     }
                     else {
                         this.toevoegenClicked();
@@ -85,7 +85,7 @@ export class BpLokaliteitComponent extends BaseComponent implements OnInit {
             this.wijzigenClicked();
         }
         else {
-            this.naarTeamsClicked();
+            this.naarTeamClicked();
         }
     }
 
@@ -103,10 +103,10 @@ export class BpLokaliteitComponent extends BaseComponent implements OnInit {
         this.setEscapeCount()
     }
 
-    naarTeamsClicked() {
+    naarTeamClicked() {
         this.bpTeam.bssLokId = this.bssLokaliteit.lokId;
         localStorage.setItem('bpTeam', JSON.stringify(this.bpTeam));
-        this.appData.gotoPage(this.router.url, 'bpoint/vereniging');
+        this.router.navigate(['bpoint/vereniging']);
     }
 
     opslaanClicked() {
@@ -216,6 +216,10 @@ export class BpLokaliteitComponent extends BaseComponent implements OnInit {
             const foundBssLok = results[1].find(lok => lok.knbbId == this.bpLokaliteit.knbbId);
             if (foundBssLok) {
                 this.bssLokaliteit = foundBssLok;
+                if (this.bssLokEqualsBpLok()) {
+                    this.naarTeamClicked();
+                    return;
+                }
                 this.createLokForm();
             }
             this.dataReady = true;
@@ -223,6 +227,16 @@ export class BpLokaliteitComponent extends BaseComponent implements OnInit {
         .catch(err => {
             this.alert.showError(err);
         });
+    }
+
+    private bssLokEqualsBpLok(): boolean {
+        return this.bpLokaliteit.knbbId == this.bssLokaliteit.knbbId &&
+                this.bpLokaliteit.naam == this.bssLokaliteit.naam &&
+                this.bpLokaliteit.adres == this.bssLokaliteit.adres &&
+                this.bpLokaliteit.postcode == this.bssLokaliteit.postcode &&
+                this.bpLokaliteit.plaats == this.bssLokaliteit.plaats &&
+                this.bpLokaliteit.telefoon == this.bssLokaliteit.telefoon &&
+                this.bpLokaliteit.email == this.bssLokaliteit.email;
     }
 
     private createBpLokaliteit(lok: string): BpLokaliteit {

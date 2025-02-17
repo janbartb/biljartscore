@@ -4,9 +4,9 @@ export class Speler {
     anaam: string = '';
     vnaam: string = '';
     tvoeg: string = '';
+    bordnaam: string = '';
     spreeknaam: string = '';
     gemiddeldes: SpelerGemiddelde[] = [];
-    knbbMoy: string = '';
     verenigingIds: string[] = [];
 }
 
@@ -18,6 +18,7 @@ export class SpelerGemiddelde {
 export class SpelerWrapper {
     speler: Speler = new Speler();
     idxMoyenne = -1;
+    knbbMoy: string = '';
     selected: boolean = false;
 
     constructor(speler: Speler, spelId?: string) {

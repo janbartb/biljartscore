@@ -1,9 +1,36 @@
-.bal { border-radius: 50%; background-color: #252525; }
+.bal { border-radius: 50%; background-color: black; }
 .bal.geel { background-color: yellow; }
 .bal.wit { background-color: white; }
 
-.spelerdata { background-color: black; color: gray;}
-.spelerdata.active { opacity: 1; }
+.spelerdata { background-color: black; color: white; position: relative; overflow: hidden; }
+.spelerdata .blink {
+    position: absolute;
+    top: -11%;
+    left: 38%;
+    font-size: 7em;
+    color: gray;
+    opacity: .15;
+    z-index: 20;
+    animation: blinker 5s linear infinite;
+}
+@keyframes blinker {
+    50% {
+        opacity: .8;
+    }
+}
+/*
+.spelerdata:not(.active)::after {
+    content: ''; 
+    height: .5em;
+    width: 141.421%;
+    background-color: #b0b0b0;
+    position: absolute;
+    left: -1px;
+    top: 0px; 
+    transform: rotate(16.1deg);
+    transform-origin: 1px 1px;
+}
+*/
 .spelerdata .wit { color: white; }
 .spelerdata .geel { color: yellow; }
 
@@ -44,7 +71,7 @@
 .laatste5.active.geel .laatste5data { color: yellow; }
 
 .extradata { background-color: gray; }
-.extradata .clr-red { color: #a30000; }
+.extradata .clr-red { color: #dd0000; }
 .extradata.active { background-color: white; }
 .extradata.active .changes { color: blue; }
 .extradata.active.geel { background-color: yellow; }
