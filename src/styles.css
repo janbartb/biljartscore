@@ -134,9 +134,6 @@ select:disabled, select.disabled {
 
 /* SECTONS */
 
-.section {
-    
-}
 .section-header {
     height: 2em;
     min-height: 2em;
@@ -148,9 +145,6 @@ select:disabled, select.disabled {
 }
 .section-body {
     padding: .25rem .5rem;
-}
-.section-footer {
-    
 }
 .button-footer {
     height: 3em;
