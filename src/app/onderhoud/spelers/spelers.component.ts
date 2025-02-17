@@ -443,7 +443,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
                 new ResizeObserver(() => { 
                     this.initListScrolling(this.scrollElm);
                 }).observe(this.scrollElm);
-            }
+            }    
         })
         .catch((err) => {
             this.alert.showAlert(err, 'error');

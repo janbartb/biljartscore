@@ -17,52 +17,43 @@
                 <div class="lijst-col" style="width: 3em;"></div>
             </div>
         </div>
-        @if (compLijst.isEmpty()) {
-            <div class="flexgrow1">
-                <div class="label" style="padding-top: 5em; text-align: center;">
-                    <span>Er zijn nog geen KNBB competities aanwezig in BSS.</span>
-                </div>
-            </div>
-        }
-        @else {
-            <div class="flexgrow1 scroll-container">
-                <div class="scroll-content">
-                    <div class="flexbox flexcenter">
-                        <div class="lijst">
-                            @for (comp of compLijst.filtered; track $index) {
-                                <div class="lijst-row selectable" (click)="competitieClicked($index)"
-                                        [ngClass]="{'selected': compLijst.selectedIdx == $index, 'hovered': compLijst.hoveredIdx == $index}">
-                                    <div class="lijst-col indicator" style="width: 2.5em;">
-                                        <i class="fas fa-angle-right"></i>
-                                    </div>
-                                    <div class="lijst-col" style="width: 6em;">
-                                        <span>{{comp.knbbId}}</span>
-                                    </div>
-                                    <div class="lijst-col" style="width: 5em;">
-                                        <span>{{comp.klasse}}</span>
-                                    </div>
-                                    <div class="lijst-col" style="width: 5em;">
-                                        <span>{{comp.volgNr}}</span>
-                                    </div>
-                                    <div class="lijst-col" style="width: 5em;">
-                                        <span>{{comp.poule}}</span>
-                                    </div>
-                                    <div class="lijst-col" style="width: 16em;">
-                                        <span>{{comp.naam}}</span>
-                                    </div>
-                                    <div class="lijst-col" style="width: 5em;">
-                                        <span>{{comp.teams.length}}</span>
-                                    </div>
-                                    <div class="lijst-col num" style="width: 3em;">
-                                        <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="verwijderenClicked($index, $event)"></i>
-                                    </div>
+        <div class="flexgrow1 scroll-container">
+            <div class="scroll-content">
+                <div class="flexbox flexcenter">
+                    <div class="lijst">
+                        @for (comp of compLijst.filtered; track $index) {
+                            <div class="lijst-row selectable" (click)="competitieClicked($index)"
+                                    [ngClass]="{'selected': compLijst.selectedIdx == $index, 'hovered': compLijst.hoveredIdx == $index}">
+                                <div class="lijst-col indicator" style="width: 2.5em;">
+                                    <i class="fas fa-angle-right"></i>
                                 </div>
-                            }
-                        </div>
+                                <div class="lijst-col" style="width: 6em;">
+                                    <span>{{comp.knbbId}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 5em;">
+                                    <span>{{comp.klasse}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 5em;">
+                                    <span>{{comp.volgNr}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 5em;">
+                                    <span>{{comp.poule}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 16em;">
+                                    <span>{{comp.naam}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 5em;">
+                                    <span>{{comp.teams.length}}</span>
+                                </div>
+                                <div class="lijst-col num" style="width: 3em;">
+                                    <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="verwijderenClicked($index, $event)"></i>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
-            </div>    
-        }
+            </div>
+        </div>    
         <app-section-footer-btns [buttons]="buttons" [btnsHide]="[compLijst.hoveredIdx < 0, false, compLijst.hoveredIdx < 0]" 
                 (clickedButton)="buttonClicked($event)" [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
     </div>

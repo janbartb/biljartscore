@@ -29,49 +29,40 @@
                 <div class="lijst-col" style="width: 2.5em;"></div>
             </div>
         </div>
-        @if (verenigingLijst.isEmpty()) {
-            <div class="flexgrow1">
-                <div class="label" style="padding-top: 5em; text-align: center;">
-                    <span>Er zijn nog geen verenigingen aanwezig in BSS.</span>
-                </div>
-            </div>
-        }
-        @else {
-            <div class="flexgrow1 scroll-container">
-                <div #vereniginglijst class="scroll-content">
-                    <div class="flexbox flexcenter">
-                        <div class="lijst">
-                            @for (item of verenigingLijst.filtered; track $index) {
-                                <div class="lijst-row selectable" (click)="verenigingClicked($index)"
-                                        [ngClass]="{'selected': verenigingLijst.selectedIdx == $index, 'hovered': verenigingLijst.hoveredIdx == $index}">
-                                    <div class="lijst-col indicator" style="width: 2em;">
-                                        <i class="fas fa-angle-right"></i>
-                                    </div>
-                                    <div class="lijst-col" style="width: 12em;">
-                                        <span>{{item.vereniging.naam}}</span>
-                                    </div>
-                                    <div class="lijst-col" style="width: 13em;">
-                                        <span>{{item.lokaliteit.naam}}</span>
-                                    </div>
-                                    <div class="lijst-col" style="width: 12em;">
-                                        <span>{{item.lokaliteit.plaats}}</span>
-                                    </div>
-                                    <div class="lijst-col" style="width: 5em;">
-                                        <span>{{item.leden.length}}</span>
-                                    </div>
-                                    <div class="lijst-col" style="width: 5em;">
-                                        <span>{{item.vereniging.teams.length}}</span>
-                                    </div>
-                                    <div class="lijst-col" style="width: 2.5em;">
-                                        <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="verenigingVerwijderenClicked($event, $index)"></i>
-                                    </div>
+        <div class="flexgrow1 scroll-container">
+            <div #vereniginglijst class="scroll-content">
+                <div class="flexbox flexcenter">
+                    <div class="lijst">
+                        @for (item of verenigingLijst.filtered; track $index) {
+                            <div class="lijst-row selectable" (click)="verenigingClicked($index)"
+                                    [ngClass]="{'selected': verenigingLijst.selectedIdx == $index, 'hovered': verenigingLijst.hoveredIdx == $index}">
+                                <div class="lijst-col indicator" style="width: 2em;">
+                                    <i class="fas fa-angle-right"></i>
                                 </div>
-                            }
-                        </div>
+                                <div class="lijst-col" style="width: 12em;">
+                                    <span>{{item.vereniging.naam}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 13em;">
+                                    <span>{{item.lokaliteit.naam}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 12em;">
+                                    <span>{{item.lokaliteit.plaats}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 5em;">
+                                    <span>{{item.leden.length}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 5em;">
+                                    <span>{{item.vereniging.teams.length}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 2.5em;">
+                                    <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="verenigingVerwijderenClicked($event, $index)"></i>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
-            </div>    
-        }
+            </div>
+        </div>    
         <app-section-footer-btns [buttons]="buttons" (clickedButton)="verenigingToevoegenClicked()"
                                 [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
     </div>
