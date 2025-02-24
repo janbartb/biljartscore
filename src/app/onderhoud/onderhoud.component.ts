@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { PageHeaderComponent } from '../shared/page-header/page-header.component';
 import { MenuComponent } from '../shared/menu/menu.component';
 import { Menu, MenuItem } from '../model/menu';
@@ -40,7 +40,7 @@ export class OnderhoudComponent extends BaseComponent implements OnInit {
             localStorage.removeItem('spelersNaamFilter');
             localStorage.removeItem('spelersVerenigingFilter');
         }
-        if (item.shortcut == 'e') {
+        if (item.shortcut == '8') {
             this.alert.showAlert('Deze functionaliteit is nog niet ingebouwd.', 'info');
             return;
         }
@@ -118,10 +118,9 @@ export class OnderhoudComponent extends BaseComponent implements OnInit {
         this.menu.addItem(new MenuItem('4', 'KNBB districten', 'districten'));
         this.menu.addItem(new MenuItem('5', 'KNBB klassen en moyennes', 'moyennes'));
         this.menu.addItem(new MenuItem('6', 'KNBB competities', 'knbbcompetities'));
-        //this.menu.addItem(new MenuItem('e', 'Eigen competities', 'eigencomps'));
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('7', 'Spelsoorten', 'spelsoorten'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('8', 'Instellingen', 'instellingen'));
+        this.menu.addItem(new MenuItem('8', 'Eigen competities', 'eigencomps'));
     }
 }

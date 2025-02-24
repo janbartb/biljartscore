@@ -162,6 +162,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
             this.menu.addItem(new MenuItem('', '', '', filler));
             this.menu.addItem(new MenuItem('3', 'Biljartpoint (Kempenland)', 'bpoint/home'));    
         }
+        this.menu.addItem(new MenuItem('', '', '', filler));
+        this.menu.addItem(new MenuItem('4', 'Instellingen', 'config'));    
         this.closeFullscreen();
     }
 
