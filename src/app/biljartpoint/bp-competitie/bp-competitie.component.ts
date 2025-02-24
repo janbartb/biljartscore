@@ -55,6 +55,10 @@ export class BpCompetitieComponent extends BaseComponent implements OnInit {
         this.router.navigate(['bpoint/competities']);
     }
 
+    override previousPressed(): void {
+        this.router.navigate(['bpoint/competities']);
+    }
+
     buttonPressed(button: Button) {
         button.selected = true;
         setTimeout(() => {

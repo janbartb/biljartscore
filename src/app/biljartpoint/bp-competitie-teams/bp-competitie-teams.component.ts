@@ -33,9 +33,13 @@ export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit 
         this.router.navigate(['bpoint/competities']);
     }
 
+    override previousPressed(): void {
+        this.router.navigate(['bpoint/competities']);
+    }
+
     bpTeamClicked(idx: number) {
         localStorage.setItem('bpTeam', JSON.stringify(this.bpComp.teams[idx]));
-        this.appData.gotoPage(this.router.url, 'bpoint/lokaliteit');
+        this.router.navigate(['bpoint/lokaliteit']);
     }
 
     bssTeamVerwijderenClicked(event: MouseEvent, idx: number) {

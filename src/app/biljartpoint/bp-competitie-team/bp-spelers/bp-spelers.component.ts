@@ -58,6 +58,10 @@ export class BpSpelersComponent extends BaseComponent implements OnInit {
         this.router.navigate(['bpoint/compteams']);
     }
 
+    override previousPressed(): void {
+        this.router.navigate(['bpoint/compteams']);
+    }
+
     buttonPressed(button: Button) {
         button.selected = true;
         setTimeout(() => {
