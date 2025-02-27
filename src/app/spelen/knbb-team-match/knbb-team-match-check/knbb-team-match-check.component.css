@@ -17,6 +17,9 @@
     border-radius: .25em;
     background-color: white;
 }
+.wedspeler.active .naam {
+    background-color: lightgreen;
+}
 .wedspeler .label {
     padding-left: .25em;
     color: green;

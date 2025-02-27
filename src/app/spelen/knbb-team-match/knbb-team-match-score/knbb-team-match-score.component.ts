@@ -15,11 +15,11 @@ import { HelpComponent } from '../../../shared/help/help.component';
     selector: 'app-knbb-team-match-score',
     standalone: true,
     imports: [
-    KnbbTeamMatchScoreSpelerComponent,
-    SpelerNamenComponent,
-    NgClass,
-    HelpComponent
-],
+        KnbbTeamMatchScoreSpelerComponent,
+        SpelerNamenComponent,
+        NgClass,
+        HelpComponent
+    ],
     templateUrl: './knbb-team-match-score.component.html',
     styleUrl: './knbb-team-match-score.component.css'
 })

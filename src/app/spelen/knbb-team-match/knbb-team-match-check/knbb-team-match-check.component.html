@@ -113,9 +113,15 @@
                     }
                 </div>
             </div>
-            @if (matchChanged || namesChanged || matchValid) {
+            @if (matchChanged || namesChanged || matchValid || canMoveUp || canMoveDown) {
                 <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)"
-                        [btnsHide]="[!(matchChanged || namesChanged), !(matchGestart && matchValid && !matchChanged), !matchValid]"
+                        [btnsHide]="[
+                            !(matchChanged || namesChanged), 
+                            !(matchGestart && matchValid && !matchChanged), 
+                            !matchValid,
+                            !canMoveUp,
+                            !canMoveDown
+                        ]"
                         [cssFooter]="'w3-green-bdr-d2'" [cssButtons]="'font125'"></app-section-footer-btns>
             }
         }

@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { BaseComponent } from '../../base/base.component';
-import { TeamMatch } from '../../model/match';
+import { Match, TeamMatch } from '../../model/match';
 import { Button, ButtonGroup } from '../../model/button';
 import { KnbbTeamMatchTeamComponent } from './knbb-team-match-team/knbb-team-match-team.component';
 import { ButtonComponent } from '../../shared/button-group/button/button.component';
@@ -97,7 +97,8 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
     }
 
     nieuwClicked(): void {
-        this.router.navigate(['teammatch/setup/comp']);
+        this.match = new TeamMatch();
+        this.saveMatchAndContinue();
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -144,6 +145,10 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
                 this.nieuwClicked();
                 return;
             }
+            if (this.match.compId == '') {
+                this.nieuwClicked();
+                return;
+            }
             if (this.match.teams.length < 2) {
                 this.router.navigate(['teammatch/setup/thuis']);
                 return;
@@ -174,6 +179,16 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
             this.buttonGroup.addButton(new Button('3', 'Wedstrijd 3', true, true));
             this.buttonGroup.addButton(new Button('W', 'Naar wedstrijd'));
             this.buttonGroup.addButton(new Button('N', 'Nieuwe match', true));
+        })
+        .catch(err => {
+            this.alert.showError(err);
+        });
+    }
+
+    private saveMatchAndContinue() {
+        this.bssApi.saveKnbbTeamMatch(this.match)
+        .then(() => {
+            this.router.navigate(['teammatch/setup/comp']);
         })
         .catch(err => {
             this.alert.showError(err);

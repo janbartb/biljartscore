@@ -14,6 +14,7 @@ import { Team, Vereniging } from '../../../model/vereniging';
 import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 import { Scrolling } from '../../../model/scrolling';
+import { HelpComponent } from '../../../shared/help/help.component';
 
 class CompTeam {
     key: KnbbCompTeam = new KnbbCompTeam('', '');
@@ -32,6 +33,7 @@ class CompTeam {
         PageHeaderComponent,
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
+        HelpComponent,
         FormsModule,
         NgClass
     ],
@@ -247,6 +249,10 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
+        if (this.alert.helpVisible && event.key != 'Shift') {
+            this.alert.hideHelp();
+            return false;
+        }
         if (event.key ==='ArrowLeft' || event.key ==='ArrowRight') {
             this.veranderActieveSectie(event.key ==='ArrowLeft' ? -1 : 1)
             return false;
@@ -301,6 +307,10 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         }
         if (event.key === 'Escape') {
             this.escapePressed();
+            return false;
+        }
+        if (event.code === 'KeyH' || event.key === '/' || event.code == 'Slash') {
+            this.alert.showHelp();
             return false;
         }
         if (event.key === 'Home') {
@@ -451,7 +461,7 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
         }
         this.idxSpeler = 0;
         if (idx < 0) {
-            this.spelerLijst.clearSelection();
+            this.spelerLijst.clear();
             this.teamLijst.clearSelection();
             this.activeSection = 0;
         }

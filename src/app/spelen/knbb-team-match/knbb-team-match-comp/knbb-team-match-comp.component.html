@@ -33,7 +33,14 @@
         </div>
         @if (compLijst.selectedIdx >= 0) {
             <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)" 
-                        [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
+                        [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+        }
+        @else if (!compLijst.isEmpty()) {
+            <div class="flexbox flexcenter flexmiddle" style="min-height: 3em; border-top: .25em solid green;">
+                <div>
+                    <span class="label">Selecteer een competitie.</span>
+                </div>
+            </div>
         }
     </div>
 </div>

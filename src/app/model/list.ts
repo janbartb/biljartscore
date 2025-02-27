@@ -8,6 +8,12 @@ export class List<T> {
         this.selectedIdx = this.hoveredIdx = -1;
     }
 
+    clear(): void {
+        this.filtered = [];
+        this.items = [];
+        this.selectedIdx = this.hoveredIdx = -1;
+    }
+
     fillItems(items: T[]): void {
         this.selectedIdx = -1;
 

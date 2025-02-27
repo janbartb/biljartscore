@@ -41,18 +41,23 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     escapeCount: number = 0;
     wedStatus: number[] = [0, 0, 0];
     voortgang: string[] = ['0%', '0%', '0%'];
+    canMoveUp: boolean = false;
+    canMoveDown: boolean = false;
     dataReady: boolean = false;
 
     buttons: Button[] = [
         new Button('R', 'Reset', true),
         new Button('Ctrl+Enter', 'Start opnieuw', true),
-        new Button('Enter', 'Naar match', true)
+        new Button('Enter', 'Naar match', true),
+        new Button('Ctrl+▲', 'Omhoog', true),
+        new Button('Ctrl+▼', 'Omlaag', true)
     ];
 
     override escapePressed(): void {
         if (this.idxTeam >= 0) {
             this.idxTeam = -1;
             this.idxSpeler = -1;
+            this.checkIfSpelerCanBeMoved();
             this.setEscapeCount();
         }
         else {
@@ -76,6 +81,12 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
             else if (button.key == 'R') {
                 this.resetClicked();
             }
+            else if (button.key == 'Ctrl+▲') {
+                this.buttonClicked(3);
+            }
+            else if (button.key == 'Ctrl+▼') {
+                this.buttonClicked(4);
+            }
         }, 300);
     }
 
@@ -88,6 +99,12 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         }
         else if (idx == 2) {
             this.enterClicked();
+        }
+        else if (idx == 3) {
+            this.moveSpeler(-1);
+        }
+        else if (idx == 4) {
+            this.moveSpeler(1);
         }
     }
 
@@ -126,16 +143,13 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         this.copyTeams();
         this.hasMatchChanged();
         this.isMatchValid();
+        this.checkIfSpelerCanBeMoved();
     }
 
     maakSpelerActief(idxT: number, idxS: number) {
         this.idxTeam = idxT;
         this.idxSpeler = idxS;
-        const elmId = 'naam' + idxT + idxS;
-        let elm = <HTMLInputElement> this.document.getElementById(elmId);
-        setTimeout(() => {
-            elm.focus();
-        }, 100);
+        this.checkIfSpelerCanBeMoved();
     }
 
     keyupMoyenne(idxT:number, idxS: number) {
@@ -150,6 +164,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
             this.matchValid = false;
         }
         this.hasMatchChanged();
+        this.checkIfSpelerCanBeMoved();
     }
 
     keyupCaramboles(idxT:number, idxS: number) {
@@ -163,6 +178,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
             this.matchValid = false;
         }
         this.hasMatchChanged();
+        this.checkIfSpelerCanBeMoved();
     }
 
     keyupNaam(idxT:number, idxS: number) {
@@ -211,8 +227,15 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         }
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.ctrlKey) {
-                this.moveSpeler(event.key ==='ArrowUp' ? -1 : 1);
-                return false;
+                if (event.key ==='ArrowUp' && this.canMoveUp) {
+                    this.buttonPressed(this.buttons[3]);
+                    return false;
+                }
+                if (event.key ==='ArrowDown' && this.canMoveDown) {
+                    this.buttonPressed(this.buttons[4]);
+                    return false;
+                }
+                return true;
             }
             this.veranderVanSpeler(event.key ==='ArrowUp' ? -1 : 1);
             this.setEscapeCount();
@@ -272,6 +295,31 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         .catch(err => {
             this.alert.showError(err);
         })
+    }
+
+    private checkIfSpelerCanBeMoved() {
+        this.canMoveUp = this.isMoveUpAllowed();
+        this.canMoveDown = this.isMoveDownAllowed();
+    }
+
+    private isMoveUpAllowed(): boolean {
+        if (this.matchGestart || this.idxSpeler < 1) {
+            return false;
+        }
+        if (this.teams[this.idxTeam].spelers[this.idxSpeler].splTsCar > this.teams[this.idxTeam].spelers[this.idxSpeler - 1].splTsCar) {
+            return false;
+        }
+        return true;
+    }
+
+    private isMoveDownAllowed(): boolean {
+        if (this.matchGestart || this.idxSpeler < 0 || this.idxSpeler > 1) {
+            return false;
+        }
+        if (this.teams[this.idxTeam].spelers[this.idxSpeler].splTsCar < this.teams[this.idxTeam].spelers[this.idxSpeler + 1].splTsCar) {
+            return false;
+        }
+        return true;
     }
 
     private isMatchAlGestart() {
@@ -350,6 +398,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         this.idxSpeler = idxNew;
         this.isMatchValid();
         this.hasMatchChanged();
+        this.checkIfSpelerCanBeMoved();
     }
 
     private veranderVanTeam(direction: number) {
