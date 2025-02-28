@@ -52,6 +52,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
     teamFilter: string = '';
     knbbTeamData: TeamPageData = new TeamPageData();
     moyenneMode: boolean = false;
+    aantMoyVerschillen: number = 0;
     showKnbbMoys: boolean = false;
     moyenneEdit: number = 0;
     escapeCount: number = 0;
@@ -183,15 +184,22 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             this.buttons[1].selected = false;
             this.spelerList.clearSelection();
             this.sortSpelers();
+            this.teamFilter = '';
+            this.teamFilterChanged();
+            this.aantMoyVerschillen = 0;
         }
         else {
             if (this.biljartPointLink != '') {
+                this.aantMoyVerschillen = 0;
                 await this.getTeamFromKnbbSite();
                 this.spelerList.filtered.forEach(spl => {
                     if (spl.speler.knbbId != '') {
                         const dat = this.knbbTeamData.spelers.find(item => item.splKnbbId == spl.speler.knbbId);
                         if (dat) {
                             spl.knbbMoy = dat.splMoyenne;
+                            if (+spl.knbbMoy != spl.getGemiddeldeVanSpel()) {
+                                this.aantMoyVerschillen++;
+                            }
                             this.showKnbbMoys = true;
                         }
                     }
@@ -213,10 +221,30 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         this.bssApi.updateSpeler(spl.speler)
         .then(resp => {
             this.alert.showAlert(resp.message, 'success')
+            this.aantMoyVerschillen--;
         })
         .catch(err => {
             this.alert.showAlert(err, 'error');
         });
+    }
+
+    wijzigAllSpelerMoyennes() {
+        let spelersToUpdate: Speler[] = [];
+        this.spelerList.filtered.forEach(spl => {
+            if (spl.knbbMoy != '' && spl.getGemiddeldeVanSpel() != +spl.knbbMoy) {
+                spl.speler.gemiddeldes[spl.idxMoyenne].gemiddelde = +spl.knbbMoy;
+                spelersToUpdate.push(spl.speler);
+            }
+        });
+        if (spelersToUpdate.length > 0) {
+            this.bssApi.updateSpelers(spelersToUpdate)
+            .then(resp => {
+                this.alert.showAlert(resp.message, 'success')
+            })
+            .catch(err => {
+                this.alert.showAlert(err, 'error');
+            });    
+        }
     }
 
     keydownMoyenne(event: KeyboardEvent) {

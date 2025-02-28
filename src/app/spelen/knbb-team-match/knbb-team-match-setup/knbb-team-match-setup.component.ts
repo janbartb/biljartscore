@@ -293,6 +293,10 @@ export class KnbbTeamMatchSetupComponent extends BaseComponent implements OnInit
             return true;
         }
         if (event.key === 'Enter') {
+            if (event.ctrlKey) {
+                this.maakVolgendeSpelerActief();
+                return false;
+            }
             if (this.teamLijst.hoveredIdx < 0 && this.spelerLijst.hoveredIdx < 0 && this.inputValid) {
                 this.buttonPressed(this.pageButtons[0]);
                 this.setEscapeCount();

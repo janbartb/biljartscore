@@ -47,7 +47,12 @@
                     </select>
                 </div>
                 @if (showKnbbMoys) {
-                    <div class="lijst-col" style="width: 7em;"></div>
+                    <div class="lijst-col" style="width: 7em;">
+                        @if ((aantMoyVerschillen > 1)) {
+                            <i class="fas fa-caret-square-left iconbtn nopad" style="padding-left: .125em;" (click)="wijzigAllSpelerMoyennes()"></i>
+                            <span> allen</span>
+                        }
+                    </div>
                 }
                 <div class="lijst-col" style="width: 2.5em;"></div>
             </div>
@@ -97,7 +102,7 @@
                                                 <i class="fas fa-caret-square-left iconbtn nopad" (click)="wijzigSpelerMoyenne(item)"></i>
                                             }
                                         </span>
-                                        <span>{{item.knbbMoy | number:'1.3-3':'nl-NL'}}</span>
+                                        <span [style.color]="item.getGemiddeldeVanSpel() == +item.knbbMoy ? 'black' : 'red'">{{item.knbbMoy | number:'1.3-3':'nl-NL'}}</span>
                                     </div>
                                 }
                                 <div class="lijst-col num" style="width: 2.5em;">
@@ -123,7 +128,7 @@
             @if (biljartPointLink != '') {
                 <div style="margin-left: 1em; border-radius: .5em; overflow: hidden;">
                     <a [href]="biljartPointLink" target="_blank">
-                        <img src="biljartpoint.png" alt="" style="height: 2em;">
+                        <img src="images/biljartpoint.png" alt="" style="height: 2em;">
                     </a>
                 </div>
             }
