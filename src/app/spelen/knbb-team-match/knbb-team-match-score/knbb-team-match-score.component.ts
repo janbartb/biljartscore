@@ -38,12 +38,28 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
     modals: ModalMessage[] = [];
     modalVisible: boolean = false;
     busyCounter: number = 0;
+    keysLocked: boolean = false;
+    testMode: boolean = false;
     busy: boolean = false;
 
     enterPressed(): void {
         if (this.match.gameOver[this.idxWed]) {
             return;
         }
+        if (this.testMode) {
+            this.processEnter();
+            return;
+        }
+        if (!this.keysLocked) {
+            this.keysLocked = true;
+            setTimeout(() => {
+                this.keysLocked = false;
+            }, 5000);
+            this.processEnter();
+        }
+    }
+
+    processEnter(fromCode?: boolean) {
         // werk score bij
         if (this.activeSpeler.stand.serie > 0) {
             const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.splSpreekNaam + ', ' + this.activeSpeler.stand.serie;
@@ -106,6 +122,10 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         this.isDialogOpen = true;
     }
 
+    toggleTestMode() {
+        this.testMode = !this.testMode;
+    }
+
     namenDialogReplied(save: boolean) {
         if (save) {
             this.bssApi.getSpeler(this.activeSpeler.splId)
@@ -156,6 +176,10 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         }
         if (event.code === 'KeyW') {
             this.wijzigNaamPressed();
+            return false;
+        }
+        if (event.code === 'KeyT') {
+            this.toggleTestMode();
             return false;
         }
         if (event.code === 'KeyH' || event.key === '/' || event.code == 'Slash') {
@@ -252,6 +276,10 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
     }
 
     private addNumberToSerie(numString: string): boolean {
+        if (this.keysLocked && !this.testMode) {
+            return false;
+        }
+        let aantBereikt = false;
         const nr = Number(numString);
         if (nr < 0 && this.activeSpeler.stand.serie === 0) {
             return false;
@@ -261,14 +289,23 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         }
         this.activeSpeler.stand.serie += nr;
         if (nr > 0) {
-            this.checkForSpelerMessages(true);
+            aantBereikt = this.checkForSpelerMessages(true);
+            if (!aantBereikt && !this.testMode) {
+                this.keysLocked = true;
+                setTimeout(() => {
+                    this.keysLocked = false;
+                }, 3000);
+            }
         }
         this.activeSpeler.stand.gemiddelde = this.getGemiddelde(this.activeSpeler);
         this.activeSpeler.stand.punten = this.getPunten(this.activeSpeler);
+        if (aantBereikt) {
+            this.enterPressed();
+        }
         return false;
     }
 
-    private checkForSpelerMessages(fromSerie?: boolean, fromEnter?: boolean): void {
+    private checkForSpelerMessages(fromSerie?: boolean, fromEnter?: boolean): boolean {
         let msg: string[] = [];
         let spk = '';
         let msgType = 'info';
@@ -307,12 +344,7 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
             // caramboles
             const remainingCar = this.activeSpeler.splTsCar - this.activeSpeler.stand.aantCar - this.activeSpeler.stand.serie;
             if (remainingCar === 0) {
-                setTimeout(() => {
-                    this.enterPressed();                   
-                }, 250);
-                return;
-                // msg.push('Aantal bereikt');
-                // spk = 'Aantal bereikt';
+                return true;
             }
             else if (remainingCar < 4) {
                 msg.push(`${this.activeSpeler.stand.serie}, en nog ${remainingCar} ...`);
@@ -329,7 +361,7 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
             this.modals.push(modalMsg);
             this.showModal();
         }
-        return;
+        return false;
     }
 
     private undoLaatsteBeurt(): boolean {

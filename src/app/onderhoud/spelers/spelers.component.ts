@@ -182,6 +182,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         this.moyenneMode = !this.moyenneMode;
         if (!this.moyenneMode) {
             this.buttons[1].selected = false;
+            this.buttons[1].text = 'Moyennes wijzigen';
             this.spelerList.clearSelection();
             this.sortSpelers();
             this.teamFilter = '';
@@ -206,6 +207,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
                 });
             } 
             this.buttons[1].selected = true;
+            this.buttons[1].text = 'Moyennes wijzigen stoppen';
             const idx = this.spelerList.selectedIdx < 0 ? 0 : this.spelerList.selectedIdx;
             this.spelerList.selectItem(idx);
             this.moyenneEdit = this.spelerList.getSelectedItem()?.getGemiddeldeVanSpel() || 0;
@@ -404,9 +406,12 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             this.escapePressed();
             return false;
         }
-        if (event.code === 'Equal' || event.code === 'NumpadAdd') {
-            this.buttonPressed(0);
-            return false;
+        if (event.code === 'Equal' || event.code === 'NumpadAdd' || event.code == 'Insert') {
+            if (!this.moyenneMode) {
+                this.buttonPressed(0);
+                return false;
+            }
+            return true;
         }
         if (event.code === 'KeyM') {
             if (fromInput && (<HTMLInputElement> event.target).id == 'naamfilter') {

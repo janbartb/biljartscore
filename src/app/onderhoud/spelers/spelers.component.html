@@ -117,15 +117,17 @@
             </div>
         </div>        
         <div class="flexbox flexcenter flexmiddle" style="height: 3em; min-height: 3em; border-top: .25em solid #459c48;">
-            <div style="font-size: 1.25em;">
-                <app-button [button]="buttons[0]" (buttonClicked)="buttonClicked(0)"></app-button>
-            </div>
+            @if (!moyenneMode) {
+                <div style="font-size: 1.25em;">
+                    <app-button [button]="buttons[0]" (buttonClicked)="buttonClicked(0)"></app-button>
+                </div>
+            }
             @if (spelerList.filtered.length > 0) {
                 <div style="font-size: 1.25em;">
                     <app-button [button]="buttons[1]" (buttonClicked)="buttonClicked(1)"></app-button>
                 </div>    
             }
-            @if (biljartPointLink != '') {
+            @if (biljartPointLink != '' && !moyenneMode) {
                 <div style="margin-left: 1em; border-radius: .5em; overflow: hidden;">
                     <a [href]="biljartPointLink" target="_blank">
                         <img src="images/biljartpoint.png" alt="" style="height: 2em;">

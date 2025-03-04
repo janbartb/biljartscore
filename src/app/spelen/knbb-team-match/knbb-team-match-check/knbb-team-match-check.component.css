@@ -17,6 +17,9 @@
     border-radius: .25em;
     background-color: white;
 }
+.wedspeler.geel .naam {
+    background-color: yellow;
+}
 .wedspeler.active .naam {
     background-color: lightgreen;
 }

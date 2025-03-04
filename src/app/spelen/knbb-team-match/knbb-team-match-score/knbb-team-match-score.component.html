@@ -219,6 +219,25 @@
                 <td>
                     <div class="flexbox flexmiddle">
                         <div class="help-btn-key" style="margin-right: .125em;">
+                            <span>T</span>
+                        </div>        
+                    </div>
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Toggle keyboard lock na 'Enter' en '+' toets.</span>
+                    </div>        
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="flexbox flexmiddle">
+                        <div class="help-btn-key" style="margin-right: .125em;">
                             <span>L</span>
                         </div>        
                         <div class="help-btn-key">
@@ -262,3 +281,13 @@
         </table>
     </div>
 </app-help>
+@if (keysLocked) {
+    <div class="keylock" title="Enter toets geblokkeerd">
+        <i class="fas fa-lock"></i>
+    </div>
+}
+@if (testMode) {
+    <div class="keylock" title="In test mode">
+        <i class="fas fa-unlock"></i>
+    </div>
+}
