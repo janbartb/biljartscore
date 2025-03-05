@@ -9,6 +9,9 @@
     transform: translateX(-10em) scaleX(.666666);
 }
 
+.gameover .speler-container {
+    border: .5em solid gray;
+}
 .speler-container {
     background-color: lightgray;
 }
