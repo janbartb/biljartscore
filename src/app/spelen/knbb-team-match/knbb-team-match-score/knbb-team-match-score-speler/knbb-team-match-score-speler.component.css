@@ -1,3 +1,7 @@
+.smaller {
+    transform: scale(.9) translateY(.5em);
+}
+
 .bal { border-radius: 50%; background-color: black; }
 .bal.geel { background-color: yellow; }
 .bal.wit { background-color: white; }

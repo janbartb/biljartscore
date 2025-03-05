@@ -10,13 +10,16 @@
 }
 
 .speler-container {
-    border: .5em solid black;
+    background-color: lightgray;
+}
+.speler-container:not(.active) {
+    box-shadow: inset 0 0 1em .5em #000000;
 }
 .speler-container.thuis {
-    border-color: white;
+    border: .5em solid white;
 }
 .speler-container.gasten {
-    border-color: yellow;
+    border: .5em solid yellow;
 }
 .speler-container div {
     overflow: hidden;
