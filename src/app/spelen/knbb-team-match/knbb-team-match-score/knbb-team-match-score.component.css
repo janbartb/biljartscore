@@ -15,13 +15,17 @@
 .speler-container {
     background-color: lightgray;
 }
-.speler-container:not(.active) {
-    box-shadow: inset 0 0 1em .5em #000000;
+.speler-container.thuis:not(.active) {
+    box-shadow: inset -1.35em 0 1em -1em #000000;
 }
-.speler-container.thuis {
+.speler-container.gasten:not(.active) {
+    box-shadow: inset 1.35em 0 1em -1em #000000;
+}
+
+.speler-container.thuis.active {
     border: .5em solid white;
 }
-.speler-container.gasten {
+.speler-container.gasten.active {
     border: .5em solid yellow;
 }
 .speler-container div {

@@ -1,21 +1,22 @@
-<div class="fullheight flexbox flexstretch">
+<div class="fullheight flexbox flexstretch" [ngClass]="{'smaller': !team.active}"
+            [style.background-color]="team.active ? 'black' : '#606060'">
     <div class="flexgrow1 flexbox flexcolumn">
-        <div class="flexbox flexmiddle teamdata" [ngClass]="{'active': team.active}" style="height: 8em;">
+        <div class="flexbox flexmiddle teamdata active" style="height: 8em;">
             <div class="flexgrow1" style="padding: 0 1em;">
-                <span [ngClass]="{'wit': team.active && team.metWit, 'geel': team.active && !team.metWit}"
+                <span [ngClass]="{'wit': team.metWit, 'geel': !team.metWit}"
                         style="font-size: 5em; line-height: 1.25;">{{team.teamNaam}}</span>
             </div>
             <div class="arial" style="padding: 0 1em;">
-                <span style="font-size: 2.5em; color: gray;">moy: </span>
+                <span style="font-size: 2.5em; color: lightgray;">moy: </span>
                 <span style="font-size: 5em;"
-                        [ngClass]="{'wit': team.active && team.metWit, 'geel': team.active && !team.metWit}"
+                        [ngClass]="{'wit': team.metWit, 'geel': !team.metWit}"
                         >{{team.teamTsGem | number:'1.3-3':'nl-NL'}}</span>
             </div>
         </div>
         <div class="flexgrow1 flexbox">
-            <div class="fullheight" style="width: 1em;" [style.background-color]="team.active ? 'black' : 'grey'"></div>
+            <div class="fullheight" style="width: 1em;"></div>
             <div class="fullheight flexgrow1 flexbox flexcolumn">
-                <div class="flexbox flexmiddle arial scoredata" [ngClass]="{'active': team.active, 'geel': !team.metWit}"
+                <div class="flexbox flexmiddle arial scoredata active" [ngClass]="{'geel': !team.metWit}"
                         style="height: 14em; line-height: 1;">
                     <div class="flex50perc" style="text-align: center;">
                         <span style="font-size: 14em;">{{team.stand.aantCar}}</span>
@@ -34,20 +35,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="flexgrow1 flexbox flexmiddle arial extradata" [ngClass]="{'active': team.active, 'geel': !team.metWit}" 
-                        style="background-color: black;">
+                <div class="flexgrow1 flexbox flexmiddle arial extradata active" [ngClass]="{'geel': !team.metWit}">
                     <div style="width: 25em; line-height: 1; text-align: center;">
                         <span style="font-size: 7em;" [ngClass]="{'changes': team.stand.serie > 0}"
                                 >{{team.stand.gemiddelde | number:'1.3-3':'nl-NL'}}</span>
                     </div>
                     <div class="flexgrow1" style="padding-right: 1.5em;">
                         <div class="flexbox flexbetween flexmiddle" style="line-height: 1;">
-                            <span style="font-size: 3em; color: gray;">Perc : </span>
-                            <span style="font-size: 4em;" [ngClass]="{'changes': team.stand.serie > 0, 'clr-red': team.stand.gemiddelde / team.teamTsGem <= 1}"
+                            <span style="font-size: 3em; color: lightgray;">Perc : </span>
+                            <span style="font-size: 4em;" [ngClass]="{'changes': team.stand.serie > 0, 
+                                    'clr-red': team.stand.gemiddelde > 0 && team.stand.gemiddelde / team.teamTsGem <= 1}"
                                     >{{(100 * team.stand.gemiddelde / team.teamTsGem) | number:'1.2-2':'nl-NL'}}</span>
                         </div>
                         <div class="flexbox flexbetween flexmiddle" style="line-height: 1;">
-                            <span style="font-size: 3em; color: gray;">Hoog ser : </span>
+                            <span style="font-size: 3em; color: lightgray;">Hoog ser : </span>
                             <span style="font-size: 4em;" [ngClass]="{'changes': team.stand.serie > team.stand.hoogSer}"
                                     >{{team.stand.serie > team.stand.hoogSer ? team.stand.serie : team.stand.hoogSer}}</span>
                         </div>
@@ -57,17 +58,16 @@
         </div>
     </div>
     <div class="flexbox flexcolumn" style="width: 11em;">
-        <div class="teamdata" [ngClass]="{'active': team.active}" style="width: 11em; height: 10em; padding: .5em 1em;">
+        <div class="teamdata active" style="width: 11em; height: 10em; padding: .5em 1em;">
             <div class="bal fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()"
-                    [ngClass]="{'wit': team.active && team.metWit, 'geel': team.active && !team.metWit}">
+                        [ngClass]="{'wit': team.metWit, 'geel': !team.metWit, 'active': team.active}">
                 <div class="arial" [ngClass]="{'digit3': team.teamTsCar > 99}">
-                    <span style="line-height: 1; letter-spacing: -.03em;"
-                            [style.color]="team.active ? 'black' : 'gray'">{{team.teamTsCar > 0 ? team.teamTsCar : ''}}</span>
+                    <span style="line-height: 1; letter-spacing: -.03em;">{{team.teamTsCar > 0 ? team.teamTsCar : ''}}</span>
                 </div>
             </div>
         </div>
-        <div class="flexgrow1 arial laatste5" [ngClass]="{'active': team.active, 'geel': !team.metWit}"
-                style="width: 11em; background-color: black; color: gray;">
+        <div class="flexgrow1 arial laatste5 active" [ngClass]="{'geel': !team.metWit}"
+                style="width: 11em;color: lightgray;">
             <div class="lbl" style="position: relative; top: -.25em;">
                 <span>laatste 5</span>
             </div>

@@ -68,6 +68,27 @@ export class HelperService {
         return toCheck.filter((value, index, self) => self.indexOf(value) === index).length === toCheck.length;
     }
 
+    clearWedstrijdStanden(wedstrijd: Wedstrijd) {
+        wedstrijd.wedOver = false;
+        wedstrijd.idxTeam = -1;
+        wedstrijd.idxSpeler = -1;
+        wedstrijd.teams.forEach((team, idxT) => {
+            team.active = idxT == 0;
+            team.metWit = idxT == 0;
+            team.stand = new WedTeamStand();
+            team.spelers.forEach((spl, idxS) => {
+                spl.active = idxT == 0 && idxS == 0;
+                spl.metWit = idxT == 0;
+                spl.stand = new WedSpelerStand();
+            });
+        });
+        wedstrijd.spelers.forEach((spl, idx) => {
+            spl.active = idx == 0;
+            spl.metWit = idx % 2 == 0;
+            spl.stand = new WedSpelerStand();
+        });
+    }
+
     clearWedstrijdResultaten(wedstrijd: Wedstrijd) {
         wedstrijd.wedOver = false;
         wedstrijd.idxTeam = -1;

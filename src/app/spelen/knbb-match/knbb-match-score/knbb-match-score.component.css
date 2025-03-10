@@ -9,17 +9,39 @@
     transform: translateX(-10em) scaleX(.666666);
 }
 
+.gameover .speler-container {
+    border: .5em solid gray;
+}
 .speler-container {
-    border: .5em solid #505050;
+    background-color: lightgray;
 }
-.speler-container.thuis {
-    border-color: white;
+.speler-container.thuis:not(.active) {
+    box-shadow: inset -1.35em 0 1em -1em #000000;
 }
-.speler-container.gasten {
-    border-color: yellow;
+.speler-container.gasten:not(.active) {
+    box-shadow: inset 1.35em 0 1em -1em #000000;
+}
+
+.speler-container.thuis.active {
+    border: .5em solid white;
+}
+.speler-container.gasten.active {
+    border: .5em solid yellow;
 }
 .speler-container div {
     overflow: hidden;
+}
+
+.keylock {
+    position: fixed;
+    top: 0;
+    left: 29em;
+    color: red;
+    opacity: .5;
+    z-index: 50;
+}
+.keylock i {
+    font-size: 2em;
 }
 
 .help {

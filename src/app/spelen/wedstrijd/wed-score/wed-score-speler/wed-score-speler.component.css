@@ -1,11 +1,15 @@
-.bal { border-radius: 50%; background-color: #252525; }
+.smaller {
+    transform: scale(.9) translateY(.5em);
+}
+
+.bal { border-radius: 50%; }
 .bal.geel { background-color: yellow; }
 .bal.wit { background-color: white; }
 
-.spelerdata { background-color: black; color: gray; opacity: .5;}
-.spelerdata.active { opacity: 1; }
+.spelerdata { color: white; }
 .spelerdata .wit { color: white; }
 .spelerdata .geel { color: yellow; }
+.spelerdata:not(.active) .grijs { color: lightgray;}
 
 .arial { font-family: Arial, Helvetica, sans-serif; }
 
@@ -22,30 +26,30 @@
     border-radius: .5em;
 }
 .aantbrt.serie {
-    background-color: #3d8b40;
+    min-width: 8.5em;
+    text-align: center;
+    background-color: blue;
     color: white;
 }
 .aantbrt span {
     font-size: 5em; 
 }
 
-.scoredata { opacity: .5; }
-.scoredata.active { opacity: 1; }
-.scoredata.active.geel { background-color: yellow; }
-.scoredata.active .changes { color: #3d8b40; }
+.scoredata:not(.active).grijs { background-color: #c0c0c0; }
+.scoredata { background-color: white; }
+.scoredata.geel { background-color: yellow; }
+.scoredata.active .changes { color: blue; }
 .scoredata.active .scale { scale: 1.5; }
 
-.laatste5 { opacity: .5; }
-.laatste5 .laatste5data { color: gray; }
-.laatste5.active { opacity: 1; }
-.laatste5.active .laatste5data { color: white; }
-.laatste5.active.geel .laatste5data { color: yellow; }
+.laatste5:not(.active).grijs .laatste5data { color: lightgray; }
+.laatste5 .laatste5data { color: white; }
+.laatste5.geel .laatste5data { color: yellow; }
 
-.extradata {
-    text-align: right;
-    opacity: .5;
-}
-.extradata .clr-red { color: red; }
-.extradata.active { opacity: 1; }
-.extradata.active.geel { background-color: yellow; }
-.extradata.active .changes { color: #3d8b40; }
+.extradata { text-align: right; }
+.extradata:not(.active).grijs { background-color: #c0c0c0; }
+.extradata .clr-red { color: #dd0000; }
+.extradata { background-color: white; }
+.extradata.active .changes { color: blue; }
+.extradata.geel { background-color: yellow; }
+
+.extradata .label { color: #444444; }

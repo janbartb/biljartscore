@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostListener, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Button } from '../../model/button';
-import { MatchSpelerDialog } from '../../model/dialogs';
+import { MatchSpelerDialog, WedSpelerDialog } from '../../model/dialogs';
 import { MatchSpeler } from '../../model/match';
 import { ButtonComponent } from '../button-group/button/button.component';
 import { SpeechService } from '../../services/speech.service';
@@ -23,7 +23,8 @@ export class SpelerNamenComponent implements OnInit, OnDestroy {
     spraak = inject(SpeechService);
     fb = inject(FormBuilder);
 
-    @Input() dialog: MatchSpelerDialog = new MatchSpelerDialog(new MatchSpeler());
+    @Input() dialog!: MatchSpelerDialog | WedSpelerDialog;
+    //@Input() dialog: MatchSpelerDialog = new MatchSpelerDialog(new MatchSpeler());
     @Output() reply: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() status: EventEmitter<boolean> = new EventEmitter<boolean>();
     title: string = '';

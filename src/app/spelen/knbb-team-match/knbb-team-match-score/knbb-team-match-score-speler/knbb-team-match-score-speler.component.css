@@ -2,11 +2,11 @@
     transform: scale(.9) translateY(.5em);
 }
 
-.bal { border-radius: 50%; background-color: black; }
+.bal { border-radius: 50%; }
 .bal.geel { background-color: yellow; }
 .bal.wit { background-color: white; }
 
-.spelerdata { background-color: black; color: white; position: relative; overflow: hidden; }
+.spelerdata { color: white; position: relative; overflow: hidden; }
 .spelerdata .blink {
     position: absolute;
     top: -18%;
@@ -68,9 +68,7 @@
 .scoredata.active .changes { color: blue; }
 .scoredata.active .scale { scale: 1.5; }
 
-.laatste5 { opacity: 1; }
 .laatste5 .laatste5data { color: gray; }
-.laatste5.active { opacity: 1; }
 .laatste5.active .laatste5data { color: white; }
 .laatste5.active.geel .laatste5data { color: yellow; }
 
@@ -85,16 +83,17 @@
 .aantpunten .label { color: #444444; }
 .aantpunten-container {
     width: 7em;
-    background-color: black;
-    color: grey;
-    border: .25em solid black;
+    background-color: #606060;
+    color: white;
+    border: .25em solid #606060;
     border-radius: .5em;
     padding: 0 .5em 0 .25em;
 }
 .aantpunten.active .aantpunten-container {
-    color: white;
+    background-color: black;
+    border-color: black;
 }
-.aantpunten.active.geel .aantpunten-container {
+.aantpunten.geel .aantpunten-container {
     color: yellow;
 }
 .aantpunten.active .aantpunten-container.changes {

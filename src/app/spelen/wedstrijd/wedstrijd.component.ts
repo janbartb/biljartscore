@@ -62,7 +62,7 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
 
     opnieuwClicked() {
         if (this.namesValid) {
-            this.helper.clearWedstrijdResultaten(this.wedstrijd);
+            this.helper.clearWedstrijdStanden(this.wedstrijd);
             if (this.wedstrijd.teams.length) {
                 this.wedstrijd.teams.forEach(team => {
                     team.active = false;
@@ -133,22 +133,25 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         //console.log(event);
+        const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
         if (event.key === 'Enter') {
             this.buttonPressed(this.enterButton);
             return false;
         }
-        if (event.code === 'KeyS' && this.wedGestart) {
-            this.buttonPressed(this.opnieuwButton);
-            return false;
-        }
-        if (event.code === 'KeyL' || event.key === '*') {
-            this.appData.gotoPage(this.router.url, 'wedstrijd/lijst');
-            return false;
-        }
-        if (event.code === 'KeyA') {
-            this.buttonPressed(this.nieuwButton);
-            return false;
+        if (!fromInput) {
+            if (event.code === 'KeyS' && this.wedGestart) {
+                this.buttonPressed(this.opnieuwButton);
+                return false;
+            }
+            if (event.code === 'KeyL' || event.key === '*') {
+                this.appData.gotoPage(this.router.url, 'wedstrijd/lijst');
+                return false;
+            }
+            if (event.code === 'KeyA') {
+                this.buttonPressed(this.nieuwButton);
+                return false;
+            }    
         }
         if (event.key === 'Escape') {
             this.escapePressed();

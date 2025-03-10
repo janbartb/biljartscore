@@ -1,23 +1,23 @@
-.bal { border-radius: 50%; font-size: 6em; background-color: #252525; }
-.bal.geel { background-color: yellow; }
-.bal.wit { background-color: white; }
+.smaller {
+    transform: scale(.9) translateY(.25em);
+}
 
-.bal .digit3 { transform: translateX(-.025em) scaleX(.7); }
-
-.teamdata { background-color: black; color: gray; opacity: .5;}
-.teamdata.active { opacity: 1; }
 .teamdata .wit { color: white; }
 .teamdata .geel { color: yellow; }
 
-.scoredata { opacity: .5; }
-.scoredata.active { opacity: 1; }
-.scoredata.active.geel { background-color: yellow; }
-.scoredata.active .changes { color: #3d8b40; }
+.teamdata .bal { border-radius: 50%; font-size: 6em; }
+.teamdata .bal.wit { color: white; border: .0625em solid white; }
+.teamdata .bal.geel { color: yellow; border: .0625em solid yellow; }
+.teamdata .bal.geel.active { background-color: yellow; color: black;}
+.teamdata .bal.wit.active { background-color: white; color: black; }
+
+.bal .digit3 { transform: translateX(-.025em) scaleX(.7); }
+
+.scoredata { background-color: white; }
+.scoredata.geel { background-color: yellow; }
+.scoredata.active .changes { color: blue; }
 .scoredata.active .scale { scale: 1.5; }
 
-.laatste5 { opacity: .5; }
-.laatste5 .laatste5data { color: gray; }
-.laatste5.active { opacity: 1; }
 .laatste5.active .laatste5data { color: white; }
 .laatste5.active.geel .laatste5data { color: yellow; }
 .laatste5 .lbl {
@@ -26,11 +26,10 @@
     transform: translateX(-.01em) scaleX(.9);
 }
 
-.extradata { opacity: .5; color: white; }
+.extradata { color: white; }
 .extradata .clr-red { color: red; }
-.extradata.active { opacity: 1; }
-.extradata.active.geel { color: yellow; }
-.extradata.active .changes { color: #3d8b40; }
+.extradata.geel { color: yellow;}
+.extradata.active .changes { color: #00a2ff; }
 
 .aantbrt {
     border-radius: 1em;
@@ -38,8 +37,10 @@
     padding: 0 1.5em 0 1em;
 }
 .aantbrt.serie {
+    min-width: 90%;
+    text-align: center;
+    background-color: blue;
     color: white;
-    background-color: #3d8b40;
 }
 
 .arial { font-family: Arial, Helvetica, sans-serif; }

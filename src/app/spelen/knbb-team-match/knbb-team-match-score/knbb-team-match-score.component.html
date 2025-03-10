@@ -1,11 +1,11 @@
 <div class="bss-scorebord">
     @if (matchRead) {
         <div class="bss-score-2 fullheight flexbox" [ngClass]="{'gameover': match.gameOver[idxWed]}">
-            <div class="fullheight flex50perc speler-container" [ngClass]="{'active thuis': idxSpeler == 0}">
+            <div class="fullheight flex50perc speler-container thuis" [ngClass]="{'active': idxSpeler == 0}">
                 <app-knbb-team-match-score-speler [speler]="match.teams[0].spelers[idxWed]" 
                         [teamIdx]="0" [oldPunten]="oldPunten[0]" (undoBusy)="resetBusy()" (spelerClicked)="naamClicked($event)"></app-knbb-team-match-score-speler>
             </div>
-            <div class="fullheight flex50perc speler-container" [ngClass]="{'active gasten': idxSpeler == 1}">
+            <div class="fullheight flex50perc speler-container gasten" [ngClass]="{'active': idxSpeler == 1}">
                 <app-knbb-team-match-score-speler [speler]="match.teams[1].spelers[idxWed]" 
                         [teamIdx]="1" [oldPunten]="oldPunten[1]" (undoBusy)="resetBusy()" (spelerClicked)="naamClicked($event)"></app-knbb-team-match-score-speler>
             </div>

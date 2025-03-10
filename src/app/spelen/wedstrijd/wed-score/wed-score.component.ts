@@ -7,6 +7,9 @@ import { ModalMessage } from '../../../model/modal-message';
 import { WedScoreSpelerLandscapeComponent } from './wed-score-speler-landscape/wed-score-speler-landscape.component';
 import { WedScoreTeamComponent } from './wed-score-team/wed-score-team.component';
 import { SpeechService } from '../../../services/speech.service';
+import { HelpComponent } from '../../../shared/help/help.component';
+import { WedSpelerDialog } from '../../../model/dialogs';
+import { SpelerNamenComponent } from '../../../shared/speler-namen/speler-namen.component';
 
 @Component({
     selector: 'app-wed-score',
@@ -15,6 +18,8 @@ import { SpeechService } from '../../../services/speech.service';
         WedScoreSpelerComponent,
         WedScoreSpelerLandscapeComponent,
         WedScoreTeamComponent,
+        SpelerNamenComponent,
+        HelpComponent,
         NgClass
     ],
     templateUrl: './wed-score.component.html',
@@ -25,6 +30,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
     wedstrijd: Wedstrijd = new Wedstrijd();
     activeTeam: WedTeam = new WedTeam(-1, '');
     activeSpeler: WedSpeler = new WedSpeler(-1);
+    namenDialog: WedSpelerDialog = new WedSpelerDialog(new WedSpeler(0));
     modals: ModalMessage[] = [];
     idxTeam: number = -1;
     idxSpeler: number = -1;
@@ -33,12 +39,27 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
     wedGelezen: boolean = false;
     busy: boolean = false;
     modalVisible: boolean = false;
-    helpVisible: boolean = false;
+    keysLocked: boolean = false;
+    testMode: boolean = false;
 
-    enterPressed() {
+    enterPressed(): void {
         if (this.wedstrijd.wedOver) {
             return;
         }
+        if (this.testMode) {
+            this.processEnter();
+            return;
+        }
+        if (!this.keysLocked) {
+            this.keysLocked = true;
+            setTimeout(() => {
+                this.keysLocked = false;
+            }, 5000);
+            this.processEnter();
+        }
+    }
+
+    processEnter() {
         // werk score bij
         if (this.activeSpeler.stand.serie > 0) {
             const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.splSpreekNaam + ', ' + this.activeSpeler.stand.serie;
@@ -138,44 +159,91 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         this.saveWedstrijd(copyOfWedstrijd);
     }
 
-    override escapePressed(): void {
-        if (this.helpVisible) {
-            this.closeHelp();
-        }
-        else {
-            this.router.navigate(['wedstrijd']);
-        }
-    }
-
-    closeHelp(): void {
-        this.helpVisible = false;
-    }
-
     resetBusy() {
         this.busy = false;
+    }
+
+    wijzigNaamPressed() {
+        this.naamClicked(this.activeSpeler);
+    }
+
+    naamClicked(spl: WedSpeler) {
+        console.log('naam clicked ' + spl.splNaam);
+        this.namenDialog = new WedSpelerDialog(spl);
+        this.isDialogOpen = true;
+    }
+
+    toggleTestMode() {
+        this.testMode = !this.testMode;
+    }
+
+    namenDialogReplied(save: boolean) {
+        if (save) {
+            this.bssApi.getSpeler(this.activeSpeler.splId)
+            .then(spl => {
+                if (spl.bordnaam != this.namenDialog.speler.splBordNaam || spl.spreeknaam != this.namenDialog.speler.splSpreekNaam) {
+                    spl.bordnaam = this.namenDialog.speler.splBordNaam;
+                    spl.spreeknaam = this.namenDialog.speler.splSpreekNaam;
+                    this.bssApi.updateSpeler(spl)
+                    .then(resp => {
+                        this.alert.showAlert(resp.message, 'success');
+                        this.activeSpeler = this.namenDialog.speler;
+                        this.saveWedstrijd(this.wedstrijd);
+                        this.isDialogOpen = false;
+                    })
+                    .catch(err => {
+                        this.alert.showError(err);
+                    });
+                }
+                else {
+                    this.isDialogOpen = false;
+                }
+            })
+            .catch(err => {
+                this.alert.showError(err);
+            });
+        }
+        else {
+            this.isDialogOpen = false;
+        }
     }
 
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         //console.log(event);
         console.log(event.code + ' : ' + event.key);
+        if (this.isDialogOpen) {
+            return false;
+        }
         if (this.busy) {
             return false;
         }
+        if (this.alert.helpVisible && event.key != 'Shift') {
+            this.alert.hideHelp();
+            return false;
+        }        
         if (event.key === 'Enter') {
             this.enterPressed();
             return false;
         }
-        if (event.key === 'Escape') {
-            this.escapePressed();
+        if (event.key === 'Escape' || event.key === 'Backspace') {
+            this.router.navigate(['wedstrijd']);
             return false;
         }
         if (event.key === 'Home') {
             this.homePressed();
             return false;
         }
-        if (event.code === 'KeyH' || event.key === '/') {
-            this.helpVisible = true;
+        if (event.code === 'KeyW') {
+            this.wijzigNaamPressed();
+            return false;
+        }
+        if (event.code === 'KeyT') {
+            this.toggleTestMode();
+            return false;
+        }
+        if (event.code === 'KeyH' || event.key === '/' || event.code == 'Slash') {
+            this.alert.showHelp();
             return false;
         }
         if (event.code === 'KeyL' || event.key === '*') {
@@ -248,10 +316,51 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         });
     }
 
-    private checkForMessages(fromSerie?: boolean, fromEnter?: boolean): void {
+    private addNumberToSerie(numString: string): boolean {
+        if (this.keysLocked && !this.testMode) {
+            return false;
+        }
+        let aantBereikt = false;
+        const nr = Number(numString);
+        if (nr < 0 && this.activeSpeler.stand.serie === 0) {
+            return false;
+        }
+        if (!this.wedstrijd.isVastAantBrt) {
+            if (this.isTeamWedstrijd()) {
+                if ((nr + this.activeTeam.stand.serie + this.activeTeam.stand.aantCar) > this.activeTeam.teamTsCar) {
+                    return false;
+                }        
+            }
+            else {
+                if ((nr + this.activeSpeler.stand.serie + this.activeSpeler.stand.aantCar) > this.activeSpeler.splTsCar) {
+                    return false;
+                }        
+            }
+        }
+        this.activeSpeler.stand.serie += nr;
+        this.activeSpeler.stand.gemiddelde = this.getGemiddelde(this.activeSpeler);
         if (this.isTeamWedstrijd()) {
-            this.checkForTeamMessages(fromSerie, fromEnter);
-            return;
+            this.activeTeam.stand.serie += nr;
+            this.activeTeam.stand.gemiddelde = this.getTeamGemiddelde(this.activeTeam);
+        }
+        if (nr > 0) {
+            aantBereikt = this.checkForMessages(true);
+            if (!aantBereikt && !this.testMode) {
+                this.keysLocked = true;
+                setTimeout(() => {
+                    this.keysLocked = false;
+                }, 3000);
+            }
+        }
+        if (aantBereikt) {
+            this.enterPressed();
+        }
+        return false;
+    }
+
+    private checkForMessages(fromSerie?: boolean, fromEnter?: boolean): boolean {
+        if (this.isTeamWedstrijd()) {
+            return this.checkForTeamMessages(fromSerie, fromEnter);
         }
         let msg: string[] = [];
         let spk = '';
@@ -294,8 +403,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         else if (fromSerie && !this.wedstrijd.isVastAantBrt) {
             const remainingCar = this.activeSpeler.splTsCar - this.activeSpeler.stand.aantCar - this.activeSpeler.stand.serie;
             if (remainingCar === 0) {
-                msg.push('Aantal bereikt');
-                spk = this.activeSpeler.splSpreekNaam + ', aantal bereikt';
+                return true;
             }
             else if (remainingCar < 4) {
                 msg.push(`${this.activeSpeler.stand.serie}, en nog ${remainingCar} ...`);
@@ -312,9 +420,10 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             this.modals.push(modalMsg);
             this.showModal();
         }
+        return false;
     }
 
-    private checkForTeamMessages(fromSerie?: boolean, fromEnter?: boolean): void {
+    private checkForTeamMessages(fromSerie?: boolean, fromEnter?: boolean): boolean {
         let msg: string[] = [];
         let spk = '';
         let msgType = 'info';
@@ -355,8 +464,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         else if (!this.wedstrijd.isVastAantBrt) {
             const remainingCar = this.activeTeam.teamTsCar - this.activeTeam.stand.aantCar - this.activeTeam.stand.serie;
             if (remainingCar === 0) {
-                msg.push('Aantal bereikt');
-                spk = this.activeTeam.teamNaam + ', aantal bereikt';
+                return true;
             }
             else if (remainingCar < 4) {
                 msg.push(`${this.activeTeam.stand.serie}, en nog ${remainingCar} ...`);
@@ -372,34 +480,6 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             const modalMsg = new ModalMessage(msgType, msg, spk, 3);
             this.modals.push(modalMsg);
             this.showModal();
-        }
-    }
-
-    private addNumberToSerie(numString: string): boolean {
-        const nr = Number(numString);
-        if (nr < 0 && this.activeSpeler.stand.serie === 0) {
-            return false;
-        }
-        if (!this.wedstrijd.isVastAantBrt) {
-            if (this.isTeamWedstrijd()) {
-                if ((nr + this.activeTeam.stand.serie + this.activeTeam.stand.aantCar) > this.activeTeam.teamTsCar) {
-                    return false;
-                }        
-            }
-            else {
-                if ((nr + this.activeSpeler.stand.serie + this.activeSpeler.stand.aantCar) > this.activeSpeler.splTsCar) {
-                    return false;
-                }        
-            }
-        }
-        this.activeSpeler.stand.serie += nr;
-        this.activeSpeler.stand.gemiddelde = this.getGemiddelde(this.activeSpeler);
-        if (this.isTeamWedstrijd()) {
-            this.activeTeam.stand.serie += nr;
-            this.activeTeam.stand.gemiddelde = this.getTeamGemiddelde(this.activeTeam);
-        }
-        if (nr > 0) {
-            this.checkForMessages(true);
         }
         return false;
     }

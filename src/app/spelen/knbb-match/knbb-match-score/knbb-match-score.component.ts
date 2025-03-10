@@ -6,12 +6,17 @@ import { HelperService } from '../../../services/helper.service';
 import { SpeechService } from '../../../services/speech.service';
 import { Match, MatchSpeler } from '../../../model/match';
 import { ModalMessage } from '../../../model/modal-message';
+import { HelpComponent } from '../../../shared/help/help.component';
+import { MatchSpelerDialog } from '../../../model/dialogs';
+import { SpelerNamenComponent } from '../../../shared/speler-namen/speler-namen.component';
 
 @Component({
     selector: 'app-knbb-match-score',
     standalone: true,
     imports: [
         KnbbTeamMatchScoreSpelerComponent,
+        SpelerNamenComponent,
+        HelpComponent,
         NgClass
     ],
     templateUrl: './knbb-match-score.component.html',
@@ -26,13 +31,33 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
     idxSpeler: number = -1;
     activeSpeler: MatchSpeler = new MatchSpeler();
     oldPunten: number[] = [0, 0];
+    namenDialog: MatchSpelerDialog = new MatchSpelerDialog(new MatchSpeler());
     modals: ModalMessage[] = [];
     modalVisible: boolean = false;
     helpVisible: boolean = false;
     busyCounter: number = 0;
     busy: boolean = false;
+    keysLocked: boolean = false;
+    testMode: boolean = false;
 
     enterPressed(): void {
+        if (this.match.matchOver) {
+            return;
+        }
+        if (this.testMode) {
+            this.processEnter();
+            return;
+        }
+        if (!this.keysLocked) {
+            this.keysLocked = true;
+            setTimeout(() => {
+                this.keysLocked = false;
+            }, 5000);
+            this.processEnter();
+        }
+    }
+
+    processEnter(): void {
         if (this.match.matchOver) {
             return;
         }
@@ -100,23 +125,78 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
         this.enterPressed();
     }
 
+    toggleTestMode() {
+        this.testMode = !this.testMode;
+    }
+
+    wijzigNaamPressed() {
+        this.naamClicked(this.activeSpeler);
+    }
+
+    naamClicked(spl: MatchSpeler) {
+        console.log('naam clicked ' + spl.splNaam);
+        this.namenDialog = new MatchSpelerDialog(spl);
+        this.isDialogOpen = true;
+    }
+
+    namenDialogReplied(save: boolean) {
+        if (save) {
+            this.bssApi.getSpeler(this.activeSpeler.splId)
+            .then(spl => {
+                if (spl.bordnaam != this.namenDialog.speler.splBordNaam || spl.spreeknaam != this.namenDialog.speler.splSpreekNaam) {
+                    spl.bordnaam = this.namenDialog.speler.splBordNaam;
+                    spl.spreeknaam = this.namenDialog.speler.splSpreekNaam;
+                    this.bssApi.updateSpeler(spl)
+                    .then(resp => {
+                        this.alert.showAlert(resp.message, 'success');
+                        this.activeSpeler = this.namenDialog.speler;
+                        this.saveMatch(this.match);
+                        this.isDialogOpen = false;
+                    })
+                    .catch(err => {
+                        this.alert.showError(err);
+                    });
+                }
+                else {
+                    this.isDialogOpen = false;
+                }
+            })
+            .catch(err => {
+                this.alert.showError(err);
+            });
+        }
+        else {
+            this.isDialogOpen = false;
+        }
+    }
+
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
+        if (this.isDialogOpen) {
+            return false;
+        }
         if (this.busy) {
             return false;
         }
-        if (event.key === 'Escape' || event.key === 'Backspace') {
-            if (this.helpVisible) {
-                this.closeHelp();
-            }
-            else {
-                this.router.navigate(['match']);
-            }
+        if (this.alert.helpVisible && event.key != 'Shift') {
+            this.alert.hideHelp();
             return false;
         }
-        if (event.code === 'KeyH' || event.key === '/') {
-            this.helpVisible = true;
+        if (event.key === 'Escape' || event.key === 'Backspace') {
+            this.router.navigate(['match']);
+            return false;
+        }
+        if (event.code === 'KeyW') {
+            this.wijzigNaamPressed();
+            return false;
+        }
+        if (event.code === 'KeyT') {
+            this.toggleTestMode();
+            return false;
+        }
+        if (event.code === 'KeyH' || event.key === '/' || event.code == 'Slash') {
+            this.alert.showHelp();
             return false;
         }
         if (event.code === 'KeyL' || event.key === '*') {
@@ -193,6 +273,10 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
     }
 
     private addNumberToSerie(numString: string): boolean {
+        if (this.keysLocked && !this.testMode) {
+            return false;
+        }
+        let aantBereikt = false;
         const nr = Number(numString);
         if (nr < 0 && this.activeSpeler.stand.serie === 0) {
             return false;
@@ -202,14 +286,23 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
         }
         this.activeSpeler.stand.serie += nr;
         if (nr > 0) {
-            this.checkForSpelerMessages(true);
+            aantBereikt = this.checkForSpelerMessages(true);
+            if (!aantBereikt && !this.testMode) {
+                this.keysLocked = true;
+                setTimeout(() => {
+                    this.keysLocked = false;
+                }, 3000);
+            }
         }
         this.activeSpeler.stand.gemiddelde = this.getGemiddelde(this.activeSpeler);
         this.activeSpeler.stand.punten = this.getPunten(this.activeSpeler);
+        if (aantBereikt) {
+            this.enterPressed();
+        }
         return false;
     }
 
-    private checkForSpelerMessages(fromSerie?: boolean, fromEnter?: boolean): void {
+    private checkForSpelerMessages(fromSerie?: boolean, fromEnter?: boolean): boolean {
         let msg: string[] = [];
         let spk = '';
         let msgType = 'info';
@@ -248,8 +341,7 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
             // caramboles
             const remainingCar = this.activeSpeler.splTsCar - this.activeSpeler.stand.aantCar - this.activeSpeler.stand.serie;
             if (remainingCar === 0) {
-                msg.push('Aantal bereikt');
-                spk = 'Aantal bereikt';
+                return true;
             }
             else if (remainingCar < 4) {
                 msg.push(`${this.activeSpeler.stand.serie}, en nog ${remainingCar} ...`);
@@ -266,7 +358,7 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
             this.modals.push(modalMsg);
             this.showModal();
         }
-        return;
+        return false;
     }
 
     private undoLaatsteBeurt(): boolean {

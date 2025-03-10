@@ -1,11 +1,11 @@
 <div class="bss-scorebord">
     @if (matchRead) {
-        <div class="bss-score-2 fullheight flexbox">
-            <div class="fullheight flex50perc speler-container" [ngClass]="{'active thuis': idxSpeler == 0}">
+        <div class="bss-score-2 fullheight flexbox" [ngClass]="{'gameover': match.matchOver}">
+            <div class="fullheight flex50perc speler-container thuis" [ngClass]="{'active': idxSpeler == 0}">
                 <app-knbb-team-match-score-speler [speler]="match.spelers[0]" 
                         [teamIdx]="0" [oldPunten]="oldPunten[0]" (undoBusy)="resetBusy()"></app-knbb-team-match-score-speler>
             </div>
-            <div class="fullheight flex50perc speler-container" [ngClass]="{'active gasten': idxSpeler == 1}">
+            <div class="fullheight flex50perc speler-container gasten" [ngClass]="{'active': idxSpeler == 1}">
                 <app-knbb-team-match-score-speler [speler]="match.spelers[1]" 
                         [teamIdx]="1" [oldPunten]="oldPunten[1]" (undoBusy)="resetBusy()"></app-knbb-team-match-score-speler>
             </div>
@@ -39,208 +39,255 @@
             </div>
         </div>    
     }
-    @if (helpVisible) {
-        <div class="help">
-            <div class="help-inner" (click)="closeHelp()">
-                <div style="font-size: 2em; letter-spacing: -.04em;">Uitleg toetsen scorebord</div>
-                <hr>
-                <div style="font-size: 2em; letter-spacing: -.04em;">
-                    <table>
-                        <tr>
-                            <td>
-                                <div class="flexbox flexmiddle">
-                                    <div class="help-btn-key" style="margin-right: .125em;">
-                                        <span>+</span>
-                                    </div>        
-                                    <div class="help-btn-key" style="width: 2.2em;">
-                                        <span>Spatie</span>
-                                    </div>                
-                                </div>
-                            </td>
-                            <td>
-                                <div class="help-btn-equ">
-                                    <span>=</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="helptext">
-                                    <span>Verhoog serie met 1.</span>
-                                </div>        
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="flexbox flexmiddle">
-                                    <div class="help-btn-key">
-                                        <span>1</span>
-                                    </div>        
-                                    <div style="height: 1em; line-height: .5em; padding: 0 .125em">
-                                        <span style="font-size: .5em;">...</span>
-                                    </div>        
-                                    <div class="help-btn-key">
-                                        <span>9</span>
-                                    </div>                    
-                                </div>
-                            </td>
-                            <td>
-                                <div class="help-btn-equ">
-                                    <span>=</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="helptext">
-                                    <span>Verhoog serie met aantal van toets.</span>
-                                </div>        
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="help-btn-key">
-                                    <span>0</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="help-btn-equ">
-                                    <span>=</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="helptext">
-                                    <span>Reset serie naar 0 (nul)</span>
-                                </div>        
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="help-btn-key">
-                                    <span>-</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="help-btn-equ">
-                                    <span>=</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="helptext">
-                                    <span>Verminder serie met 1.</span>
-                                </div>        
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3"><hr></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="help-btn-key" style="width: 2em;">
-                                    <span>Enter</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="help-btn-equ">
-                                    <span>=</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="helptext">
-                                    <span>Bevestig beurt. Naar volgende speler.</span>
-                                </div>        
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="flexbox flexmiddle">
-                                    <div class="help-btn-key" style="width: 1.5em; margin-right: .125em;">
-                                        <span>Del</span>
-                                    </div>        
-                                    <div class="help-btn-key">
-                                        <span>.</span>
-                                    </div>                
-                                </div>
-                            </td>
-                            <td>
-                                <div class="help-btn-equ">
-                                    <span>=</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="helptext">
-                                    <span>Laatste beurt ongedaan maken.</span>
-                                </div>        
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3"><hr></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="flexbox flexmiddle">
-                                    <div class="help-btn-key" style="width: 1.5em; margin-right: .125em;">
-                                        <span>Esc</span>
-                                    </div>        
-                                    <div class="help-btn-key" style="width: 1.5em;">
-                                        <span>Bck</span>
-                                    </div>              
-                                </div>
-                            </td>
-                            <td>
-                                <div class="help-btn-equ">
-                                    <span>=</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="helptext">
-                                    <span>Ga een scherm terug.</span>
-                                </div>        
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="flexbox flexmiddle">
-                                    <div class="help-btn-key" style="margin-right: .125em;">
-                                        <span>L</span>
-                                    </div>        
-                                    <div class="help-btn-key">
-                                        <span>*</span>
-                                    </div>              
-                                </div>
-                            </td>
-                            <td>
-                                <div class="help-btn-equ">
-                                    <span>=</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="helptext">
-                                    <span>Ga naar scorelijsten.</span>
-                                </div>        
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="flexbox flexmiddle">
-                                    <div class="help-btn-key" style="margin-right: .125em;">
-                                        <span>H</span>
-                                    </div>        
-                                    <div class="help-btn-key">
-                                        <span>/</span>
-                                    </div>              
-                                </div>
-                            </td>
-                            <td>
-                                <div class="help-btn-equ">
-                                    <span>=</span>
-                                </div>        
-                            </td>
-                            <td>
-                                <div class="helptext">
-                                    <span>Toon dit helpscherm.</span>
-                                </div>        
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>    
+    @if (isDialogOpen) {
+        <app-speler-namen [dialog]="namenDialog" (reply)="namenDialogReplied($event)"></app-speler-namen>
     }
 </div>
+<app-help>
+    <div style="font-size: 1.5em; letter-spacing: -.04em;">Uitleg toetsen scorebord</div>
+    <hr>
+    <div style="font-size: 1.5em; letter-spacing: -.04em;">
+        <table>
+            <tr>
+                <td>
+                    <div class="flexbox flexmiddle">
+                        <div class="help-btn-key" style="margin-right: .125em;">
+                            <span>+</span>
+                        </div>        
+                        <div class="help-btn-key" style="width: 2.2em;">
+                            <span>Spatie</span>
+                        </div>                
+                    </div>
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Verhoog serie met 1.</span>
+                    </div>        
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="flexbox flexmiddle">
+                        <div class="help-btn-key">
+                            <span>1</span>
+                        </div>        
+                        <div style="height: 1em; line-height: .5em; padding: 0 .125em">
+                            <span style="font-size: .5em;">...</span>
+                        </div>        
+                        <div class="help-btn-key">
+                            <span>9</span>
+                        </div>                    
+                    </div>
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Verhoog serie met aantal van toets.</span>
+                    </div>        
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="help-btn-key">
+                        <span>0</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Reset serie naar 0 (nul)</span>
+                    </div>        
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="help-btn-key">
+                        <span>-</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Verminder serie met 1.</span>
+                    </div>        
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><hr></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="help-btn-key" style="width: 2em;">
+                        <span>Enter</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Bevestig beurt. Naar volgende speler.</span>
+                    </div>        
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="flexbox flexmiddle">
+                        <div class="help-btn-key" style="width: 1.5em; margin-right: .125em;">
+                            <span>Del</span>
+                        </div>        
+                        <div class="help-btn-key">
+                            <span>.</span>
+                        </div>                
+                    </div>
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Laatste beurt ongedaan maken.</span>
+                    </div>        
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><hr></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="flexbox flexmiddle">
+                        <div class="help-btn-key" style="width: 1.5em; margin-right: .125em;">
+                            <span>Esc</span>
+                        </div>        
+                        <div class="help-btn-key" style="width: 1.5em;">
+                            <span>Bck</span>
+                        </div>              
+                    </div>
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Terug naar match overzicht.</span>
+                    </div>        
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="flexbox flexmiddle">
+                        <div class="help-btn-key" style="margin-right: .125em;">
+                            <span>W</span>
+                        </div>        
+                    </div>
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Wijzig bord/gesproken naam van actieve speler.</span>
+                    </div>        
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="flexbox flexmiddle">
+                        <div class="help-btn-key" style="margin-right: .125em;">
+                            <span>T</span>
+                        </div>        
+                    </div>
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Toggle keyboard lock na 'Enter' en '+' toets.</span>
+                    </div>        
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="flexbox flexmiddle">
+                        <div class="help-btn-key" style="margin-right: .125em;">
+                            <span>L</span>
+                        </div>        
+                        <div class="help-btn-key">
+                            <span>*</span>
+                        </div>              
+                    </div>
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Ga naar scorelijsten.</span>
+                    </div>        
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="flexbox flexmiddle">
+                        <div class="help-btn-key" style="margin-right: .125em;">
+                            <span>H</span>
+                        </div>        
+                        <div class="help-btn-key">
+                            <span>/</span>
+                        </div>              
+                    </div>
+                </td>
+                <td>
+                    <div class="help-btn-equ">
+                        <span>=</span>
+                    </div>        
+                </td>
+                <td>
+                    <div class="helptext">
+                        <span>Toon dit helpscherm.</span>
+                    </div>        
+                </td>
+            </tr>
+        </table>
+    </div>
+</app-help>
+@if (keysLocked) {
+    <div class="keylock" title="Enter toets geblokkeerd">
+        <i class="fas fa-lock"></i>
+    </div>
+}
+@if (testMode) {
+    <div class="keylock" title="In test mode">
+        <i class="fas fa-unlock"></i>
+    </div>
+}

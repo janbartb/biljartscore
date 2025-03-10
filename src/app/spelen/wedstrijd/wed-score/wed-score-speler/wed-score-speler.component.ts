@@ -14,6 +14,7 @@ import { DecimalPipe, NgClass } from '@angular/common';
 })
 export class WedScoreSpelerComponent {
     @Input() speler: WedSpeler = new WedSpeler(-1);
+    @Input() grijs: boolean = false;
     @Output() undoBusy: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     balClicked() {

@@ -1,4 +1,4 @@
-<div [ngClass]="{'smaller': !speler.isActief}">
+<div [ngClass]="{'smaller': !speler.isActief}" [style.background-color]="speler.isActief ? 'black' : '#606060'">
     <!-- speler gegevens -->
     <div class="flexbox spelerdata" [ngClass]="{'active': speler.isActief}" style="height: 9em;">
         <!-- @if (!speler.isActief) {
@@ -63,7 +63,7 @@
     </div>
     <!-- laatste 5 beurten -->
     <div class="flexbox flexmiddle laatste5 arial active" [ngClass]="{'geel': !speler.metWit}"
-            style="height: 4em; padding: 0 .5em; background-color: black; color: white;">
+            style="height: 4em; padding: 0 .5em; color: white;">
         <div class="flexgrow1" style="padding-left: .25em;">
             <div class="laatste5data" style="font-size: 3em;">
                 @for (cars of speler.stand.laatste5brt; track $index) {
@@ -105,7 +105,7 @@
                 </div>
             </div>
         </div>
-        <div class="aantpunten flexbox flexmiddle active" [ngClass]="{'geel': !speler.metWit}" style="height: 7em;">
+        <div class="aantpunten flexbox flexmiddle" [ngClass]="{'active': speler.isActief, 'geel': !speler.metWit}" style="height: 7em;">
             <div style="padding: 0 .5em;">
                 <span class="label" style="font-size: 2.25em;">Pnt</span>
             </div>
