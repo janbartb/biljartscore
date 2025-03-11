@@ -1,33 +1,32 @@
-import { Component, EventEmitter, HostListener, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Button } from '../../model/button';
-import { MatchSpelerDialog, WedSpelerDialog } from '../../model/dialogs';
-import { MatchSpeler } from '../../model/match';
+import { Component, EventEmitter, HostListener, inject, Input, Output } from '@angular/core';
 import { ButtonComponent } from '../button-group/button/button.component';
-import { SpeechService } from '../../services/speech.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgClass } from '@angular/common';
+import { SpeechService } from '../../services/speech.service';
+import { SpelerNamen, SpelerNamenDialog } from '../../model/dialogs';
+import { Button } from '../../model/button';
 import { notEmpty } from '../../directives/validators.directive';
+import { List } from '../../model/list';
 
 @Component({
-    selector: 'app-speler-namen',
+    selector: 'app-spelers-namen',
     standalone: true,
     imports: [
         ButtonComponent,
         ReactiveFormsModule,
         NgClass
     ],
-    templateUrl: './speler-namen.component.html',
-    styleUrl: './speler-namen.component.css'
+    templateUrl: './spelers-namen.component.html',
+    styleUrl: './spelers-namen.component.css'
 })
-export class SpelerNamenComponent implements OnInit, OnDestroy {
+export class SpelersNamenComponent {
     spraak = inject(SpeechService);
     fb = inject(FormBuilder);
 
-    @Input() dialog!: MatchSpelerDialog | WedSpelerDialog;
-    //@Input() dialog: MatchSpelerDialog = new MatchSpelerDialog(new MatchSpeler());
+    @Input() dialog!: SpelerNamenDialog;
     @Output() reply: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() status: EventEmitter<boolean> = new EventEmitter<boolean>();
-    title: string = '';
+    spelerLijst: List<SpelerNamen> = new List<SpelerNamen>();
 
     namenForm!: FormGroup | null;
 
@@ -50,10 +49,18 @@ export class SpelerNamenComponent implements OnInit, OnDestroy {
         }, 300);
     }
 
+    spelerClicked(idx: number) {
+        if (!this.namenForm || !this.namenForm.valid) {
+            return;
+        }
+        this.verwerkWijzigingen();
+        this.spelerLijst.selectedIdx = idx;
+        this.createForm();
+    }
+
     acceptClicked() {
         if (this.namenForm && this.namenForm.valid) {
-            this.dialog.speler.splBordNaam = this.bordNaam?.value;
-            this.dialog.speler.splSpreekNaam = this.spreekNaam?.value;
+            this.verwerkWijzigingen();
             this.reply.emit(true);
         }
     }
@@ -69,9 +76,31 @@ export class SpelerNamenComponent implements OnInit, OnDestroy {
         }
     }
 
+    private verwerkWijzigingen() {
+        this.spelerLijst.items[this.spelerLijst.selectedIdx].splBordNaam = this.bordNaam?.value;
+        this.spelerLijst.items[this.spelerLijst.selectedIdx].splSpreekNaam = this.spreekNaam?.value;
+    }
+
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
+        if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
+            if (!this.namenForm || !this.namenForm.valid) {
+                return true;
+            }
+            this.verwerkWijzigingen();
+            if (event.key === 'ArrowUp') {
+                this.spelerLijst.selectPreviousItem();
+                this.createForm();
+                return false;
+            }
+            if (event.key === 'ArrowDown') {
+                this.spelerLijst.selectNextItem();
+                this.createForm();
+                return false;
+            }
+            return true;
+        }
         if (event.key === 'Enter') {
             this.buttonPressed(this.dialog.acceptButton);
             return false;
@@ -87,7 +116,11 @@ export class SpelerNamenComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.title = 'Wijzig speler naam';
+        this.spelerLijst.fillItems(this.dialog.spelers);
+        this.spelerLijst.selectedIdx = this.spelerLijst.items.findIndex(spl => spl.splId == this.dialog.selSpelerId);
+        if (this.spelerLijst.selectedIdx < 0) {
+            this.spelerLijst.selectedIdx = 0;
+        }
         this.createForm();
         this.status.emit(true);
     }
@@ -98,8 +131,8 @@ export class SpelerNamenComponent implements OnInit, OnDestroy {
 
     private createForm() {
         this.namenForm = this.fb.nonNullable.group({
-            bordNaam: [this.dialog.speler.splBordNaam, [Validators.required, notEmpty()]],
-            spreekNaam: [this.dialog.speler.splSpreekNaam, [Validators.required, notEmpty()]],
+            bordNaam: [this.spelerLijst.items[this.spelerLijst.selectedIdx].splBordNaam, [Validators.required, notEmpty()]],
+            spreekNaam: [this.spelerLijst.items[this.spelerLijst.selectedIdx].splSpreekNaam, [Validators.required, notEmpty()]],
         });
     }
 
@@ -109,4 +142,5 @@ export class SpelerNamenComponent implements OnInit, OnDestroy {
     get spreekNaam() {
         return this.namenForm?.get('spreekNaam');
     }
+
 }

@@ -139,7 +139,7 @@
             </div>    
         }
         @if (isDialogOpen) {
-            <app-speler-namen [dialog]="namenDialog" (reply)="namenDialogReplied($event)"></app-speler-namen>
+            <app-spelers-namen [dialog]="namenDialog" (reply)="namenDialogReplied($event)"></app-spelers-namen>
         }
     }
 </div>
@@ -300,7 +300,7 @@
                 <td>
                     <div class="flexbox flexmiddle">
                         <div class="help-btn-key" style="margin-right: .125em;">
-                            <span>W</span>
+                            <span>N</span>
                         </div>        
                     </div>
                 </td>
@@ -311,7 +311,7 @@
                 </td>
                 <td>
                     <div class="helptext">
-                        <span>Wijzig bord/gesproken naam van actieve speler.</span>
+                        <span>Tijdelijk wijzigen (gesproken) namen van spelers.</span>
                     </div>        
                 </td>
             </tr>

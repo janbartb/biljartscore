@@ -8,8 +8,8 @@ import { WedScoreSpelerLandscapeComponent } from './wed-score-speler-landscape/w
 import { WedScoreTeamComponent } from './wed-score-team/wed-score-team.component';
 import { SpeechService } from '../../../services/speech.service';
 import { HelpComponent } from '../../../shared/help/help.component';
-import { WedSpelerDialog } from '../../../model/dialogs';
-import { SpelerNamenComponent } from '../../../shared/speler-namen/speler-namen.component';
+import { SpelerNamen, SpelerNamenDialog } from '../../../model/dialogs';
+import { SpelersNamenComponent } from '../../../shared/spelers-namen/spelers-namen.component';
 
 @Component({
     selector: 'app-wed-score',
@@ -18,7 +18,7 @@ import { SpelerNamenComponent } from '../../../shared/speler-namen/speler-namen.
         WedScoreSpelerComponent,
         WedScoreSpelerLandscapeComponent,
         WedScoreTeamComponent,
-        SpelerNamenComponent,
+        SpelersNamenComponent,
         HelpComponent,
         NgClass
     ],
@@ -30,7 +30,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
     wedstrijd: Wedstrijd = new Wedstrijd();
     activeTeam: WedTeam = new WedTeam(-1, '');
     activeSpeler: WedSpeler = new WedSpeler(-1);
-    namenDialog: WedSpelerDialog = new WedSpelerDialog(new WedSpeler(0));
+    namenDialog: SpelerNamenDialog = new SpelerNamenDialog();
     modals: ModalMessage[] = [];
     idxTeam: number = -1;
     idxSpeler: number = -1;
@@ -163,13 +163,14 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         this.busy = false;
     }
 
-    wijzigNaamPressed() {
+    wijzigNamenPressed() {
         this.naamClicked(this.activeSpeler);
     }
 
     naamClicked(spl: WedSpeler) {
         console.log('naam clicked ' + spl.splNaam);
-        this.namenDialog = new WedSpelerDialog(spl);
+        this.namenDialog.selSpelerId = spl.splId;
+        this.namenDialog.spelers = this.getWedSpelers();
         this.isDialogOpen = true;
     }
 
@@ -177,34 +178,30 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         this.testMode = !this.testMode;
     }
 
-    namenDialogReplied(save: boolean) {
-        if (save) {
-            this.bssApi.getSpeler(this.activeSpeler.splId)
-            .then(spl => {
-                if (spl.bordnaam != this.namenDialog.speler.splBordNaam || spl.spreeknaam != this.namenDialog.speler.splSpreekNaam) {
-                    spl.bordnaam = this.namenDialog.speler.splBordNaam;
-                    spl.spreeknaam = this.namenDialog.speler.splSpreekNaam;
-                    this.bssApi.updateSpeler(spl)
-                    .then(resp => {
-                        this.alert.showAlert(resp.message, 'success');
-                        this.activeSpeler = this.namenDialog.speler;
-                        this.saveWedstrijd(this.wedstrijd);
-                        this.isDialogOpen = false;
-                    })
-                    .catch(err => {
-                        this.alert.showError(err);
-                    });
+    namenDialogReplied(accepted: boolean) {
+        if (accepted) {
+            this.namenDialog.spelers.forEach(namSpl => {
+                let wedSpeler = this.findSpelerById(namSpl.splId);
+                if (wedSpeler) {
+                    wedSpeler.splBordNaam = namSpl.splBordNaam;
+                    wedSpeler.splSpreekNaam = namSpl.splSpreekNaam;
                 }
-                else {
-                    this.isDialogOpen = false;
-                }
-            })
-            .catch(err => {
-                this.alert.showError(err);
             });
         }
+        this.isDialogOpen = false;
+    }
+
+    private findSpelerById(id: string): WedSpeler | undefined {
+        if (this.wedstrijd.teams.length) {
+            let result: WedSpeler | undefined = undefined;
+            this.wedstrijd.teams.some(tm => {
+                result = tm.spelers.find(spl => spl.splId == id);
+                return result ? true : false;
+            });
+            return result;
+        }
         else {
-            this.isDialogOpen = false;
+            return this.wedstrijd.spelers.find(spl => spl.splId == id);
         }
     }
 
@@ -234,8 +231,8 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             this.homePressed();
             return false;
         }
-        if (event.code === 'KeyW') {
-            this.wijzigNaamPressed();
+        if (event.code === 'KeyN') {
+            this.wijzigNamenPressed();
             return false;
         }
         if (event.code === 'KeyT') {
@@ -804,6 +801,23 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
 
     private isTeamWedstrijd(): boolean {
         return this.wedstrijd.aantSpelers == 5;
+    }
+
+    private getWedSpelers(): SpelerNamen[] {
+        let result: SpelerNamen[] = [];
+        if (this.wedstrijd.teams.length) {
+            this.wedstrijd.teams.forEach(tm => {
+                tm.spelers.forEach(spl => {
+                    result.push(new SpelerNamen(spl));
+                });
+            });
+        }
+        else {
+            this.wedstrijd.spelers.forEach(spl => {
+                result.push(new SpelerNamen(spl));
+            });
+        }
+        return result;
     }
 
 }

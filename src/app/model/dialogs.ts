@@ -17,27 +17,25 @@ export class ConfirmDialog {
     }
 }
 
-export class MatchSpelerDialog {
-    speler: MatchSpeler = new MatchSpeler();
-    actie: string = '';
+export class SpelerNamenDialog {
+    spelers: SpelerNamen[] = [];
+    selSpelerId: string = '';
 
     acceptButton: Button = new Button('Enter', 'Ja', true);
     rejectButton: Button = new Button('Esc', 'Nee', true);
-
-    constructor(spl: MatchSpeler) {
-        this.speler = spl;
-    }
 }
 
-export class WedSpelerDialog {
-    speler!: WedSpeler;
-    actie: string = '';
+export class SpelerNamen {
+    splId: string = '';
+    splNaam: string = '';
+    splBordNaam: string = '';
+    splSpreekNaam: string = '';
 
-    acceptButton: Button = new Button('Enter', 'Ja', true);
-    rejectButton: Button = new Button('Esc', 'Nee', true);
-
-    constructor(spl: WedSpeler) {
-        this.speler = spl;
+    constructor(speler: WedSpeler | MatchSpeler) {
+        this.splId = speler.splId;
+        this.splNaam = speler.splNaam;
+        this.splBordNaam = speler.splBordNaam;
+        this.splSpreekNaam = speler.splSpreekNaam;
     }
 }
 

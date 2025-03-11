@@ -7,15 +7,15 @@ import { SpeechService } from '../../../services/speech.service';
 import { Match, MatchSpeler } from '../../../model/match';
 import { ModalMessage } from '../../../model/modal-message';
 import { HelpComponent } from '../../../shared/help/help.component';
-import { MatchSpelerDialog } from '../../../model/dialogs';
-import { SpelerNamenComponent } from '../../../shared/speler-namen/speler-namen.component';
+import { SpelerNamen, SpelerNamenDialog } from '../../../model/dialogs';
+import { SpelersNamenComponent } from '../../../shared/spelers-namen/spelers-namen.component';
 
 @Component({
     selector: 'app-knbb-match-score',
     standalone: true,
     imports: [
         KnbbTeamMatchScoreSpelerComponent,
-        SpelerNamenComponent,
+        SpelersNamenComponent,
         HelpComponent,
         NgClass
     ],
@@ -31,7 +31,7 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
     idxSpeler: number = -1;
     activeSpeler: MatchSpeler = new MatchSpeler();
     oldPunten: number[] = [0, 0];
-    namenDialog: MatchSpelerDialog = new MatchSpelerDialog(new MatchSpeler());
+    namenDialog: SpelerNamenDialog = new SpelerNamenDialog();
     modals: ModalMessage[] = [];
     modalVisible: boolean = false;
     helpVisible: boolean = false;
@@ -129,45 +129,31 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
         this.testMode = !this.testMode;
     }
 
-    wijzigNaamPressed() {
+    wijzigNamenPressed() {
         this.naamClicked(this.activeSpeler);
     }
 
     naamClicked(spl: MatchSpeler) {
-        console.log('naam clicked ' + spl.splNaam);
-        this.namenDialog = new MatchSpelerDialog(spl);
+        this.namenDialog.selSpelerId = spl.splId;
+        this.namenDialog.spelers = this.getWedSpelers();
         this.isDialogOpen = true;
     }
 
-    namenDialogReplied(save: boolean) {
-        if (save) {
-            this.bssApi.getSpeler(this.activeSpeler.splId)
-            .then(spl => {
-                if (spl.bordnaam != this.namenDialog.speler.splBordNaam || spl.spreeknaam != this.namenDialog.speler.splSpreekNaam) {
-                    spl.bordnaam = this.namenDialog.speler.splBordNaam;
-                    spl.spreeknaam = this.namenDialog.speler.splSpreekNaam;
-                    this.bssApi.updateSpeler(spl)
-                    .then(resp => {
-                        this.alert.showAlert(resp.message, 'success');
-                        this.activeSpeler = this.namenDialog.speler;
-                        this.saveMatch(this.match);
-                        this.isDialogOpen = false;
-                    })
-                    .catch(err => {
-                        this.alert.showError(err);
-                    });
+    namenDialogReplied(accepted: boolean) {
+        if (accepted) {
+            this.namenDialog.spelers.forEach(namSpl => {
+                let matchSpeler = this.findSpelerById(namSpl.splId);
+                if (matchSpeler) {
+                    matchSpeler.splBordNaam = namSpl.splBordNaam;
+                    matchSpeler.splSpreekNaam = namSpl.splSpreekNaam;
                 }
-                else {
-                    this.isDialogOpen = false;
-                }
-            })
-            .catch(err => {
-                this.alert.showError(err);
             });
         }
-        else {
-            this.isDialogOpen = false;
-        }
+        this.isDialogOpen = false;
+    }
+
+    private findSpelerById(id: string): MatchSpeler | undefined {
+        return this.match.spelers.find(spl => spl.splId == id);
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -187,8 +173,8 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
             this.router.navigate(['match']);
             return false;
         }
-        if (event.code === 'KeyW') {
-            this.wijzigNaamPressed();
+        if (event.code === 'KeyN') {
+            this.wijzigNamenPressed();
             return false;
         }
         if (event.code === 'KeyT') {
@@ -526,4 +512,13 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
             }
         }
     }
+
+    private getWedSpelers(): SpelerNamen[] {
+        let result: SpelerNamen[] = [];
+        this.match.spelers.forEach(spl => {
+            result.push(new SpelerNamen(spl));
+        });
+        return result;
+    }
+
 }
