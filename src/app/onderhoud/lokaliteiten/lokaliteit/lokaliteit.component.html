@@ -2,7 +2,7 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount"
-                        (hdrClicked)="gotoOnderhoud()" (prevClicked)="previousPressed()" (escClicked)="escapePressed()"></app-page-header>
+                        (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()" (escClicked)="escapePressed()"></app-page-header>
         </div>
         <div class="flexgrow1 flexbox flexstretch" style="padding-top: 2em;">
             <div class="flexgrow1 flexbox flexcenter">

@@ -2,7 +2,8 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'KNBB match'" [subtitle]="'Controle selectie spelers'" [spel]="appData.getSpelNaam()"
-                    [escCount]="escapeCount" (escClicked)="escapePressed()" (prevClicked)="previousClicked()"></app-page-header>
+                    [escCount]="escapeCount" (escClicked)="escapePressed()" (prevClicked)="previousClicked()"
+                    (hdrClicked)="headerClicked($event)"></app-page-header>
         </div>
         @if (dataReady) {
             <div class="flexgrow1 flexbox flexstretch">

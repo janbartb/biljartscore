@@ -5,7 +5,7 @@
                 <app-page-header [title]="'Biljartpoint'" 
                             [subtitle]="'Competitie ' + bpComp.knbbId + '&nbsp; - &nbsp;Team ' + bpTeam.knbbId + ' : ' + bpTeam.naam" 
                             [spel]="appData.getSpelNaam()" [escCount]="escapeCount" (escClicked)="escapePressed()" 
-                            (hdrClicked)="gotoBiljartpoint()" (prevClicked)="previousPressed()"></app-page-header>
+                            (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
             </div>
             <div class="flexgrow1 flexbox flexstretch">
                 <div class="flex50perc flexbox flexcolumn" style="border-right: .125em solid green;">

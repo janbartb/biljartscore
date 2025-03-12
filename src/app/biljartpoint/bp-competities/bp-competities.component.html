@@ -2,7 +2,7 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'Biljartpoint'" [subtitle]="'Competities'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
-                        (escClicked)="escapePressed()" (hdrClicked)="gotoBiljartpoint()" (prevClicked)="previousPressed()"></app-page-header>
+                        (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
         </div>
         <div class="flexbox flexmiddle" style="min-height: 3em; border-bottom: .25em solid green;">
             <div class="label" style="padding-left: 1em;">

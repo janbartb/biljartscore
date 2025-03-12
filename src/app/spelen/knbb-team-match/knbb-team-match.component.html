@@ -3,7 +3,7 @@
         <div class="fullheight flexbox flexcolumn">
             <div>
                 <app-page-header [title]="'KNBB team match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
-                            (prevClicked)="escapePressed()"></app-page-header>
+                            (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)"></app-page-header>
             </div>
             <div style="height: 25.5em;">
                 <div class="flexbox flexstart">

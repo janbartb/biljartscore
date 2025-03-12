@@ -2,7 +2,7 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'KNBB match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
-                        (prevClicked)="escapePressed()"></app-page-header>
+                        (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)"></app-page-header>
         </div>
         @if (compLijst.isEmpty()) {
             <div class="label" style="padding-top: 5em; text-align: center;">

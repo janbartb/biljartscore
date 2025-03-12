@@ -2,7 +2,7 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="'Oefen wedstrijd'" [spel]="appData.getSpelNaam()"
-                        (prevClicked)="escapePressed()"></app-page-header>
+                        (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)"></app-page-header>
         </div>
         <div class="flexbox flexcenter">
             <div style="padding: .5em 0; color: gray;">

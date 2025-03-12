@@ -35,12 +35,16 @@ export class BaseComponent {
         this.appData.previousPage();
     }
 
-    gotoOnderhoud() {
-        this.router.navigate(['onderhoud']);
-    }
-
-    gotoBiljartpoint() {
-        this.router.navigate(['bpoint/home']);
+    headerClicked(title: string) {
+        if (title == 'Onderhoud gegevens') {
+            this.appData.goBackToPage('onderhoud');
+        }
+        else if (title == 'Wedstrijd spelen' || title == 'KNBB team match' || title == 'KNBB match') {
+            this.router.navigate(['spelkeuze']);
+        }
+        else if (title == 'Biljartpoint') {
+            this.router.navigate(['bpoint/home']);
+        }
     }
 
     isRequired(form: FormGroup, field: string): boolean {

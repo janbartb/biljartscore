@@ -2,7 +2,8 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'KNBB match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
-                    [escCount]="escapeCount" (escClicked)="escapePressed()" (prevClicked)="previousClicked()"></app-page-header>
+                    [escCount]="escapeCount" (escClicked)="escapePressed()" (prevClicked)="previousClicked()"
+                    (hdrClicked)="headerClicked($event)"></app-page-header>
         </div>
         @if (dataReady) {
             <app-section-header [title]="compTitle" [cssClasses]="'w3-green-l1'"></app-section-header>

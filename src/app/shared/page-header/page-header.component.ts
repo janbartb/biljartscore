@@ -20,7 +20,7 @@ export class PageHeaderComponent implements OnInit, OnChanges {
     @Input() district: string = '';
     @Output() prevClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() escClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() hdrClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() hdrClicked: EventEmitter<string> = new EventEmitter<string>();
 
     escapes: number[] = [];
 
@@ -29,7 +29,7 @@ export class PageHeaderComponent implements OnInit, OnChanges {
     }
 
     headerClicked() {
-        this.hdrClicked.emit(true);
+        this.hdrClicked.emit(this.title);
     }
 
     escapeClicked() {
