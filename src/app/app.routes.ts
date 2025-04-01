@@ -51,6 +51,16 @@ import { BpCompetitieTeamsComponent } from './biljartpoint/bp-competitie-teams/b
 import { BpLokaliteitComponent } from './biljartpoint/bp-competitie-team/bp-lokaliteit/bp-lokaliteit.component';
 import { BpVerenigingComponent } from './biljartpoint/bp-competitie-team/bp-vereniging/bp-vereniging.component';
 import { BpSpelersComponent } from './biljartpoint/bp-competitie-team/bp-spelers/bp-spelers.component';
+import { CompetitiesComponent } from './onderhoud/eigen/competities/competities.component';
+import { CompetitieComponent } from './onderhoud/eigen/competitie/competitie.component';
+import { CompSpelersComponent } from './onderhoud/eigen/comp-spelers/comp-spelers.component';
+import { EigenCompetitiesComponent } from './spelen/eigen/eigen-competities/eigen-competities.component';
+import { EigenCompetitieComponent } from './spelen/eigen/eigen-competitie/eigen-competitie.component';
+import { EigenCompetitieSpelerComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-speler/eigen-competitie-speler.component';
+import { EigenCompetitieSchemaComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-schema/eigen-competitie-schema.component';
+import { EigenCompetitieMatchComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-match/eigen-competitie-match.component';
+import { EigenCompetitieScoreComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-score/eigen-competitie-score.component';
+import { EigenCompetitieLijstComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-lijst/eigen-competitie-lijst.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -92,6 +102,12 @@ export const routes: Routes = [
     { path: 'onderhoud/moyennes', component: MoyenneTabellenComponent },
     { path: 'onderhoud/districten', component: KnbbDistrictenComponent },
     { path: 'onderhoud/spelsoorten', component: SpelsoortenComponent },
+    { path: 'onderhoud/eigencomps', component: CompetitiesComponent },
+    { path: 'onderhoud/eigencomp', children: [
+        { path: 'toevoegen', component: CompetitieComponent },
+        { path: ':naam/spelers', component: CompSpelersComponent },
+        { path: ':naam', component: CompetitieComponent }
+    ]},
     { path: 'onderhoud', component: OnderhoudComponent },
     { path: 'config', component: ConfigComponent },
     { path: 'spelkeuze', component: SpelkeuzeComponent },
@@ -101,6 +117,13 @@ export const routes: Routes = [
     { path: 'wedstrijd/spelers', component: WedSpelersComponent },
     { path: 'wedstrijd/aantspl', component: WedAantSpelersComponent },
     { path: 'wedstrijd', component: WedstrijdComponent },
+    { path: 'eigencomps/:naam/match/:ronde/:idxspl/:idxteg', component: EigenCompetitieMatchComponent },
+    { path: 'eigencomps/:naam/score/:ronde/:idxspl/:idxteg', component: EigenCompetitieScoreComponent },
+    { path: 'eigencomps/:naam/lijst/:ronde/:idxspl/:idxteg', component: EigenCompetitieLijstComponent },
+    { path: 'eigencomps/:naam/schema/:ronde', component: EigenCompetitieSchemaComponent },
+    { path: 'eigencomps/:naam/:splId/:ronde', component: EigenCompetitieSpelerComponent },
+    { path: 'eigencomps/:naam', component: EigenCompetitieComponent },
+    { path: 'eigencomps', component: EigenCompetitiesComponent },
     { path: 'bpoint/home', component: BpHomeComponent },
     { path: 'bpoint/districten', component: BpDistrictenComponent },
     { path: 'bpoint/district', component: BpDistrictComponent },

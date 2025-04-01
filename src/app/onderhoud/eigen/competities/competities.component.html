@@ -1,0 +1,35 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="title" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1 scroll-container">
+            <div #complijst class="scroll-content">
+                <div class="flexbox flexcenter">
+                    <div class="lijst">
+                        @for (item of compLijst.filtered; track $index) {
+                            <div class="lijst-row selectable" (click)="compClicked($index)"
+                                    [ngClass]="{'selected': compLijst.selectedIdx == $index, 'hovered': compLijst.hoveredIdx == $index}">
+                                <div class="lijst-col indicator" style="width: 2em;">
+                                    <i class="fas fa-angle-right"></i>
+                                </div>
+                                <div class="lijst-col" style="width: 14em;">
+                                    <span>{{item}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 2.5em;">
+                                    <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="compVerwijderenClicked($index, $event)"></i>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-section-footer-btns [buttons]="buttons" (clickedButton)="compToevoegenClicked()"
+                                [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+    </div>
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}

@@ -39,6 +39,8 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
     busy: boolean = false;
     keysLocked: boolean = false;
     testMode: boolean = false;
+    testModeToggled: boolean = false;
+    speechToggled: boolean = false;
 
     enterPressed(): void {
         if (this.match.matchOver) {
@@ -126,7 +128,19 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
     }
 
     toggleTestMode() {
+        this.testModeToggled = true;
         this.testMode = !this.testMode;
+        setTimeout(() => {
+            this.testModeToggled = false;
+        }, 2000);
+    }
+
+    toggleSpeech() {
+        this.speechToggled = true;
+        this.spraak.speechOn = !this.spraak.speechOn;
+        setTimeout(() => {
+            this.speechToggled = false;
+        }, 2000);
     }
 
     wijzigNamenPressed() {
@@ -175,6 +189,10 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
         }
         if (event.code === 'KeyN') {
             this.wijzigNamenPressed();
+            return false;
+        }
+        if (event.code === 'KeyS') {
+            this.toggleSpeech();
             return false;
         }
         if (event.code === 'KeyT') {

@@ -89,5 +89,7 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
         this.menu.addItem(new MenuItem('2', 'KNBB competitie single match', 'match'));
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('3', 'Oefen wedstrijd', 'wedstrijd/aantspl'));
+        this.menu.addItem(new MenuItem('', '', '', filler));
+        this.menu.addItem(new MenuItem('4', 'Eigen competitie', 'eigencomps'));
     }
 }

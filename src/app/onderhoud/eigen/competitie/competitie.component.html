@@ -1,0 +1,272 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="title" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1">
+            @if (compForm) {
+                <form [formGroup]="compForm" class="fullheight flexbox flexstretch">
+                    <div class="flex40perc" style="border-right: .25em solid green;">
+                        <app-section-header [title]="'Competitie'" [cssClasses]="'w3-green-l2 font100'"></app-section-header>
+                        <div class="flexbox flexcenter" style="font-size: .75em; padding: 1em 2em;">
+                            <div>
+                                <table class="tbl-normal tbl-input">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <label for="cmpNaam">Naam<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                <span [style.color]="compNaamOk ? 'black' : 'red'">{{competitie.cmpNaam}}</span>
+                                            </td>                                        
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="cmpType">Type<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                @if (mode == 'view') {
+                                                    <span>{{cmpType?.value}}</span>
+                                                }
+                                                @else {
+                                                    <input #cmptype type="text" id="cmpType" style="width: 8em;" formControlName="cmpType" autocomplete="off"
+                                                            [ngClass]="{'invalid': cmpType?.invalid && (cmpType?.dirty), 'valid': cmpType?.valid && (cmpType?.dirty)}"
+                                                            (blur)="cmpType?.setValue(cmpType?.value.trim())">
+                                                }
+                                            </td>                                        
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="cmpSpelId">Spel<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                @if (mode == 'view') {
+                                                    <span>{{spelsoortNaam}}</span>
+                                                }
+                                                @else {
+                                                    <select id="cmpSpelId" formControlName="cmpSpelId">
+                                                        @for (spel of spelsoorten; track $index) {
+                                                            <option [value]="spel.spelsoortId">{{spel.spelsoortNaam}}</option>
+                                                        }
+                                                    </select>
+                                                }
+                                            </td>                                        
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="cmpJaar">Jaar<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                @if (mode == 'view') {
+                                                    <span>{{cmpJaar?.value}}</span>
+                                                }
+                                                @else {
+                                                    <input type="number" id="cmpJaar" style="width: 4.5em;" formControlName="cmpJaar" autocomplete="off"
+                                                            [ngClass]="{'invalid': cmpJaar?.invalid && (cmpJaar?.dirty), 'valid': cmpJaar?.valid && (cmpJaar?.dirty)}">
+                                                }
+                                            </td>                                        
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="cmpVolgNr">Volgnummer<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                @if (mode == 'view') {
+                                                    <span>{{cmpVolgNr?.value}}</span>
+                                                }
+                                                @else {
+                                                    <input type="number" id="cmpVolgNr" style="width: 3em;" formControlName="cmpVolgNr" autocomplete="off"
+                                                            [ngClass]="{'invalid': cmpVolgNr?.invalid && (cmpVolgNr?.dirty), 
+                                                                        'valid': cmpVolgNr?.valid && (cmpVolgNr?.dirty)}">
+                                                }
+                                            </td>                                        
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="cmpAantRondes">Aantal rondes<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                @if (mode == 'view') {
+                                                    <span>{{cmpAantRondes?.value}}</span>
+                                                }
+                                                @else {
+                                                    <input type="number" id="cmpAantRondes" style="width: 3em;" formControlName="cmpAantRondes" autocomplete="off"
+                                                            [ngClass]="{'invalid': cmpAantRondes?.invalid && (cmpAantRondes?.dirty), 
+                                                                        'valid': cmpAantRondes?.valid && (cmpAantRondes?.dirty)}">
+                                                }
+                                            </td>                                        
+                                        </tr>
+                                        @if (mode == 'view') {
+                                            <tr>
+                                                <td>
+                                                    <label>Aantal spelers</label>
+                                                </td>
+                                                <td>
+                                                    <span>{{competitie.cmpSpelers.length}}</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                <div style="padding-top: 1em;">
+                                    <label>Wedstrijden per ronde</label>
+                                    <span>{{competitie.cmpSpelers.length * (competitie.cmpSpelers.length - 1) / 2}}</span>
+                                </div>
+                                <div style="padding-top: 1em;">
+                                    <label>Gespeelde wedstrijden</label>
+                                </div>
+                                @for (aant of aantWedGespeeld; track $index) {
+                                    <div>
+                                        <label>Ronde {{$index + 1}} :</label>
+                                        <span>{{aant}}</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex60perc flexbox flexcolumn">
+                        <div class="flex50perc" style="border-bottom: .25em solid green;">
+                            <app-section-header [title]="'Spelvorm'" [cssClasses]="'w3-green-l2 font100'"></app-section-header>
+                            <div class="flexbox flexcenter" style="font-size: .75em; padding: 1em 2em;">
+                                <div>
+                                    <table class="tbl-normal tbl-input">
+                                        <tbody>
+                                            <tr (click)="regelOptieClicked(0)">
+                                                <td style="padding-right: .5em;">
+                                                    <i [ngClass]="cmpIdxRegels?.value == 0 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                            style="cursor: pointer;"></i>
+                                                </td>
+                                                <td style="cursor: pointer;">
+                                                    <label for="cmpKlasse">{{regelOpties[0]}}</label>
+                                                    <select id="cmpKlasse" formControlName="cmpKlasse">
+                                                        @for (klasse of knbbKlassen; track $index) {
+                                                            <option value="{{klasse}}">{{klasse}}</option>
+                                                        }
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr (click)="regelOptieClicked(1)">
+                                                <td style="padding-right: .5em;">
+                                                    <i [ngClass]="cmpIdxRegels?.value == 1 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                            style="cursor: pointer;"></i>
+                                                </td>
+                                                <td style="cursor: pointer;">
+                                                    <label for="cmpAantBrt">{{regelOpties[1]}}</label>
+                                                    <input type="number" id="cmpAantBrt" style="width: 3.5em;" formControlName="cmpAantBrt" autocomplete="off"
+                                                            [ngClass]="{'invalid': cmpAantBrt?.invalid && (cmpAantBrt?.dirty), 
+                                                                        'valid': cmpAantBrt?.valid && (cmpAantBrt?.dirty)}">
+                                                </td>
+                                            </tr>
+                                            <tr (click)="regelOptieClicked(2)">
+                                                <td style="padding-right: .5em;">
+                                                    <i [ngClass]="cmpIdxRegels?.value == 2 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                            style="cursor: pointer;"></i>
+                                                </td>
+                                                <td style="cursor: pointer;">
+                                                    <label for="cmpAantCar">{{regelOpties[2]}}</label>
+                                                    <input type="number" id="cmpAantCar" style="width: 3.5em;" formControlName="cmpAantCar" autocomplete="off"
+                                                            [ngClass]="{'invalid': cmpAantCar?.invalid && (cmpAantCar?.dirty), 
+                                                                        'valid': cmpAantCar?.valid && (cmpAantCar?.dirty)}">
+                                                </td>
+                                            </tr>
+                                            <tr (click)="regelOptieClicked(3)">
+                                                <td style="padding-right: .5em;">
+                                                    <i [ngClass]="cmpIdxRegels?.value == 3 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                            ></i>
+                                                </td>
+                                                <td style="cursor: pointer;">
+                                                    <label for="cmpMoyBrt">{{regelOpties[3]}}</label>
+                                                    <input type="number" id="cmpMoyBrt" style="width: 3.5em;" formControlName="cmpMoyBrt" autocomplete="off"
+                                                            [ngClass]="{'invalid': cmpMoyBrt?.invalid && (cmpMoyBrt?.dirty), 
+                                                                        'valid': cmpMoyBrt?.valid && (cmpMoyBrt?.dirty)}">
+                                                    <label for="cmpMoyBrt" style="padding-left: 1em;">beurten</label>
+                                                </td>
+                                            </tr>
+                                            @if (cmpIdxRegels?.value != 1) {
+                                                <tr>
+                                                    <td></td>
+                                                    <td>
+                                                        <label for="cmpMaxBrt">Max. aantal beurten</label>
+                                                        <input type="number" id="cmpMaxBrt" style="width: 3.5em;" formControlName="cmpMaxBrt" autocomplete="off"
+                                                            [ngClass]="{'invalid': cmpMaxBrt?.invalid && (cmpMaxBrt?.dirty), 
+                                                                        'valid': cmpMaxBrt?.valid && (cmpMaxBrt?.dirty)}">
+                                                    </td>
+                                                </tr>    
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex50perc">
+                            <app-section-header [title]="'Telling'" [cssClasses]="'w3-green-l2 font100'"></app-section-header>
+                            <div class="flexbox flexcenter" style="font-size: .75em; padding: 1em 2em;">
+                                <div>
+                                    <table class="tbl-normal tbl-input">
+                                        <tbody>
+                                            <tr (click)="telOptieClicked(0)">
+                                                <td style="padding-right: .5em;">
+                                                    <i [ngClass]="cmpIdxTelling?.value == 0 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                            style="cursor: pointer;"></i>
+                                                </td>
+                                                <td style="cursor: pointer;">
+                                                    <label>{{telOpties[0]}}</label>
+                                                </td>
+                                            </tr>
+                                            <tr (click)="telOptieClicked(1)">
+                                                <td style="padding-right: .5em;">
+                                                    <i [ngClass]="cmpIdxTelling?.value == 1 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                            style="cursor: pointer;"></i>
+                                                </td>
+                                                <td style="cursor: pointer;">
+                                                    <label>{{telOpties[1]}}</label>
+                                                </td>
+                                            </tr>
+                                            @if (cmpIdxTelling?.value == 1) {
+                                                <tr>
+                                                    <td></td>
+                                                    <td>
+                                                        <label for="cmpPntWinst">Aantal punten bij winst</label>
+                                                        <input type="number" id="cmpPntWinst" style="width: 3em;" formControlName="cmpPntWinst" autocomplete="off"
+                                                            [ngClass]="{'invalid': cmpPntWinst?.invalid && (cmpPntWinst?.dirty), 
+                                                                        'valid': cmpPntWinst?.valid && (cmpPntWinst?.dirty)}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td>
+                                                        <label for="cmpPntGelijk">Aantal punten bij gelijkspel</label>
+                                                        <input type="number" id="cmpPntGelijk" style="width: 3em;" formControlName="cmpPntGelijk" autocomplete="off"
+                                                            [ngClass]="{'invalid': cmpPntGelijk?.invalid && (cmpPntGelijk?.dirty), 
+                                                                        'valid': cmpPntGelijk?.valid && (cmpPntGelijk?.dirty)}">
+                                                    </td>
+                                                </tr>    
+                                            }
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <label for="cmpPntBovenMoy">Extra punten indien boven moyenne</label>
+                                                    <input type="number" id="cmpPntBovenMoy" style="width: 3em;" formControlName="cmpPntBovenMoy" autocomplete="off"
+                                                        [ngClass]="{'invalid': cmpPntBovenMoy?.invalid && (cmpPntBovenMoy?.dirty), 
+                                                                    'valid': cmpPntBovenMoy?.valid && (cmpPntBovenMoy?.dirty)}">
+                                                </td>
+                                            </tr>
+                                    </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>        
+                </form>
+            }
+        </div>
+        <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)" 
+                    [btnsHide]="[mode != 'view', mode != 'view', mode != 'view', mode == 'view']"
+                    [btnsDisabled]="[false, false, competitie.cmpAantRondes < 2, (!compForm || !compForm.valid || !compNaamOk)]" 
+                    [cssFooter]="'w3-green-bdr'" [cssButtons]="'font125'"></app-section-footer-btns>
+    </div>
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}

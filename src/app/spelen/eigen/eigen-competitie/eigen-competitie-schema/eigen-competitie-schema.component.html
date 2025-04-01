@@ -1,0 +1,69 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="title" [subtitle]="'Wedstrijdschema ' + subtitles[idxRonde]" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="escapePressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1 schema" [ngClass]="raster.cssScale">
+            <div class="flexbox flexstretch" [style.height]="raster.topCellh + 'em'">
+                <div class="cell-container" [style.width]="raster.leftCellw + 'em'">
+                    <div></div>
+                </div>
+                @for (spl of schema.spelers; track $index) {
+                    <div class="cell-container flexbox flexcenter flexmiddle label" [style.width]="raster.cellw + 'em'">
+                            <div [style.font-size]="raster.fontsize + 'em'">{{spl.splBordnaam}}</div>
+                    </div>
+                }
+            </div>
+            @for (spl of schema.spelers; let idxS = $index; track $index) {
+                <div class="flexbox flexstretch" [style.height]="raster.cellh + 'em'">
+                    <div class="cell-container flexbox flexmiddle label" [style.width]="raster.leftCellw + 'em'">
+                        <div [style.font-size]="raster.fontsize + 'em'">{{spl.splBordnaam}}</div>
+                    </div>
+                    @for (wed of spl.splWeds; let idxT = $index; track $index) {
+                        <div class="cell-container" [style.width]="raster.cellw + 'em'">
+                            <div class="cell flexbox flexcenter flexmiddle" (click)="wedstrijdClicked(idxS, idxT)" 
+                                    [ngClass]="{
+                                        'gespeeld': wed.gespeeld,
+                                        'filler': idxS == idxT, 
+                                        'nohover': idxS == idxT,
+                                        'hovered': idxSpl == idxS && idxTeg == idxT,
+                                        'groen': wed.winst == 2, 
+                                        'geel': wed.winst == 1, 
+                                        'rood': wed.winst == 0,
+                                        'bezig': wed.gespeeld && !wed.wedOver
+                                    }">
+                                    @if (wed.gespeeld) {
+                                        <div class="ball flexbox flexcenter flexmiddle" style="height: 1.75em; width: 1.75em; text-align: center;" 
+                                                [style.font-size]="raster.fontsize + 'em'" [style.background-color]="wed.metWit ? 'white' : 'yellow'">
+                                            <div class="txt">{{wed.punten}}</div>
+                                        </div>
+                                    }
+                                    @else if (idxS != idxT) {
+                                        <div class="wedspelers" style="text-align: center; line-height: 1.2em;" [style.font-size]="(.8 * raster.fontsize) + 'em'">
+                                            <span>{{spl.splBordnaam}}</span><br>
+                                            <span>{{wed.tegBordNaam}}</span>
+                                        </div>
+                                    }
+                            </div>
+                        </div>
+                    }
+                </div>    
+            }
+        </div>
+        <div class="flexbox flexcenter flexmiddle" style="height: 3em; min-height: 3em; border-top: .25em solid green;">
+            <div class="flexbox" style="font-size: 1.25em;">
+                @if (competitie.cmpAantRondes > 1) {
+                    <div class="flexbox flexmiddle" style="padding-right: 2em;">
+                        <div class="label" style="padding-right: .25em;">Ronde</div>
+                        @for (btn of rondeButtons; track $index) {
+                            <app-button [button]="btn" (buttonClicked)="rondeButtonClicked($index + 1)"></app-button>
+                        }    
+                    </div>
+                }
+                <app-button [button]="wedButton" (buttonClicked)="naarWedstrijdClicked()"
+                        [disabled]="idxSpl < 0 || idxTeg < 0 || idxSpl == idxTeg"></app-button>
+            </div>
+        </div>
+    </div>
+</div>

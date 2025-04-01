@@ -1,0 +1,163 @@
+<div class="fullviewheight">
+    @if (dataReady) {
+        <div class="fullheight flexbox flexcolumn">
+            <div>
+                <app-page-header [title]="title" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                        (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="escapePressed()"></app-page-header>
+            </div>
+            <div class="flexbox flexcenter flexmiddle" style="height: 2.5em;">
+                <div style="color: red">
+                    <span>{{comments[idxComm]}}</span>
+                    @if (idxComm == 1 && match.spelers[0].stand.score.length == 0) {
+                        <span style="font-weight: normal; padding-left: 1em;">(uitslag handmatig ingevoerd)</span>
+                    }
+                </div>
+            </div>
+            <div class="flexgrow1" style="border-top: .25em solid green;">
+                <div class="fullheight flexbox flexcenter flexmiddle" style="padding-bottom: .5em;">
+                    <div>
+                        @if (matchForm) {
+                            <form [formGroup]="matchForm">
+                                <table class="tbl-normal tbl-input">
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td style="width: 2em;"></td>
+                                            <td class="flexbox flexmiddle" style="font-size: 1.25em;">
+                                                <div class="speelbal" [ngClass]="{'geel': !match.spelers[0].metWit}"></div>
+                                                <div class="label" style="padding-left: .25em;">{{match.spelers[0].naam}}</div>
+                                            </td>
+                                            <td style="width: 2em;"></td>
+                                            <td class="flexbox flexmiddle" style="font-size: 1.25em;">
+                                                <div class="speelbal" [ngClass]="{'geel': !match.spelers[1].metWit}"></div>
+                                                <div class="label" style="padding-left: .25em;">{{match.spelers[1].naam}}</div>
+                                            </td>
+                                        </tr>
+                                        <tr><td style="height: .5em;"></td></tr>
+                                        <tr>
+                                            <td><label>Te spelen moy</label></td>
+                                            <td></td>
+                                            <td style="padding-left: .25em;">{{match.spelers[0].tsMoy | number:'1.3-3':'nl-NL'}}</td>
+                                            <td></td>
+                                            <td style="padding-left: .25em;">{{match.spelers[1].tsMoy | number:'1.3-3':'nl-NL'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Te spelen car</label></td>
+                                            <td></td>
+                                            <td style="padding-left: .25em;">{{match.spelers[0].tsCar}}</td>
+                                            <td></td>
+                                            <td style="padding-left: .25em;">{{match.spelers[1].tsCar}}</td>
+                                        </tr>
+                                        <tr><td style="height: 1em;"></td></tr>
+                                        @if (!viewMode) {
+                                            <tr>
+                                                <td><label>Gespeeld op</label></td>
+                                                <td></td>
+                                                <td>
+                                                    <input #weddatum type="text" id="datum" style="width: 8em;" formControlName="datum" autocomplete="off"
+                                                            [ngClass]="{'invalid': datum?.invalid && (datum?.dirty), 'valid': datum?.valid && (datum?.dirty)}"
+                                                            (blur)="datum?.setValue(datum?.value.trim())" placeholder="JJJJ-MM-DD">
+                                                </td>
+                                            </tr>
+                                        }
+                                        <tr>
+                                            <td><label>Aantal car</label></td>
+                                            <td></td>
+                                            <td>
+                                                <input type="number" id="splCar" style="width: 3.5em;" formControlName="splCar" autocomplete="off"
+                                                        [ngClass]="{'invalid': splCar?.invalid && (splCar?.dirty), 'valid': splCar?.valid && (splCar?.dirty)}">
+                                            </td>
+                                            <td></td>
+                                            <td>
+                                                <input type="number" id="tegCar" style="width: 3.5em;" formControlName="tegCar" autocomplete="off"
+                                                        [ngClass]="{'invalid': tegCar?.invalid && (tegCar?.dirty), 'valid': tegCar?.valid && (tegCar?.dirty)}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Aantal brt</label></td>
+                                            <td></td>
+                                            <td>
+                                                <input type="number" id="splBrt" style="width: 3.5em;" formControlName="splBrt" autocomplete="off"
+                                                        [ngClass]="{'invalid': splBrt?.invalid && (splBrt?.dirty), 'valid': splBrt?.valid && (splBrt?.dirty)}">
+                                            </td>
+                                            @if (viewMode) {
+                                                <td></td>
+                                                <td>
+                                                    <input type="number" id="tegBrt" style="width: 3.5em;" formControlName="tegBrt" autocomplete="off"
+                                                            [ngClass]="{'invalid': tegBrt?.invalid && (tegBrt?.dirty), 'valid': tegBrt?.valid && (tegBrt?.dirty)}">
+                                                </td>    
+                                            }
+                                        </tr>
+                                        <tr>
+                                            <td><label>Hoogste serie</label></td>
+                                            <td></td>
+                                            <td>
+                                                <input type="number" id="splSer" style="width: 3.5em;" formControlName="splSer" autocomplete="off"
+                                                        [ngClass]="{'invalid': splSer?.invalid && (splSer?.dirty), 'valid': splSer?.valid && (splSer?.dirty)}">
+                                            </td>
+                                            <td></td>
+                                            <td>
+                                                <input type="number" id="tegSer" style="width: 3.5em;" formControlName="tegSer" autocomplete="off"
+                                                        [ngClass]="{'invalid': tegSer?.invalid && (tegSer?.dirty), 'valid': tegSer?.valid && (tegSer?.dirty)}">
+                                            </td>
+                                        </tr>
+                                        @if (idxComm > 0 && viewMode) {
+                                            <tr><td style="height: 1em;"></td></tr>
+                                            <tr>
+                                                <td><label>Moyenne</label></td>
+                                                <td></td>
+                                                <td style="padding-left: .25em;">{{match.spelers[0].stand.gemiddelde | number:'1.3-3':'nl-NL'}}</td>
+                                                <td></td>
+                                                <td style="padding-left: .25em;">{{match.spelers[1].stand.gemiddelde | number:'1.3-3':'nl-NL'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><label>Percentage</label></td>
+                                                <td></td>
+                                                <td style="padding-left: .25em;">
+                                                    <span>{{100 * match.spelers[0].stand.gemiddelde / match.spelers[0].tsMoy | number:'1.2-2':'nl-NL'}}</span>
+                                                </td>
+                                                <td></td>
+                                                <td style="padding-left: .25em;">
+                                                    <span>{{100 * match.spelers[1].stand.gemiddelde / match.spelers[1].tsMoy | number:'1.2-2':'nl-NL'}}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label>Aantal punten</label></td>
+                                                <td></td>
+                                                <td style="padding-left: .25em;">{{match.spelers[0].stand.punten}}</td>
+                                                <td></td>
+                                                <td style="padding-left: .25em;">{{match.spelers[1].stand.punten}}</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="flexbox flexcenter flexmiddle" style="height: 3em; min-height: 3em; border-top: .25em solid green;">
+                <div class="flexbox flexmiddle">
+                    @if (viewMode) {
+                        @for (item of menu.actions; track $index) {
+                            <div style="font-size: 1.25em;">
+                                <app-menu-action [menuAction]="item" [selected]="menu.selectedIdx == $index" (actionClicked)="actionItemClicked(item)"></app-menu-action>
+                            </div>
+                        }    
+                    }
+                    @else {
+                        <div style="font-size: 1.25em;">
+                            <app-button [button]="enterButton" [disabled]="!uitslagOk" (buttonClicked)="uitslagOpslaanClicked()" ></app-button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>    
+    }
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmVerwijderenReplied($event)"></app-confirm>
+}
+@if (isOpnieuwDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmStartOpnieuwReplied($event)"></app-confirm>
+}

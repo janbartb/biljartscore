@@ -1,0 +1,41 @@
+.cmp-menu-item {
+    color: gray;
+    cursor: pointer;
+}
+.cmp-menu-item:hover {
+    color: black;
+}
+.cmp-menu-item:hover .cmp-item-key {
+    background-color: #404040;
+    color: white;
+}
+.cmp-menu-item.selected .cmp-item-txt {
+    color: black;
+}
+
+.cmp-item-key {
+    width: 1.2em;
+    height: 1.2em;
+    line-height: 1em;
+    text-align: center;
+    border: .125rem solid gray;
+    border-radius: .25em;
+    background-color: lightgray;
+}
+.cmp-item-key span {
+    font-size: .8em;
+}
+
+.cmp-item-enter {
+    height: 1.2em;
+    padding: 0 .25em;
+    line-height: 1em;
+    text-align: center;
+    border: .125rem solid gray;
+    border-radius: .25em;
+    background-color: #404040;
+    color: white;
+}
+.cmp-item-enter span {
+    font-size: .8em;
+}

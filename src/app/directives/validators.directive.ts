@@ -19,3 +19,57 @@ export function greaterZero(): ValidatorFn {
         return Number(control.value) && Number(control.value) > 0 ? null : {greaterZero: {valid: false}};
     };
 }
+
+export function isHeelGetal(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+        return (Number.isInteger(control.value)) ? null : {isHeelGetal: {valid: false}};
+    };
+}
+
+export function isIntegerNotNegative(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+        return Number.isInteger(control.value) && control.value >= 0 ? null : {isIntegerNotNegative: {valid: false}};
+    };
+}
+
+export function isIntegerPositive(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+        return Number.isInteger(control.value) && Number(control.value) > 0 ? null : {isIntegerPositive: {valid: false}};
+    };
+}
+
+export function validDate(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+        let isValid = true;
+        if (control.value.trim().length != 10) {
+            isValid = false;
+        }
+        else {
+            const iso = control.value.trim() + 'T12:00:00.000Z';
+            const d = new Date(iso);
+            isValid = !Number.isNaN(d.valueOf()) && d.toISOString() === iso;
+        }
+        return !isValid ? {validDate: {valid: false}} : null;
+    };
+}
+
+export function validDateNotFuture(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+        let isValid = true;
+        if (control.value.trim().length != 10) {
+            isValid = false;
+        }
+        else {
+            const iso = control.value.trim() + 'T12:00:00.000Z';
+            const d = new Date(iso);
+            isValid = !Number.isNaN(d.valueOf()) && d.toISOString() === iso;
+            if (isValid) {
+                const vandaag = new Date(Date.now()).toISOString().substring(0, 10);
+                if (control.value.trim() > vandaag) {
+                    isValid = false;
+                }
+            }
+        }
+        return !isValid ? {validDateNotFuture: {valid: false}} : null;
+    };
+}

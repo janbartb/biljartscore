@@ -151,6 +151,7 @@ export class ConfigComponent extends BaseComponent implements OnInit {
             if (foundSpelsoort) {
                 this.appData.setSpel(foundSpelsoort);
             }
+            this.spraak.speechOn = this.config.speech;
             this.spraak.setVoiceByName(this.config.stem);
         })
         .catch(err => {

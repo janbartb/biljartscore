@@ -1,0 +1,18 @@
+<div class="dialog-overlay flexbox flexcenter flexmiddle" (click)="rejectClicked()">
+    <div class="dialog">
+        <!-- <div class="dialog-header w3-green-d2">
+            <span>{{title}}</span>
+        </div> -->
+        <div class="dialog-body w3-green-col-d3" style="text-align: center;">
+            <div style="font-size: 4em; padding: 0 .5em;">EINDE WEDSTRIJD</div>
+            <div style="font-size: 3em; padding: .25em 0">Uitslag opslaan?</div>
+        </div>
+        <div class="separator w3-green-d2"></div>
+        <div class="dialog-footer">
+            <div class="flexbox flexcenter" style="font-size: 2em;">
+                <app-button [button]="dialog.rejectButton" (buttonClicked)="rejectClicked()"></app-button>
+                <app-button [button]="dialog.acceptButton" (buttonClicked)="acceptClicked()"></app-button>    
+            </div>
+        </div>
+    </div>    
+</div>

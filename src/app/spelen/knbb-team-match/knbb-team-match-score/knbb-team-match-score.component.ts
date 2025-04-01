@@ -40,6 +40,8 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
     busyCounter: number = 0;
     keysLocked: boolean = false;
     testMode: boolean = false;
+    testModeToggled: boolean = false;
+    speechToggled: boolean = false;
     busy: boolean = false;
 
     enterPressed(): void {
@@ -123,7 +125,19 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
     }
 
     toggleTestMode() {
+        this.testModeToggled = true;
         this.testMode = !this.testMode;
+        setTimeout(() => {
+            this.testModeToggled = false;
+        }, 2000);
+    }
+
+    toggleSpeech() {
+        this.speechToggled = true;
+        this.spraak.speechOn = !this.spraak.speechOn;
+        setTimeout(() => {
+            this.speechToggled = false;
+        }, 2000);
     }
 
     namenDialogReplied(accepted: boolean) {
@@ -167,6 +181,10 @@ export class KnbbTeamMatchScoreComponent extends BaseComponent implements OnInit
         }
         if (event.code === 'KeyN') {
             this.wijzigNamenPressed();
+            return false;
+        }
+        if (event.code === 'KeyS') {
+            this.toggleSpeech();
             return false;
         }
         if (event.code === 'KeyT') {

@@ -12,6 +12,7 @@ import { Wedstrijd, WedstrijdLeesResultaat } from '../model/wedstrijd';
 import { Match, MatchLeesResultaat, TeamMatch, TeamMatchLeesResultaat } from '../model/match';
 import { StatusService } from './status.service';
 import { BpCompetitie, BpDistrict, BpMoyTabel, CompTemp, TeamPageData } from '../model/bpoint';
+import { CmpMatchLeesResultaat, Competitie, CompetitieMatch, CompLeesResultaat } from '../model/competitie';
 
 @Injectable({
     providedIn: 'root'
@@ -200,6 +201,16 @@ export class ApiService {
         return comps.map(comp => comp.competitieId);
     }
 
+    async getCompetitieList(spelId: string): Promise<string[]> {
+        const result: string[] = await this.getResource(this.dbUrl + `/comp`);
+        return result.filter(naam => naam.includes(`-${spelId}-`)).map(naam => naam.replace('.json', ''));
+    }
+
+    async getCompetitie(naam: string): Promise<CompLeesResultaat> {
+        const result: CompLeesResultaat = await this.getResource(this.dbUrl + `/comp/` + naam);
+        return result;
+    }
+
     async getKnbbDistricten(): Promise<District[]> {
         const result: District[] = await this.getResource(this.dbUrl + `/districten`);
         return result;
@@ -226,6 +237,11 @@ export class ApiService {
 
     async getWedstrijd(): Promise<WedstrijdLeesResultaat> {
         const result: WedstrijdLeesResultaat = await this.getResource(this.dbUrl + `/wedstrijd`);
+        return result;
+    }
+
+    async getEigenMatch(): Promise<CmpMatchLeesResultaat> {
+        const result: CmpMatchLeesResultaat = await this.getResource(this.dbUrl + `/eigenmatch`);
         return result;
     }
 
@@ -581,6 +597,21 @@ export class ApiService {
         return json;
     }
 
+    // EIGEN MATCH
+
+    async saveEigenMatch(match: CompetitieMatch): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + `/eigenmatch`, {
+            method: 'POST',
+            body: JSON.stringify(match),
+            headers: this.myHeaders
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
     // SINGLE MATCH
 
     async saveKnbbMatch(match: Match): Promise<ApiResponse> {
@@ -603,6 +634,32 @@ export class ApiService {
             method: 'POST',
             body: JSON.stringify(match),
             headers: this.myHeaders
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
+    // EIGEN COMP
+
+    async saveCompetitie(comp: Competitie): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + `/comp/` + comp.cmpNaam, {
+            method: 'POST',
+            body: JSON.stringify(comp),
+            headers: this.myHeaders
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
+    async deleteCompetitie(naam: string): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + `/comp/` + naam, {
+            method: 'DELETE'
         });
         const json: ApiResponse = await response.json();
         if (!response.ok) {

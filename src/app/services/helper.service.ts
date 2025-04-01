@@ -4,6 +4,7 @@ import { Match, TeamMatch } from '../model/match';
 import { AlertService } from './alert.service';
 import { KnbbCompetitie } from '../model/knbb-competitie';
 import { Team, Vereniging } from '../model/vereniging';
+import { CompetitieMatch } from '../model/competitie';
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +13,10 @@ export class HelperService {
     alert = inject(AlertService);
 
     constructor() { }
+
+    getHuidigJaar(): string {
+        return '' + new Date().getFullYear();
+    }
 
     isValidInteger(val: string): boolean {
         let nr = Number(val);
@@ -160,6 +165,20 @@ export class HelperService {
         }
         if ((spl.stand.aantCar === spl.splTsCar || teg.stand.aantCar === teg.splTsCar) && spl.stand.aantBrt === teg.stand.aantBrt) {
             return true;
+        }
+        return false;
+    }
+
+    isEigenMatchOver(match: CompetitieMatch): boolean {
+        const spl = match.spelers[0];
+        const teg = match.spelers[1];
+        if (teg.stand.aantBrt === match.regels.maxBeurten) {
+            return true;
+        }
+        if (match.regels.idxOptie != 1) {
+            if ((spl.stand.aantCar === spl.tsCar || teg.stand.aantCar === teg.tsCar) && spl.stand.aantBrt === teg.stand.aantBrt) {
+                return true;
+            }    
         }
         return false;
     }

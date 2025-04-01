@@ -1,0 +1,55 @@
+.schema {
+    font-size: .125em;
+    padding: 4em 8em;
+}
+.schema .cell-container {
+    padding: .5em;
+}
+.schema .cell-container .cell {
+    height: 100%;
+    border: .5em solid #404040;
+    border-radius: 1em;
+}
+.cell {
+    background-color: white;
+}
+.cell .wedspelers {
+    color: white;
+}
+.cell .ball {
+    border: 1px solid black;
+    border-radius: 50%;
+}
+.cell.filler {
+    border-color: #404040;
+    background-color: #404040;
+}
+.cell.groen { background-color: #beffbe; }
+.cell.groen:hover, .cell.groen.hovered { background-color: #00e200; }
+.cell.rood { background-color: #ffacac; }
+.cell.rood:hover, .cell.rood.hovered { background-color: #ff6a6a; }
+.cell.geel { background-color: #ffee00; }
+.cell.geel:hover, .cell.geel.hovered { background-color: yellow; }
+.cell.bezig { background-color: #afafaf; }
+.cell.bezig:hover, .cell.bezig.hovered { background-color: gray; }
+.cell:not(.nohover) {
+    cursor: pointer;
+}
+.cell:not(.nohover):not(.gespeeld):hover {
+    background-color: white;
+}
+.cell:not(.nohover):not(.gespeeld).hovered {
+    background-color: lightgray;
+}
+.cell:not(.nohover):hover .wedspelers, .cell:not(.nohover).hovered .wedspelers {
+    color: green;
+}
+.schema.scale110 .cell:not(.nohover).hovered {
+    transform: scale(1.1);
+}
+.schema.scale120 .cell:not(.nohover).hovered {
+    transform: scale(1.2);
+}
+.schema.scale125 .cell:not(.nohover).hovered {
+    transform: scale(1.25);
+}

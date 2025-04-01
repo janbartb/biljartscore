@@ -1,87 +1,89 @@
 <div class="dialog-overlay flexbox flexcenter flexmiddle">
-    <div class="dialog">
-        <div class="dialog-header w3-green-d2">
-            <span>Wijzig spelers namen </span>
-            <span style="font-size: .75em;"> (tijdelijk)</span>
-        </div>
-        <div class="dialog-body w3-text-green">
-            <div class="flexbox flexstretch">
-                <div>
-                    <div class="label" style="padding-left: 1.5em;">Spelers</div>
+    @if (dialogReady) {
+        <div class="dialog">
+            <div class="dialog-header w3-green-d2">
+                <span>Wijzig spelers namen </span>
+                <span style="font-size: .75em;"> (tijdelijk)</span>
+            </div>
+            <div class="dialog-body w3-text-green">
+                <div class="flexbox flexstretch">
                     <div>
-                        <div class="lijst">
-                            @for (spl of spelerLijst.items; track $index) {
-                                <div class="lijst-row selectable" (click)="spelerClicked($index)"
-                                        [ngClass]="{'selected': spelerLijst.selectedIdx == $index}">
-                                    <div class="lijst-col indicator" style="width: 1em;">
-                                        <i class="fas fa-angle-right"></i>
+                        <div class="label" style="padding-left: 1.5em;">Spelers</div>
+                        <div>
+                            <div class="lijst">
+                                @for (spl of spelerLijst.items; track $index) {
+                                    <div class="lijst-row selectable" (click)="spelerClicked($index)"
+                                            [ngClass]="{'selected': spelerLijst.selectedIdx == $index}">
+                                        <div class="lijst-col indicator" style="width: 1em;">
+                                            <i class="fas fa-angle-right"></i>
+                                        </div>
+                                        <div class="lijst-col">
+                                            <span>{{spl.splNaam}}</span>
+                                        </div>
                                     </div>
-                                    <div class="lijst-col">
-                                        <span>{{spl.splNaam}}</span>
-                                    </div>
-                                </div>
-                            }
-                        </div>    
-    
+                                }
+                            </div>    
+        
+                        </div>
                     </div>
-                </div>
-                <div style="width: 1em;"></div>
-                <div style="width: 1em; border-left: .125em solid green;"></div>
-                <div>
-                    @if (namenForm) {
-                        <form [formGroup]="namenForm">
-                            <table class="tbl-normal tbl-input">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <label for="bordNaam">Bordnaam<span class="req"> *</span></label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <input type="text" id="bordNaam" style="width: 8em;" formControlName="bordNaam" autocomplete="off"
-                                                [ngClass]="{'invalid': bordNaam?.invalid && (bordNaam?.dirty), 'valid': bordNaam?.valid && (bordNaam?.dirty)}"
-                                                (blur)="bordNaam?.setValue(bordNaam?.value.trim())">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label for="spreekNaam">Spreeknaam<span class="req"> *</span></label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <input type="text" id="spreekNaam" style="width: 8em;" formControlName="spreekNaam" autocomplete="off"
-                                                [ngClass]="{'invalid': spreekNaam?.invalid && (spreekNaam?.dirty), 'valid': spreekNaam?.valid && (spreekNaam?.dirty)}"
-                                                (blur)="spreekNaam?.setValue(spreekNaam?.value.trim())">
-                                        </td>
-                                        @if (spreekNaam?.valid) {
-                                            <td style="padding-left: .5em;">
-                                                <i class="fas fa-volume-up iconbtn" (click)="spreekClicked()"></i>
-                                            </td>
-                                        }
-                                    </tr>
-                                    @if (spreekNaam?.valid) {
+                    <div style="width: 1em;"></div>
+                    <div style="width: 1em; border-left: .125em solid green;"></div>
+                    <div>
+                        @if (namenForm) {
+                            <form [formGroup]="namenForm">
+                                <table class="tbl-normal tbl-input">
+                                    <tbody>
                                         <tr>
-                                            <td class="label" style="font-size: 10pt; text-align: center;">
-                                                <span>Ctrl+Spatie = spreek naam uit</span>
+                                            <td>
+                                                <label for="bordNaam">Bordnaam<span class="req"> *</span></label>
                                             </td>
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </form>
-                    }
+                                        <tr>
+                                            <td>
+                                                <input type="text" id="bordNaam" style="width: 8em;" formControlName="bordNaam" autocomplete="off"
+                                                    [ngClass]="{'invalid': bordNaam?.invalid && (bordNaam?.dirty), 'valid': bordNaam?.valid && (bordNaam?.dirty)}"
+                                                    (blur)="bordNaam?.setValue(bordNaam?.value.trim())">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="spreekNaam">Spreeknaam<span class="req"> *</span></label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="text" id="spreekNaam" style="width: 8em;" formControlName="spreekNaam" autocomplete="off"
+                                                    [ngClass]="{'invalid': spreekNaam?.invalid && (spreekNaam?.dirty), 'valid': spreekNaam?.valid && (spreekNaam?.dirty)}"
+                                                    (blur)="spreekNaam?.setValue(spreekNaam?.value.trim())">
+                                            </td>
+                                            @if (spreekNaam?.valid) {
+                                                <td style="padding-left: .5em;">
+                                                    <i class="fas fa-volume-up iconbtn" (click)="spreekClicked()"></i>
+                                                </td>
+                                            }
+                                        </tr>
+                                        @if (spreekNaam?.valid) {
+                                            <tr>
+                                                <td class="label" style="font-size: 10pt; text-align: center;">
+                                                    <span>Ctrl+Spatie = spreek naam uit</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </form>
+                        }
+                    </div>
+                </div>
+                <div class="label" style="padding-top: .5em; text-align: center;">
+                    <span style="font-size: .75em;">Wilt u de wijzigingen doorvoeren ?</span> 
                 </div>
             </div>
-            <div class="label" style="padding-top: .5em; text-align: center;">
-                <span style="font-size: .75em;">Wilt u de wijzigingen doorvoeren ?</span> 
+            <div class="separator w3-green-d2"></div>
+            <div class="dialog-footer flexbox flexright">
+                <app-button [button]="dialog.rejectButton" (buttonClicked)="rejectClicked()"></app-button>
+                <app-button [button]="dialog.acceptButton" [disabled]="!namenForm || !namenForm.valid" (buttonClicked)="acceptClicked()"></app-button>
             </div>
-        </div>
-        <div class="separator w3-green-d2"></div>
-        <div class="dialog-footer flexbox flexright">
-            <app-button [button]="dialog.rejectButton" (buttonClicked)="rejectClicked()"></app-button>
-            <app-button [button]="dialog.acceptButton" [disabled]="!namenForm || !namenForm.valid" (buttonClicked)="acceptClicked()"></app-button>
-        </div>
-    </div>
+        </div>    
+    }
 </div>

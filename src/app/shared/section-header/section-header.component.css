@@ -5,3 +5,7 @@
 .sect-header .sect-title span { font-size: 1.25em; }
 .sect-header .sect-status { height: .125em; }
 .sect-header .sect-status.active { background-color: red; }
+
+.sect-header.font100 { font-size: 1em; }
+.sect-header.font125 { font-size: 1.25em; }
+.sect-header.font150 { font-size: 1.5em; }

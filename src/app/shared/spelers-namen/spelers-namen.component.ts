@@ -27,6 +27,7 @@ export class SpelersNamenComponent {
     @Output() reply: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() status: EventEmitter<boolean> = new EventEmitter<boolean>();
     spelerLijst: List<SpelerNamen> = new List<SpelerNamen>();
+    dialogReady: boolean = false;
 
     namenForm!: FormGroup | null;
 
@@ -123,6 +124,7 @@ export class SpelersNamenComponent {
         }
         this.createForm();
         this.status.emit(true);
+        this.dialogReady = true;
     }
 
     ngOnDestroy(): void {

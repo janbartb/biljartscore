@@ -1,0 +1,32 @@
+@if (menuAction.filler) {
+    <div class="cmp-menu-filler">
+        <hr>
+    </div>    
+}
+@else {
+    <div class="cmp-menu-item" [ngClass]="{'selected': selected}" (click)="clicked()">
+        <div class="flexbox flexmiddle">
+            <div class="flexbox flexright" style="width: 3em;">
+                @if (selected) {
+                    <div class="cmp-item-enter flexbox flexcenter flexmiddle">
+                        <div>
+                            <span>Enter</span>
+                        </div>
+                    </div>
+                }
+                @else {
+                    <div class="cmp-item-key flexbox flexcenter flexmiddle">
+                        <div>
+                            <span>{{menuAction.shortcut}}</span>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div style="width: .5em;"></div>
+            <div class="cmp-item-txt">
+                <span>{{menuAction.text}}</span>
+            </div>
+            <div style="width: 1em;"></div>
+        </div>
+    </div>
+}
