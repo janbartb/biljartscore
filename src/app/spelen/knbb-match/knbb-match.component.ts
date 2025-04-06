@@ -106,7 +106,7 @@ export class KnbbMatchComponent extends BaseComponent implements OnInit {
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' || event.key == 'PageDown') {
             this.buttonPressed(0);
             return false;
         }

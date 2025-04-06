@@ -11,8 +11,9 @@ import { SectionHeaderComponent } from '../../../shared/section-header/section-h
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe, NgClass } from '@angular/common';
 import { MoyenneTabel } from '../../../model/moyenne-tabel';
-import { Alinea, ConfirmDialog } from '../../../model/dialogs';
+import { Alinea, ConfirmDialog, ConfirmSplBordNaamDialog } from '../../../model/dialogs';
 import { ConfirmComponent } from '../../../shared/confirm/confirm.component';
+import { ConfirmBordnaamComponent } from '../../../shared/confirm-bordnaam/confirm-bordnaam.component';
 
 @Component({
     selector: 'app-comp-spelers',
@@ -21,6 +22,7 @@ import { ConfirmComponent } from '../../../shared/confirm/confirm.component';
         PageHeaderComponent,
         SectionHeaderComponent,
         ConfirmComponent,
+        ConfirmBordnaamComponent,
         FormsModule,
         DecimalPipe,
         NgClass
@@ -39,20 +41,44 @@ export class CompSpelersComponent extends BaseComponent implements OnInit {
     moyenneTabel: MoyenneTabel = new MoyenneTabel();
     idxSpelerToRemove: number = 0;
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
+    bordNaamDialog!: ConfirmSplBordNaamDialog;
+    isBordNaamDialogOpen: boolean = false;
     escapeCount: number = 0;
 
     spelerClicked(idx: number) {
         const spelerToAdd = this.spelerLijst.filtered[idx];
-        const duplicate = this.competitie.cmpSpelers.some(spl => spl.splId == spelerToAdd.speler.id);
+        let duplicate = this.competitie.cmpSpelers.some(spl => spl.splId == spelerToAdd.speler.id);
         if (duplicate) {
             this.alert.showAlert(`Speler ${spelerToAdd.getNaam()} zit al in de competitie.`, 'info');
             return;
         }
+        duplicate = this.competitie.cmpSpelers.some(spl => spl.splBordnaam == spelerToAdd.speler.bordnaam);
+        if (duplicate) {
+            this.confirmSpelerToevoegen(spelerToAdd);
+            return;
+        }
+        this.spelerToevoegen(spelerToAdd);
+    }
+
+    private confirmSpelerToevoegen(spelerToAdd: SpelerWrapper) {
+        let existing = this.competitie.cmpSpelers.map(spl => spl.splBordnaam);
+        this.bordNaamDialog = new ConfirmSplBordNaamDialog(spelerToAdd, existing);
+        this.isBordNaamDialogOpen = true;
+    }
+
+    confirmSpelerToevoegenReplied(accept: boolean) {
+        if (accept) {
+            this.spelerToevoegen(this.bordNaamDialog.speler, this.bordNaamDialog.naam);
+        }
+        this.isBordNaamDialogOpen = false;
+    }
+
+    private spelerToevoegen(spelerToAdd: SpelerWrapper, bordNaam?: string) {
         let addedSpeler: CmpSpeler = new CmpSpeler(this.competitie.cmpAantRondes);
         addedSpeler.splId = spelerToAdd.speler.id;
         addedSpeler.splNaam = spelerToAdd.getNaam();
         addedSpeler.splInit = this.getSpelerInitialen(addedSpeler.splNaam);
-        addedSpeler.splBordnaam = spelerToAdd.speler.vnaam;
+        addedSpeler.splBordnaam = bordNaam ? bordNaam : spelerToAdd.speler.vnaam;
         addedSpeler.splSpreeknaam = spelerToAdd.speler.vnaam;
         addedSpeler.splMoyenne = spelerToAdd.getGemiddeldeVanSpel();
         this.fillTeSpelenCarsEnBeurten(addedSpeler);
@@ -123,7 +149,7 @@ export class CompSpelersComponent extends BaseComponent implements OnInit {
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
-        if (this.isDialogOpen) {
+        if (this.isDialogOpen || this.isBordNaamDialogOpen) {
             return false;
         }
         if (event.key === 'Escape') {

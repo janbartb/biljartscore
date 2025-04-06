@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { BaseComponent } from '../../base/base.component';
 import { Match, TeamMatch } from '../../model/match';
@@ -6,6 +6,8 @@ import { Button, ButtonGroup } from '../../model/button';
 import { KnbbTeamMatchTeamComponent } from './knbb-team-match-team/knbb-team-match-team.component';
 import { ButtonComponent } from '../../shared/button-group/button/button.component';
 import { ModalMessage } from '../../model/modal-message';
+import { ActivatedRoute } from '@angular/router';
+import { HelperService } from '../../services/helper.service';
 
 @Component({
     selector: 'app-knbb-team-match',
@@ -19,9 +21,13 @@ import { ModalMessage } from '../../model/modal-message';
     styleUrl: './knbb-team-match.component.css'
 })
 export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
+    route = inject(ActivatedRoute);
+    helper = inject(HelperService);
+
     subtitle: string = 'Eindresultaat';
     matchRead: boolean = false;
     match: TeamMatch = new TeamMatch();
+    wedNr: number = 0;
     wedStatus: number[] = [0, 0, 0, 0];
     voortgang: string[] = ['0%', '0%', '0%', '0%'];
     buttonGroup: ButtonGroup = new ButtonGroup();
@@ -108,6 +114,15 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
             this.buttonPressed(3);
             return false;
         }
+        if (event.key == 'PageDown') {
+            if (this.wedNr == 0) {
+                this.buttonPressed(3);
+            }
+            else {
+                this.buttonPressed(this.wedNr - 1);
+            }
+            return false;
+        }
         if (event.key === 'Escape' || event.key === 'Backspace') {
             this.escapePressed();
             return false;
@@ -136,6 +151,13 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        let idx = this.route.snapshot.paramMap.get('wedNr');
+        if (!idx) {
+            idx = 'a';
+        }
+        if (this.helper.isValidInteger(idx)) {
+            this.wedNr = Number(idx);
+        }
         this.bssApi.getKnbbTeamMatch()
         .then(resp => {
             if (resp.gevonden) {

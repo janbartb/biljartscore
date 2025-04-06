@@ -104,3 +104,10 @@
     background-color: yellow;
     color: blue;
 }
+.aantpunten.active .aantpunten-container.klaar {
+    background-color: red;
+    color: white;
+}
+.aantpunten.active.geel .aantpunten-container.klaar {
+    color: yellow;
+}

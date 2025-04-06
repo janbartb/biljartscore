@@ -9,12 +9,29 @@
     height: 100%;
     border: .5em solid #404040;
     border-radius: 1em;
+    overflow: hidden;
 }
 .cell {
     background-color: white;
 }
 .cell .wedspelers {
-    color: white;
+    display: none;
+    color: green;
+}
+.cell .wedspelersnaam {
+    white-space: nowrap;
+    overflow: hidden;
+    padding-left: .25em;
+}
+.cell .wedspelersbal {
+    width: .9em;
+    height: .9em;
+    border: 2px solid black;
+    border-radius: 50%;
+    background-color: white;
+}
+.cell .wedspelersbal.geel {
+    background-color: yellow;
 }
 .cell .ball {
     border: 1px solid black;
@@ -42,7 +59,7 @@
     background-color: lightgray;
 }
 .cell:not(.nohover):hover .wedspelers, .cell:not(.nohover).hovered .wedspelers {
-    color: green;
+    display: block;
 }
 .schema.scale110 .cell:not(.nohover).hovered {
     transform: scale(1.1);

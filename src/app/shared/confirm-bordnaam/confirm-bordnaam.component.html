@@ -1,0 +1,41 @@
+<div class="dialog-overlay flexbox flexcenter flexmiddle">
+    <div class="dialog">
+        <div class="dialog-header w3-green-d2">
+            <span>{{title}}</span>
+        </div>
+        <div class="dialog-body w3-text-green">
+            <div style="font-size: .75em;">
+                <span>Speler {{dialog.speler.getNaam()}} toevoegen.</span>
+            </div>
+            <div style="font-size: .75em;">
+                <span>Er zit al een speler in de competitie met deze naam.</span>
+            </div>
+            <div style="padding: .5em 0;">
+                @if (nameForm) {
+                    <form  [formGroup]="nameForm">
+                        <table class="tbl-normal tbl-input">
+                            <tbody>
+                                <tr>
+                                    <td><label for="naam">Wijzig naam</label></td>
+                                    <td>
+                                        <input #bordnaam type="text" id="naam" style="width: 6em;" formControlName="naam" autocomplete="off"
+                                        [ngClass]="{'invalid': naam?.invalid && (naam?.dirty), 'valid': naam?.valid && (naam?.dirty)}"
+                                        (blur)="naam?.setValue(naam?.value.trim())">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>    
+                    </form>
+                }
+            </div>
+            <div style="font-size: .75em;">
+                <span>Speler toevoegen?</span>
+            </div>
+        </div>
+        <div class="separator w3-green-d2"></div>
+        <div class="dialog-footer flexbox flexright">
+            <app-button [button]="dialog.rejectButton" (buttonClicked)="rejectClicked()"></app-button>
+            <app-button [button]="dialog.acceptButton" [disabled]="!nameForm.valid" (buttonClicked)="acceptClicked()"></app-button>
+        </div>
+    </div>
+</div>

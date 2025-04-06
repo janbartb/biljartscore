@@ -111,7 +111,7 @@
                     <span class="label" style="font-size: 2.25em;">Pnt</span>
                 </div>
                 <div class="aantpunten-container flexbox flexcenter flexmiddle" 
-                        [ngClass]="{'changes': speler.stand.punten != oldPunten && !matchOver}">
+                        [ngClass]="{'changes': speler.stand.punten != oldPunten && !matchOver, 'klaar': matchOver}">
                     <div style="font-size: 5em; line-height: 1;">{{speler.stand.punten}}</div>
                 </div>
             </div>

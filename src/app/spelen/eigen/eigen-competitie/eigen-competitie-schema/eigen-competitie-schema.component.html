@@ -41,8 +41,14 @@
                                     }
                                     @else if (idxS != idxT) {
                                         <div class="wedspelers" style="text-align: center; line-height: 1.2em;" [style.font-size]="(.8 * raster.fontsize) + 'em'">
-                                            <span>{{spl.splBordnaam}}</span><br>
-                                            <span>{{wed.tegBordNaam}}</span>
+                                            <div class="flexbox flexmiddle" style="overflow: hidden;">
+                                                <div class="wedspelersbal"></div>
+                                                <div class="wedspelersnaam"><span>{{spl.splBordnaam}}</span></div>
+                                            </div>
+                                            <div class="flexbox flexmiddle" style="overflow: hidden;">
+                                                <div class="wedspelersbal geel"></div>
+                                                <div class="wedspelersnaam"><span>{{wed.tegBordNaam}}</span></div>
+                                            </div>
                                         </div>
                                     }
                             </div>

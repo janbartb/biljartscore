@@ -94,3 +94,6 @@
 @if (isDialogOpen) {
     <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
 }
+@if (isBordNaamDialogOpen) {
+    <app-confirm-bordnaam [dialog]="bordNaamDialog" (reply)="confirmSpelerToevoegenReplied($event)"></app-confirm-bordnaam>
+}

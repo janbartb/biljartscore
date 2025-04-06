@@ -135,7 +135,7 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
         //console.log(event);
         const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' || event.key == 'PageDown') {
             this.buttonPressed(this.enterButton);
             return false;
         }

@@ -219,6 +219,14 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         }
     }
 
+    @HostListener('document:keydown', ['$event'])
+    handleKeydownEvent(event: KeyboardEvent): boolean {
+        if (event.code == 'F5') {
+            event.preventDefault();
+        }
+        return true;
+    }
+
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         //console.log(event);
@@ -233,12 +241,17 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             this.alert.hideHelp();
             return false;
         }        
-        if (event.key === 'Enter') {
-            this.enterPressed();
-            return false;
-        }
-        if (event.key === 'Escape' || event.key === 'Backspace') {
-            this.router.navigate(['wedstrijd']);
+        // if (event.key === 'Enter') {
+        //     this.enterPressed();
+        //     return false;
+        // }
+        if (event.key === 'Escape' || event.key === 'Backspace' || event.code == 'F5') {
+            if (this.activeSpeler.stand.serie > 0) {
+                this.addNumberToSerie('-1');
+            }
+            else {
+                this.router.navigate(['wedstrijd']);
+            }
             return false;
         }
         if (event.key === 'Home') {
@@ -265,12 +278,12 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             this.appData.gotoPage(this.router.url, 'wedstrijd/lijst');
             return false;
         }
-        if (event.key === 'Delete' || event.code === 'NumpadDecimal') {
+        if (event.key === 'Delete' || event.code === 'NumpadDecimal' || event.code == 'Period') {
             this.undoLaatsteBeurt();
             return false;
         }
         if (!this.wedstrijd.wedOver) {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' || event.key == 'PageDown') {
                 this.enterPressed();
                 return false;
             }
@@ -282,7 +295,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
                 this.addNumberToSerie(event.code.substring(6));
                 return false;
             }
-            if (event.code === 'Space' || event.key === '+') {
+            if (event.code === 'Space' || event.key === '+' || event.key == 'PageUp') {
                 this.addNumberToSerie('1');
                 return false;
             }

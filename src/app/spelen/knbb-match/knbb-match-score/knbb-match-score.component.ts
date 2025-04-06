@@ -170,6 +170,14 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
         return this.match.spelers.find(spl => spl.splId == id);
     }
 
+    @HostListener('document:keydown', ['$event'])
+    handleKeydownEvent(event: KeyboardEvent): boolean {
+        if (event.code == 'F5') {
+            event.preventDefault();
+        }
+        return true;
+    }
+
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
@@ -183,8 +191,13 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
             this.alert.hideHelp();
             return false;
         }
-        if (event.key === 'Escape' || event.key === 'Backspace') {
-            this.router.navigate(['match']);
+        if (event.key === 'Escape' || event.key === 'Backspace' || event.code == 'F5') {
+            if (this.activeSpeler.stand.serie > 0) {
+                this.addNumberToSerie('-1');
+            }
+            else {
+                this.router.navigate(['match']);
+            }
             return false;
         }
         if (event.code === 'KeyN') {
@@ -207,12 +220,12 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
             this.appData.gotoPage(this.router.url, 'match/lijst');
             return false;
         }
-        if (event.key === 'Delete' || event.code === 'NumpadDecimal') {
+        if (event.key === 'Delete' || event.code === 'NumpadDecimal' || event.code == 'Period') {
             this.undoLaatsteBeurt();
             return false;
         }
         if (!this.match.matchOver) {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' || event.key == 'PageDown') {
                 this.enterPressed();
                 return false;
             }
@@ -224,7 +237,7 @@ export class KnbbMatchScoreComponent extends BaseComponent implements OnInit {
                 this.addNumberToSerie(event.code.substring(6));
                 return false;
             }
-            if (event.code === 'Space' || event.key === '+') {
+            if (event.code === 'Space' || event.key === '+' || event.key == 'PageUp') {
                 this.addNumberToSerie('1');
                 return false;
             }

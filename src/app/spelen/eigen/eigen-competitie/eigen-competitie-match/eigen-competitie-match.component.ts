@@ -206,7 +206,7 @@ export class EigenCompetitieMatchComponent extends BaseComponent implements OnIn
         if (this.isDialogOpen || this.isOpnieuwDialogOpen) {
             return true;
         }
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' || event.key == 'PageDown') {
             if (this.viewMode) {
                 this.actionPressed('');
             }

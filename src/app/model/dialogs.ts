@@ -1,6 +1,7 @@
 import { Button } from "./button";
 import { CmpMatchSpeler } from "./competitie";
 import { MatchSpeler } from "./match";
+import { SpelerWrapper } from "./speler";
 import { WedSpeler } from "./wedstrijd";
 
 export class ConfirmDialog {
@@ -23,6 +24,21 @@ export class Alinea {
 
     constructor(regels: string[]) {
         this.regels = regels;
+    }
+}
+
+export class ConfirmSplBordNaamDialog {
+    speler!: SpelerWrapper;
+    naam: string = '';
+    existingNames: string[] = [];
+
+    acceptButton: Button = new Button('Enter', 'Ja', true);
+    rejectButton: Button = new Button('Esc', 'Nee', true);
+
+    constructor(spl: SpelerWrapper, existing: string[]) {
+        this.speler = spl;
+        this.naam = spl.speler.bordnaam;
+        this.existingNames = existing;
     }
 }
 

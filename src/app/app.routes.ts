@@ -80,6 +80,7 @@ export const routes: Routes = [
     { path: 'teammatch/setup/comp', component: KnbbTeamMatchCompComponent },
     { path: 'teammatch/setup/check', component: KnbbTeamMatchCheckComponent },
     { path: 'teammatch/score/:wedNr', component: KnbbTeamMatchScoreComponent },
+    { path: 'teammatch/:wedNr', component: KnbbTeamMatchComponent },
     { path: 'teammatch', component: KnbbTeamMatchComponent },
     { path: 'onderhoud/verenigingen/toevoegen', component: VerenigingAddComponent },
     { path: 'onderhoud/verenigingen/:verId/team/:teamId', component: VerenigingTeamComponent },
