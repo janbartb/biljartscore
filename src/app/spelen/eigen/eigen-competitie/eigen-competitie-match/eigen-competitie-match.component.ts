@@ -121,7 +121,9 @@ export class EigenCompetitieMatchComponent extends BaseComponent implements OnIn
             const goto = this.router.url.replace('match', 'score');
             this.match.spelers.forEach(spl => {
                 spl.stand = new CmpMatchSpelerStand();
+                spl.active = false;
             });
+            this.match.spelers[0].active = true;
             this.isOpnieuwDialogOpen = false;
             this.saveMatchAndGoToScorebord(goto);    
         }
