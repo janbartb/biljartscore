@@ -1,0 +1,82 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="title" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="escapePressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox flexstretch">
+            <div class="flex50perc flexbox flexcolumn" style="border-right: .25em solid green;">
+                <app-section-header [title]="'Speler volgorde'" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <div class="flexgrow1 scroll-container" style="border-bottom: .25em solid green;">
+                    <div #volgordelijst class="scroll-content">
+                        <div class="flexbox flexcenter">
+                            <div class="lijst">
+                                @for (spl of spelerLijst; track $index) {
+                                    <div class="lijst-row selectable" [ngClass]="{'hovered': $index == spelerIdx}" (click)="spelerClicked($index)">
+                                        <div class="lijst-col" style="width: 2.5em;">
+                                            <i [ngClass]="spl.aanwezig ? 'fas fa-check-square' : 'far fa-square'"></i>
+                                        </div>
+                                        <div class="lijst-col" style="width: 8em;">
+                                            <span>{{spl.naam}}</span>
+                                        </div>
+                                        <div class="lijst-col num" style="width: 3em;">
+                                            <span>{{spl.aantWed}}</span>
+                                        </div>
+                                        <div class="lijst-col num" style="width: 8em;">
+                                            <span>{{spl.laatsteDat}}</span>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <app-section-header [title]="'Aantal wedstrijden'" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <div class="flexbox flexcenter flexmiddle" style="height: 6em;">
+                    <div class="flexbox" style="font-size: 1.25em;">
+                        @for (btn of wedButtons; track $index) {
+                            <app-button [button]="btn" (buttonClicked)="aantWedClicked($index + 1)"></app-button>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="flexgrow1 flexbox flexcolumn">
+                <app-section-header [title]="'Geplande wedstrijden'" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <div class="flexgrow1">
+                    <div style="padding: 1em 0; text-align: center;">{{wedstrijden.datum}}</div>
+                    <div class="flexbox flexcenter">
+                        @if (plannenWasClicked && wedstrijden.wedstrijden.length == 0) {
+                            <div style="padding-top: 2em; color: green;">Geen in te plannen wedstrijden</div>
+                        }
+                        <div>
+                            <table class="tbl-normal">
+                                <tbody>
+                                    @for (wed of wedstrijden.wedstrijden; track $index) {
+                                        <tr class="geplande-wed" (click)="wedstrijdClicked($index)">
+                                            <td style="width: 1em;"></td>
+                                            <td style="color: green;">
+                                                @if (wed.gespeeld) {
+                                                    <div style="width: 2.5em;">
+                                                        <i class="fas fa-check"></i>
+                                                    </div>
+                                                }    
+                                            </td>
+                                            <td style="color: green;">ronde {{wed.ronde}}</td>
+                                            <td style="width: 2em;"></td>
+                                            <td class="num">{{wed.splNaam}}</td>
+                                            <td class="center" style="width: 1.5em; color: green;">-</td>
+                                            <td>{{wed.tegNaam}}</td>
+                                            <td style="width: 1em;"></td>
+                                        </tr>
+                                    }        
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <app-section-footer-btns [buttons]="planButtons" (clickedButton)="plannenClicked()"
+                                [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+            </div>
+        </div>
+    </div>
+</div>

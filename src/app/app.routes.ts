@@ -61,6 +61,7 @@ import { EigenCompetitieSchemaComponent } from './spelen/eigen/eigen-competitie/
 import { EigenCompetitieMatchComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-match/eigen-competitie-match.component';
 import { EigenCompetitieScoreComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-score/eigen-competitie-score.component';
 import { EigenCompetitieLijstComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-lijst/eigen-competitie-lijst.component';
+import { EigenCompetitiePlanningComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-planning/eigen-competitie-planning.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -122,6 +123,7 @@ export const routes: Routes = [
     { path: 'eigencomps/:naam/score/:ronde/:idxspl/:idxteg', component: EigenCompetitieScoreComponent },
     { path: 'eigencomps/:naam/lijst/:ronde/:idxspl/:idxteg', component: EigenCompetitieLijstComponent },
     { path: 'eigencomps/:naam/schema/:ronde', component: EigenCompetitieSchemaComponent },
+    { path: 'eigencomps/:naam/planning/:ronde', component: EigenCompetitiePlanningComponent },
     { path: 'eigencomps/:naam/:splId/:ronde', component: EigenCompetitieSpelerComponent },
     { path: 'eigencomps/:naam', component: EigenCompetitieComponent },
     { path: 'eigencomps', component: EigenCompetitiesComponent },

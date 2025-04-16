@@ -41,6 +41,7 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
     escapeCount: number = 0;
 
     wedButton: Button = new Button('Enter', 'Naar wedstrijd', true);
+    planButton: Button = new Button('P', 'Planning', true);
     rondeButtons: Button[] = [];
 
     override escapePressed(): void {
@@ -57,7 +58,12 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
         button.selected = true;
         setTimeout(() => {
             button.selected = false;
-            this.naarWedstrijdClicked();
+            if (button.key == 'Enter') {
+                this.naarWedstrijdClicked();
+            }
+            else if (button.key == 'P') {
+                this.planningClicked();
+            }
         }, 300);
     }
 
@@ -76,6 +82,10 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
 
     naarWedstrijdClicked() {
         this.router.navigate([`eigencomps/${this.competitie.cmpNaam}/match/${this.idxRonde}/${this.idxSpl}/${this.idxTeg}`]);
+    }
+
+    planningClicked() {
+        this.router.navigate([`eigencomps/${this.competitie.cmpNaam}/planning/${this.idxRonde}`]);
     }
 
     rondeButtonClicked(rondeNr: number) {
@@ -116,6 +126,10 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
             }
             return false;
         }    
+        if (event.code == 'KeyP') {
+            this.buttonPressed(this.planButton);
+            return false;
+        }
         if (event.code.startsWith('Digit')) {
             const digit = event.code.substring(5);
             this.rondeButtonClicked(+digit);

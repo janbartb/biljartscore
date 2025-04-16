@@ -4,3 +4,14 @@
     text-align: center;
     font-size: 1.25rem;
 }
+
+@media print {
+    body {
+        background-color: white;
+        color: black;
+    }
+}
+@page {
+    size: A4 portrait;
+    margin: 2cm;
+}

@@ -79,6 +79,10 @@ export class EigenCompetitieLijstComponent extends BaseComponent implements OnIn
             this.escapePressed();
             return false;
         }
+        if (event.code == 'KeyP') {
+            window.print();
+            return false;
+        }
         return false;
     }
 

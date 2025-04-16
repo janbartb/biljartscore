@@ -98,6 +98,14 @@ export class EigenCompetitieMatchComponent extends BaseComponent implements OnIn
         }
     }
 
+    wisselSpelersClicked() {
+        const url = `eigencomps/${this.comp.cmpNaam}/match/${this.idxRonde}/${this.idxTeg}/${this.idxSpl}`;
+        this.router.navigateByUrl('/', { skipLocationChange: true })
+        .then(() => {
+            this.router.navigate([url]);
+        });
+    }
+
     naarScorebordClicked() {
         const goto = this.router.url.replace('match', 'score');
         if (this.firstSaveMatch) {
@@ -482,6 +490,7 @@ export class EigenCompetitieMatchComponent extends BaseComponent implements OnIn
                 this.idxComm = 0;
                 this.menu.addAction(new MenuAction('1', 'Start wedstrijd', () => { this.naarScorebordClicked(); }));
                 this.menu.addAction(new MenuAction('2', 'Uitslag invoeren', () => { this.uitslagInvoerenClicked(); }));
+                this.menu.addAction(new MenuAction('3', 'Wissel spelers', () => { this.wisselSpelersClicked(); }));
                 this.menu.selectedIdx = 0;
             }
             else {
