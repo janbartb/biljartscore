@@ -6,7 +6,8 @@
         </div>
         <div class="flexgrow1 flexbox flexstretch">
             <div class="flex50perc flexbox flexcolumn" style="border-right: .25em solid green;">
-                <app-section-header [title]="'Speler volgorde'" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <app-section-header [title]="'Speler volgorde'" [cssClasses]="'w3-green-l2'" 
+                            [active]="idxActiveSection == 0" (headerClicked)="activateSection(0)"></app-section-header>
                 <div class="flexgrow1 scroll-container" style="border-bottom: .25em solid green;">
                     <div #volgordelijst class="scroll-content">
                         <div class="flexbox flexcenter">
@@ -31,7 +32,7 @@
                         </div>
                     </div>
                 </div>
-                <app-section-header [title]="'Aantal wedstrijden'" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <app-section-header [title]="'Aantal wedstrijden'" [cssClasses]="'w3-green-l2'" (headerClicked)="activateSection(0)"></app-section-header>
                 <div class="flexbox flexcenter flexmiddle" style="height: 6em;">
                     <div class="flexbox" style="font-size: 1.25em;">
                         @for (btn of wedButtons; track $index) {
@@ -41,7 +42,8 @@
                 </div>
             </div>
             <div class="flexgrow1 flexbox flexcolumn">
-                <app-section-header [title]="'Geplande wedstrijden'" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <app-section-header [title]="'Geplande wedstrijden'" [cssClasses]="'w3-green-l2'" 
+                        [active]="idxActiveSection == 1" (headerClicked)="activateSection(1)"></app-section-header>
                 <div class="flexgrow1">
                     <div style="padding: 1em 0; text-align: center;">{{wedstrijden.datum}}</div>
                     <div class="flexbox flexcenter">
@@ -52,7 +54,7 @@
                             <table class="tbl-normal">
                                 <tbody>
                                     @for (wed of wedstrijden.wedstrijden; track $index) {
-                                        <tr class="geplande-wed" (click)="wedstrijdClicked($index)">
+                                        <tr class="geplande-wed" [ngClass]="{'hovered': $index == idxWed}" (click)="wedstrijdClicked($index)">
                                             <td style="width: 1em;"></td>
                                             <td style="color: green;">
                                                 @if (wed.gespeeld) {
@@ -74,7 +76,7 @@
                         </div>
                     </div>
                 </div>
-                <app-section-footer-btns [buttons]="planButtons" (clickedButton)="plannenClicked()"
+                <app-section-footer-btns [buttons]="planButtons" [btnsHide]="[idxWed >= 0, idxWed < 0]" (clickedButton)="buttonClicked($event)"
                                 [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
             </div>
         </div>

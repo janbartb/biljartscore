@@ -60,13 +60,16 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
     spelerLijst: PlanSpeler[] = [];
     spelerIdx: number = -1;
     wedstrijden: GeplandeWedstrijden = new GeplandeWedstrijden();
+    idxActiveSection: number = 0;
+    idxWed: number = -1;
     aantGeplandeWed: number = 0;
     aantTePlannenWed: number = 0;
     maxAantTePlannenWed: number = 0;
     plannenWasClicked: boolean = false;
     wedButtons: Button[] = [];
     planButtons: Button[] = [
-        new Button('Enter', 'Plan wedstrijden', true)
+        new Button('Enter', 'Plan wedstrijden', true),
+        new Button('Enter', 'Naar wedstrijd', true)
     ];
     escapeCount: number = 0;
 
@@ -81,12 +84,25 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         setTimeout(() => {
             button.selected = false;
             if (button.key == 'Enter') {
-                this.plannenClicked();
+                const idxBtn = this.idxWed >= 0 ? 1 : 0;
+                this.buttonClicked(idxBtn);
             }
         }, 300);
     }
 
+    buttonClicked(idx: number) {
+        if (idx == 0) {
+            this.plannenClicked();
+        }
+        else {
+            this.wedstrijdClicked(this.idxWed);
+        }
+    }
+
     wedstrijdClicked(idx: number) {
+        if (idx < 0) {
+            return;
+        }
         const wed = this.wedstrijden.wedstrijden[idx];
         const idxRonde = wed.ronde - 1;
         const idxSpl = this.comp.cmpSpelers.findIndex(spl => spl.splId == wed.splId);
@@ -95,6 +111,8 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
     }
 
     spelerClicked(idx: number) {
+        this.idxActiveSection = 0;
+        this.idxWed = -1;
         if (idx < 0 || idx >= this.spelerLijst.length) {
             return;
         }
@@ -105,10 +123,27 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
     }
 
     aantWedClicked(aant: number) {
+        this.idxActiveSection = 0;
+        this.idxWed = -1;
         this.aantTePlannenWed = aant;
         this.wedButtons.forEach(btn => btn.selected = btn.key == ('' + aant));
         this.wedstrijden.wedstrijden = [];
         this.plannenWasClicked = false;
+    }
+
+    activateSection(idx: number) {
+        if (idx == this.idxActiveSection) {
+            return;
+        }
+        this.idxActiveSection = idx;
+        if (idx == 0) {
+            this.idxWed = -1;
+        } 
+    }
+
+    switchActiveSection() {
+        const idx = this.idxActiveSection == 0 ? 1 : 0;
+        this.activateSection(idx);
     }
 
     private clearPlanning() {
@@ -123,6 +158,7 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         localStorage.removeItem('gepland');
         this.startPlannen();
         if (this.wedstrijden.wedstrijden.length > 0) {
+            this.idxActiveSection = 1;
             localStorage.setItem('gepland', JSON.stringify(this.wedstrijden));
         }
     }
@@ -130,8 +166,9 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
     startPlannen() {
         this.plannenWasClicked = true;
         this.clearPlanning();
+        this.wedstrijden.datum = new Date().toISOString().substring(0, 10);
         let tePlannen = this.aantTePlannenWed;
-         this.spelerLijst.forEach(spl => {
+        this.spelerLijst.forEach(spl => {
             spl.ingepland = false;
             spl.mogelijkeTegs = [];
         });
@@ -234,20 +271,25 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
             return true;
         }
         if (event.key ==='ArrowLeft' || event.key === 'ArrowRight') {
-            if (event.key === 'ArrowLeft') {
-                this.changeWedButton(-1);
-            }
-            if (event.key === 'ArrowRight') {
-                this.changeWedButton(1);
-            }
+            this.switchActiveSection();
             return false;
         }    
         if (event.key ==='ArrowUp' || event.key === 'ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.changeSpeler(-1);
+                if (this.idxActiveSection == 0) {
+                    this.changeSpeler(-1);
+                }
+                else {
+                    this.changeWedstrijd(-1);
+                }
             }
             if (event.key === 'ArrowDown') {
-                this.changeSpeler(1);
+                if (this.idxActiveSection == 0) {
+                    this.changeSpeler(1);
+                }
+                else {
+                    this.changeWedstrijd(1);
+                }
             }
             return false;
         }    
@@ -320,6 +362,9 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
     }
 
     private changeSpeler(direction: number) {
+        if (this.spelerLijst.length == 0) {
+            return;
+        }
         let idx = this.spelerIdx;
         idx += direction;
         if (idx < 0) {
@@ -331,16 +376,19 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         this.spelerIdx = idx;
     }
 
-    private changeWedButton(direction: number) {
-        let idx = this.wedButtons.findIndex(btn => btn.selected);
+    private changeWedstrijd(direction: number) {
+        if (this.wedstrijden.wedstrijden.length == 0) {
+            return;
+        }
+        let idx = this.idxWed;
         idx += direction;
         if (idx < 0) {
-            idx = this.wedButtons.length - 1;
+            idx = this.wedstrijden.wedstrijden.length - 1;
         }
-        if (idx >= this.wedButtons.length) {
+        if (idx >= this.wedstrijden.wedstrijden.length) {
             idx = 0;
         }
-        this.aantWedClicked(idx + 1);
+        this.idxWed = idx;
     }
 
     private getSpelerLijstPerRonde(ronde: number, spelers: PlanSpeler[], weds: PlanWedstrijd[]): PlanSpeler[] {

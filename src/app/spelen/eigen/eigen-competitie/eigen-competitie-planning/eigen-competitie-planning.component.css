@@ -1,5 +1,3 @@
-.geplande-wed:hover {
+.geplande-wed:hover, .geplande-wed.hovered {
     background-color: lightgray;
-    border: 1px solid white;
-    border-radius: .25em;
 }

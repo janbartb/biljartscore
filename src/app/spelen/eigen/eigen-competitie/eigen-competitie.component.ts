@@ -33,6 +33,7 @@ export class EigenCompetitieComponent extends BaseComponent implements OnInit {
     escapeCount: number = 0;
 
     schemaButton: Button = new Button('S', 'Schema', true);
+    planningButton: Button = new Button('P', 'Planning', true);
     wedButton: Button = new Button('Enter', 'Wedstrijden', true);
     rondeButtons: Button[] = [];
 
@@ -52,6 +53,9 @@ export class EigenCompetitieComponent extends BaseComponent implements OnInit {
             if (button.key == 'S') {
                 this.schemaButtonClicked();
             }
+            else if (button.key == 'P') {
+                this.planningButtonClicked();
+            }
             else if (button.key == 'Enter') {
                 this.spelerClicked(this.idxSpeler);
             }
@@ -70,6 +74,12 @@ export class EigenCompetitieComponent extends BaseComponent implements OnInit {
         const naam = this.competitie.cmpNaam;
         const ronde = (this.idxRonde > 0) ? this.idxRonde - 1 : this.idxRonde;
         this.router.navigate([`eigencomps/${naam}/schema/${ronde}`]);
+    }
+
+    planningButtonClicked() {
+        const naam = this.competitie.cmpNaam;
+        const ronde = (this.idxRonde > 0) ? this.idxRonde - 1 : this.idxRonde;
+        this.router.navigate([`eigencomps/${naam}/planning/${ronde}`]);
     }
 
     rondeButtonClicked(idx: number) {
@@ -117,6 +127,10 @@ export class EigenCompetitieComponent extends BaseComponent implements OnInit {
         }
         if (event.code === 'KeyS') {
             this.buttonPressed(this.schemaButton);
+            return false;
+        }
+        if (event.code === 'KeyP') {
+            this.buttonPressed(this.planningButton);
             return false;
         }
         if (event.key === 'Enter' && this.idxSpeler >= 0) {

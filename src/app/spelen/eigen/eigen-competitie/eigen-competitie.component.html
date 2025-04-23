@@ -68,11 +68,12 @@
             </div>
             <div class="flexbox flexcenter flexmiddle" style="height: 3em; min-height: 3em; border-top: .25em solid green;">
                 <div class="flexbox" style="font-size: 1.25em;">
-                    <app-button [button]="schemaButton" (buttonClicked)="schemaButtonClicked()"></app-button>
                     @if (idxSpeler >= 0) {
-                        <div style="width: 2em;"></div>
                         <app-button [button]="wedButton" (buttonClicked)="spelerClicked(idxSpeler)"></app-button>
+                        <div style="width: 2em;"></div>
                     }
+                    <app-button [button]="schemaButton" (buttonClicked)="schemaButtonClicked()"></app-button>
+                    <app-button [button]="planningButton" (buttonClicked)="planningButtonClicked()"></app-button>
                     @if (competitie.cmpAantRondes > 1) {
                         <div style="width: 2em;"></div>
                         <div class="flexbox flexmiddle">
