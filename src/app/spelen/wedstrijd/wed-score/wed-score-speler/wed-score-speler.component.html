@@ -19,7 +19,7 @@
             <div class="bal fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()"
                     [ngClass]="{'wit': speler.active && speler.metWit, 'geel': speler.active && !speler.metWit}">
                 <div>
-                    <span style="line-height: 1;" [style.color]="speler.active ? 'black' : grijs ? 'lightgray' : speler.metWit ? 'white' : 'yellow'" 
+                    <span style="line-height: 1;" [style.color]="speler.active ? 'black' : grijs ? 'lightgray' : speler.metWit ? 'white' : 'gold'" 
                             [style.font-size]="speler.splTsCar > 99 ? '3.5em' : '4.5em'">{{speler.splTsCar > 0 ? speler.splTsCar : ''}}</span>
                 </div>
             </div>

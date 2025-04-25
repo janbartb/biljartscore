@@ -3,12 +3,12 @@
 }
 
 .bal { border-radius: 50%; }
-.bal.geel { background-color: yellow; }
+.bal.geel { background-color: gold; }
 .bal.wit { background-color: white; }
 
 .spelerdata { color: white; }
 .spelerdata .wit { color: white; }
-.spelerdata .geel { color: yellow; }
+.spelerdata .geel { color: gold; }
 .spelerdata:not(.active) .grijs { color: lightgray;}
 
 .arial { font-family: Arial, Helvetica, sans-serif; }
@@ -37,19 +37,19 @@
 
 .scoredata:not(.active).grijs { background-color: #c0c0c0; }
 .scoredata { background-color: white; }
-.scoredata.geel { background-color: yellow; }
+.scoredata.geel { background-color: gold; }
 .scoredata.active .changes { color: blue; }
 .scoredata.active .scale { scale: 1.5; }
 
 .laatste5:not(.active).grijs .laatste5data { color: lightgray; }
 .laatste5 .laatste5data { color: white; }
-.laatste5.geel .laatste5data { color: yellow; }
+.laatste5.geel .laatste5data { color: gold; }
 
 .extradata { text-align: right; }
 .extradata:not(.active).grijs { background-color: #c0c0c0; }
 .extradata .clr-red { color: #dd0000; }
 .extradata { background-color: white; }
 .extradata.active .changes { color: blue; }
-.extradata.geel { background-color: yellow; }
+.extradata.geel { background-color: gold; }
 
 .extradata .label { color: #444444; }

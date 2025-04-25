@@ -17,16 +17,18 @@
 }
 .speler-container.thuis:not(.active) {
     box-shadow: inset -1.35em 0 1em -1em #000000;
+    filter: blur(2px);
 }
 .speler-container.gasten:not(.active) {
     box-shadow: inset 1.35em 0 1em -1em #000000;
+    filter: blur(2px);
 }
 
 .speler-container.thuis.active {
     border: .5em solid white;
 }
 .speler-container.gasten.active {
-    border: .5em solid yellow;
+    border: .5em solid gold;
 }
 .speler-container div {
     overflow: hidden;

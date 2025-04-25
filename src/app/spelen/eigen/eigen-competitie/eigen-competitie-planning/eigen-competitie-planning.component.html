@@ -12,7 +12,7 @@
                     <div #volgordelijst class="scroll-content">
                         <div class="flexbox flexcenter">
                             <div class="lijst">
-                                @for (spl of spelerLijst; track $index) {
+                                @for (spl of planning.spelers; track $index) {
                                     <div class="lijst-row selectable" [ngClass]="{'hovered': $index == spelerIdx}" (click)="spelerClicked($index)">
                                         <div class="lijst-col" style="width: 2.5em;">
                                             <i [ngClass]="spl.aanwezig ? 'fas fa-check-square' : 'far fa-square'"></i>
@@ -45,15 +45,15 @@
                 <app-section-header [title]="'Geplande wedstrijden'" [cssClasses]="'w3-green-l2'" 
                         [active]="idxActiveSection == 1" (headerClicked)="activateSection(1)"></app-section-header>
                 <div class="flexgrow1">
-                    <div style="padding: 1em 0; text-align: center;">{{wedstrijden.datum}}</div>
+                    <div style="padding: 1em 0; text-align: center;">{{planning.datum}}</div>
                     <div class="flexbox flexcenter">
-                        @if (plannenWasClicked && wedstrijden.wedstrijden.length == 0) {
+                        @if (plannenWasClicked && planning.wedstrijden.length == 0) {
                             <div style="padding-top: 2em; color: green;">Geen in te plannen wedstrijden</div>
                         }
                         <div>
                             <table class="tbl-normal">
                                 <tbody>
-                                    @for (wed of wedstrijden.wedstrijden; track $index) {
+                                    @for (wed of planning.wedstrijden; track $index) {
                                         <tr class="geplande-wed" [ngClass]="{'hovered': $index == idxWed}" (click)="wedstrijdClicked($index)">
                                             <td style="width: 1em;"></td>
                                             <td style="color: green;">

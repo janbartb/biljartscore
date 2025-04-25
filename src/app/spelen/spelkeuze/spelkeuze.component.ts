@@ -75,6 +75,10 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
             this.buttonPressed('3');
             return false;
         }
+        if (event.code === 'Digit4' || event.code === 'Numpad4') {
+            this.buttonPressed('4');
+            return false;
+        }
         if (event.key === 'Home') {
             this.homePressed();
             return false;

@@ -26,7 +26,7 @@
     border: .5em solid white;
 }
 .speler-container.gasten.active {
-    border: .5em solid yellow;
+    border: .5em solid gold;
 }
 .speler-container div {
     overflow: hidden;
