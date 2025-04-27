@@ -59,8 +59,8 @@
     </div>
     <div class="flexbox flexcolumn" style="width: 11em;">
         <div class="teamdata active" style="width: 11em; height: 10em; padding: .5em 1em;">
-            <div class="bal fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()"
-                        [ngClass]="{'wit': team.metWit, 'geel': !team.metWit, 'active': team.active}">
+            <div class="fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()" data-kleur=""
+                        [ngClass]="{'wit': team.metWit, 'geel': !team.metWit, 'active biljartbal': team.active, 'bal': !team.active}">
                 <div class="arial" [ngClass]="{'digit3': team.teamTsCar > 99}">
                     <span style="line-height: 1; letter-spacing: -.03em;">{{team.teamTsCar > 0 ? team.teamTsCar : ''}}</span>
                 </div>

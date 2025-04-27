@@ -21,13 +21,23 @@
             </div>
         </div>
         <div class="fullheight" style="width: 9em; padding: .5em;">
-            <div class="bal fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()"
-                    [ngClass]="{'wit': speler.isActief && speler.metWit, 'geel': speler.isActief && !speler.metWit}">
-                <div>
-                    <span style="line-height: 1;" [style.color]="speler.isActief ? 'black' : speler.metWit ? 'white' : 'gold'" 
-                            [style.font-size]="speler.splTsCar > 99 ? '3.5em' : '4.5em'">{{speler.splTsCar > 0 ? speler.splTsCar : ''}}</span>
+            @if (speler.isActief) {
+                <div class="biljartbal fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()"
+                        [ngClass]="{'wit': speler.metWit, 'geel': !speler.metWit}" data-kleur="">
+                    <div>
+                        <span style="line-height: 1;" style="color: black;" 
+                                [style.font-size]="speler.splTsCar > 99 ? '3.5em' : '4.5em'">{{speler.splTsCar > 0 ? speler.splTsCar : ''}}</span>
+                    </div>
                 </div>
-            </div>
+            }
+            @else {
+                <div class="bal fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()">
+                    <div>
+                        <span style="line-height: 1;" [style.color]="speler.metWit ? 'white' : 'gold'" 
+                                [style.font-size]="speler.splTsCar > 99 ? '3.5em' : '4.5em'">{{speler.splTsCar > 0 ? speler.splTsCar : ''}}</span>
+                    </div>
+                </div>
+            }
         </div>
     </div>
     <!-- score -->

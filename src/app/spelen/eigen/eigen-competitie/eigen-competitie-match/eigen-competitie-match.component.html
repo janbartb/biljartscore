@@ -24,12 +24,12 @@
                                             <td></td>
                                             <td style="width: 2em;"></td>
                                             <td class="flexbox flexmiddle" style="font-size: 1.25em;">
-                                                <div class="speelbal" [ngClass]="{'geel': !match.spelers[0].metWit}"></div>
+                                                <div data-kleur="" class="biljartbal" [ngClass]="match.spelers[0].metWit ? 'wit' : 'geel'" style="width: 1em;"></div>
                                                 <div class="label" style="padding-left: .25em;">{{match.spelers[0].naam}}</div>
                                             </td>
                                             <td style="width: 2em;"></td>
                                             <td class="flexbox flexmiddle" style="font-size: 1.25em;">
-                                                <div class="speelbal" [ngClass]="{'geel': !match.spelers[1].metWit}"></div>
+                                                <div data-kleur="" class="biljartbal" [ngClass]="match.spelers[1].metWit ? 'wit' : 'geel'" style="width: 1em;"></div>
                                                 <div class="label" style="padding-left: .25em;">{{match.spelers[1].naam}}</div>
                                             </td>
                                         </tr>

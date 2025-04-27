@@ -5,6 +5,7 @@
 .teamdata .wit { color: white; }
 .teamdata .geel { color: gold; }
 
+.teamdata .biljartbal { font-size: 6em; color: black; }
 .teamdata .bal { border-radius: 50%; font-size: 6em; }
 .teamdata .bal.wit { color: white; border: .0625em solid white; }
 .teamdata .bal.geel { color: gold; border: .0625em solid gold; }

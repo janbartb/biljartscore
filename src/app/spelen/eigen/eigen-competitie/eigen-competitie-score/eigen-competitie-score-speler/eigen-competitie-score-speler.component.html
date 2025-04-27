@@ -1,11 +1,6 @@
 <div [ngClass]="{'smaller': !speler.active}" [style.background-color]="speler.active ? 'black' : '#606060'">
     <!-- speler gegevens -->
     <div class="flexbox spelerdata" [ngClass]="{'active': speler.active}" style="height: 9em;">
-        <!-- @if (!speler.active) {
-            <div class="blink">
-                <i class="far fa-pause-circle"></i>
-            </div>
-        } -->
         <div class="fullheight" style="width: 20em; overflow: hidden;">
             <div class="nowrap" style="height: 6em; padding: .5em; line-height: 5em;">
                 <span [ngClass]="{'wit': speler.metWit, 'geel': !speler.metWit}"
@@ -21,13 +16,23 @@
             </div>
         </div>
         <div class="fullheight" style="width: 9em; padding: .5em;">
-            <div class="bal fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()"
-                    [ngClass]="{'wit': speler.active && speler.metWit, 'geel': speler.active && !speler.metWit}">
-                <div>
-                    <span style="line-height: 1;" [style.color]="speler.active ? 'black' : speler.metWit ? 'white' : 'gold'" 
-                            [style.font-size]="speler.tsCar > 99 ? '3.5em' : '4.5em'">{{speler.tsCar > 0 ? speler.tsCar : ''}}</span>
+            @if (speler.active) {
+                <div data-kleur="" class="biljartbal fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()"
+                        [ngClass]="speler.metWit ? 'wit' : 'geel'">
+                    <div>
+                        <span style="line-height: 1;" style="color: black;" 
+                                [style.font-size]="speler.tsCar > 99 ? '3.5em' : '4.5em'">{{speler.tsCar > 0 ? speler.tsCar : ''}}</span>
+                    </div>
                 </div>
-            </div>
+            }
+            @else {
+                <div class="bal fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()">
+                    <div>
+                        <span style="line-height: 1;" [style.color]="speler.metWit ? 'white' : 'gold'" 
+                                [style.font-size]="speler.tsCar > 99 ? '3.5em' : '4.5em'">{{speler.tsCar > 0 ? speler.tsCar : ''}}</span>
+                    </div>
+                </div>
+            }
         </div>
     </div>
     <!-- score -->

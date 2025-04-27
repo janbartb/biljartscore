@@ -34,19 +34,23 @@
                                         'bezig': wed.gespeeld && !wed.wedOver
                                     }">
                                     @if (wed.gespeeld) {
-                                        <div class="ball flexbox flexcenter flexmiddle" style="height: 1.75em; width: 1.75em; text-align: center;" 
+                                        <!-- <div class="ball flexbox flexcenter flexmiddle" style="height: 1.75em; width: 1.75em; text-align: center;" 
                                                 [style.font-size]="raster.fontsize + 'em'" [style.background-color]="wed.metWit ? 'white' : 'gold'">
+                                            <div class="txt">{{wed.punten}}</div>
+                                        </div> -->
+                                        <div class="biljartbal flexbox flexcenter flexmiddle" [ngClass]="wed.metWit ? 'wit' : 'geel'" data-kleur
+                                                style="width: 2em; text-align: center;" [style.font-size]="raster.fontsize + 'em'">
                                             <div class="txt">{{wed.punten}}</div>
                                         </div>
                                     }
                                     @else if (idxS != idxT) {
                                         <div class="wedspelers" style="text-align: center; line-height: 1.2em;" [style.font-size]="(.8 * raster.fontsize) + 'em'">
                                             <div class="flexbox flexmiddle" style="overflow: hidden;">
-                                                <div class="wedspelersbal"></div>
+                                                <div class="biljartbal wit" style="width: .9em;" data-kleur=""></div>
                                                 <div class="wedspelersnaam"><span>{{spl.splBordnaam}}</span></div>
                                             </div>
                                             <div class="flexbox flexmiddle" style="overflow: hidden;">
-                                                <div class="wedspelersbal geel"></div>
+                                                <div class="biljartbal geel" style="width: .9em;" data-kleur=""></div>
                                                 <div class="wedspelersnaam"><span>{{wed.tegBordNaam}}</span></div>
                                             </div>
                                         </div>

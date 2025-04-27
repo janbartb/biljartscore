@@ -5,6 +5,7 @@
 .spelerdata .wit { color: white; }
 .spelerdata .geel { color: gold; }
 
+.spelerdata .biljartbal { font-size: 6em; color: black; }
 .spelerdata .bal { border-radius: 50%; font-size: 6em; }
 .spelerdata .bal.wit { color: white; border: .0625em solid white; }
 .spelerdata .bal.geel { color: gold; border: .0625em solid gold; }

@@ -86,16 +86,19 @@ export class EigenCompetitieScoreComponent extends BaseComponent implements OnIn
         // werk score bij
         if (this.activeSpeler.stand.serie > 0) {
             const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.spreekNaam + ', ' + this.activeSpeler.stand.serie;
-            const modalMsg = new ModalMessage('serie', [this.activeSpeler.bordNaam], msgToSpeak, 3, '' + this.activeSpeler.stand.serie);
+            const modalMsg = new ModalMessage('serie', [this.activeSpeler.bordNaam], msgToSpeak, 4, '' + this.activeSpeler.stand.serie);
             this.modals.push(modalMsg);
             this.showModal();
         }
         else {
             const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.spreekNaam + ', 0';
-            const modalMsg = new ModalMessage('serie', [this.activeSpeler.bordNaam], msgToSpeak, 3, '0');
+            const modalMsg = new ModalMessage('serie', [this.activeSpeler.bordNaam], msgToSpeak, 4, '0');
             this.modals.push(modalMsg);
             this.showModal();
         }
+    }
+
+    followUpEnter() {
         this.activeSpeler.stand.aantCar += this.activeSpeler.stand.serie;
         if (this.activeSpeler.stand.serie > this.activeSpeler.stand.hoogSer) {
             this.activeSpeler.stand.hoogSer = this.activeSpeler.stand.serie;
@@ -648,7 +651,12 @@ export class EigenCompetitieScoreComponent extends BaseComponent implements OnIn
             if (this.modals[0].textToSpeak.length) {
                 this.spraak.speak(this.modals[0].textToSpeak);
             }
-            setTimeout(() => {this.hideModal()}, this.modals[0].duration);
+            setTimeout(() => {
+                if (this.modals[0].type == 'serie') {
+                    this.followUpEnter();
+                }
+                this.hideModal();
+            }, this.modals[0].duration);
         }
     }
 

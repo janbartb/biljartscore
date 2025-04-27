@@ -13,17 +13,19 @@ export class SpeechService {
     speak(txt: string, speakAnyway?: boolean): void {
         if (this.speechOn || speakAnyway) {
             if (this.voice) {
-                speechSynthesis.cancel();
-                const speech1 = this.makeRequest("");
-                speechSynthesis.speak(speech1);  
+                //speechSynthesis.cancel();
+                // const speech1 = this.makeRequest("");
+                // speechSynthesis.speak(speech1);  
                 setTimeout(() => {
                     speechSynthesis.cancel();
-                    const speech2 = this.makeRequest(txt);
-                    speechSynthesis.speak(speech2);                        
+                    setTimeout(() => {
+                        const speech2 = this.makeRequest(txt);
+                        speechSynthesis.speak(speech2);                        
+                    }, 250);
                 }, 250);
             }
             else {
-                console.log('voice not set!');
+                console.log('ERROR: voice not set!');
             }    
         }
     }
@@ -86,6 +88,7 @@ export class SpeechService {
     }
 
     initialize(voiceName: string) {
+        console.log('INITIALIZING SPEECH SERVICE');
         const myVoices = speechSynthesis.getVoices();
         if (!myVoices.length) {
             if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -118,8 +121,7 @@ export class SpeechService {
     }
 
     private makeRequest(txt: string): SpeechSynthesisUtterance {
-        const speech = new SpeechSynthesisUtterance();
-        speech.text = txt;
+        const speech = new SpeechSynthesisUtterance(txt);
         speech.rate = 1;
         speech.pitch = 0;
         speech.volume = 1;
@@ -127,6 +129,12 @@ export class SpeechService {
         if (this.voice) {
             speech.voice = this.voice;
         }
+        // speech.onerror = (event) => {
+        //     console.log('ERROR SPEAKING : ' + event.error);
+        // };
+        // speech.onstart = (event) => {
+        //     console.log('SPEAKING : ' + event.utterance.text);
+        // };
         return speech;
     }
 }

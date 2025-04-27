@@ -3,10 +3,4 @@ div.bal {
     top: .125em;
     width: 1em;
     height: 1em;
-    border: .0625em solid black;
-    border-radius: 50%;
-    background-color: white;
-}
-div.bal.geel {
-    background-color: gold;
 }

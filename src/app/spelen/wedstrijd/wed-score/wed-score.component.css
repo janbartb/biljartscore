@@ -15,6 +15,12 @@
 .speler-container {
     background-color: lightgray;
 }
+.speler-container:not(.active) {
+    filter: blur(2px);
+}
+.gameover .speler-container:not(.active) {
+    filter: none;
+}
 .speler-container.shadow-right {
     box-shadow: inset -1.35em 0 1em -1em #000000;
 }

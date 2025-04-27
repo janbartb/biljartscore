@@ -40,7 +40,7 @@
                                         </div>
                                         <div class="lijst-col" style="width: 4em;">
                                             <div class="flexbox flexcenter flexmiddle">
-                                                <div class="bal" [ngClass]="{'geel': !wed.metWit}"></div>
+                                                <div data-kleur="" class="bal biljartbal" [ngClass]="wed.metWit ? 'wit' : 'geel'"></div>
                                             </div>
                                         </div>
                                         <div class="lijst-col" style="width: 13em;">

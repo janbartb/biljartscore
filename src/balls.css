@@ -1,0 +1,116 @@
+.biljartbal {
+    --_color-yellow: hsl(51, 100%, 50%);
+    --_color-blue: hsl(240 100% 50%);
+    --_color-red: hsl(0 100% 50%);
+    --_color-pink: hsl(325 100% 50%);
+    --_color-purple: hsl(300 100% 25%);
+    --_color-orange: hsl(25 100% 50%);
+    --_color-green: hsl(125 100% 25%);
+    --_color-brown: hsl(10 100% 25%);
+    --_color-black: hsl(0 0% 5%);
+    --_color-white: hsl(0, 0%, 95%);
+    --_grad-light: radial-gradient(200% 200% at 70% 15%, hsl(0 0% 100%/.5), hsl(0 0% 100%/.2) 10%, hsl(0 0% 0%/.6) 60%, hsl(0 0% 0%/.9));
+
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    /*box-shadow: -.0625rem .0625rem .0625rem hsl(0 0% 0% / .5); */
+    background-color: var(--_color-white);
+    background-image: var(--_grad-light);
+}
+
+/* snooker */
+.biljartbal[data-kleur] {
+    background-color: var(--_color, var(--_color-white));
+    background-image: var(--_grad-light);
+}
+.biljartbal[data-kleur="red"] {
+    --_color: var(--_color-red);
+}
+.biljartbal.geel {
+    --_color: var(--_color-yellow);
+}
+.biljartbal[data-kleur="yellow"] {
+    --_color: var(--_color-yellow);
+}
+.biljartbal[data-kleur="green"] {
+    --_color: var(--_color-green);
+}
+.biljartbal[data-kleur="brown"] {
+    --_color: var(--_color-brown);
+}
+.biljartbal[data-kleur="blue"] {
+    --_color: var(--_color-blue);
+}
+.biljartbal[data-kleur="pink"] {
+    --_color: var(--_color-pink);
+}
+.biljartbal[data-kleur="black"] {
+    --_color: var(--_color-black);
+}
+.biljartbal.wit {
+    --_color: var(--_color-white);
+}
+.biljartbal[data-kleur="white"] {
+    --_color: var(--_color-white);
+}
+
+/* ORIGINAL */
+
+.billiard-ball {
+    --_color-yellow: hsl(60 100% 50%);
+    --_color-blue: hsl(240 100% 50%);
+    --_color-red: hsl(0 100% 50%);
+    --_color-pink: hsl(325 100% 50%);
+    --_color-purple: hsl(300 100% 25%);
+    --_color-orange: hsl(25 100% 50%);
+    --_color-green: hsl(125 100% 25%);
+    --_color-brown: hsl(10 100% 25%);
+    --_color-black: hsl(0 0% 5%);
+    --_color-white: hsl(0 0% 95%);
+    --_grad-light: radial-gradient(100% 100% at 70% 15%, hsl(0 0% 100%/.5), hsl(0 0% 100%/.2) 10%, hsl(0 0% 0%/.6) 60%, hsl(0 0% 0%/.9));
+
+    width: 8rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    box-shadow: -1rem 1rem 1rem hsl(0 0% 0% / .5);
+    background-color: var(--_color-white);
+    background-image: var(--_grad-light);
+}
+
+/* snooker */
+.billiard-ball[data-snooker] {
+    background-color: var(--_color, var(--_color-white));
+    background-image: var(--_grad-light);
+}
+
+.billiard-ball[data-snooker="red"] {
+    --_color: var(--_color-red);
+}
+
+.billiard-ball[data-snooker="yellow"] {
+    --_color: var(--_color-yellow);
+}
+
+.billiard-ball[data-snooker="green"] {
+    --_color: var(--_color-green);
+}
+
+.billiard-ball[data-snooker="brown"] {
+    --_color: var(--_color-brown);
+}
+
+.billiard-ball[data-snooker="blue"] {
+    --_color: var(--_color-blue);
+}
+
+.billiard-ball[data-snooker="pink"] {
+    --_color: var(--_color-pink);
+}
+
+.billiard-ball[data-snooker="black"] {
+    --_color: var(--_color-black);
+}
+
+.billiard-ball[data-snooker="white"] {
+    --_color: var(--_color-white);
+}
