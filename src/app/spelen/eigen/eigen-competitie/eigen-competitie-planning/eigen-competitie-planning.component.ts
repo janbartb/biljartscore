@@ -119,6 +119,7 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
             return;
         }
         this.planning.spelers[idx].aanwezig = !this.planning.spelers[idx].aanwezig;
+        this.planning.aantWed = 0;
         this.bepaalAantalTePlannenWedstrijden();
         this.planning.wedstrijden = [];
         this.plannenWasClicked = false;

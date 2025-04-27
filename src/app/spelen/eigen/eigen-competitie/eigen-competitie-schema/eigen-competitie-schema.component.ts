@@ -1,7 +1,7 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../../base/base.component';
 import { ActivatedRoute } from '@angular/router';
-import { CmpSchemaRonde, CmpSchemaSpeler, CmpSchemaWedstrijd, Competitie } from '../../../../model/competitie';
+import { CmpAantWedGespeeld, CmpSchemaRonde, CmpSchemaSpeler, CmpSchemaWedstrijd, CmpSpelerTotalen, Competitie } from '../../../../model/competitie';
 import { Button } from '../../../../model/button';
 import { PageHeaderComponent } from '../../../../shared/page-header/page-header.component';
 import { ButtonComponent } from '../../../../shared/button-group/button/button.component';
@@ -34,6 +34,10 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
     subtitles: string[] = [];
     competitie: Competitie = new Competitie('');
     schema: CmpSchemaRonde = new CmpSchemaRonde();
+    totalen: CmpSpelerTotalen[] = [];
+    teSplWedPerRonde: number = 0;
+    teSplWedTotaal: number = 0;
+    aantWedGespeeld: CmpAantWedGespeeld = new CmpAantWedGespeeld();
     raster: Raster = new Raster();
     idxRonde: number = 0;
     idxSpl: number = -1;
@@ -81,7 +85,11 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
     }
 
     naarWedstrijdClicked() {
-        this.router.navigate([`eigencomps/${this.competitie.cmpNaam}/match/${this.idxRonde}/${this.idxSpl}/${this.idxTeg}`]);
+        const splId = this.totalen[this.idxSpl].speler.splId;
+        const tegId = this.totalen[this.idxTeg].speler.splId;
+        const idxS = this.competitie.cmpSpelers.findIndex(sp => sp.splId == splId);
+        const idxT = this.competitie.cmpSpelers.findIndex(sp => sp.splId == tegId);
+        this.router.navigate([`eigencomps/${this.competitie.cmpNaam}/match/${this.idxRonde}/${idxS}/${idxT}`]);
     }
 
     planningClicked() {
@@ -188,6 +196,8 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
                 this.rondeButtons[this.idxRonde].selected = true;
             }
             this.raster = this.createRaster();
+            this.berekenTotalen();
+            this.sortTotalen(this.idxRonde);
             this.schema = this.createRondeSchema(this.idxRonde);
         })
         .catch(err => {
@@ -255,7 +265,44 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
         this.setEscapeCount(1);
     }
 
-    createRondeSchema(ronde: number): CmpSchemaRonde {
+    createRondeSchema(rondeIdx: number): CmpSchemaRonde {
+        this.sortTotalen(rondeIdx + 1);
+        let result = new CmpSchemaRonde();
+        this.totalen.forEach(totSpl => {
+            let speler = new CmpSchemaSpeler();
+            speler.splId = totSpl.speler.splId;
+            speler.splInits = totSpl.speler.splInit;
+            speler.splBordnaam = totSpl.speler.splBordnaam;
+            this.totalen.forEach(totTeg => {
+                let wed = new CmpSchemaWedstrijd();
+                wed.tegId = totTeg.speler.splId;
+                wed.tegInits = totTeg.speler.splInit;
+                wed.tegBordNaam = totTeg.speler.splBordnaam;
+                let splWed = totSpl.speler.splRondes[rondeIdx].wedstrijden.find(w => w.tegId == totTeg.speler.splId);
+                if (splWed) {
+                    let tegWed = totTeg.speler.splRondes[rondeIdx].wedstrijden.find(w => w.tegId == totSpl.speler.splId);
+                    if (tegWed) {
+                        wed.gespeeld = true;
+                        wed.wedOver = splWed.wedOver;
+                        wed.metWit = splWed.metWit;
+                        wed.punten = splWed.aantPnt;
+                        if (wed.wedOver) {
+                            wed.winst = (splWed.aantPnt > tegWed.aantPnt) ? 2 : (splWed.aantPnt == tegWed.aantPnt) ? 1 : 0;
+                        }
+                    }
+                    else {
+                        this.alert.showError('Vreemd! Wedstrijd niet gevonden : ' + totSpl.speler.splId + ' - ' + totTeg.speler.splId);
+                    }
+                }
+                speler.splWeds.push(wed);
+            });
+            result.spelers.push(speler);
+        });
+        console.log(result);
+        return result;
+    }
+
+    createRondeSchemaOud(ronde: number): CmpSchemaRonde {
         let result = new CmpSchemaRonde();
         this.competitie.cmpSpelers.forEach(spl => {
             let speler = new CmpSchemaSpeler();
@@ -289,6 +336,86 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
         });
         console.log(result);
         return result;
+    }
+
+    private berekenTotalen() {
+        this.competitie.cmpSpelers.forEach(speler => {
+            let splTotalen: CmpSpelerTotalen = new CmpSpelerTotalen(speler, this.competitie.cmpAantRondes);
+            speler.splRondes.forEach((ronde, idx) => {
+                const wedsGereed = ronde.wedstrijden.filter(wed => wed.wedOver);
+                splTotalen.rondeTotalen[ronde.rondeNr].aantWed = wedsGereed.length;
+                wedsGereed.forEach(wed => {
+                    splTotalen.rondeTotalen[ronde.rondeNr].aantCar += wed.aantCar;
+                    splTotalen.rondeTotalen[ronde.rondeNr].aantBrt += wed.aantBrt;
+                    splTotalen.rondeTotalen[ronde.rondeNr].aantPnt += wed.aantPnt;
+                    if (wed.hoogSer > splTotalen.rondeTotalen[ronde.rondeNr].hoogSer) {
+                        splTotalen.rondeTotalen[ronde.rondeNr].hoogSer = wed.hoogSer;
+                    }
+                });
+                if (splTotalen.rondeTotalen[ronde.rondeNr].aantBrt > 0) {
+                    splTotalen.rondeTotalen[ronde.rondeNr].moyenne = splTotalen.rondeTotalen[ronde.rondeNr].aantCar / splTotalen.rondeTotalen[ronde.rondeNr].aantBrt;
+                }
+                splTotalen.rondeTotalen[ronde.rondeNr].perc = 100 * splTotalen.rondeTotalen[ronde.rondeNr].moyenne / speler.splMoyenne;
+
+                splTotalen.rondeTotalen[0].aantWed += splTotalen.rondeTotalen[ronde.rondeNr].aantWed;
+                splTotalen.rondeTotalen[0].aantCar += splTotalen.rondeTotalen[ronde.rondeNr].aantCar;
+                splTotalen.rondeTotalen[0].aantBrt += splTotalen.rondeTotalen[ronde.rondeNr].aantBrt;
+                splTotalen.rondeTotalen[0].aantPnt += splTotalen.rondeTotalen[ronde.rondeNr].aantPnt;
+                if (splTotalen.rondeTotalen[ronde.rondeNr].hoogSer > splTotalen.rondeTotalen[0].hoogSer) {
+                    splTotalen.rondeTotalen[0].hoogSer = splTotalen.rondeTotalen[ronde.rondeNr].hoogSer;
+                }
+            });
+            if (splTotalen.rondeTotalen[0].aantBrt > 0) {
+                splTotalen.rondeTotalen[0].moyenne = splTotalen.rondeTotalen[0].aantCar / splTotalen.rondeTotalen[0].aantBrt;
+            }
+            splTotalen.rondeTotalen[0].perc = 100 * splTotalen.rondeTotalen[0].moyenne / speler.splMoyenne;
+
+            this.totalen.push(splTotalen);
+        });
+        for (let i = 0; i <= this.competitie.cmpAantRondes; i++) {
+            this.aantWedGespeeld.rondes.push(0);
+            this.aantWedGespeeld.klaar.push(false);
+        }
+        this.totalen.forEach(splTot => {
+            splTot.rondeTotalen.forEach(ronde => {
+                this.aantWedGespeeld.rondes[ronde.rondeNr] += ronde.aantWed;
+            });
+        });
+        this.aantWedGespeeld.rondes = this.aantWedGespeeld.rondes.map(ronde => ronde / 2);
+        this.aantWedGespeeld.klaar = this.aantWedGespeeld.klaar.map((isKlaar, i) => {
+            if (i == 0) {
+                return this.aantWedGespeeld.rondes[i] == this.teSplWedTotaal;
+            }
+            else {
+                return this.aantWedGespeeld.rondes[i] == this.teSplWedPerRonde;
+            }
+        })
+    }
+
+    private sortTotalen(nr: number) {
+        this.totalen.sort((a: CmpSpelerTotalen, b: CmpSpelerTotalen) => {
+            if (a.rondeTotalen[nr].aantPnt == b.rondeTotalen[nr].aantPnt) {
+                if (a.rondeTotalen[nr].aantWed == b.rondeTotalen[nr].aantWed) {
+                    if (a.rondeTotalen[nr].perc == b.rondeTotalen[nr].perc) {
+                        if (a.speler.splMoyenne == b.speler.splMoyenne) {
+                            return a.speler.splNaam > b.speler.splNaam ? 1 : -1;
+                        }
+                        else {
+                            return b.speler.splMoyenne - a.speler.splMoyenne;
+                        }
+                    }
+                    else {
+                        return b.rondeTotalen[nr].perc - a.rondeTotalen[nr].perc;
+                    }
+                }
+                else {
+                    return a.rondeTotalen[nr].aantWed - b.rondeTotalen[nr].aantWed;
+                }
+            }
+            else {
+                return b.rondeTotalen[nr].aantPnt - a.rondeTotalen[nr].aantPnt;
+            }
+        });
     }
 
     createRaster(): Raster {

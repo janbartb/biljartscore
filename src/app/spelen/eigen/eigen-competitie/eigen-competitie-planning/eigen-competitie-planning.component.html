@@ -8,13 +8,21 @@
             <div class="flex50perc flexbox flexcolumn" style="border-right: .25em solid green;">
                 <app-section-header [title]="'Speler volgorde'" [cssClasses]="'w3-green-l2'" 
                             [active]="idxActiveSection == 0" (headerClicked)="activateSection(0)"></app-section-header>
+                <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+                    <div class="lijst-row" style="cursor: default;">
+                        <div class="lijst-col center" style="width: 4em;" title="Aanwezig">Aanw</div>
+                        <div class="lijst-col" style="width: 8em;">Speler</div>
+                        <div class="lijst-col num" style="width: 3em;" title="Gespeelde wedstrijden">GW</div>
+                        <div class="lijst-col num" style="width: 8em;" title="Laatst gespeelde wedstrijd">Laatste gw</div>
+                    </div>
+                </div>
                 <div class="flexgrow1 scroll-container" style="border-bottom: .25em solid green;">
                     <div #volgordelijst class="scroll-content">
                         <div class="flexbox flexcenter">
                             <div class="lijst">
                                 @for (spl of planning.spelers; track $index) {
                                     <div class="lijst-row selectable" [ngClass]="{'hovered': $index == spelerIdx}" (click)="spelerClicked($index)">
-                                        <div class="lijst-col" style="width: 2.5em;">
+                                        <div class="lijst-col center" style="width: 4em;">
                                             <i [ngClass]="spl.aanwezig ? 'fas fa-check-square' : 'far fa-square'"></i>
                                         </div>
                                         <div class="lijst-col" style="width: 8em;">
@@ -32,7 +40,7 @@
                         </div>
                     </div>
                 </div>
-                <app-section-header [title]="'Aantal wedstrijden'" [cssClasses]="'w3-green-l2'" (headerClicked)="activateSection(0)"></app-section-header>
+                <app-section-header [title]="'Aantal wedstrijden te plannen'" [cssClasses]="'w3-green-l2'" (headerClicked)="activateSection(0)"></app-section-header>
                 <div class="flexbox flexcenter flexmiddle" style="height: 6em;">
                     <div class="flexbox" style="font-size: 1.25em;">
                         @for (btn of wedButtons; track $index) {

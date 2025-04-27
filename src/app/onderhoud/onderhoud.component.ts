@@ -108,7 +108,7 @@ export class OnderhoudComponent extends BaseComponent implements OnInit {
         const filler = true;
         this.menu.centered = true;
         this.menu.addItem(new MenuItem('1', 'Lokaliteiten', 'lokaliteiten'));
-        this.menu.addItem(new MenuItem('2', 'Verenigingen', 'verenigingen'));
+        this.menu.addItem(new MenuItem('2', 'Verenigingen / Teams', 'verenigingen'));
         this.menu.addItem(new MenuItem('3', 'Spelers', 'spelers'));
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('4', 'KNBB districten', 'districten'));
