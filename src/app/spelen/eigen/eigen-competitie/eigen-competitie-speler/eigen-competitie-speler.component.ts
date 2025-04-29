@@ -4,7 +4,7 @@ import { ButtonComponent } from '../../../../shared/button-group/button/button.c
 import { DecimalPipe, NgClass } from '@angular/common';
 import { BaseComponent } from '../../../../base/base.component';
 import { ActivatedRoute } from '@angular/router';
-import { CmpSpeler, Competitie } from '../../../../model/competitie';
+import { CmpSpeler, CmpSplWedstrijd, Competitie } from '../../../../model/competitie';
 import { Button } from '../../../../model/button';
 
 @Component({
@@ -25,7 +25,8 @@ export class EigenCompetitieSpelerComponent extends BaseComponent implements OnI
     subtitles: string[] = [];
     competitie: Competitie = new Competitie('');
     speler: CmpSpeler = new CmpSpeler(1);
-    idxRonde: number = 0;
+    spelerWeds: CmpSplWedstrijd[] = [];
+    idxRonde: number = -1;
     rondeButtons: Button[] = [];
 
     override escapePressed(): void {
@@ -37,9 +38,10 @@ export class EigenCompetitieSpelerComponent extends BaseComponent implements OnI
             return;
         }
         this.rondeButtons.forEach((btn, i) => {
-            btn.selected = (i == (rondeNr - 1));
+            btn.selected = (i == rondeNr);
         });
         this.idxRonde = (rondeNr - 1);
+        this.spelerWeds = this.fillWedstrijden();
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -88,7 +90,7 @@ export class EigenCompetitieSpelerComponent extends BaseComponent implements OnI
             this.alert.showAlert('De ronde parameter in de URL is niet geldig.', 'error');
             return;
         }
-        this.idxRonde = +ronde;
+        this.idxRonde = +ronde - 1;
         this.bssApi.getCompetitie(naam)
         .then(data => {
             if (data.gevonden) {
@@ -105,27 +107,45 @@ export class EigenCompetitieSpelerComponent extends BaseComponent implements OnI
                 return;
             }
             this.speler = this.competitie.cmpSpelers[idx];
-            this.speler.splRondes.forEach(rnd => {
-                rnd.wedstrijden.sort((a, b) => {
-                    return (a.datum > b.datum) ? 1 : -1;
-                });
-            });
+            this.spelerWeds = this.fillWedstrijden();
             
             if (this.competitie.cmpAantRondes < 2) {
                 this.subtitles.push('');
             }
             else {
-                for (let i = 0; i < this.competitie.cmpAantRondes; i++) {
-                    let txt = ' - ronde ' + (i + 1);
+                for (let i = 0; i <= this.competitie.cmpAantRondes; i++) {
+                    let txt = i == 0 ? ' - totaal' : ' - ronde ' + i;
                     this.subtitles.push(txt);
-                    this.rondeButtons.push(new Button('' + (i + 1), '', false, true));
+                    this.rondeButtons.push(new Button('' + i, '', false, true));
                 }
-                this.rondeButtons[this.idxRonde].selected = true;
+                this.rondeButtons[this.idxRonde + 1].selected = true;
             }
         })
         .catch(err => {
             this.alert.showError(err);
         });
+    }
+
+    private fillWedstrijden(): CmpSplWedstrijd[] {
+        let result: CmpSplWedstrijd[] = [];
+        if (this.idxRonde == -1) {
+            this.speler.splRondes.forEach((rnd, idx) => {
+                rnd.wedstrijden.forEach(wed => {
+                    wed.ronde = idx + 1;
+                    result.push(wed);
+                });
+            });
+        }
+        else {
+            this.speler.splRondes[this.idxRonde].wedstrijden.forEach(wed => {
+                wed.ronde = this.idxRonde + 1;
+                result.push(wed);
+            });
+        }
+        result.sort((a, b) => {
+            return (a.datum > b.datum) ? 1 : -1;
+        });
+        return result;
     }
 
     private selectNextRonde(direction: number) {

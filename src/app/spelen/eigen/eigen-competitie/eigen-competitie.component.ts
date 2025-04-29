@@ -66,7 +66,7 @@ export class EigenCompetitieComponent extends BaseComponent implements OnInit {
         const selected = this.totalen[idx];
         const naam = this.competitie.cmpNaam;
         const splId = selected.speler.splId;
-        const ronde = (this.idxRonde > 0) ? this.idxRonde - 1 : this.idxRonde;
+        const ronde = this.idxRonde;
         this.router.navigate([`eigencomps/${naam}/${splId}/${ronde}`]);
     }
 

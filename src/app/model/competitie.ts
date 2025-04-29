@@ -92,6 +92,7 @@ export class CmpSplWedstrijd {
     hoogSer: number = 0;
     aantPnt: number = 0;
     scores: number[] = [];
+    ronde: number = -1;
 }
 
 export class CmpSpelerTotalen {
