@@ -37,6 +37,9 @@
 */
 .spelerdata .wit { color: white; }
 .spelerdata .geel { color: gold; }
+/* .spelerdata:not(.active) .speler {
+    filter: blur(1.5px);
+} */
 
 .arial { font-family: Arial, Helvetica, sans-serif; }
 

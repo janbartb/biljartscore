@@ -16,7 +16,7 @@
     background-color: lightgray;
 }
 .speler-container:not(.active) {
-    filter: blur(2px);
+    filter: blur(1.5px);
 }
 .gameover .speler-container:not(.active) {
     filter: none;

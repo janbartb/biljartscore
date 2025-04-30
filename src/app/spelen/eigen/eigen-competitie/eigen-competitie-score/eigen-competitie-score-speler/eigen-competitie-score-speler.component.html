@@ -1,7 +1,7 @@
 <div [ngClass]="{'smaller': !speler.active}" [style.background-color]="speler.active ? 'black' : '#606060'">
     <!-- speler gegevens -->
     <div class="flexbox spelerdata" [ngClass]="{'active': speler.active}" style="height: 9em;">
-        <div class="fullheight" style="width: 20em; overflow: hidden;">
+        <div class="fullheight speler" style="width: 20em; overflow: hidden;">
             <div class="nowrap" style="height: 6em; padding: .5em; line-height: 5em;">
                 <span [ngClass]="{'wit': speler.metWit, 'geel': !speler.metWit}"
                         style="font-size: 4em;" [title]="speler.bordNaam">{{speler.bordNaam}}</span>

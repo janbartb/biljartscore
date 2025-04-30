@@ -205,7 +205,7 @@ select:disabled, select.disabled {
     cursor: pointer;
 }
 .lijst-row.selectable .lijst-col {
-    opacity: .5;
+    opacity: .65;
 }
 .lijst-row.selectable.selected .lijst-col {
     opacity: 1;
