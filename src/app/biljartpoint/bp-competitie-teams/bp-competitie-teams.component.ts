@@ -27,7 +27,6 @@ export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit 
     bssTeamToRemove: Team = new Team();
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
     dataReady: boolean = false;
-    escapeCount: number = 0;
 
     override escapePressed(): void {
         this.router.navigate(['bpoint/competities']);

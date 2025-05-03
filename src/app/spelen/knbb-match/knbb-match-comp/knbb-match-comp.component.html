@@ -1,7 +1,7 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'KNBB match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
+            <app-page-header [title]="'KNBB match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount"
                         (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)"></app-page-header>
         </div>
         @if (compLijst.isEmpty()) {
@@ -15,10 +15,7 @@
                     <div class="lijst">
                         @for (comp of compLijst.filtered; track $index) {
                             <div class="lijst-row selectable" (click)="competitieClicked($index)"
-                                    [ngClass]="{'selected': compLijst.selectedIdx == $index}">
-                                <div class="lijst-col indicator" style="width: 2em;">
-                                    <i class="fas fa-angle-right"></i>
-                                </div>
+                                    [ngClass]="{'hovered': compLijst.hoveredIdx == $index, 'selected': compLijst.selectedIdx == $index}">
                                 <div class="lijst-col" style="width: 5em;">
                                     <span>{{comp.klasse}} - {{comp.volgNr}}</span>
                                 </div>
@@ -31,7 +28,7 @@
                 </div>
             </div>
         </div>
-        @if (compLijst.selectedIdx >= 0) {
+        @if (compLijst.hoveredIdx >= 0) {
             <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)" 
                         [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
         }

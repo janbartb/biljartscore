@@ -42,7 +42,6 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
     idxRonde: number = 0;
     idxSpl: number = -1;
     idxTeg: number = -1;
-    escapeCount: number = 0;
 
     wedButton: Button = new Button('Enter', 'Naar wedstrijd', true);
     planButton: Button = new Button('P', 'Planning', true);
@@ -55,7 +54,7 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
             this.setEscapeCount(0);
             return;
         }
-        this.router.navigate(['eigencomps/' + this.competitie.cmpNaam]);
+        this.appData.previousPage();
     }
 
     buttonPressed(button: Button) {
@@ -89,11 +88,13 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
         const tegId = this.totalen[this.idxTeg].speler.splId;
         const idxS = this.competitie.cmpSpelers.findIndex(sp => sp.splId == splId);
         const idxT = this.competitie.cmpSpelers.findIndex(sp => sp.splId == tegId);
-        this.router.navigate([`eigencomps/${this.competitie.cmpNaam}/match/${this.idxRonde}/${idxS}/${idxT}`]);
+        const toUrl = `eigencomps/${this.competitie.cmpNaam}/match/${this.idxRonde}/${idxS}/${idxT}`;
+        this.appData.gotoPage(this.router.url, toUrl);
     }
 
     planningClicked() {
-        this.router.navigate([`eigencomps/${this.competitie.cmpNaam}/planning/${this.idxRonde}`]);
+        const toUrl = `eigencomps/${this.competitie.cmpNaam}/planning/${this.idxRonde}`;
+        this.appData.gotoPage(this.router.url, toUrl);
     }
 
     rondeButtonClicked(rondeNr: number) {

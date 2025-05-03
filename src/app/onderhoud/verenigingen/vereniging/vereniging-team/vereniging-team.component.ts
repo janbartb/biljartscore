@@ -52,7 +52,6 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     createdId: string = '';
     duplicateId: boolean = false;
     spelNaam: string = this.appData.getSpelNaam();
-    escapeCount: number = 0;
     scrollElm!: HTMLDivElement;
     ledenScroll!: Scrolling;
 

@@ -49,7 +49,6 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     optieLijst: List<string> = new List<string>();
     subOptieLijst: List<string> = new List<string>();
     activeLijst: number = 0;
-    escapeCount: number = 0;
 
     enterButton: Button = new Button('Enter', 'Ga verder', true);
 

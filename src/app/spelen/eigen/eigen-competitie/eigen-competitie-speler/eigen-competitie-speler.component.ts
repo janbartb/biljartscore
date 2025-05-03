@@ -26,22 +26,55 @@ export class EigenCompetitieSpelerComponent extends BaseComponent implements OnI
     competitie: Competitie = new Competitie('');
     speler: CmpSpeler = new CmpSpeler(1);
     spelerWeds: CmpSplWedstrijd[] = [];
+    idxWed: number = -1;
     idxRonde: number = -1;
     rondeButtons: Button[] = [];
+    wedButton: Button = new Button('Enter', 'Naar wedstrijd', true);
 
     override escapePressed(): void {
-        this.router.navigate(['eigencomps/' + this.competitie.cmpNaam]);
+        if (this.idxWed >= 0) {
+            this.idxWed = -1;
+            this.setEscapeCount();
+            return;
+        }
+        if (this.idxRonde >= 0) {
+            this.rondeButtonClicked(0);
+            return;
+        }
+        this.appData.previousPage();
+    }
+
+    buttonPressed(button: Button) {
+        button.selected = true;
+        setTimeout(() => {
+            button.selected = false;
+            this.wedstrijdClicked(this.idxWed);
+        }, 300);
     }
 
     rondeButtonClicked(rondeNr: number) {
-        if (rondeNr > this.rondeButtons.length) {
+        if (rondeNr > this.rondeButtons.length || rondeNr == (this.idxRonde + 1)) {
             return;
         }
         this.rondeButtons.forEach((btn, i) => {
             btn.selected = (i == rondeNr);
         });
         this.idxRonde = (rondeNr - 1);
+        this.idxWed = -1;
+        this.setEscapeCount();
         this.spelerWeds = this.fillWedstrijden();
+    }
+
+    wedstrijdClicked(idx: number) {
+        this.idxWed = idx;
+        const wed = this.spelerWeds[this.idxWed];
+        const splId = wed.metWit ? this.speler.splId : wed.tegId;
+        const tegId = wed.metWit ? wed.tegId : this.speler.splId;
+        const rondeIdx = wed.ronde - 1;
+        const idxSpl = this.competitie.cmpSpelers.findIndex(sp => sp.splId == splId);
+        const idxTeg = this.competitie.cmpSpelers.findIndex(sp => sp.splId == tegId);
+        const url = `eigencomps/${this.competitie.cmpNaam}/match/${rondeIdx}/${idxSpl}/${idxTeg}`;
+        this.appData.gotoPage(this.router.url, url);
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -57,6 +90,21 @@ export class EigenCompetitieSpelerComponent extends BaseComponent implements OnI
                 }
                 return false;
             }    
+        }
+        if (event.key ==='ArrowUp' || event.key === 'ArrowDown') {
+            if (event.key === 'ArrowUp') {
+                this.selectNextWedstrijd(-1);
+            }
+            if (event.key === 'ArrowDown') {
+                this.selectNextWedstrijd(1);
+            }
+            return false;
+        }
+        if (event.key === 'Enter') {
+            if (this.idxWed >= 0) {
+                this.buttonPressed(this.wedButton);
+            }
+            return false;
         }
         if (event.code.startsWith('Digit')) {
             const digit = event.code.substring(5);
@@ -148,7 +196,25 @@ export class EigenCompetitieSpelerComponent extends BaseComponent implements OnI
         return result;
     }
 
+    private selectNextWedstrijd(direction: number) {
+        if (this.spelerWeds.length == 0) {
+            return;
+        }
+        let idx = this.idxWed;
+        idx = idx + direction;
+        if (idx < 0) {
+            idx = this.spelerWeds.length - 1;
+        }
+        else if (idx >= this.spelerWeds.length) {
+            idx = 0;
+        }
+        this.idxWed = idx;
+    }
+
     private selectNextRonde(direction: number) {
+        if (this.competitie.cmpAantRondes < 2) {
+            return;
+        }
         let idx = this.idxRonde;
         idx = idx + direction;
         if (idx < 0) {
@@ -158,6 +224,13 @@ export class EigenCompetitieSpelerComponent extends BaseComponent implements OnI
             idx = 0;
         }
         this.rondeButtonClicked(idx + 1);
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = this.idxRonde == -1 ? 0 : 1;
+        if (this.idxWed >= 0) {
+            this.escapeCount++;
+        }
     }
 
 }

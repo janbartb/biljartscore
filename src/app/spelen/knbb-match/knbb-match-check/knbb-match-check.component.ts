@@ -36,7 +36,6 @@ export class KnbbMatchCheckComponent extends BaseComponent implements OnInit {
     naamValid: boolean[] = [true, true];
     moyValid: boolean[] = [true, true];
     carValid: boolean[] = [true, true];
-    escapeCount: number = 0;
     wedStatus: number = 0;
     voortgang: string = '0%';
     dataReady: boolean = false;

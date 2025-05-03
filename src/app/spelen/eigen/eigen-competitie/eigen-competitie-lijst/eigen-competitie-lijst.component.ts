@@ -20,7 +20,6 @@ export class EigenCompetitieLijstComponent extends BaseComponent implements OnIn
     helper = inject(HelperService);
     match: CompetitieMatch = new CompetitieMatch();
     spelerLijsten: ScoreSpeler[] = [new ScoreSpeler(), new ScoreSpeler()];
-    prevUrl: string = '';
     idxRonde: number = -1;
     idxSpl: number = -1;
     idxTeg: number = -1;
@@ -28,7 +27,7 @@ export class EigenCompetitieLijstComponent extends BaseComponent implements OnIn
     dim: LijstDimensies = new LijstDimensies();
 
     override escapePressed(): void {
-        this.router.navigate([this.prevUrl]);
+        this.appData.previousPage();
     }
 
     fillScoreLijsten(): void {
@@ -102,7 +101,6 @@ export class EigenCompetitieLijstComponent extends BaseComponent implements OnIn
             this.alert.showAlert('De match parameters in de URL zijn niet geldig.', 'error');
             return;
         }
-        this.prevUrl = this.router.url.replace('lijst', 'match');
         Promise.all([
             this.bssApi.getCompetitie(naam),
             this.bssApi.getEigenMatch()

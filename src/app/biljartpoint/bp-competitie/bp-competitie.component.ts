@@ -33,7 +33,6 @@ export class BpCompetitieComponent extends BaseComponent implements OnInit {
     sectTitle: string = 'in BSS';
     mode: string = 'view';
     dataReady: boolean = false;
-    escapeCount: number = 0;
 
     saveButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
     addButtons: Button[] = [new Button('Enter', 'Toevoegen aan BSS', true)];

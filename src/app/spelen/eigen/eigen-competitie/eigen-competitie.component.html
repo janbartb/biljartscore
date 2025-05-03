@@ -7,8 +7,8 @@
         <div class="flexgrow1 flexbox flexcolumn">
             <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
                 <div class="lijst-row">
-                    <div class="lijst-col" style="width: 1.5em;"></div>
-                    <div class="lijst-col" style="width: 13em;">Speler</div>
+                    <div class="lijst-col" style="width: 3em;"></div>
+                    <div class="lijst-col" style="width: 7em;">Speler</div>
                     <div class="lijst-col num" style="width: 5em;">Moy</div>
                     <div class="lijst-col num" style="width: 3em;">Car</div>
                     <div class="lijst-col num" style="width: 6em;">Car</div>
@@ -26,12 +26,12 @@
                         <div class="lijst">
                             @for (spl of totalen; track $index) {
                                 <div class="lijst-row selectable" (click)="spelerClicked($index)"
-                                            [ngClass]="{'selected': idxSpeler == $index}">
-                                    <div class="lijst-col indicator" style="width: 1.5em;">
-                                        <i class="fas fa-angle-right"></i>
+                                            [ngClass]="{'hovered': idxSpeler == $index}">
+                                    <div class="lijst-col" style="width: 3em;">
+                                        <span style="color: crimson;">{{$index + 1}}</span>
                                     </div>
-                                    <div class="lijst-col label" style="width: 13em;">
-                                        <span>{{spl.speler.splNaam}}</span>
+                                    <div class="lijst-col label" style="width: 7em;">
+                                        <span>{{spl.speler.splBordnaam}}</span>
                                     </div>
                                     <div class="lijst-col num label" style="width: 5em;">
                                         <span>{{spl.speler.splMoyenne | number:'1.3-3':'nl-NL'}}</span>

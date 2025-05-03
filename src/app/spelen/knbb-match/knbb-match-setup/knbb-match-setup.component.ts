@@ -55,7 +55,6 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     spelerLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
     spelers: SpelerWrapper[] = [];
     klasse: string = '';
-    escapeCount: number = 0;
     dataReady: boolean = false;
     inputValid: boolean = false;
     spelersChanged: boolean = false;
@@ -80,8 +79,9 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     }
 
     override escapePressed(): void {
-        if (this.teamLijst.hoveredIdx >= 0 || this.spelerLijst.hoveredIdx >= 0) {
-            this.teamLijst.hoveredIdx = this.spelerLijst.hoveredIdx = -1;
+        if (this.teamLijst.hoveredIdx != this.teamLijst.selectedIdx || this.spelerLijst.hoveredIdx >= 0) {
+            this.teamLijst.hoveredIdx = this.teamLijst.selectedIdx;
+            this.spelerLijst.hoveredIdx = -1;
             this.setEscapeCount();
             return;
         }
@@ -101,7 +101,7 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
         setTimeout(() => {
             button.selected = false;
             if (button.key == 'Enter') {
-                if (this.teamLijst.hoveredIdx < 0 && this.spelerLijst.hoveredIdx < 0) {
+                if (this.teamLijst.hoveredIdx == this.teamLijst.selectedIdx && this.spelerLijst.hoveredIdx < 0) {
                     if (this.inputValid) {
                         this.gaVerderClicked();
                     }
@@ -140,7 +140,7 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
             return;
         }
         this.teamLijst.selectedIdx = idx;
-        this.teamLijst.hoveredIdx = -1;
+        this.teamLijst.hoveredIdx = idx;
         let lijst: SpelerWrapper[] = [];
         let team = this.teamLijst.filtered[idx];
         this.selectedTeam = team;
@@ -208,7 +208,7 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
 
     maakSectionActief(idx: number) {
         this.activeSection = idx;
-        this.teamLijst.hoveredIdx = this.spelerLijst.hoveredIdx = -1;
+        this.spelerLijst.hoveredIdx = -1;
         this.setEscapeCount();
     }
 
@@ -269,12 +269,12 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
             return true;
         }
         if (event.key === 'Enter') {
-            if (this.teamLijst.hoveredIdx < 0 && this.spelerLijst.hoveredIdx < 0 && this.inputValid) {
+            if (this.teamLijst.hoveredIdx == this.teamLijst.selectedIdx && this.spelerLijst.hoveredIdx < 0 && this.inputValid) {
                 this.buttonPressed(this.pageButtons[0]);
                 this.setEscapeCount();
                 return false;
             }
-            if (this.teamLijst.hoveredIdx >= 0 || this.spelerLijst.hoveredIdx >= 0) {
+            if (this.teamLijst.hoveredIdx != this.teamLijst.selectedIdx || this.spelerLijst.hoveredIdx >= 0) {
                 this.buttonPressed(this.sectionButtons[0]);
                 this.setEscapeCount();
                 return false;
@@ -353,11 +353,11 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     private initLijstScrolling(elm: HTMLDivElement, lijst: string) {
         if (elm) {
             if (lijst == 'teams') {
-                this.teamScrolling = new Scrolling(elm, elm.offsetHeight, this.teamLijst.filtered.length, this.teamLijst.selectedIdx);
+                this.teamScrolling = new Scrolling(elm, elm.offsetHeight, this.teamLijst.filtered.length, this.teamLijst.hoveredIdx);
                 console.log('resize event - pos = ' + this.teamScrolling.scrollPos);
             }
             else {
-                this.ledenScrolling = new Scrolling(elm, elm.offsetHeight, this.spelerLijst.filtered.length, this.spelerLijst.selectedIdx);
+                this.ledenScrolling = new Scrolling(elm, elm.offsetHeight, this.spelerLijst.filtered.length, this.spelerLijst.hoveredIdx);
                 console.log('resize event - pos = ' + this.ledenScrolling.scrollPos);
             }
         }
@@ -445,7 +445,7 @@ export class KnbbMatchSetupComponent extends BaseComponent implements OnInit {
     private setEscapeCount() {
         this.checkIfSpelersChanged();
         this.escapeCount = this.spelersChanged ? 1 : 0;
-        if (this.teamLijst.hoveredIdx >= 0 || this.spelerLijst.hoveredIdx >= 0) {
+        if (this.teamLijst.hoveredIdx != this.teamLijst.selectedIdx || this.spelerLijst.hoveredIdx >= 0) {
             this.escapeCount++;
         }
     }

@@ -40,7 +40,6 @@ export class SpelsoortenComponent extends BaseComponent implements OnInit {
     spelsoort: Spelsoort = new Spelsoort('', '');
     idxToDelete: number = -1;
     existing: string[] = [];
-    escapeCount: number = 0;
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
 
     enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];

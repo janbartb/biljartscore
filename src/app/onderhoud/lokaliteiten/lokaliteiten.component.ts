@@ -25,7 +25,6 @@ export class LokaliteitenComponent extends BaseComponent implements OnInit {
     lokLijst: List<Lokaliteit> = new List<Lokaliteit>();
     naamFilter: string = '';
     plaatsFilter: string = '';
-    escapeCount: number = 0;
     scrollElm!: HTMLDivElement;
     lokScroll!: Scrolling;
 

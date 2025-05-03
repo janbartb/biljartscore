@@ -22,8 +22,6 @@ export class BpCompetitiesComponent extends BaseComponent implements OnInit {
     bpCompetities: BpCompetitie[] = [];
     bssCompetities: KnbbCompetitie[] = [];
 
-    escapeCount: number = 0;
-
     districtChanged() {
         this.bpCompetities = [];
         this.getCompetitiesFromBpoint();

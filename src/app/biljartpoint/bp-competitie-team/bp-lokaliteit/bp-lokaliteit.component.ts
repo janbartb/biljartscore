@@ -34,7 +34,6 @@ export class BpLokaliteitComponent extends BaseComponent implements OnInit {
     existingLokIds: string[] = [];
     mode: string = 'view';
     sectTitle: string = 'in BSS';
-    escapeCount: number = 0;
     dataReady: boolean = false;
 
     saveButtons: Button[] = [new Button('Enter', 'Opslaan', true)];

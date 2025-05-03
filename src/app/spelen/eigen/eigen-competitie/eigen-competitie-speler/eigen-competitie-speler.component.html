@@ -1,7 +1,7 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="title" [subtitle]="'Wedstrijden ' + speler.splNaam + subtitles[idxRonde + 1]" 
+            <app-page-header [title]="title" [subtitle]="'Wedstrijden ' + speler.splNaam + subtitles[idxRonde + 1]" [escCount]="escapeCount" 
                     [spel]="appData.getSpelNaam()" (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" 
                     (prevClicked)="escapePressed()"></app-page-header>
         </div>
@@ -37,7 +37,7 @@
                         <div class="lijst">
                             @for (wed of spelerWeds; track $index) {
                                 @if (wed.wedOver) {
-                                    <div class="lijst-row">
+                                    <div class="lijst-row selectable" [ngClass]="{'hovered': $index == idxWed}" (click)="wedstrijdClicked($index)">
                                         <div class="lijst-col" style="width: 8em;">
                                             <span>{{wed.datum}}</span>
                                         </div>
@@ -79,15 +79,23 @@
                     </div>
                 </div>
             </div>
-            @if (competitie.cmpAantRondes > 1) {
+            @if (competitie.cmpAantRondes > 1 || idxWed >= 0) {
                 <div class="flexbox flexcenter flexmiddle" style="height: 3em; min-height: 3em; border-top: .25em solid green;">
                     <div class="flexbox" style="font-size: 1.25em;">
-                        <div class="flexbox flexmiddle">
-                            <div><label>Ronde</label></div>
-                            @for (btn of rondeButtons; track $index) {
-                                <app-button [button]="btn" (buttonClicked)="rondeButtonClicked($index)"></app-button>
-                            }    
-                        </div>
+                        @if (competitie.cmpAantRondes > 1) {
+                            <div class="flexbox flexmiddle">
+                                <div><label>Ronde</label></div>
+                                @for (btn of rondeButtons; track $index) {
+                                    <app-button [button]="btn" (buttonClicked)="rondeButtonClicked($index)"></app-button>
+                                }    
+                            </div>
+                            @if (idxWed >= 0) {
+                                <div style="width: 2em;"></div>
+                            }
+                        }
+                        @if (idxWed >= 0) {
+                            <app-button [button]="wedButton" (buttonClicked)="wedstrijdClicked(idxWed)"></app-button>
+                        }
                     </div>
                 </div>
             }

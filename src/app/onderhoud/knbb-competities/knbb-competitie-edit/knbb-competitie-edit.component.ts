@@ -39,7 +39,6 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
     activeSection: number = 0;
     biljartPointLink: string = '';
     dataChanged: boolean = false;
-    escapeCount: number = 0;
     scrollElm!: HTMLDivElement;
     teamScroll!: Scrolling;
 

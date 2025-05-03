@@ -35,7 +35,6 @@ export class MoyenneTabelAddComponent extends BaseComponent implements OnInit {
     idxSelected: number = -1;
     klasseValid: boolean = false
     minimumValid: boolean = false;
-    escapeCount: number = 0;
 
     buttons: Button[] = [
         new Button('Del', 'Entry verwijderen', true),

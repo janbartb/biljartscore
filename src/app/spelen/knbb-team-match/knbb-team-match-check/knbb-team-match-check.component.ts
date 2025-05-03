@@ -38,7 +38,6 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     naamValid: boolean[][] = [[true, true, true], [true, true, true]];
     moyValid: boolean[][] = [[true, true, true], [true, true, true]];
     carValid: boolean[][] = [[true, true, true], [true, true, true]];
-    escapeCount: number = 0;
     wedStatus: number[] = [0, 0, 0];
     voortgang: string[] = ['0%', '0%', '0%'];
     canMoveUp: boolean = false;

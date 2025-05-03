@@ -48,7 +48,6 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
     teamInComp: boolean = false;
     teamIdOk: boolean = false;
     dataReady: boolean = false;
-    escapeCount: number = 0;
 
     verButton: Button = new Button('', 'Nieuwe vereniging', false);
     saveButtons: Button[] = [new Button('Enter', 'Opslaan', true)];

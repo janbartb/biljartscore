@@ -40,7 +40,6 @@ export class KnbbDistrictenComponent extends BaseComponent implements OnInit {
     existing: string[] = [];
     mode: string = 'edit';
     naamFilter: string = '';
-    escapeCount: number = 0;
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
 
     enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];

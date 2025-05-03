@@ -19,7 +19,6 @@ export class EigenCompetitiesComponent extends BaseComponent implements OnInit {
     title: string = 'Spelen';
     subtitle: string = 'Eigen competities';
     compLijst: List<string> = new List<string>();
-    escapeCount: number = 0;
 
     override escapePressed(): void {
         if (this.compLijst.selectedIdx >= 0) {
@@ -35,7 +34,7 @@ export class EigenCompetitiesComponent extends BaseComponent implements OnInit {
     }
 
     compClicked(idx: number) {
-        this.router.navigate(['eigencomps/' + this.compLijst.filtered[idx]]);
+        this.appData.gotoPage(this.router.url, 'eigencomps/' + this.compLijst.filtered[idx]);
     }
 
     @HostListener('document:keydown', ['$event'])

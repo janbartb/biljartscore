@@ -54,7 +54,6 @@ export class KnbbCompetitieEditTeamsComponent extends BaseComponent implements O
     subtitle2: string = '';
     teamAlToegevoegd: boolean = false;
     teamsChanged: boolean = false;
-    escapeCount: number = 0;
 
     enterButtons: Button[] = [
         new Button('Enter', 'Team toevoegen', true),

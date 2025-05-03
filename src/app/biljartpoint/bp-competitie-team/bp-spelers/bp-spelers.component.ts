@@ -45,7 +45,6 @@ export class BpSpelersComponent extends BaseComponent implements OnInit {
     spelersToAdd: Speler[] = [];
     spelersToUpd: Speler[] = [];
     dataReady: boolean = false;
-    escapeCount: number = 0;
 
     procButtons: Button[] = [
         new Button('Enter', 'Spelers verwerken in BSS', true)

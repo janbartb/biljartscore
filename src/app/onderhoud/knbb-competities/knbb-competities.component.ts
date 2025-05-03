@@ -26,7 +26,6 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
     sectionTitle: string = 'Competities';
     compLijst: List<KnbbCompetitie> = new List<KnbbCompetitie>();
     idxToDelete: number = -1;
-    escapeCount: number = 0;
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
 
     buttons: Button[] = [

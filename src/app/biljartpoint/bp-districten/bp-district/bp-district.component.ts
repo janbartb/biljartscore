@@ -33,7 +33,6 @@ export class BpDistrictComponent extends BaseComponent implements OnInit {
     districtChanged: boolean = false;
     inputOk: boolean = false;
     districtForm!: FormGroup;
-    escapeCount: number = 0;
 
     buttons: Button[] = [
         new Button('', 'Toevoegen aan BSS', false)

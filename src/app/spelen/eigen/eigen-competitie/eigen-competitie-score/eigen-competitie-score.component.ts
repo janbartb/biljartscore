@@ -37,7 +37,6 @@ export class EigenCompetitieScoreComponent extends BaseComponent implements OnIn
     idxTeg: number = -1;
     idxRonde: number = -1;
     maxBeurten: number = 0;
-    prevUrl: string = '';
     idxSpeler: number = -1;
     activeSpeler: CmpMatchSpeler = new CmpMatchSpeler(new CmpSpeler(1), true);
     oldPunten: number[] = [0, 0];
@@ -59,7 +58,7 @@ export class EigenCompetitieScoreComponent extends BaseComponent implements OnIn
             this.isEndOfMatchDialogOpen = true;
             return;
         }
-        this.router.navigate([this.prevUrl]);
+        this.appData.previousPage();
     }
 
     enterPressed(): void {
@@ -249,6 +248,11 @@ export class EigenCompetitieScoreComponent extends BaseComponent implements OnIn
             this.alert.showHelp();
             return false;
         }
+        if (event.code === 'KeyL' || event.key === '*') {
+            const toUrl = this.router.url.replace('score', 'lijst');
+            this.appData.gotoPage(this.router.url, toUrl);
+            return false;
+        }
         if (event.key === 'Delete' || event.code === 'NumpadDecimal' || event.code == 'Period') {
             this.undoLaatsteBeurt();
             return false;
@@ -302,7 +306,6 @@ export class EigenCompetitieScoreComponent extends BaseComponent implements OnIn
             this.alert.showAlert('De match parameters in de URL zijn niet geldig.', 'error');
             return;
         }
-        this.prevUrl = this.router.url.replace('score', 'match');
         Promise.all([
             this.bssApi.getCompetitie(naam),
             this.bssApi.getEigenMatch()
@@ -310,18 +313,18 @@ export class EigenCompetitieScoreComponent extends BaseComponent implements OnIn
         .then(results => {
             if (!results[0].gevonden) {
                 this.alert.showError(`Competitiebestand '${naam}.json' niet gevonden.`);
-                this.router.navigate([this.prevUrl]);
+                this.appData.previousPage();
                 return;
             }
             if (!results[1].gevonden) {
                 this.alert.showError('ERROR scorebord : bestand eigenmatch.json niet gevonden.');
-                this.router.navigate([this.prevUrl]);
+                this.appData.previousPage();
                 return;
             }
             this.comp = results[0].comp;
             this.match = results[1].match;
             if (this.matchAanwezigInComp()) {
-                this.router.navigate([this.prevUrl]);
+                this.appData.previousPage();
                 return;
             }
             this.maxBeurten = (this.match.regels.maxBeurten > 0) ? this.match.regels.maxBeurten : 100;

@@ -55,7 +55,6 @@ export class SpelersComponent extends BaseComponent implements OnInit {
     aantMoyVerschillen: number = 0;
     showKnbbMoys: boolean = false;
     moyenneEdit: number = 0;
-    escapeCount: number = 0;
     scrollElm!: HTMLDivElement;
     listScroll!: Scrolling;
     buttons: Button[] = [

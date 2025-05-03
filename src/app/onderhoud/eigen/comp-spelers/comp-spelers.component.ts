@@ -43,7 +43,6 @@ export class CompSpelersComponent extends BaseComponent implements OnInit {
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
     bordNaamDialog!: ConfirmSplBordNaamDialog;
     isBordNaamDialogOpen: boolean = false;
-    escapeCount: number = 0;
 
     spelerClicked(idx: number) {
         const spelerToAdd = this.spelerLijst.filtered[idx];

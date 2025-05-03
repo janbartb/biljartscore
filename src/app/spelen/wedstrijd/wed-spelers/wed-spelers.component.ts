@@ -34,7 +34,6 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     verenigingFilter: string = this.appData.getConfig()?.vereniging || '';
     wedOrig: Wedstrijd = new Wedstrijd();
     wedstrijd: Wedstrijd = new Wedstrijd();
-    escapeCount: number = 0;
 
     idxActiveTeam: number = -1;
     idxActiveSpeler: number = -1;

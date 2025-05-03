@@ -39,7 +39,6 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
     idxToDelete: number = -1;
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
     naamFilter: string = '';
-    escapeCount: number = 0;
     scrollElm!: HTMLDivElement;
     verScroll!: Scrolling;
 

@@ -44,7 +44,6 @@ export class CompetitieComponent extends BaseComponent implements OnInit {
     aantWedGespeeld: number[] = []; // aant gespeelde wedstrijden per ronde
     mode: string = 'view';
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
-    escapeCount: number = 0;
 
     buttons: Button[] = [
         new Button('S', 'Spelers', true),

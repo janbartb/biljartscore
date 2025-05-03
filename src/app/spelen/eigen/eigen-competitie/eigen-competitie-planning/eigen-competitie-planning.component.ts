@@ -73,12 +73,12 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         new Button('Enter', 'Plan wedstrijden', true),
         new Button('Enter', 'Naar wedstrijd', true)
     ];
-    escapeCount: number = 0;
 
     override escapePressed(): void {
-        const naam = this.comp.cmpNaam;
-        const ronde = this.rondeIdx;
-        this.router.navigate([`eigencomps/${naam}/schema/${ronde}`]);
+        this.appData.previousPage();
+        // const naam = this.comp.cmpNaam;
+        // const ronde = this.rondeIdx;
+        // this.router.navigate([`eigencomps/${naam}/schema/${ronde}`]);
     }
 
     buttonPressed(button: Button) {
@@ -109,7 +109,8 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         const idxRonde = wed.ronde - 1;
         const idxSpl = this.comp.cmpSpelers.findIndex(spl => spl.splId == wed.splId);
         const idxTeg = this.comp.cmpSpelers.findIndex(spl => spl.splId == wed.tegId);
-        this.router.navigate([`eigencomps/${this.comp.cmpNaam}/match/${idxRonde}/${idxSpl}/${idxTeg}`]);
+        const toUrl = `eigencomps/${this.comp.cmpNaam}/match/${idxRonde}/${idxSpl}/${idxTeg}`;
+        this.appData.gotoPage(this.router.url, toUrl);
     }
 
     spelerClicked(idx: number) {
@@ -136,6 +137,11 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
 
     activateSection(idx: number) {
         if (idx == this.idxActiveSection) {
+            if (idx == 0) {
+                this.planning.spelers = this.aanmakenVolgordeLijst();
+                this.clearPlanning();
+                this.bepaalAantalTePlannenWedstrijden();
+            }
             return;
         }
         this.idxActiveSection = idx;

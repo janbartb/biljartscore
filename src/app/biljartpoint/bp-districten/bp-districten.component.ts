@@ -23,8 +23,6 @@ export class BpDistrictenComponent extends BaseComponent implements OnInit {
     naamFilter: string = '';
     dataReady: boolean = false;
 
-    escapeCount: number = 0;
-
     buttons: Button[] = [
         new Button('', 'Ophalen districten', false)
     ];

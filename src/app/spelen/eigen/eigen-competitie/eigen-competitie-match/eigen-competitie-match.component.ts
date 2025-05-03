@@ -49,7 +49,6 @@ export class EigenCompetitieMatchComponent extends BaseComponent implements OnIn
     uitslagOk: boolean = false;
     viewMode: boolean = true;
     dataReady: boolean = false;
-    escapeCount: number = 0;
     enterButton: Button = new Button('Enter', 'Opslaan', true);
     matchForm!: FormGroup;
 
@@ -63,7 +62,7 @@ export class EigenCompetitieMatchComponent extends BaseComponent implements OnIn
             this.escapeCount = 0;
             return;
         }
-        this.router.navigate([`eigencomps/${this.comp.cmpNaam}/schema/${this.idxRonde}`]);
+        this.appData.previousPage();
     }
 
     buttonPressed(button: Button) {
@@ -112,7 +111,7 @@ export class EigenCompetitieMatchComponent extends BaseComponent implements OnIn
             this.saveMatchAndGoToScorebord(goto);
         }
         else {
-            this.router.navigate([goto]);
+            this.appData.gotoPage(this.router.url, goto);
         }
     }
 
@@ -193,7 +192,7 @@ export class EigenCompetitieMatchComponent extends BaseComponent implements OnIn
 
     scorelijstClicked() {
         const url = this.router.url.replace('match', 'lijst');
-        this.router.navigate([url]);
+        this.appData.gotoPage(this.router.url, url);
     }
 
     uitslagOpslaanClicked() {
@@ -555,7 +554,7 @@ export class EigenCompetitieMatchComponent extends BaseComponent implements OnIn
     private saveMatchAndGoToScorebord(url: string) {
         this.bssApi.saveEigenMatch(this.match)
         .then(resp => {
-            this.router.navigate([url]);
+            this.appData.gotoPage(this.router.url, url);
         })
         .catch(err => {
             this.alert.showError(err);
@@ -566,7 +565,7 @@ export class EigenCompetitieMatchComponent extends BaseComponent implements OnIn
         this.bssApi.saveCompetitie(this.comp)
         .then(resp => {
             this.alert.showAlert(successMsg, 'success');
-            this.router.navigate([`eigencomps/${this.comp.cmpNaam}/schema/${this.idxRonde}`]);
+            this.appData.previousPage();
         })
         .catch(err => {
             this.alert.showError(err);

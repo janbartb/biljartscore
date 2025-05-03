@@ -19,6 +19,7 @@ export class BaseComponent {
     router = inject(Router);
 
     spelId: string = this.appData.getSpelId();
+    escapeCount: number = 0;
 
     // if a dialog is open set this to true to ignore the component @HostListener
     isDialogOpen: boolean = false;

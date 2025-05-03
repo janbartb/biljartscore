@@ -27,6 +27,11 @@ export class KnbbMatchCompComponent extends BaseComponent implements OnInit {
     buttons: Button[] = [new Button('Enter', 'Selecteer', true)]
 
     override escapePressed(): void {
+        if (this.escapeCount > 0) {
+            this.compLijst.hoveredIdx = this.compLijst.selectedIdx;
+            this.setEscapeCount();
+            return;
+        }
         this.router.navigate(['spelkeuze']);
     }
 
@@ -35,14 +40,14 @@ export class KnbbMatchCompComponent extends BaseComponent implements OnInit {
         setTimeout(() => {
             this.buttons[idx].selected = false;
             if (idx == 0) {
-                this.competitieClicked(this.compLijst.selectedIdx);
+                this.competitieClicked(this.compLijst.hoveredIdx);
             }
         }, 300);
     }
 
     buttonClicked(idx: number) {
         if (idx == 0) {
-            this.competitieClicked(this.compLijst.selectedIdx);
+            this.competitieClicked(this.compLijst.hoveredIdx);
         }
     }
 
@@ -64,11 +69,13 @@ export class KnbbMatchCompComponent extends BaseComponent implements OnInit {
         console.log(event.code + ' : ' + event.key);
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.compLijst.selectPreviousItem();
+                this.compLijst.hoverPreviousItem();
+                this.setEscapeCount();
                 return false;
             }
             if (event.key === 'ArrowDown') {
-                this.compLijst.selectNextItem();
+                this.compLijst.hoverNextItem();
+                this.setEscapeCount();
                 return false;
             }
             return true;
@@ -126,7 +133,7 @@ export class KnbbMatchCompComponent extends BaseComponent implements OnInit {
     private preselectComp(id: string) {
         const idx = this.compLijst.filtered.findIndex(comp => comp.competitieId == id);
         if (idx >= 0) {
-            this.compLijst.selectedIdx = idx;
+            this.compLijst.hoveredIdx = this.compLijst.selectedIdx = idx;
         }
     }
 
@@ -141,6 +148,10 @@ export class KnbbMatchCompComponent extends BaseComponent implements OnInit {
             return a.volgNr - b.volgNr;
         }
         return (a.klasse > b.klasse) ? 1 : -1;
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = this.compLijst.hoveredIdx != this.compLijst.selectedIdx ? 1 : 0;
     }
 
 }

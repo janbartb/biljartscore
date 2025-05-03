@@ -28,7 +28,6 @@ export class CompetitiesComponent extends BaseComponent implements OnInit {
     compLijst: List<string> = new List<string>();
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
     idxToDelete: number = -1;
-    escapeCount: number = 0;
     scrollElm!: HTMLDivElement;
     compScroll!: Scrolling;
 

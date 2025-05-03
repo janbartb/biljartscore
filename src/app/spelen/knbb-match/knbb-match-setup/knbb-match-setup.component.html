@@ -19,9 +19,6 @@
                                         <div class="lijst-row selectable" (click)="teamClicked($index)"
                                                 [ngClass]="{'selected': teamLijst.selectedIdx == $index, 
                                                             'hovered': teamLijst.hoveredIdx == $index}">
-                                            <div class="lijst-col indicator" style="width: 1.5em;">
-                                                <i class="fas fa-angle-right"></i>
-                                            </div>
                                             <div class="lijst-col">
                                                 <span>{{team.data.naam}}</span>
                                             </div>
@@ -31,7 +28,7 @@
                             </div>
                         </div>
                     </div>
-                    @if (activeSection == 0 && teamLijst.hoveredIdx >= 0) {
+                    @if (activeSection == 0 && teamLijst.hoveredIdx != teamLijst.selectedIdx) {
                         <app-section-footer-btns [buttons]="sectionButtons" (clickedButton)="enterSelectClicked()"
                                                 [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
                     }
@@ -47,9 +44,6 @@
                                         <div class="lijst-row selectable" (click)="spelerClicked($index)"
                                                 [ngClass]="{'selected': spelerLijst.selectedIdx == $index, 
                                                             'hovered': spelerLijst.hoveredIdx == $index}">
-                                            <div class="lijst-col indicator" style="width: 1.5em;">
-                                                <i class="fas fa-angle-right"></i>
-                                            </div>
                                             <div class="lijst-col">
                                                 <span>{{spl.getNaam()}}</span>
                                             </div>
@@ -84,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            @if (inputValid && teamLijst.hoveredIdx < 0 && spelerLijst.hoveredIdx < 0) {
+            @if (inputValid && teamLijst.hoveredIdx == teamLijst.selectedIdx && spelerLijst.hoveredIdx < 0) {
                 <app-section-footer-btns [buttons]="pageButtons" (clickedButton)="pageButtonClicked()"
                                         [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
             }

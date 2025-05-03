@@ -55,7 +55,6 @@ export class BpMoyennesComponent extends BaseComponent implements OnInit {
     options: Option[] = [];
     option: Option = new Option('', '');
     tabelInBssIsOk: boolean = true;
-    escapeCount: number = 0;
     tableValid: boolean = false;
 
     buttons: Button[] = [

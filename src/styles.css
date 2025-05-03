@@ -204,13 +204,17 @@ select:disabled, select.disabled {
 .lijst-row.selectable {
     cursor: pointer;
 }
-.lijst-row.selectable .lijst-col {
+/* .lijst-row.selectable .lijst-col {
     opacity: .65;
 }
 .lijst-row.selectable.selected .lijst-col {
     opacity: 1;
+} */
+.lijst-row.selectable.selected {
+    border-color: red;
+    background-color: lightgray;
 }
-.lijst-row.selectable.hovered {
+.lijst-row.selectable.hovered, .lijst-row.selectable.selected.hovered {
     border-color: green;
 }
 .lijst-row.selectable:hover {

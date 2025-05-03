@@ -45,7 +45,7 @@
 .cell.groen:hover, .cell.groen.hovered { background-color: #00e200; }
 .cell.rood { background-color: #ffacac; }
 .cell.rood:hover, .cell.rood.hovered { background-color: #ff6a6a; }
-.cell.geel { background-color: #ffee00; }
+.cell.geel { background-color: #fff67b; }
 .cell.geel:hover, .cell.geel.hovered { background-color: yellow; }
 .cell.bezig { background-color: #afafaf; }
 .cell.bezig:hover, .cell.bezig.hovered { background-color: gray; }

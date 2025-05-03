@@ -34,7 +34,6 @@ export class LokaliteitComponent extends BaseComponent implements OnInit {
     existingIds: string[] = [];
     lokVerenigingen: Vereniging[] = [];
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
-    escapeCount: number = 0;
 
     viewButtons: Button[] = [
         new Button('W', 'Wijzigen', true),
