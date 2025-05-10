@@ -48,6 +48,11 @@
 }
 .aantcar span {
     font-size: 11em;
+    opacity: 1;
+    transition: opacity .75s;
+}
+.aantcar span.carsHidden {
+    opacity: 0;
 }
 
 .aantbrt {

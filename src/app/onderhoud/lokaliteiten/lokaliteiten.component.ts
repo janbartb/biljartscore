@@ -42,7 +42,7 @@ export class LokaliteitenComponent extends BaseComponent implements OnInit {
     }
 
     override escapePressed(): void {
-        if (this.lokLijst.selectedIdx >= 0) {
+        if (this.lokLijst.hoveredIdx >= 0) {
             this.lokLijst.clearSelection();
             this.setEscapeCount();
             return;
@@ -56,7 +56,7 @@ export class LokaliteitenComponent extends BaseComponent implements OnInit {
     }
 
     enterPressed() {
-        this.lokaliteitClicked(this.lokLijst.selectedIdx);
+        this.lokaliteitClicked(this.lokLijst.hoveredIdx);
     }
 
     buttonPressed(idx: number) {
@@ -113,12 +113,12 @@ export class LokaliteitenComponent extends BaseComponent implements OnInit {
         console.log(event.code + ' : ' + event.key);
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.lokLijst.selectPreviousItem();
-                this.lokScroll.scrollUp(this.lokLijst.selectedIdx);
+                this.lokLijst.hoverPreviousItem();
+                this.lokScroll.scrollUp(this.lokLijst.hoveredIdx);
             }
             if (event.key === 'ArrowDown') {
-                this.lokLijst.selectNextItem();
-                this.lokScroll.scrollDown(this.lokLijst.selectedIdx);
+                this.lokLijst.hoverNextItem();
+                this.lokScroll.scrollDown(this.lokLijst.hoveredIdx);
             }
             this.setEscapeCount();
             return false;

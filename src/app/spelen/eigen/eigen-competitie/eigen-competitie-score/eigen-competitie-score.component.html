@@ -2,11 +2,11 @@
     @if (matchRead) {
         <div class="bss-score-2 fullheight flexbox" [ngClass]="{'gameover': match.matchOver}">
             <div class="fullheight flex50perc speler-container thuis" [ngClass]="{'active': idxSpeler == 0}">
-                <app-eigen-competitie-score-speler [speler]="match.spelers[0]" [showPunten]="match.telling.idxOptie == 0"
+                <app-eigen-competitie-score-speler [speler]="match.spelers[0]" [cars]="match.spelers[0].stand.aantCar" [showPunten]="match.telling.idxOptie == 0"
                         [oldPunten]="oldPunten[0]" [matchOver]="match.matchOver" (undoBusy)="resetBusy()"></app-eigen-competitie-score-speler>
             </div>
             <div class="fullheight flex50perc speler-container gasten" [ngClass]="{'active': idxSpeler == 1}">
-                <app-eigen-competitie-score-speler [speler]="match.spelers[1]"  [showPunten]="match.telling.idxOptie == 0"
+                <app-eigen-competitie-score-speler [speler]="match.spelers[1]" [cars]="match.spelers[1].stand.aantCar" [showPunten]="match.telling.idxOptie == 0"
                         [oldPunten]="oldPunten[1]" [matchOver]="match.matchOver" (undoBusy)="resetBusy()"></app-eigen-competitie-score-speler>
             </div>
         </div>

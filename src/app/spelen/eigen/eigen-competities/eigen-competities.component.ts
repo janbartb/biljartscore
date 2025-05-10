@@ -4,12 +4,15 @@ import { PageHeaderComponent } from '../../../shared/page-header/page-header.com
 import { List } from '../../../model/list';
 import { NgClass } from '@angular/common';
 import { CompNaamDelen } from '../../../model/competitie';
+import { Button } from '../../../model/button';
+import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 
 @Component({
     selector: 'app-eigen-competities',
     standalone: true,
     imports: [
         PageHeaderComponent,
+        SectionFooterBtnsComponent,
         NgClass
     ],
     templateUrl: './eigen-competities.component.html',
@@ -19,9 +22,12 @@ export class EigenCompetitiesComponent extends BaseComponent implements OnInit {
     title: string = 'Spelen';
     subtitle: string = 'Eigen competities';
     compLijst: List<string> = new List<string>();
+    buttons: Button[] = [
+        new Button('Enter', 'Selecteer', true)
+    ];
 
     override escapePressed(): void {
-        if (this.compLijst.selectedIdx >= 0) {
+        if (this.compLijst.hoveredIdx >= 0) {
             this.compLijst.clearSelection();
             this.setEscapeCount();
             return;
@@ -29,8 +35,20 @@ export class EigenCompetitiesComponent extends BaseComponent implements OnInit {
         this.router.navigate(['spelkeuze']);
     }
 
+    buttonPressed(button: Button) {
+        button.selected = true;
+        setTimeout(() => {
+            button.selected = false;
+            this.enterPressed();
+        }, 300);
+    }
+
     enterPressed() {
-        this.compClicked(this.compLijst.selectedIdx);
+        this.compClicked(this.compLijst.hoveredIdx);
+    }
+
+    buttonClicked(idx: number) {
+        this.compClicked(idx);
     }
 
     compClicked(idx: number) {
@@ -50,19 +68,22 @@ export class EigenCompetitiesComponent extends BaseComponent implements OnInit {
         console.log(event.code + ' : ' + event.key);
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.compLijst.selectPreviousItem();
-                //this.compScroll.scrollUp(this.compLijst.selectedIdx);
+                this.compLijst.hoverPreviousItem();
+                //this.compScroll.scrollUp(this.compLijst.hoveredIdx);
             }
             if (event.key === 'ArrowDown') {
-                this.compLijst.selectNextItem();
-                //this.compScroll.scrollDown(this.compLijst.selectedIdx);
+                this.compLijst.hoverNextItem();
+                //this.compScroll.scrollDown(this.compLijst.hoveredIdx);
             }
             this.setEscapeCount();
             return false;
         }
         if (event.key === 'Enter') {
-            this.enterPressed();
-            return false;
+            if (this.compLijst.hoveredIdx >= 0) {
+                this.buttonPressed(this.buttons[0]);
+                return false;
+            }
+            return true;
         }
         if (event.key === 'Escape') {
             this.escapePressed();
@@ -104,7 +125,7 @@ export class EigenCompetitiesComponent extends BaseComponent implements OnInit {
 
     private setEscapeCount() {
         this.escapeCount = 0;
-        if (this.compLijst.selectedIdx >= 0) {
+        if (this.compLijst.hoveredIdx >= 0) {
             this.escapeCount++;
         }
     }

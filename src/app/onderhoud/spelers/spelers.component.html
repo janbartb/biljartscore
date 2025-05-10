@@ -6,7 +6,6 @@
         </div>
         <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
             <div class="lijst-row">
-                <div class="lijst-col" style="width: 2em;"></div>
                 <div class="lijst-col" style="width: 5em;">ID</div>
                 <div class="lijst-col" style="width: 6em;">KNBB ID</div>
                 <div class="lijst-col" style="width: 14em;">Naam</div>
@@ -20,7 +19,6 @@
         </div>
         <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
             <div class="lijst-row filter-row">
-                <div class="lijst-col" style="width: 2em;"></div>
                 <div class="lijst-col" style="width: 5em;"></div>
                 <div class="lijst-col" style="width: 6em;"></div>
                 <div class="lijst-col" style="width: 14em;">
@@ -64,9 +62,6 @@
                         @for (item of spelerList.filtered; track $index) {
                             <div class="lijst-row selectable" (click)="spelerClicked($index)"
                                     [ngClass]="{'selected': spelerList.selectedIdx == $index, 'hovered': spelerList.hoveredIdx == $index}">
-                                <div class="lijst-col indicator" style="width: 2em;">
-                                    <i class="fas fa-angle-right"></i>
-                                </div>
                                 <div class="lijst-col" style="width: 5em;">
                                     <span>{{item.speler.id}}</span>
                                 </div>

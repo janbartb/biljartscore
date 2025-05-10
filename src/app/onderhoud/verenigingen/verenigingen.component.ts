@@ -56,7 +56,7 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
     }
 
     override escapePressed(): void {
-        if (this.verenigingLijst.selectedIdx >= 0) {
+        if (this.verenigingLijst.hoveredIdx >= 0) {
             this.verenigingLijst.clearSelection();
             this.setEscapeCount();
             return;
@@ -70,7 +70,7 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
     }
 
     enterPressed() {
-        this.verenigingClicked(this.verenigingLijst.selectedIdx);
+        this.verenigingClicked(this.verenigingLijst.hoveredIdx);
     }
 
     buttonPressed(idx: number) {
@@ -209,12 +209,12 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
         }
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.verenigingLijst.selectPreviousItem();
-                this.verScroll.scrollUp(this.verenigingLijst.selectedIdx);
+                this.verenigingLijst.hoverPreviousItem();
+                this.verScroll.scrollUp(this.verenigingLijst.hoveredIdx);
             }
             if (event.key === 'ArrowDown') {
-                this.verenigingLijst.selectNextItem();
-                this.verScroll.scrollDown(this.verenigingLijst.selectedIdx);
+                this.verenigingLijst.hoverNextItem();
+                this.verScroll.scrollDown(this.verenigingLijst.hoveredIdx);
             }
             this.setEscapeCount();
             return false;
@@ -262,7 +262,7 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
 
     private setEscapeCount() {
         this.escapeCount = 0;
-        if (this.verenigingLijst.selectedIdx >= 0) {
+        if (this.verenigingLijst.hoveredIdx >= 0) {
             this.escapeCount++;
         }
         if (this.naamFilter.length) {

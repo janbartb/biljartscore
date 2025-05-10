@@ -51,7 +51,7 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
     ];
 
     enterPressed() {
-        this.teamClicked(this.teamLijst.selectedIdx);
+        this.teamClicked(this.teamLijst.hoveredIdx);
     }
 
     buttonPressed(event: any, button: Button) {
@@ -68,7 +68,7 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
                 this.ledenWijzigenClicked();
             }
             else if (button.key == 'Del') {
-                this.teamVerwijderenClicked(event, this.teamLijst.selectedIdx);
+                this.teamVerwijderenClicked(event, this.teamLijst.hoveredIdx);
             }
         }, 300);
     }
@@ -78,7 +78,7 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
             this.teamToevoegenClicked();
         }
         else if (idx == 1) {
-            this.teamVerwijderenClicked(undefined, this.teamLijst.selectedIdx);
+            this.teamVerwijderenClicked(undefined, this.teamLijst.hoveredIdx);
         }
     }
 
@@ -149,10 +149,10 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
         console.log(event.code + ' : ' + event.key);
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             if (event.key === 'ArrowUp') {
-                this.teamLijst.selectPreviousItem();
+                this.teamLijst.hoverPreviousItem();
             }
             if (event.key === 'ArrowDown') {
-                this.teamLijst.selectNextItem();
+                this.teamLijst.hoverNextItem();
             }
             return false;
         }

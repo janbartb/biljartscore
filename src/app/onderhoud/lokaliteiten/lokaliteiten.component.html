@@ -6,7 +6,6 @@
         </div>
         <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
             <div class="lijst-row">
-                <div class="lijst-col" style="width: 2em;"></div>
                 <div class="lijst-col" style="width: 4em;">ID</div>
                 <div class="lijst-col" style="width: 6em;">KNBB ID</div>
                 <div class="lijst-col" style="width: 13em;">Naam</div>
@@ -15,7 +14,6 @@
         </div>
         <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
             <div class="lijst-row filter-row">
-                <div class="lijst-col" style="width: 2em;"></div>
                 <div class="lijst-col" style="width: 4em;"></div>
                 <div class="lijst-col" style="width: 6em;"></div>
                 <div class="lijst-col" style="width: 13em;">
@@ -34,10 +32,7 @@
                     <div class="lijst">
                         @for (item of lokLijst.filtered; track $index) {
                             <div class="lijst-row selectable" (click)="lokaliteitClicked($index)"
-                                    [ngClass]="{'selected': lokLijst.selectedIdx == $index, 'hovered': lokLijst.hoveredIdx == $index}">
-                                <div class="lijst-col indicator" style="width: 2em;">
-                                    <i class="fas fa-angle-right"></i>
-                                </div>
+                                    [ngClass]="{'hovered': lokLijst.hoveredIdx == $index}">
                                 <div class="lijst-col" style="width: 4em;">
                                     <span>{{item.lokId}}</span>
                                 </div>

@@ -17,11 +17,11 @@
 }
 .speler-container.thuis:not(.active) {
     box-shadow: inset -1.35em 0 1em -1em #000000;
-    filter: blur(1.5px);
+    /* filter: blur(1.5px); */
 }
 .speler-container.gasten:not(.active) {
     box-shadow: inset 1.35em 0 1em -1em #000000;
-    filter: blur(1.5px);
+    /* filter: blur(1.5px); */
 }
 .gameover .speler-container.thuis:not(.active) {
     filter: none;

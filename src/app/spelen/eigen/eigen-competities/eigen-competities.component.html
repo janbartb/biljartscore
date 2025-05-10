@@ -10,11 +10,8 @@
                     <div class="lijst">
                         @for (item of compLijst.filtered; track $index) {
                             <div class="lijst-row selectable" (click)="compClicked($index)"
-                                    [ngClass]="{'selected': compLijst.selectedIdx == $index, 'hovered': compLijst.hoveredIdx == $index}">
-                                <div class="lijst-col indicator" style="width: 2em;">
-                                    <i class="fas fa-angle-right"></i>
-                                </div>
-                                <div class="lijst-col" style="padding-right: 2em;">
+                                    [ngClass]="{'hovered': compLijst.hoveredIdx == $index}">
+                                <div class="lijst-col">
                                     <span>{{item}}</span>
                                 </div>
                             </div>
@@ -23,10 +20,16 @@
                 </div>
             </div>
         </div>
-        <div class="flexbox flexcenter flexmiddle" style="height: 2em; min-height: 2em; border-top: .25em solid green;">
-            <div class="label" style="font-size: .75em;">
-                <span>Selecteer een competitie.</span>
-            </div>
-        </div>
+        @if (compLijst.hoveredIdx < 0) {
+            <div class="flexbox flexcenter flexmiddle" style="height: 2em; min-height: 2em; border-top: .25em solid green;">
+                <div class="label" style="font-size: .75em;">
+                    <span>Selecteer een competitie.</span>
+                </div>
+            </div>    
+        }
+        @else {
+            <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked(0)"
+                [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+        }
     </div>
 </div>

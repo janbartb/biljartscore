@@ -19,7 +19,6 @@
                                                 [ngClass]="{'selected': verenigingLijst.selectedIdx == $index, 
                                                             'hovered': verenigingLijst.hoveredIdx == $index}">
                                             <div class="lijst-col">
-                                                <span class="indicator fas fa-angle-right"> </span>
                                                 <span> {{ver.naam}}</span>
                                             </div>
                                         </div>
@@ -29,7 +28,7 @@
                         </div>
                     </div>
                 </div>
-                @if (activeSection == 0 && verenigingLijst.hoveredIdx >= 0) {
+                @if (activeSection == 0 && verenigingLijst.hoveredIdx != verenigingLijst.selectedIdx) {
                     <app-section-footer-btns [buttons]="sectionButtons" (clickedButton)="enterSelectClicked()"
                                                 [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
                 }
@@ -114,7 +113,7 @@
                 }
             </div>
         </div>
-        @if (spelersFilled && verenigingLijst.hoveredIdx < 0 && spelerLijst.hoveredIdx < 0) {
+        @if (spelersFilled && verenigingLijst.hoveredIdx == verenigingLijst.hoveredIdx && spelerLijst.hoveredIdx < 0) {
             <app-section-footer-btns [buttons]="pageButtons"
                             (clickedButton)="pageButtonClicked()" [cssFooter]="'w3-green-bdr-d2'" [cssButtons]="'font125'"></app-section-footer-btns>
         }

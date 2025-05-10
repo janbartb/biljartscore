@@ -58,30 +58,33 @@
                         @if (plannenWasClicked && planning.wedstrijden.length == 0) {
                             <div style="padding-top: 2em; color: green;">Geen in te plannen wedstrijden</div>
                         }
-                        <div>
-                            <table class="tbl-normal">
-                                <tbody>
+                        @if (planning.wedstrijden.length > 0) {
+                            <div class="planning w3-green-bg-l4">
+                                <div class="lijst">
                                     @for (wed of planning.wedstrijden; track $index) {
-                                        <tr class="geplande-wed" [ngClass]="{'hovered': $index == idxWed}" (click)="wedstrijdClicked($index)">
-                                            <td style="width: 1em;"></td>
-                                            <td style="color: green;">
+                                        <div class="lijst-row selectable" [ngClass]="{'hovered': $index == idxWed}" (click)="wedstrijdClicked($index)">
+                                            <div class="lijst-col" style="width: 2em; color: green;">
                                                 @if (wed.gespeeld) {
-                                                    <div style="width: 2.5em;">
-                                                        <i class="fas fa-check"></i>
-                                                    </div>
-                                                }    
-                                            </td>
-                                            <td style="color: green;">ronde {{wed.ronde}}</td>
-                                            <td style="width: 2em;"></td>
-                                            <td class="num">{{wed.splNaam}}</td>
-                                            <td class="center" style="width: 1.5em; color: green;">-</td>
-                                            <td>{{wed.tegNaam}}</td>
-                                            <td style="width: 1em;"></td>
-                                        </tr>
-                                    }        
-                                </tbody>
-                            </table>
-                        </div>
+                                                    <i class="fas fa-check"></i>
+                                                }
+                                            </div>
+                                            <div class="lijst-col" style="width: 5em; color: green;">
+                                                <span>ronde {{wed.ronde}}</span>
+                                            </div>
+                                            <div class="lijst-col num" style="width: 6em;">
+                                                <span>{{wed.splNaam}}</span>
+                                            </div>
+                                            <div class="lijst-col num" style="width: 1.5em;">
+                                                <span>-</span>
+                                            </div>
+                                            <div class="lijst-col" style="width: 6em;">
+                                                <span>{{wed.tegNaam}}</span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>    
+                        }
                     </div>
                 </div>
                 <app-section-footer-btns [buttons]="planButtons" [btnsHide]="[idxWed >= 0, idxWed < 0]" (clickedButton)="buttonClicked($event)"

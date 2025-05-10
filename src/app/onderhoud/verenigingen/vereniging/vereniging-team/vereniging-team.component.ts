@@ -120,6 +120,7 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     spelerSelectieClicked(idx: number) {
         let spelerClicked = this.selectieLijst.getItem(idx);
         if (spelerClicked) {
+            this.activateSection(1);
             spelerClicked.spelerSelected = !spelerClicked.spelerSelected;
             this.sortSelectie();
             this.aantalLeden += spelerClicked.spelerSelected ? 1 : -1;
@@ -174,6 +175,16 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
         this.duplicateId = this.existingIds.some(id => id == this.createdId);
     }
 
+    activateSection(idx: number) {
+        if (idx == this.activeSection) {
+            return;
+        }
+        this.activeSection = idx;
+        if (this.activeSection == 0) {
+            this.selectieLijst.hoveredIdx = -1;
+        }
+    }
+
     @HostListener('document:keydown', ['$event'])
     handleKeyDownEvent(event: KeyboardEvent): boolean {
         if (this.activeSection == 1) {
@@ -181,11 +192,11 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
                         (event.target instanceof HTMLSelectElement || event.target instanceof HTMLAnchorElement)) {
                 event.preventDefault();
             }
-            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-                event.preventDefault();
-            }
         }
-        return true;
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            event.preventDefault();
+        }
+    return true;
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -194,7 +205,8 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
         const fromInput = event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement;
         if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
             if (!fromInput || event.ctrlKey || this.activeSection == 1) {
-                this.activeSection = this.activeSection == 0 ? 1 : 0;
+                const idx = this.activeSection == 0 ? 1 : 0;
+                this.activateSection(idx);
                 return false;
             }
             return true;

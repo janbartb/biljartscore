@@ -39,7 +39,7 @@
     <div class="scoredata flexbox arial active" [ngClass]="{'geel': !speler.metWit}" style="height: 13em;">
         <div style="width: 17em; position: relative;">
             <div class="aantcar" style="width: 17em; position: relative; left: -.5em; text-align: center;">
-                <span>{{speler.stand.aantCar}}</span>
+                <span [ngClass]="cssClass">{{carsView}}</span>
             </div>
         </div>
         <div style="width: 12em;">

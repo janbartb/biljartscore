@@ -59,13 +59,11 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
     subtitle: string = 'Planning';
     comp: Competitie = new Competitie('');
     rondeIdx: number = 0;
-    //spelerLijst: PlanSpeler[] = [];
     spelerIdx: number = -1;
     planning: Planning = new Planning();
     idxActiveSection: number = 0;
     idxWed: number = -1;
     aantGeplandeWed: number = 0;
-    //aantTePlannenWed: number = 0;
     maxAantTePlannenWed: number = 0;
     plannenWasClicked: boolean = false;
     wedButtons: Button[] = [];
@@ -75,6 +73,13 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
     ];
 
     override escapePressed(): void {
+        if (this.escapeCount > 0) {
+            this.spelerIdx = -1;
+            this.idxWed = -1;
+            this.idxActiveSection = 0;
+            this.setEscapeCount();
+            return;
+        }
         this.appData.previousPage();
         // const naam = this.comp.cmpNaam;
         // const ronde = this.rondeIdx;
@@ -90,6 +95,13 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
                 this.buttonClicked(idxBtn);
             }
         }, 300);
+    }
+
+    spacePressed() {
+        if (this.idxActiveSection != 0 || this.spelerIdx < 0 || this.spelerIdx >= this.planning.spelers.length) {
+            return;
+        }
+        this.spelerClicked(this.spelerIdx);
     }
 
     buttonClicked(idx: number) {
@@ -147,7 +159,11 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         this.idxActiveSection = idx;
         if (idx == 0) {
             this.idxWed = -1;
-        } 
+        }
+        if (idx == 1) {
+            this.spelerIdx = -1;
+        }
+        this.setEscapeCount();
     }
 
     switchActiveSection() {
@@ -167,6 +183,11 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         localStorage.removeItem('planning');
         this.startPlannen();
         if (this.planning.wedstrijden.length > 0) {
+            this.planning.wedstrijden.forEach(wed => {
+                if ((wed.ronde == 1 && wed.splNaam > wed.tegNaam) || (wed.ronde == 2 && wed.splNaam < wed.tegNaam)) {
+                    this.wisselSpelers(wed);
+                }
+            });
             this.idxActiveSection = 1;
             localStorage.setItem('planning', JSON.stringify(this.planning));
         }
@@ -300,6 +321,7 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
                     this.changeWedstrijd(1);
                 }
             }
+            this.setEscapeCount();
             return false;
         }    
         if (event.key == 'Enter') {
@@ -307,7 +329,7 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
             return false;
         }
         if (event.code == 'Space') {
-            this.spelerClicked(this.spelerIdx);
+            this.spacePressed();
             return false;
         }
         if (event.code.startsWith('Digit')) {
@@ -373,6 +395,15 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         .catch(err => {
             this.alert.showError(err);
         });
+    }
+
+    private wisselSpelers(wed: PlanWedstrijd) {
+        const tempId = wed.splId;
+        const tempNaam = wed.splNaam;
+        wed.splId = wed.tegId;
+        wed.splNaam = wed.tegNaam;
+        wed.tegId = tempId;
+        wed.tegNaam = tempNaam;
     }
 
     private changeSpeler(direction: number) {
@@ -519,6 +550,10 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
             return 99;
         }
         return dagen;
+    }
+
+    private setEscapeCount() {
+        this.escapeCount = (this.spelerIdx >= 0 || this.idxWed >= 0) ? 1 : 0;
     }
 
 }

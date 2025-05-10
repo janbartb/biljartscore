@@ -50,10 +50,7 @@
                             <div class="lijst" style="padding: 0 .5em;">
                                 @for (team of teamLijst.filtered; track $index) {
                                     <div class="lijst-row selectable" (click)="teamClicked($index)"
-                                            [ngClass]="{'selected': teamLijst.selectedIdx == $index, 'hovered': teamLijst.hoveredIdx == $index}">
-                                        <div class="lijst-col indicator" style="width: 1.5em;">
-                                            <i class="fas fa-angle-right"></i>
-                                        </div>
+                                            [ngClass]="{'hovered': teamLijst.hoveredIdx == $index}">
                                         <div class="lijst-col" style="width: 4em;">
                                             <span>{{team.klasse}} - {{team.volgNr}}</span>
                                         </div>

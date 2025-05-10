@@ -13,9 +13,6 @@
                             @for (aantSpl of aantalLijst.filtered; track $index) {
                                 <div class="lijst-row selectable" (click)="aantalClicked($index)"
                                         [ngClass]="{'selected': aantalLijst.selectedIdx == $index, 'hovered': aantalLijst.hoveredIdx == $index}">
-                                    <div class="lijst-col indicator" style="width: 2em;">
-                                        <i class="fas fa-angle-right"></i>
-                                    </div>
                                     <div class="lijst-col">
                                         <span>{{aantSpl}}</span>
                                     </div>

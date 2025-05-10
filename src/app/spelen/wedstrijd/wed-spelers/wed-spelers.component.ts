@@ -70,8 +70,9 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     }
 
     override escapePressed(): void {
-        if (this.verenigingLijst.hoveredIdx >= 0 || this.spelerLijst.hoveredIdx >= 0) {
-            this.verenigingLijst.hoveredIdx = this.spelerLijst.hoveredIdx = -1;
+        if (this.verenigingLijst.hoveredIdx != this.verenigingLijst.selectedIdx || this.spelerLijst.hoveredIdx >= 0) {
+            this.verenigingLijst.hoveredIdx = this.verenigingLijst.selectedIdx;
+            this.spelerLijst.hoveredIdx = -1;
             this.setEscapeCount();
             return;
         }
@@ -90,7 +91,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         setTimeout(() => {
             button.selected = false;
             if (button.key == 'Enter') {
-                if (this.verenigingLijst.hoveredIdx < 0 && this.spelerLijst.hoveredIdx < 0) {
+                if (this.verenigingLijst.hoveredIdx == this.verenigingLijst.selectedIdx && this.spelerLijst.hoveredIdx < 0) {
                     if (this.spelersFilled) {
                         this.gaVerderClicked();
                     }
@@ -125,7 +126,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         }
         this.activeSection = 0;
         this.verenigingLijst.selectedIdx = idx;
-        this.verenigingLijst.hoveredIdx = -1;
+        this.verenigingLijst.hoveredIdx = idx;
         const vereniging: VerenigingKort = this.verenigingLijst.filtered[idx];
         this.verenigingFilter = vereniging.verId;
         this.spelerLijst.clearSelection();
@@ -149,7 +150,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     resetClicked() {
         this.verenigingFilter = this.appData.getConfig()?.vereniging || '';
         this.verenigingLijst.selectedIdx = this.verenigingLijst.filtered.findIndex(v => v.verId == this.verenigingFilter);
-        this.verenigingLijst.hoveredIdx = -1;
+        this.verenigingLijst.hoveredIdx = this.verenigingLijst.selectedIdx;
         this.activeSection = this.verenigingLijst.selectedIdx < 0 ? 0 : 1;
         this.filterSpelerLijst();
         this.spelerLijst.selectedIdx = this.spelerLijst.hoveredIdx = -1;
@@ -159,8 +160,8 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         }
         this.idxActiveSpeler = 0;
         this.setSpelersFilled();
-        this.setEscapeCount();
         this.wedstrijdChanged = false;
+        this.setEscapeCount();
     }
 
     gaVerderClicked() {
@@ -196,7 +197,8 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
 
     maakSectionActief(idx: number) {
         this.activeSection = idx;
-        this.verenigingLijst.hoveredIdx = this.spelerLijst.hoveredIdx = -1;
+        this.spelerLijst.hoveredIdx = -1;
+        this.verenigingLijst.hoveredIdx = this.verenigingLijst.selectedIdx;
         this.setEscapeCount();
     }
 
@@ -253,12 +255,12 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
             return true;
         }
         if (event.key === 'Enter') {
-            if (this.verenigingLijst.hoveredIdx < 0 && this.spelerLijst.hoveredIdx < 0 && this.spelersFilled) {
+            if (this.verenigingLijst.hoveredIdx == this.verenigingLijst.selectedIdx && this.spelerLijst.hoveredIdx < 0 && this.spelersFilled) {
                 this.buttonPressed(this.pageButtons[0]);
                 this.setEscapeCount();
                 return false;
             }
-            if (this.verenigingLijst.hoveredIdx >= 0 || this.spelerLijst.hoveredIdx >= 0) {
+            if (this.verenigingLijst.hoveredIdx != this.verenigingLijst.selectedIdx || this.spelerLijst.hoveredIdx >= 0) {
                 this.buttonPressed(this.sectionButtons[0]);
                 this.setEscapeCount();
                 return false;
@@ -293,6 +295,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
             });
             this.verenigingLijst.fillItems(verenigingen);
             this.verenigingLijst.selectedIdx = this.verenigingLijst.filtered.findIndex(v => v.verId == this.verenigingFilter);
+            this.verenigingLijst.hoveredIdx = this.verenigingLijst.selectedIdx;
             this.spelerLijst.fillItems(results[1]);
             this.filterSpelerLijst();
             if (results[2].gevonden) {
@@ -333,11 +336,11 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     private initLijstScrolling(elm: HTMLDivElement, lijst: string) {
         if (elm) {
             if (lijst == 'ver') {
-                this.verScrolling = new Scrolling(elm, elm.offsetHeight, this.verenigingLijst.filtered.length, this.verenigingLijst.selectedIdx);
+                this.verScrolling = new Scrolling(elm, elm.offsetHeight, this.verenigingLijst.filtered.length, this.verenigingLijst.hoveredIdx);
                 console.log('resize event - pos = ' + this.verScrolling.scrollPos);
             }
             else {
-                this.splScrolling = new Scrolling(elm, elm.offsetHeight, this.spelerLijst.filtered.length, this.spelerLijst.selectedIdx);
+                this.splScrolling = new Scrolling(elm, elm.offsetHeight, this.spelerLijst.filtered.length, this.spelerLijst.hoveredIdx);
                 console.log('resize event - pos = ' + this.splScrolling.scrollPos);
             }
         }
@@ -510,7 +513,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
 
     private setEscapeCount() {
         this.escapeCount = this.wedstrijdChanged ? 1 : 0;
-        if (this.verenigingLijst.hoveredIdx >= 0 || this.spelerLijst.hoveredIdx >= 0) {
+        if (this.verenigingLijst.hoveredIdx != this.verenigingLijst.selectedIdx || this.spelerLijst.hoveredIdx >= 0) {
             this.escapeCount++;
         }
     }

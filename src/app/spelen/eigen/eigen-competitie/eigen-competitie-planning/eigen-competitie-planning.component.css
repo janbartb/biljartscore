@@ -1,3 +1,22 @@
 .geplande-wed:hover, .geplande-wed.hovered {
     background-color: lightgray;
 }
+
+.planning {
+    padding: 1em;
+    /* background-color: lightgreen; */
+    border: .125em solid red;
+    border-radius: .5em;
+}
+
+.planning .lijst-row {
+    border-color: #dbefdc;
+}
+.planning .lijst-row.hovered {
+    border-color: green;
+    background-color: white;
+}
+.planning .lijst-row:hover {
+    border-color: green;
+    background-color: lightgray;
+}
