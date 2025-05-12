@@ -9,34 +9,21 @@
     transform: translateX(-10em) scaleX(.666666);
 }
 
-/* .gameover .speler-container {
-    background-color: gray;
-} */
 .speler-container {
     padding: .5em;
     background-color: lightgray;
 }
 .speler-container.thuis.active {
+    background-color: white;
     box-shadow: .75em 0px .75em 0px rgba(0,0,0,0.85);
     z-index: 10;
 }
 .speler-container.gasten.active {
+    background-color: gold;
     box-shadow: -.75em 0px .75em 0px rgba(0,0,0,0.85);
     z-index: 10;
 }
-/* .speler-container.thuis:not(.active) {
-    box-shadow: inset -1.35em 0 1em -1em #000000;
-}
-.speler-container.gasten:not(.active) {
-    box-shadow: inset 1.35em 0 1em -1em #000000;
-} */
 
-.speler-container.thuis.active {
-    background-color: white;
-}
-.speler-container.gasten.active {
-    background-color: gold;
-}
 .speler-container div {
     overflow: hidden;
 }
