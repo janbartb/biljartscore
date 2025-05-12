@@ -27,33 +27,43 @@
     box-shadow: 0 8px 20px 0 rgba(0,0,0,0.75), 0 8px 40px 0 rgba(0,0,0,0.5);
     white-space: nowrap;
 }
+.modal-content-score {
+    position:absolute;
+    bottom: 1.5em;
+    left: 50%;
+    transform:translateX(-50%);
+    -ms-transform:translateX(-50%);
+    border-radius: 1em;
+    box-shadow: 16px 16px 16px 8px rgba(0,0,0,0.75);
+    white-space: nowrap;
+}
 
-.modal-content.serie {
+.modal-content.serie, .modal-content-score.serie {
     background-color: blue;
 }
-.modal-content.carambole {
+.modal-content.carambole, .modal-content-score.carambole {
     background-color: blue;
 }
-.modal-content.info {
+.modal-content.info, .modal-content-score.info {
     background-color: blue;
 }
-.modal-content.success {
+.modal-content.success, .modal-content-score.success {
     background-color: green;
 }
-.modal-content.error {
+.modal-content.error, .modal-content-score.error {
     background-color: red;
 }
-.modal-content.warn {
+.modal-content.warn, .modal-content-score.warn {
     background-color: #bd6800;
 }
 
-.modal-content > div {
+.modal-content > div, .modal-content-score > div {
     font-size: 3em;
     color: white;
 }
-.modal-content.serie > div {
+.modal-content.serie > div, .modal-content-score.serie > div {
     font-size: 4em;
 }
-.modal-content.carambole > div {
+.modal-content.carambole > div, .modal-content-score.carambole > div {
     font-size: 4em;
 }

@@ -9,32 +9,33 @@
     transform: translateX(-10em) scaleX(.666666);
 }
 
-.gameover .speler-container {
-    border: .5em solid gray;
-}
+/* .gameover .speler-container {
+    background-color: gray;
+} */
 .speler-container {
+    padding: .5em;
     background-color: lightgray;
 }
-.speler-container.thuis:not(.active) {
+.speler-container.thuis.active {
+    box-shadow: .75em 0px .75em 0px rgba(0,0,0,0.85);
+    z-index: 10;
+}
+.speler-container.gasten.active {
+    box-shadow: -.75em 0px .75em 0px rgba(0,0,0,0.85);
+    z-index: 10;
+}
+/* .speler-container.thuis:not(.active) {
     box-shadow: inset -1.35em 0 1em -1em #000000;
-    /* filter: blur(1.5px); */
 }
 .speler-container.gasten:not(.active) {
     box-shadow: inset 1.35em 0 1em -1em #000000;
-    /* filter: blur(1.5px); */
-}
-.gameover .speler-container.thuis:not(.active) {
-    filter: none;
-}
-.gameover .speler-container.gasten:not(.active) {
-    filter: none;
-}
+} */
 
 .speler-container.thuis.active {
-    border: .5em solid white;
+    background-color: white;
 }
 .speler-container.gasten.active {
-    border: .5em solid gold;
+    background-color: gold;
 }
 .speler-container div {
     overflow: hidden;

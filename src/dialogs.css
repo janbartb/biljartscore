@@ -19,6 +19,10 @@
     overflow: hidden;
     box-shadow:0 8px 20px 0 rgba(0,0,0,0.8), 0 8px 40px 0 rgba(0,0,0,0.77);
 }
+.dialog.end-of-match {
+    border-radius: 1em;
+    box-shadow: 16px 16px 16px 8px rgba(0,0,0,0.75);
+}
 .dialog-header {
     padding: .25em 1em;
 }

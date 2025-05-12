@@ -119,11 +119,9 @@ export class EigenCompetitieScoreComponent extends BaseComponent implements OnIn
                 this.match.spelers.forEach(spl => spl.active = true);
                 this.match.datum = new Date().toISOString().substring(0, 10);
                 this.saveMatch(this.match);
-                const modalMsg = new ModalMessage('success', [''], 'Einde wedstrijd', 3);
+                const modalMsg = new ModalMessage('success', ['EINDE WEDSTRIJD'], 'Einde wedstrijd', 3);
                 this.modals.push(modalMsg);
                 this.showModal();
-                this.idxSpeler = -1;
-                this.isEndOfMatchDialogOpen = true;
                 return;
             }
         }
@@ -254,6 +252,9 @@ export class EigenCompetitieScoreComponent extends BaseComponent implements OnIn
             return false;
         }
         if (event.key === 'Delete' || event.code === 'NumpadDecimal' || event.code == 'Period') {
+            if (this.match.opgeslagen) {
+                return true;
+            }
             this.undoLaatsteBeurt();
             return false;
         }
@@ -432,6 +433,7 @@ export class EigenCompetitieScoreComponent extends BaseComponent implements OnIn
                 else if (remainingCar < 4) {
                     msg.push(`${this.activeSpeler.stand.serie}, en nog ${remainingCar} ...`);
                     spk = `${this.activeSpeler.stand.serie}. En nog ${remainingCar}.`;
+                    msgType = 'carambole';
                 }
                 else {
                     msg.push(`${this.activeSpeler.stand.serie}`);
@@ -669,6 +671,10 @@ export class EigenCompetitieScoreComponent extends BaseComponent implements OnIn
             this.modals.shift();
             if (this.modals.length) {
                 this.showModal();
+            }
+            else if (this.match.matchOver ) {
+                this.idxSpeler = -1;
+                this.isEndOfMatchDialogOpen = true;                        
             }
         }
     }

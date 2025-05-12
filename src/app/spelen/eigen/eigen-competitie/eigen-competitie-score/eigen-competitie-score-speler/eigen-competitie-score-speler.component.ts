@@ -17,21 +17,49 @@ export class EigenCompetitieScoreSpelerComponent {
     @Input() speler: CmpMatchSpeler = new CmpMatchSpeler(new CmpSpeler(1), true);
     cars = input(0);
     carsView: number = 0;
+    brtn = input(0);
+    brtnView: number = 0;
+    ser = input(0);
+    serView: number = 0;
     @Input() oldPunten: number = 0;
     @Input() showPunten: boolean = false;
     @Input() matchOver: boolean = false;
     @Output() undoBusy: EventEmitter<boolean> = new EventEmitter<boolean>();
-    cssClass: string = '';
+    cssClassCars: string = '';
+    cssClassBrtn: string = '';
+    cssClassSer: string = '';
 
     constructor() {
         this.carsView = this.cars();
+        this.brtnView = this.brtn();
+        this.serView = this.ser();
         effect(() => {
-            const temp = this.cars();
+            const c = this.cars();
             setTimeout(() => {
-                this.cssClass = 'carsHidden';
+                this.cssClassCars = 'carsHidden';
                 setTimeout(() => {
                     this.carsView = this.cars();
-                    this.cssClass = '';
+                    this.cssClassCars = '';
+                }, 800);                                        
+            }, 250);
+        });
+        effect(() => {
+            const b = this.brtn();
+            setTimeout(() => {
+                this.cssClassBrtn = 'brtnHidden';
+                setTimeout(() => {
+                    this.brtnView = this.brtn();
+                    this.cssClassBrtn = '';
+                }, 800);                                        
+            }, 250);
+        });
+        effect(() => {
+            const s = this.ser();
+            setTimeout(() => {
+                this.cssClassSer = 'serHidden';
+                setTimeout(() => {
+                    this.serView = this.ser();
+                    this.cssClassSer = '';
                 }, 800);                                        
             }, 250);
         });
