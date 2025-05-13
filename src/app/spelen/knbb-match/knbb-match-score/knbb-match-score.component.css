@@ -15,12 +15,12 @@
 }
 .speler-container.thuis.active {
     background-color: white;
-    box-shadow: .75em 0px .75em 0px rgba(0,0,0,0.85);
+    box-shadow: 1em 0px 1em 0px rgba(0,0,0,0.85);
     z-index: 10;
 }
 .speler-container.gasten.active {
     background-color: gold;
-    box-shadow: -.75em 0px .75em 0px rgba(0,0,0,0.85);
+    box-shadow: 1em 0px 1em 0px rgba(0,0,0,0.85);
     z-index: 10;
 }
 .speler-container div {
