@@ -18,8 +18,8 @@
             <div class="fullheight flexgrow1 flexbox flexcolumn">
                 <div class="flexbox flexmiddle arial scoredata active" [ngClass]="{'geel': !team.metWit}"
                         style="height: 14em; line-height: 1;">
-                    <div class="flex50perc" style="text-align: center;">
-                        <span style="font-size: 14em;">{{team.stand.aantCar}}</span>
+                    <div class="flex50perc aantcar" style="text-align: center;">
+                        <span style="font-size: 14em;" [ngClass]="cssClassCars">{{carsView}}</span>
                     </div>
                     <div style="width: 6em; text-align: center;" [ngClass]="{'changes': team.stand.serie > 0}">
                         <span style="font-size: 5em;">{{team.stand.serie > 0 ? '+' : 'in'}}</span>
@@ -27,10 +27,10 @@
                     <div class="flexgrow1 flexbox flexcenter">
                         <div class="aantbrt" [ngClass]="{'serie': team.stand.serie > 0}">
                             @if (team.stand.serie > 0) {
-                                <span style="font-size: 9em;">{{team.stand.serie}}</span>
+                                <span style="font-size: 9em;" [ngClass]="cssClassSer">{{serView}}</span>
                             }
                             @else {
-                                <span style="font-size: 9em;">{{team.stand.aantBrt}}</span>
+                                <span style="font-size: 9em;" [ngClass]="cssClassBrtn">{{brtnView}}</span>
                             }
                         </div>
                     </div>

@@ -3,19 +3,27 @@
         <div class="bss-score-2 fullheight flexbox" [ngClass]="{'gameover': match.matchOver}">
             <div class="fullheight flex50perc speler-container thuis" [ngClass]="{'active': idxSpeler == 0}">
                 <app-knbb-team-match-score-speler [speler]="match.spelers[0]" 
-                        [teamIdx]="0" [oldPunten]="oldPunten[0]" (undoBusy)="resetBusy()"></app-knbb-team-match-score-speler>
+                        [teamIdx]="0" [oldPunten]="oldPunten[0]" 
+                        [cars]="match.spelers[0].stand.aantCar"
+                        [brtn]="match.spelers[0].stand.aantBrt"
+                        [ser]="match.spelers[0].stand.serie"
+                        (undoBusy)="resetBusy()"></app-knbb-team-match-score-speler>
             </div>
             <div class="fullheight flex50perc speler-container gasten" [ngClass]="{'active': idxSpeler == 1}">
                 <app-knbb-team-match-score-speler [speler]="match.spelers[1]" 
-                        [teamIdx]="1" [oldPunten]="oldPunten[1]" (undoBusy)="resetBusy()"></app-knbb-team-match-score-speler>
+                        [teamIdx]="1" [oldPunten]="oldPunten[1]" 
+                        [cars]="match.spelers[1].stand.aantCar"
+                        [brtn]="match.spelers[1].stand.aantBrt"
+                        [ser]="match.spelers[1].stand.serie"
+                        (undoBusy)="resetBusy()"></app-knbb-team-match-score-speler>
             </div>
         </div>
     }
     @if (modalVisible && modals.length) {
         <div class="modal" (click)="hideModal()">
             <div class="modal-container">
-                <div class="modal-content" [ngClass]="modals[0].type">
-                    <div style="letter-spacing: -.05em; padding: 1em 2em;">
+                <div class="modal-content-score" [ngClass]="modals[0].type">
+                    <div style="letter-spacing: -.05em; padding: .5em 1.5em;">
                         @if (modals[0].type === 'serie') {
                             <div>
                                 <span style="opacity: .75;">{{modals[0].texts[0]}} : </span>

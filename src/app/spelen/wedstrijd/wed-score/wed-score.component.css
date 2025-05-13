@@ -6,54 +6,59 @@
 .bss-scorebord .bss-portrait { width: 30em; height: 33.75em; }
 
 .scale-for3 {
-    transform: translateX(-10em) scaleX(.6666666);
+    transform: translateX(-10em) scaleX(.666666);
 }
 
-.gameover .speler-container {
-    border: .5em solid gray;
+.speler-container-sub {
+    position: relative;
+}
+.speler-container-sub.active {
+    z-index: 5;
+}
+.speler-container-sub.active .speler-container.active {
+    z-index: 10;
 }
 .speler-container {
+    position: relative;
+    padding: .5em;
     background-color: lightgray;
 }
-.speler-container:not(.active) {
-    filter: blur(1.5px);
+.speler-container.active {
+    z-index: 10;
 }
-.gameover .speler-container:not(.active) {
-    filter: none;
-}
-.speler-container.shadow-right {
-    box-shadow: inset -1.35em 0 1em -1em #000000;
-}
-.speler-container.shadow-left {
-    box-shadow: inset 1.35em 0 1em -1em #000000;
-}
-.speler-container.shadow-top {
-    box-shadow: inset 0 1.35em 1em -1em #000000;
-}
-.speler-container.shadow-bottom {
-    box-shadow: inset 0 -1.35em 1em -1em #000000;
-}
-.speler-container.shadow-top-right {
-    box-shadow: inset 0 1.35em 1em -1em #000000, inset -1.35em 0 1em -1em #000000;
-}
-.speler-container.shadow-top-left {
-    box-shadow: inset 0 1.35em 1em -1em #000000, inset 1.35em 0 1em -1em #000000;
-}
-
 .speler-container.wit.active {
-    border: .5em solid white;
+    background-color: white;
 }
 .speler-container.geel.active {
-    border: .5em solid gold;
+    background-color: gold;
 }
+
+.speler-container.active.shadow-right {
+    box-shadow: 1em 0px 1em 0px rgba(0,0,0,0.85);
+}
+.speler-container.active.shadow-left {
+    box-shadow: -1em 0px 1em 0px rgba(0,0,0,0.85);
+}
+.speler-container.active.shadow-left-right {
+    box-shadow: 1em 0px 1em 0px rgba(0,0,0,0.85), -1em 0px 1em 0px rgba(0,0,0,0.85);
+}
+.speler-container.active.shadow-bottom-right {
+    box-shadow: 1em .75em 1em 0px rgba(0,0,0,0.85);
+}
+.speler-container.active.shadow-top-right {
+    box-shadow: 1em -.75em 1em 0px rgba(0,0,0,0.85);
+}
+.speler-container.active.shadow-bottom-left {
+    box-shadow: -1em .75em 1em 0px rgba(0,0,0,0.85);
+}
+.speler-container.active.shadow-top-left {
+    box-shadow: -1em -.75em 1em 0px rgba(0,0,0,0.85);
+}
+
 .speler-container div {
     overflow: hidden;
 }
-/*
-.bss-landscape.speler-container.active {
-    border: .5em solid black;
-}
-*/
+
 .keylock {
     position: fixed;
     top: 0;

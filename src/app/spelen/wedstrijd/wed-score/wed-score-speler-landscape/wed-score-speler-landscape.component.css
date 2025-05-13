@@ -32,11 +32,16 @@
 .extradata.geel { color: gold;}
 .extradata.active .changes { color: #00a2ff; }
 
+.aantcar span { opacity: 1; transition: opacity .75s; }
+.aantcar span.carsHidden { opacity: 0; }
+
 .aantbrt {
     border-radius: 1em;
     overflow: hidden;
     padding: 0 1.5em 0 1em;
 }
+.aantbrt span { opacity: 1; transition: opacity .75s; }
+.aantbrt span.brtnHidden, .aantbrt span.serHidden { opacity: 0; }
 .aantbrt.serie {
     min-width: 90%;
     text-align: center;
