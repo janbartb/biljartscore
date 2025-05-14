@@ -1,6 +1,6 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { BaseComponent } from '../../base/base.component';
-import { Wedstrijd } from '../../model/wedstrijd';
+import { OefWedstrijd } from '../../model/oef-wedstrijd';
 import { HelperService } from '../../services/helper.service';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { SpelerComponent } from '../../shared/wedstrijd/speler/speler.component';
@@ -23,7 +23,7 @@ import { ButtonComponent } from '../../shared/button-group/button/button.compone
 export class WedstrijdComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
 
-    wedstrijd: Wedstrijd = new Wedstrijd();
+    wedstrijd: OefWedstrijd = new OefWedstrijd();
     namesValid: boolean = true;
     wedGestart: boolean = false;
 

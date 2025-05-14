@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { WedSpeler, Wedstrijd } from '../../../model/wedstrijd';
+import { OefWedSpeler, OefWedstrijd } from '../../../model/oef-wedstrijd';
 import { BaseComponent } from '../../../base/base.component';
 import { LijstDimensies, ScoreBeurt, ScoreSpeler } from '../../../model/score-beurt';
 import { WedLijstSpelerComponent } from "./wed-lijst-speler/wed-lijst-speler.component";
@@ -12,9 +12,9 @@ import { WedLijstSpelerComponent } from "./wed-lijst-speler/wed-lijst-speler.com
     styleUrl: './wed-lijst.component.css'
 })
 export class WedLijstComponent extends BaseComponent implements OnInit {
-    wedstrijd: Wedstrijd = new Wedstrijd();
+    wedstrijd: OefWedstrijd = new OefWedstrijd();
     spelerLijsten: ScoreSpeler[] = [];
-    spelers: WedSpeler[] = [];
+    spelers: OefWedSpeler[] = [];
     dataReady: boolean = false;
     dim: LijstDimensies = new LijstDimensies();
 

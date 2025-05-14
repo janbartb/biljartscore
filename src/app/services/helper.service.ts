@@ -1,5 +1,5 @@
 import { ElementRef, inject, Injectable } from '@angular/core';
-import { WedSpelerStand, Wedstrijd, WedTeamStand } from '../model/wedstrijd';
+import { OefWedSpelerStand, OefWedstrijd, OefWedTeamStand } from '../model/oef-wedstrijd';
 import { Match, TeamMatch } from '../model/match';
 import { AlertService } from './alert.service';
 import { KnbbCompetitie } from '../model/knbb-competitie';
@@ -56,7 +56,7 @@ export class HelperService {
         }
     }
 
-    areWedstrijdSpelersFilled(wedstrijd: Wedstrijd): boolean {
+    areWedstrijdSpelersFilled(wedstrijd: OefWedstrijd): boolean {
         if (wedstrijd.aantSpelers == 0) {
             return false;
         }
@@ -73,28 +73,28 @@ export class HelperService {
         return toCheck.filter((value, index, self) => self.indexOf(value) === index).length === toCheck.length;
     }
 
-    clearWedstrijdStanden(wedstrijd: Wedstrijd) {
+    clearWedstrijdStanden(wedstrijd: OefWedstrijd) {
         wedstrijd.wedOver = false;
         wedstrijd.idxTeam = -1;
         wedstrijd.idxSpeler = -1;
         wedstrijd.teams.forEach((team, idxT) => {
             team.active = idxT == 0;
             team.metWit = idxT == 0;
-            team.stand = new WedTeamStand();
+            team.stand = new OefWedTeamStand();
             team.spelers.forEach((spl, idxS) => {
                 spl.active = idxT == 0 && idxS == 0;
                 spl.metWit = idxT == 0;
-                spl.stand = new WedSpelerStand();
+                spl.stand = new OefWedSpelerStand();
             });
         });
         wedstrijd.spelers.forEach((spl, idx) => {
             spl.active = idx == 0;
             spl.metWit = idx % 2 == 0;
-            spl.stand = new WedSpelerStand();
+            spl.stand = new OefWedSpelerStand();
         });
     }
 
-    clearWedstrijdResultaten(wedstrijd: Wedstrijd) {
+    clearWedstrijdResultaten(wedstrijd: OefWedstrijd) {
         wedstrijd.wedOver = false;
         wedstrijd.idxTeam = -1;
         wedstrijd.idxSpeler = -1;
@@ -111,7 +111,7 @@ export class HelperService {
                 team.teamTsCar = 0;
                 team.teamTsBrt = 0;
             }
-            team.stand = new WedTeamStand();
+            team.stand = new OefWedTeamStand();
             team.spelers.forEach((spl, idxS) => {
                 spl.active = idxT == 0 && idxS == 0;
                 spl.metWit = idxT == 0;
@@ -125,7 +125,7 @@ export class HelperService {
                     spl.splTsCar = 0;
                     spl.splTsBrt = 0;
                 }
-                spl.stand = new WedSpelerStand();
+                spl.stand = new OefWedSpelerStand();
             });
         });
         wedstrijd.spelers.forEach((spl, idx) => {
@@ -141,7 +141,7 @@ export class HelperService {
                 spl.splTsCar = 0;
                 spl.splTsBrt = 0;
             }
-            spl.stand = new WedSpelerStand();
+            spl.stand = new OefWedSpelerStand();
         });
     }
 

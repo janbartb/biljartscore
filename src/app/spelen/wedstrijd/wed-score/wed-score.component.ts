@@ -1,5 +1,5 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
-import { WedSpeler, Wedstrijd, WedTeam } from '../../../model/wedstrijd';
+import { OefWedSpeler, OefWedstrijd, OefWedTeam } from '../../../model/oef-wedstrijd';
 import { BaseComponent } from '../../../base/base.component';
 import { NgClass } from '@angular/common';
 import { WedScoreSpelerComponent } from './wed-score-speler/wed-score-speler.component';
@@ -27,9 +27,9 @@ import { SpelersNamenComponent } from '../../../shared/spelers-namen/spelers-nam
 })
 export class WedScoreComponent extends BaseComponent implements OnInit {
     spraak = inject(SpeechService);
-    wedstrijd: Wedstrijd = new Wedstrijd();
-    activeTeam: WedTeam = new WedTeam(-1, '');
-    activeSpeler: WedSpeler = new WedSpeler(-1);
+    wedstrijd: OefWedstrijd = new OefWedstrijd();
+    activeTeam: OefWedTeam = new OefWedTeam(-1, '');
+    activeSpeler: OefWedSpeler = new OefWedSpeler(-1);
     namenDialog: SpelerNamenDialog = new SpelerNamenDialog();
     modals: ModalMessage[] = [];
     idxTeam: number = -1;
@@ -153,7 +153,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
                 this.activeSpeler.metWit = !wasWit;
             }
         }
-        const copyOfWedstrijd: Wedstrijd = JSON.parse(JSON.stringify(this.wedstrijd));
+        const copyOfWedstrijd: OefWedstrijd = JSON.parse(JSON.stringify(this.wedstrijd));
         if (this.isTeamWedstrijd()) {
             this.verhoogBeurtenEnBerekenData(this.activeSpeler, this.activeTeam);
         }
@@ -172,7 +172,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         this.naamClicked(this.activeSpeler);
     }
 
-    naamClicked(spl: WedSpeler) {
+    naamClicked(spl: OefWedSpeler) {
         console.log('naam clicked ' + spl.splNaam);
         this.namenDialog.selSpelerId = spl.splId;
         this.namenDialog.spelers = this.getWedSpelers();
@@ -208,9 +208,9 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         this.isDialogOpen = false;
     }
 
-    private findSpelerById(id: string): WedSpeler | undefined {
+    private findSpelerById(id: string): OefWedSpeler | undefined {
         if (this.wedstrijd.teams.length) {
-            let result: WedSpeler | undefined = undefined;
+            let result: OefWedSpeler | undefined = undefined;
             this.wedstrijd.teams.some(tm => {
                 result = tm.spelers.find(spl => spl.splId == id);
                 return result ? true : false;
@@ -545,21 +545,21 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         return result;
     }
 
-    private getGemiddelde(spl: WedSpeler): number {
+    private getGemiddelde(spl: OefWedSpeler): number {
         if (spl.stand.aantBrt === 0) {
             return 0;
         }
         return (spl.stand.aantCar + spl.stand.serie) / spl.stand.aantBrt;
     }
 
-    private getTeamGemiddelde(team: WedTeam): number {
+    private getTeamGemiddelde(team: OefWedTeam): number {
         if (team.stand.aantBrt === 0) {
             return 0;
         }
         return (team.stand.aantCar + team.stand.serie) / team.stand.aantBrt;
     }
 
-    private verhoogBeurtenEnBerekenData(spl: WedSpeler, team?: WedTeam): void {
+    private verhoogBeurtenEnBerekenData(spl: OefWedSpeler, team?: OefWedTeam): void {
         spl.stand.aantBrt++;
         spl.stand.gemiddelde = this.getGemiddelde(spl);
         if (team) {
@@ -568,7 +568,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         }
     }
 
-    private verminderBeurtenEnBerekenData(spl: WedSpeler, team?: WedTeam): void {
+    private verminderBeurtenEnBerekenData(spl: OefWedSpeler, team?: OefWedTeam): void {
         spl.stand.aantBrt--;
         spl.stand.serie = 0;
         spl.stand.gemiddelde = this.getGemiddelde(spl);
@@ -712,7 +712,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             }
             this.activeTeam.stand.laatste5brt = laatste5;    
         }
-        const copyOfWedstrijd: Wedstrijd = JSON.parse(JSON.stringify(this.wedstrijd));
+        const copyOfWedstrijd: OefWedstrijd = JSON.parse(JSON.stringify(this.wedstrijd));
         if (this.isTeamWedstrijd()) {
             let actTeam = copyOfWedstrijd.teams[this.idxTeam];
             let actSpl = actTeam.spelers[this.idxSpeler];
@@ -800,7 +800,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         }
     }
 
-    private saveWedstrijd(wedstrijd: Wedstrijd) {
+    private saveWedstrijd(wedstrijd: OefWedstrijd) {
         this.busy = true;
         this.bssApi.saveWedstrijd(wedstrijd)
         .then(() => {

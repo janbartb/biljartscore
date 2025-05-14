@@ -1,5 +1,5 @@
 import { Component, effect, EventEmitter, input, Input, Output } from '@angular/core';
-import { WedSpeler } from '../../../../model/wedstrijd';
+import { OefWedSpeler } from '../../../../model/oef-wedstrijd';
 import { DecimalPipe, NgClass } from '@angular/common';
 
 @Component({
@@ -13,7 +13,7 @@ import { DecimalPipe, NgClass } from '@angular/common';
     styleUrl: './wed-score-speler.component.css'
 })
 export class WedScoreSpelerComponent {
-    @Input() speler: WedSpeler = new WedSpeler(-1);
+    @Input() speler: OefWedSpeler = new OefWedSpeler(-1);
     @Input() grijs: boolean = false;
     cars = input(0);
     carsView: number = 0;

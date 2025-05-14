@@ -1,6 +1,6 @@
 import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { BaseComponent } from '../../../base/base.component';
-import { WedSpeler, WedSpelerStand, Wedstrijd, WedTeam } from '../../../model/wedstrijd';
+import { OefWedSpeler, OefWedSpelerStand, OefWedstrijd } from '../../../model/oef-wedstrijd';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { List } from '../../../model/list';
 import { NgClass } from '@angular/common';
@@ -32,8 +32,8 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     verenigingLijst: List<VerenigingKort> = new List<VerenigingKort>();
     spelerLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
     verenigingFilter: string = this.appData.getConfig()?.vereniging || '';
-    wedOrig: Wedstrijd = new Wedstrijd();
-    wedstrijd: Wedstrijd = new Wedstrijd();
+    wedOrig: OefWedstrijd = new OefWedstrijd();
+    wedstrijd: OefWedstrijd = new OefWedstrijd();
 
     idxActiveTeam: number = -1;
     idxActiveSpeler: number = -1;
@@ -359,7 +359,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     }
 
     private addSpelerToWedstrijd(spelerToAdd: SpelerWrapper) {
-        let speler: WedSpeler = this.getWedstrijdSpeler(this.idxActiveSpeler, this.idxActiveTeam);
+        let speler: OefWedSpeler = this.getWedstrijdSpeler(this.idxActiveSpeler, this.idxActiveTeam);
         if (speler && speler.splId == spelerToAdd.speler.id) {
             this.maakVolgendeSpelerActief();
             return;
@@ -369,13 +369,13 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         speler.splBordNaam = spelerToAdd.speler.bordnaam && spelerToAdd.speler.bordnaam.length ? spelerToAdd.speler.bordnaam : spelerToAdd.speler.vnaam;
         speler.splSpreekNaam = (spelerToAdd.speler.spreeknaam != '') ? spelerToAdd.speler.spreeknaam : speler.splBordNaam;
         speler.splTsGem = spelerToAdd.getGemiddeldeVanSpel();
-        speler.stand = new WedSpelerStand();
+        speler.stand = new OefWedSpelerStand();
         this.setWedstrijdChanged();
         this.maakVolgendeSpelerActief();
         this.setSpelersFilled();
     }
 
-    private getWedstrijdSpeler(idxSpl: number, idxTeam: number): WedSpeler {
+    private getWedstrijdSpeler(idxSpl: number, idxTeam: number): OefWedSpeler {
         if (idxTeam >= 0) {
             return this.wedstrijd.teams[idxTeam].spelers[idxSpl];
         }
@@ -494,7 +494,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         }
     }
 
-    private copyWedstrijd(): Wedstrijd {
+    private copyWedstrijd(): OefWedstrijd {
         return JSON.parse(JSON.stringify(this.wedOrig));
     }
 

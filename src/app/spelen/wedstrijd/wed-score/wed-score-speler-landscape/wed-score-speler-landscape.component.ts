@@ -1,6 +1,6 @@
 import { DecimalPipe, NgClass } from '@angular/common';
 import { Component, effect, EventEmitter, input, Input, Output } from '@angular/core';
-import { WedSpeler } from '../../../../model/wedstrijd';
+import { OefWedSpeler } from '../../../../model/oef-wedstrijd';
 
 @Component({
     selector: 'app-wed-score-speler-landscape',
@@ -13,7 +13,7 @@ import { WedSpeler } from '../../../../model/wedstrijd';
     styleUrl: './wed-score-speler-landscape.component.css'
 })
 export class WedScoreSpelerLandscapeComponent {
-    @Input() speler: WedSpeler = new WedSpeler(-1);
+    @Input() speler: OefWedSpeler = new OefWedSpeler(-1);
     cars = input(0);
     carsView: number = 0;
     brtn = input(0);

@@ -8,7 +8,7 @@ import { MoyenneTabel } from '../model/moyenne-tabel';
 import { District } from '../model/district';
 import { KnbbCompetitie } from '../model/knbb-competitie';
 import { Seizoenen } from '../model/seizoenen';
-import { Wedstrijd, WedstrijdLeesResultaat } from '../model/wedstrijd';
+import { OefWedstrijd, OefWedstrijdLeesResultaat } from '../model/oef-wedstrijd';
 import { Match, MatchLeesResultaat, TeamMatch, TeamMatchLeesResultaat } from '../model/match';
 import { StatusService } from './status.service';
 import { BpCompetitie, BpDistrict, BpMoyTabel, CompTemp, TeamPageData } from '../model/bpoint';
@@ -235,8 +235,8 @@ export class ApiService {
         return compSeizoenen.seizoenen;
     }
 
-    async getWedstrijd(): Promise<WedstrijdLeesResultaat> {
-        const result: WedstrijdLeesResultaat = await this.getResource(this.dbUrl + `/wedstrijd`);
+    async getWedstrijd(): Promise<OefWedstrijdLeesResultaat> {
+        const result: OefWedstrijdLeesResultaat = await this.getResource(this.dbUrl + `/wedstrijd`);
         return result;
     }
 
@@ -584,7 +584,7 @@ export class ApiService {
 
     // WEDSTRIJD
 
-    async saveWedstrijd(wedstrijd: Wedstrijd): Promise<ApiResponse> {
+    async saveWedstrijd(wedstrijd: OefWedstrijd): Promise<ApiResponse> {
         const response: Response = await fetch(this.dbUrl + `/wedstrijd`, {
             method: 'POST',
             body: JSON.stringify(wedstrijd),

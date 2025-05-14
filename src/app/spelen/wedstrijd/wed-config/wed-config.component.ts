@@ -1,7 +1,7 @@
 import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { BaseComponent } from '../../../base/base.component';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
-import { WedSpelerStand, Wedstrijd, WedTeamStand } from '../../../model/wedstrijd';
+import { OefWedstrijd } from '../../../model/oef-wedstrijd';
 import { List } from '../../../model/list';
 import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -42,8 +42,8 @@ class InpNumber {
 export class WedConfigComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
 
-    wedOrig: Wedstrijd = new Wedstrijd();
-    wedstrijd: Wedstrijd = new Wedstrijd();
+    wedOrig: OefWedstrijd = new OefWedstrijd();
+    wedstrijd: OefWedstrijd = new OefWedstrijd();
     wedstrijdChanged: boolean = false;
 
     optieLijst: List<string> = new List<string>();

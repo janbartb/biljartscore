@@ -1,4 +1,4 @@
-export class Wedstrijd {
+export class OefWedstrijd {
     aantSpelers: number = 0;
     isVastAantBrt: boolean = true;
     isVastAantCar: boolean = true;
@@ -8,11 +8,11 @@ export class Wedstrijd {
     wedOver: boolean = false;
     idxSpeler: number = -1;
     idxTeam: number = -1;
-    spelers: WedSpeler[] = [];
-    teams: WedTeam[] = [];
+    spelers: OefWedSpeler[] = [];
+    teams: OefWedTeam[] = [];
 }
 
-export class WedTeam {
+export class OefWedTeam {
     teamIdx: number = -1;
     teamNaam: string = '';
     metWit: boolean = true;
@@ -20,8 +20,8 @@ export class WedTeam {
     teamTsGem: number = 0;
     teamTsCar: number = 0;
     teamTsBrt: number = 0;
-    stand: WedTeamStand = new WedTeamStand();
-    spelers: WedSpeler[] = [];
+    stand: OefWedTeamStand = new OefWedTeamStand();
+    spelers: OefWedSpeler[] = [];
 
     constructor(idx: number, naam: string) {
         this.teamIdx = idx;
@@ -30,7 +30,7 @@ export class WedTeam {
     }
 }
 
-export class WedSpeler {
+export class OefWedSpeler {
     splIdx: number = -1;
     teamIdx: number = -1;
     splId: string = '';
@@ -42,7 +42,7 @@ export class WedSpeler {
     splTsGem: number = 0;
     splTsCar: number = 0;
     splTsBrt: number = 0;
-    stand: WedSpelerStand = new WedSpelerStand();
+    stand: OefWedSpelerStand = new OefWedSpelerStand();
 
     constructor(idxSpl: number, idxTeam?: number) {
         this.splIdx = idxSpl;
@@ -54,7 +54,7 @@ export class WedSpeler {
     }
 }
 
-export class WedTeamStand {
+export class OefWedTeamStand {
     hoogSer: number = 0;
     aantCar: number = 0;
     aantBrt: number = 0;
@@ -65,7 +65,7 @@ export class WedTeamStand {
     laatste5brt: number[] = [];
 }
 
-export class WedSpelerStand {
+export class OefWedSpelerStand {
     hoogSer: number = 0;
     aantCar: number = 0;
     aantBrt: number = 0;
@@ -76,7 +76,7 @@ export class WedSpelerStand {
     laatste5brt: number[] = [];
 }
 
-export class WedstrijdLeesResultaat {
+export class OefWedstrijdLeesResultaat {
     gevonden: boolean = false;
-    wedstrijd!: Wedstrijd;
+    wedstrijd!: OefWedstrijd;
 }
