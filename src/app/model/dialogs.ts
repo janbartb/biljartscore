@@ -3,6 +3,7 @@ import { CmpMatchSpeler } from "./competitie";
 import { MatchSpeler } from "./match";
 import { SpelerWrapper } from "./speler";
 import { OefWedSpeler } from "./oef-wedstrijd";
+import { WedSpeler } from "./wedstrijd";
 
 export class ConfirmDialog {
     id: string = '';
@@ -61,7 +62,7 @@ export class SpelerNamen {
     splBordNaam: string = '';
     splSpreekNaam: string = '';
 
-    constructor(speler: OefWedSpeler | MatchSpeler | null, cmpSpeler?: CmpMatchSpeler) {
+    constructor(speler: WedSpeler | OefWedSpeler | MatchSpeler | null, cmpSpeler?: CmpMatchSpeler) {
         if (cmpSpeler) {
             this.splId = cmpSpeler.id;
             this.splNaam = cmpSpeler.naam;

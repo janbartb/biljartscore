@@ -1,51 +1,52 @@
-import { Component, HostListener, inject, OnInit } from '@angular/core';
-import { OefWedSpeler, OefWedstrijd, OefWedTeam } from '../../../model/oef-wedstrijd';
-import { BaseComponent } from '../../../base/base.component';
+import { Component, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
+import { WedSpeler, Wedstrijd, WedTeam } from '../../model/wedstrijd';
 import { NgClass } from '@angular/common';
-import { WedScoreSpelerComponent } from './wed-score-speler/wed-score-speler.component';
-import { ModalMessage } from '../../../model/modal-message';
-import { WedScoreSpelerLandscapeComponent } from './wed-score-speler-landscape/wed-score-speler-landscape.component';
-import { WedScoreTeamComponent } from './wed-score-team/wed-score-team.component';
-import { SpeechService } from '../../../services/speech.service';
-import { HelpComponent } from '../../../shared/help/help.component';
-import { SpelerNamen, SpelerNamenDialog } from '../../../model/dialogs';
-import { SpelersNamenComponent } from '../../../shared/spelers-namen/spelers-namen.component';
+import { ScoreSpelerComponent } from './score-speler/score-speler.component';
+import { SpelerNamen, SpelerNamenDialog } from '../../model/dialogs';
+import { ModalMessage } from '../../model/modal-message';
+import { ScoreService } from '../../services/score.service';
+import { SpeechService } from '../../services/speech.service';
+import { AlertService } from '../../services/alert.service';
+import { SpelersNamenComponent } from '../spelers-namen/spelers-namen.component';
+import { HelpComponent } from '../help/help.component';
 
 @Component({
-    selector: 'app-wed-score',
+    selector: 'app-score',
     standalone: true,
     imports: [
-        WedScoreSpelerComponent,
-        WedScoreSpelerLandscapeComponent,
-        WedScoreTeamComponent,
+        ScoreSpelerComponent,
         SpelersNamenComponent,
         HelpComponent,
         NgClass
     ],
-    templateUrl: './wed-score.component.html',
-    styleUrl: './wed-score.component.css'
+    templateUrl: './score.component.html',
+    styleUrl: './score.component.css'
 })
-export class WedScoreComponent extends BaseComponent implements OnInit {
+export class ScoreComponent implements OnInit {
+    scoreService = inject(ScoreService);
     spraak = inject(SpeechService);
-    wedstrijd: OefWedstrijd = new OefWedstrijd();
-    activeTeam: OefWedTeam = new OefWedTeam(-1, '');
-    activeSpeler: OefWedSpeler = new OefWedSpeler(-1);
+    alert = inject(AlertService);
+
+    @Input() wedstrijd: Wedstrijd = new Wedstrijd();
+    @Output() opslaan: EventEmitter<Wedstrijd> = new EventEmitter<Wedstrijd>();
+    @Output() keyPressed: EventEmitter<string> = new EventEmitter<string>();
+
+    activeTeam: WedTeam = new WedTeam();
+    activeSpeler: WedSpeler = new WedSpeler();
     namenDialog: SpelerNamenDialog = new SpelerNamenDialog();
     modals: ModalMessage[] = [];
     idxTeam: number = -1;
     idxSpeler: number = -1;
-    busyCounter: number = 0;
-
-    wedGelezen: boolean = false;
-    busy: boolean = false;
     modalVisible: boolean = false;
     keysLocked: boolean = false;
     testMode: boolean = false;
     testModeToggled: boolean = false;
     speechToggled: boolean = false;
-
+    isDialogOpen: boolean = false;
+    oldPunten: number[] = [0, 0];
+    
     enterPressed(): void {
-        if (this.wedstrijd.wedOver) {
+        if (this.wedstrijd.wedGespeeld) {
             return;
         }
         if (this.testMode) {
@@ -104,30 +105,36 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             this.activeTeam.stand.laatste5brt = laatste5;
             this.activeTeam.stand.serie = 0;
         }
-        // check for end of game
+        if (this.wedstrijd.telling.idxOptie == 0) {
+            this.oldPunten[this.idxSpeler] = this.activeSpeler.stand.punten;
+        }
+        // check for einde wedstrijd
         if (this.isWedstrijdOver()) {
-            this.wedstrijd.wedOver = true;
+            this.wedstrijd.spelers.forEach((spl, idx) => {
+                spl.stand.punten = this.getPunten(spl, idx);
+            });
+            this.wedstrijd.wedGespeeld = true;
             if (this.isTeamWedstrijd()) {
                 this.wedstrijd.teams.forEach(team => {
-                    team.active = true;
-                    team.spelers.forEach(spl => spl.active = true);
+                    team.actief = true;
+                    team.spelers.forEach(spl => spl.actief = true);
                 });
             }
             else {
-                this.wedstrijd.spelers.forEach(spl => spl.active = true);
+                this.wedstrijd.spelers.forEach(spl => spl.actief = true);
             }
             this.idxTeam = -1;
             this.idxSpeler = -1;
-            this.saveWedstrijd(this.wedstrijd);
             const modalMsg = new ModalMessage('success', ['▪ ▪ ▪ ▪ EINDE WEDSTRIJD ▪ ▪ ▪ ▪'], 'Einde wedstrijd', 3);
             this.modals.push(modalMsg);
             this.showModal();
+            this.opslaan.emit(this.wedstrijd);
             return;
         }
         // switch actieve speler
         if (this.isTeamWedstrijd()) {
-            this.activeTeam.active = false;
-            this.activeSpeler.active = false;
+            this.activeTeam.actief = false;
+            this.activeSpeler.actief = false;
             if (this.idxTeam == 0) {
                 this.idxTeam = 1;
             }
@@ -137,46 +144,71 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             }
             this.activeTeam = this.wedstrijd.teams[this.idxTeam];
             this.activeSpeler = this.wedstrijd.teams[this.idxTeam].spelers[this.idxSpeler];
-            this.activeTeam.active = true;
-            this.activeSpeler.active = true;
+            this.activeTeam.actief = true;
+            this.activeSpeler.actief = true;
         }
         else {
             const wasWit = this.activeSpeler.metWit;
-            this.activeSpeler.active = false;
+            this.activeSpeler.actief = false;
             this.idxSpeler++;
             if (this.idxSpeler >= this.wedstrijd.aantSpelers) {
                 this.idxSpeler = 0;
             }
             this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
-            this.activeSpeler.active = true;
+            this.activeSpeler.actief = true;
             if (this.wedstrijd.aantSpelers == 1 || this.wedstrijd.aantSpelers == 3) {
                 this.activeSpeler.metWit = !wasWit;
             }
         }
-        const copyOfWedstrijd: OefWedstrijd = JSON.parse(JSON.stringify(this.wedstrijd));
+        const copyOfWedstrijd: Wedstrijd = JSON.parse(JSON.stringify(this.wedstrijd));
         if (this.isTeamWedstrijd()) {
             this.verhoogBeurtenEnBerekenData(this.activeSpeler, this.activeTeam);
         }
         else {
             this.verhoogBeurtenEnBerekenData(this.activeSpeler);
         }
+        if (this.wedstrijd.telling.idxOptie == 0) {
+            this.oldPunten[this.idxSpeler] = this.activeSpeler.stand.punten;
+        }
         this.checkForMessages(false, true);
-        this.saveWedstrijd(copyOfWedstrijd);
-    }
-
-    resetBusy() {
-        this.busy = false;
+        this.opslaan.emit(copyOfWedstrijd);
     }
 
     wijzigNamenPressed() {
         this.naamClicked(this.activeSpeler);
     }
 
-    naamClicked(spl: OefWedSpeler) {
-        console.log('naam clicked ' + spl.splNaam);
+    naamClicked(spl: WedSpeler) {
         this.namenDialog.selSpelerId = spl.splId;
         this.namenDialog.spelers = this.getWedSpelers();
         this.isDialogOpen = true;
+    }
+
+    namenDialogReplied(accepted: boolean) {
+        if (accepted) {
+            this.namenDialog.spelers.forEach(namSpl => {
+                let wedSpeler = this.findSpelerById(namSpl.splId);
+                if (wedSpeler) {
+                    wedSpeler.splBordNaam = namSpl.splBordNaam;
+                    wedSpeler.splSpreekNaam = namSpl.splSpreekNaam;
+                }
+            });
+        }
+        this.isDialogOpen = false;
+    }
+
+    private findSpelerById(id: string): WedSpeler | undefined {
+        if (this.wedstrijd.teams.length) {
+            let result: WedSpeler | undefined = undefined;
+            this.wedstrijd.teams.some(tm => {
+                result = tm.spelers.find(spl => spl.splId == id);
+                return result ? true : false;
+            });
+            return result;
+        }
+        else {
+            return this.wedstrijd.spelers.find(spl => spl.splId == id);
+        }
     }
 
     toggleTestMode() {
@@ -195,33 +227,6 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         }, 2000);
     }
 
-    namenDialogReplied(accepted: boolean) {
-        if (accepted) {
-            this.namenDialog.spelers.forEach(namSpl => {
-                let wedSpeler = this.findSpelerById(namSpl.splId);
-                if (wedSpeler) {
-                    wedSpeler.splBordNaam = namSpl.splBordNaam;
-                    wedSpeler.splSpreekNaam = namSpl.splSpreekNaam;
-                }
-            });
-        }
-        this.isDialogOpen = false;
-    }
-
-    private findSpelerById(id: string): OefWedSpeler | undefined {
-        if (this.wedstrijd.teams.length) {
-            let result: OefWedSpeler | undefined = undefined;
-            this.wedstrijd.teams.some(tm => {
-                result = tm.spelers.find(spl => spl.splId == id);
-                return result ? true : false;
-            });
-            return result;
-        }
-        else {
-            return this.wedstrijd.spelers.find(spl => spl.splId == id);
-        }
-    }
-
     @HostListener('document:keydown', ['$event'])
     handleKeydownEvent(event: KeyboardEvent): boolean {
         if (event.code == 'F5') {
@@ -237,28 +242,17 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         if (this.isDialogOpen) {
             return false;
         }
-        if (this.busy) {
-            return false;
-        }
         if (this.alert.helpVisible && event.key != 'Shift') {
             this.alert.hideHelp();
             return false;
         }        
-        // if (event.key === 'Enter') {
-        //     this.enterPressed();
-        //     return false;
-        // }
         if (event.key === 'Escape' || event.key === 'Backspace' || event.code == 'F5') {
             if (this.activeSpeler.stand.serie > 0) {
                 this.addNumberToSerie('-1');
             }
             else {
-                this.router.navigate(['wedstrijd']);
+                this.keyPressed.emit('Escape');
             }
-            return false;
-        }
-        if (event.key === 'Home') {
-            this.homePressed();
             return false;
         }
         if (event.code === 'KeyN') {
@@ -278,14 +272,14 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.code === 'KeyL' || event.key === '*') {
-            this.appData.gotoPage(this.router.url, 'wedstrijd/lijst');
+            this.keyPressed.emit('Lijst');
             return false;
         }
         if (event.key === 'Delete' || event.code === 'NumpadDecimal' || event.code == 'Period') {
             this.undoLaatsteBeurt();
             return false;
         }
-        if (!this.wedstrijd.wedOver) {
+        if (!this.wedstrijd.wedGespeeld) {
             if (event.key === 'Enter' || event.key == 'PageDown') {
                 this.enterPressed();
                 return false;
@@ -315,36 +309,30 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.bssApi.getOefenWedstrijd()
-        .then(resp => {
-            if (!resp.gevonden) {
-                console.log('Match niet gevonden. Vreemd...');
-                this.router.navigate(['wedstrijd']);
-                return;
+        if (this.wedstrijd.wedGespeeld) {
+            if (this.wedstrijd.telling.idxOptie == 0) {
+                this.oldPunten[0] = this.wedstrijd.spelers[0].stand.punten;
+                this.oldPunten[1] = this.wedstrijd.spelers[1].stand.punten;
             }
-            this.wedstrijd = resp.wedstrijd;
-            console.log(this.wedstrijd);
-            if (this.wedstrijd.wedOver) {
-                this.wedGelezen = true;
-                const modalMsg = new ModalMessage('success', ['▪ ▪ ▪ ▪ EINDE WEDSTRIJD ▪ ▪ ▪ ▪'], '', 3);
-                this.modals.push(modalMsg);
-                this.showModal();
-            }
-            else {
-                this.setActiveTeamEnSpeler();
-                if (this.isTeamWedstrijd()) {
-                    this.verhoogBeurtenEnBerekenData(this.activeSpeler, this.activeTeam);
-                }
-                else {
-                    this.verhoogBeurtenEnBerekenData(this.activeSpeler);
-                }
-                this.wedGelezen = true;
-                this.checkForMessages(false, true);
-            }
-        })
-        .catch(err => {
-            this.alert.showError(err);
-        });
+            const modalMsg = new ModalMessage('success', ['▪ ▪ ▪ ▪ EINDE WEDSTRIJD ▪ ▪ ▪ ▪'], '', 3);
+            this.modals.push(modalMsg);
+            this.showModal();
+            return;
+        }
+        this.setMaxBeurten();
+        this.setActiveTeamEnSpeler();
+        console.log(this.wedstrijd);
+        if (this.isTeamWedstrijd()) {
+            this.verhoogBeurtenEnBerekenData(this.activeSpeler, this.activeTeam);
+        }
+        else {
+            this.verhoogBeurtenEnBerekenData(this.activeSpeler);
+        }
+        if (this.wedstrijd.telling.idxOptie == 0) {
+            this.oldPunten[0] = this.wedstrijd.spelers[0].stand.punten;
+            this.oldPunten[1] = this.wedstrijd.spelers[1].stand.punten;
+        }
+        this.checkForMessages(false, true);
     }
 
     private addNumberToSerie(numString: string): boolean {
@@ -356,7 +344,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         if (nr < 0 && this.activeSpeler.stand.serie === 0) {
             return false;
         }
-        if (!this.wedstrijd.isVastAantBrt) {
+        if (this.wedstrijd.regels.idxOptie != 1) {
             if (this.isTeamWedstrijd()) {
                 if ((nr + this.activeTeam.stand.serie + this.activeTeam.stand.aantCar) > this.activeTeam.teamTsCar) {
                     return false;
@@ -370,6 +358,9 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         }
         this.activeSpeler.stand.serie += nr;
         this.activeSpeler.stand.gemiddelde = this.getGemiddelde(this.activeSpeler);
+        if (this.wedstrijd.telling.idxOptie == 0) {
+            this.activeSpeler.stand.punten = this.getPunten(this.activeSpeler);
+        }
         if (this.isTeamWedstrijd()) {
             this.activeTeam.stand.serie += nr;
             this.activeTeam.stand.gemiddelde = this.getTeamGemiddelde(this.activeTeam);
@@ -399,8 +390,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         if (!fromSerie) {
             // beurten - alleen checken voor speler 1
             if (this.idxSpeler === 0) {
-                let maxBeurten = this.getMaxBeurten();
-                const remainingBrt = maxBeurten - this.activeSpeler.stand.aantBrt;
+                const remainingBrt = this.wedstrijd.regels.maxBeurten - this.activeSpeler.stand.aantBrt;
                 if (remainingBrt === 1 && fromEnter) {
                     msg.push('Voorlaatste beurt');
                     spk = 'Voorlaatste beurt';
@@ -411,7 +401,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
                 }
             }
             // gelijkmakende beurt
-            if (!this.wedstrijd.isVastAantBrt) {
+            if (this.wedstrijd.regels.idxOptie != 1) {
                 let idx = this.findIndexEersteSpelerDieCarsHeeftBereikt();
                 if (idx >= 0 && this.idxSpeler > idx) {
                     msg.push('Gelijkmakende beurt');
@@ -431,7 +421,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
                 }
             }
         }
-        else if (fromSerie && !this.wedstrijd.isVastAantBrt) {
+        else if (fromSerie && this.wedstrijd.regels.idxOptie != 1) {
             const remainingCar = this.activeSpeler.splTsCar - this.activeSpeler.stand.aantCar - this.activeSpeler.stand.serie;
             if (remainingCar === 0) {
                 return true;
@@ -439,6 +429,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             else if (remainingCar < 4) {
                 msg.push(`${this.activeSpeler.stand.serie}, en nog ${remainingCar} ...`);
                 spk = `${this.activeSpeler.stand.serie}, en nog ${remainingCar}.`;
+                msgType = 'carambole';
             }
             else {
                 msg.push(`${this.activeSpeler.stand.serie}`);
@@ -461,8 +452,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         if (!fromSerie) {
             // beurten - alleen checken voor speler 1
             if (this.idxTeam === 0 && this.idxSpeler === 0) {
-                let maxBeurten = this.getMaxBeurten();
-                const remainingBrt = maxBeurten - this.activeSpeler.stand.aantBrt;
+                const remainingBrt = this.wedstrijd.regels.maxBeurten - this.activeSpeler.stand.aantBrt;
                 if (remainingBrt === 1) {
                     msg.push('Voorlaatste beurt');
                     spk = 'Voorlaatste beurt';
@@ -473,7 +463,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
                 }
             }
             // gelijkmakende beurt
-            if (!this.wedstrijd.isVastAantBrt) {
+            if (this.wedstrijd.regels.idxOptie != 1) {
                 if (this.idxTeam === 1 && this.wedstrijd.teams[0].stand.aantCar === this.wedstrijd.teams[0].teamTsCar) {
                     msg.push('Gelijkmakende beurt');
                     spk = 'Gelijkmakende beurt';
@@ -492,7 +482,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
                 }
             }
         }
-        else if (!this.wedstrijd.isVastAantBrt) {
+        else if (this.wedstrijd.regels.idxOptie != 1) {
             const remainingCar = this.activeTeam.teamTsCar - this.activeTeam.stand.aantCar - this.activeTeam.stand.serie;
             if (remainingCar === 0) {
                 return true;
@@ -515,63 +505,25 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         return false;
     }
 
-    private eenVanDeTeamsHeeftCarsBereikt(): boolean {
-        return this.wedstrijd.teams.some(team => team.stand.aantCar === team.teamTsCar);
-    }
-
-    private eenVanDeSpelersHeeftCarsBereikt(): boolean {
-        return this.wedstrijd.spelers.some(spl => spl.stand.aantCar === spl.splTsCar);
-    }
-
-    private findIndexEersteSpelerDieCarsHeeftBereikt(): number {
-        return this.wedstrijd.spelers.findIndex(spl => spl.stand.aantCar === spl.splTsCar);
-    }
-
-    private findIndexEersteTeamDieCarsHeeftBereikt(): number {
-        return this.wedstrijd.teams.findIndex(team => team.stand.aantCar === team.teamTsCar);
-    }
-
-    private getMaxBeurten(): number {
-        let result = 0;
-        if (this.wedstrijd.isVastAantBrt) {
-            result = this.wedstrijd.tsBeurten;
-        }
-        else {
-            result = this.wedstrijd.maxBeurten;
-            if (result == 0) {
-                result = 500;
-            }
-        }
-        return result;
-    }
-
-    private getGemiddelde(spl: OefWedSpeler): number {
-        if (spl.stand.aantBrt === 0) {
-            return 0;
-        }
-        return (spl.stand.aantCar + spl.stand.serie) / spl.stand.aantBrt;
-    }
-
-    private getTeamGemiddelde(team: OefWedTeam): number {
-        if (team.stand.aantBrt === 0) {
-            return 0;
-        }
-        return (team.stand.aantCar + team.stand.serie) / team.stand.aantBrt;
-    }
-
-    private verhoogBeurtenEnBerekenData(spl: OefWedSpeler, team?: OefWedTeam): void {
+    private verhoogBeurtenEnBerekenData(spl: WedSpeler, team?: WedTeam): void {
         spl.stand.aantBrt++;
         spl.stand.gemiddelde = this.getGemiddelde(spl);
+        if (this.wedstrijd.telling.idxOptie == 0) {
+            spl.stand.punten = this.getPunten(spl);
+        }
         if (team) {
             team.stand.aantBrt++;
             team.stand.gemiddelde = this.getTeamGemiddelde(team);
         }
     }
 
-    private verminderBeurtenEnBerekenData(spl: OefWedSpeler, team?: OefWedTeam): void {
+    private verminderBeurtenEnBerekenData(spl: WedSpeler, team?: WedTeam): void {
         spl.stand.aantBrt--;
         spl.stand.serie = 0;
         spl.stand.gemiddelde = this.getGemiddelde(spl);
+        if (this.wedstrijd.telling.idxOptie == 0) {
+            spl.stand.punten = this.getPunten(spl);
+        }
         if (team) {
             team.stand.aantBrt--;
             team.stand.serie = 0;
@@ -590,31 +542,31 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
                 return false;
             }    
         }
-        const wasWedOver = this.wedstrijd.wedOver;
-        if (this.wedstrijd.wedOver) {
-            this.wedstrijd.wedOver = false;
+        const wasWedOver = this.wedstrijd.wedGespeeld;
+        if (this.wedstrijd.wedGespeeld) {
+            this.wedstrijd.wedGespeeld = false;
             // alle spelers zijn actief dus allen inactiveren behalve de laatse; die blijft actief
             if (this.isTeamWedstrijd()) {
                 this.wedstrijd.teams.forEach(team => {
-                    team.active = false;
+                    team.actief = false;
                     team.spelers.forEach(spl => {
-                        spl.active = false;
+                        spl.actief = false;
                     });
                 });
                 this.idxTeam = 1;
                 this.activeTeam = this.wedstrijd.teams[1];
-                this.activeTeam.active = true;
+                this.activeTeam.actief = true;
                 this.idxSpeler = this.activeTeam.spelers[0].stand.aantBrt === this.activeTeam.spelers[1].stand.aantBrt ? 1 : 0;
                 this.activeSpeler = this.activeTeam.spelers[this.idxSpeler];
-                this.activeSpeler.active = true;
+                this.activeSpeler.actief = true;
             }
             else {
                 this.wedstrijd.spelers.forEach(spl => {
-                    spl.active = false;
+                    spl.actief = false;
                 });
                 this.idxSpeler = this.wedstrijd.aantSpelers - 1;
                 this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
-                this.activeSpeler.active = true;
+                this.activeSpeler.actief = true;
             }
         }
         else {
@@ -622,6 +574,10 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             this.activeSpeler.stand.aantBrt--;
             this.activeSpeler.stand.serie = 0;
             this.activeSpeler.stand.gemiddelde = this.getGemiddelde(this.activeSpeler);
+            if (this.wedstrijd.telling.idxOptie == 0) {
+                this.activeSpeler.stand.punten = this.getPunten(this.activeSpeler);
+                this.oldPunten[this.idxSpeler] = this.activeSpeler.stand.punten;
+            }
             if (this.isTeamWedstrijd()) {
                 this.activeTeam.stand.aantBrt--;
                 this.activeTeam.stand.serie = 0;
@@ -629,26 +585,26 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             }
             // maak vorige speler de huidige speler
             if (this.isTeamWedstrijd()) {
-                this.activeTeam.active = false;
-                this.activeSpeler.active = false;
+                this.activeTeam.actief = false;
+                this.activeSpeler.actief = false;
                 this.idxTeam = this.idxTeam === 1 ? 0 : 1;
                 this.activeTeam = this.wedstrijd.teams[this.idxTeam];
-                this.activeTeam.active = true;
+                this.activeTeam.actief = true;
                 if (this.idxTeam === 1) {
                     this.idxSpeler = this.idxSpeler === 1 ? 0 : 1;
                 }
                 this.activeSpeler = this.activeTeam.spelers[this.idxSpeler];
-                this.activeSpeler.active = true;        
+                this.activeSpeler.actief = true;        
             }
             else {
                 let wasMetWit = this.activeSpeler.metWit;
-                this.activeSpeler.active = false;
+                this.activeSpeler.actief = false;
                 this.idxSpeler--;
                 if (this.idxSpeler < 0) {
                     this.idxSpeler = this.wedstrijd.aantSpelers - 1;
                 }
                 this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
-                this.activeSpeler.active = true;    
+                this.activeSpeler.actief = true;    
                 if (this.wedstrijd.aantSpelers == 3) {
                     this.activeSpeler.metWit = !wasMetWit;
                 }
@@ -660,6 +616,15 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         }
         this.activeSpeler.stand.serie = laatsteSerie;
         this.activeSpeler.stand.aantCar -= laatsteSerie;
+        if (this.wedstrijd.telling.idxOptie == 0) {
+            this.oldPunten[this.idxSpeler] = this.getOldPunten(this.activeSpeler);
+        }
+        // indien het gameover was werk punten bij van alle spelers
+        if (wasWedOver && this.wedstrijd.telling.idxOptie == 0) {
+            this.wedstrijd.spelers.forEach(spl => {
+                spl.stand.punten = this.getPunten(spl);
+            });
+        }
         if (this.isTeamWedstrijd()) {
             let laatsteSerie = this.activeTeam.stand.score.pop();
             if (!laatsteSerie) {
@@ -712,7 +677,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             }
             this.activeTeam.stand.laatste5brt = laatste5;    
         }
-        const copyOfWedstrijd: OefWedstrijd = JSON.parse(JSON.stringify(this.wedstrijd));
+        const copyOfWedstrijd: Wedstrijd = JSON.parse(JSON.stringify(this.wedstrijd));
         if (this.isTeamWedstrijd()) {
             let actTeam = copyOfWedstrijd.teams[this.idxTeam];
             let actSpl = actTeam.spelers[this.idxSpeler];
@@ -723,7 +688,7 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             this.verminderBeurtenEnBerekenData(actSpl);    
         }
         this.checkForMessages();
-        this.saveWedstrijd(copyOfWedstrijd);
+        this.opslaan.emit(copyOfWedstrijd);
         return false;
     }
 
@@ -735,6 +700,96 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
         return false;
     }
 
+    private getGemiddelde(spl: WedSpeler): number {
+        if (spl.stand.aantBrt === 0) {
+            return 0;
+        }
+        return (spl.stand.aantCar + spl.stand.serie) / spl.stand.aantBrt;
+    }
+
+    private getTeamGemiddelde(team: WedTeam): number {
+        if (team.stand.aantBrt === 0) {
+            return 0;
+        }
+        return (team.stand.aantCar + team.stand.serie) / team.stand.aantBrt;
+    }
+
+    private getPunten(spl: WedSpeler, idx?: number): number {
+        let punten = 0;
+        if (this.wedstrijd.telling.idxOptie == 0) {
+            punten = Math.floor(10 * (spl.stand.aantCar + spl.stand.serie) / spl.splTsCar);
+        }
+        else {
+            if (idx != undefined && idx != null) {
+                let teg = this.wedstrijd.spelers[Math.abs(idx - 1)];
+                if (this.wedstrijd.regels.idxOptie == 1) {
+                    if ((spl.stand.gemiddelde / spl.splTsMoy) > (teg.stand.gemiddelde / teg.splTsMoy)) {
+                        punten = this.wedstrijd.telling.winstPunten;
+                    }
+                    else if ((spl.stand.gemiddelde / spl.splTsMoy) == (teg.stand.gemiddelde / teg.splTsMoy)) {
+                        punten = this.wedstrijd.telling.gelijkPunten;
+                    }
+                    else {
+                        punten = 0;
+                    }
+                }
+                else {
+                    if (spl.stand.aantCar == spl.splTsCar || teg.stand.aantCar == teg.splTsCar) {
+                        if (spl.stand.aantCar == spl.splTsCar && teg.stand.aantCar == teg.splTsCar) {
+                            punten = this.wedstrijd.telling.gelijkPunten;
+                        }
+                        else {
+                            punten = (spl.stand.aantCar == spl.splTsCar) ? this.wedstrijd.telling.winstPunten : 0
+                        }
+                    }
+                    else {
+                        if ((spl.stand.aantCar / spl.splTsCar) > (teg.stand.aantCar / teg.splTsCar)) {
+                            punten = this.wedstrijd.telling.winstPunten;
+                        }
+                        else if ((spl.stand.aantCar / spl.splTsCar) == (teg.stand.aantCar / teg.splTsCar)) {
+                            punten = this.wedstrijd.telling.gelijkPunten;
+                        }
+                        else {
+                            punten = 0;
+                        }    
+                    }
+                }
+            }
+        }
+        if (spl.stand.gemiddelde > spl.splTsMoy) {
+            punten += this.wedstrijd.telling.bovenMoyPunten;
+        }
+        return punten;
+    }
+
+    private getOldPunten(spl: WedSpeler): number {
+        let gem = (spl.stand.aantBrt === 0) ? 0 : spl.stand.aantCar / spl.stand.aantBrt;
+        let punten = Math.floor(10 * spl.stand.aantCar / spl.splTsCar);
+        if (gem > spl.splTsMoy) {
+            punten += this.wedstrijd.telling.bovenMoyPunten;
+        }
+        return punten;
+    }
+
+    private setActiveTeamEnSpeler() {
+        if (this.isTeamWedstrijd()) {
+            this.idxTeam = this.wedstrijd.teams.findIndex(team => team.actief);
+            this.idxTeam = (this.idxTeam < 0) ? 0 : this.idxTeam;
+            this.idxSpeler = this.wedstrijd.teams[this.idxTeam].spelers.findIndex(spl => spl.actief);
+            this.idxSpeler = (this.idxSpeler < 0) ? 0 : this.idxSpeler;
+            this.activeTeam = this.wedstrijd.teams[this.idxTeam];
+            this.activeTeam.actief = true;
+            this.activeSpeler = this.activeTeam.spelers[this.idxSpeler];
+            this.activeSpeler.actief = true;
+        }
+        else {
+            this.idxSpeler = this.wedstrijd.spelers.findIndex(spl => spl.actief);
+            this.idxSpeler = (this.idxSpeler < 0) ? 0 : this.idxSpeler;
+            this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
+            this.activeSpeler.actief = true;    
+        }
+    }
+
     private isWedstrijdOver(): boolean {
         if (this.isTeamWedstrijd()) {
             if (this.idxTeam === 0) {
@@ -744,11 +799,10 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             if (this.activeTeam.stand.aantBrt === 999) {
                 return true;
             }
-            let maxBeurten: number = this.getMaxBeurten();
-            if (this.idxTeam === 1 && this.idxSpeler === 1 && this.activeSpeler.stand.aantBrt === maxBeurten) {
+            if (this.idxTeam === 1 && this.idxSpeler === 1 && this.activeSpeler.stand.aantBrt === this.wedstrijd.regels.maxBeurten) {
                 return true;
             }
-            if (!this.wedstrijd.isVastAantBrt) {
+            if (this.wedstrijd.regels.idxOptie != 1) {
                 if (this.eenVanDeTeamsHeeftCarsBereikt()) {
                     return true;
                 }
@@ -762,17 +816,60 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             if (this.activeSpeler.stand.aantBrt === 999) {
                 return true;
             }
-            let maxBeurten: number = this.getMaxBeurten();
-            if (this.activeSpeler.stand.aantBrt === maxBeurten) {
+            if (this.activeSpeler.stand.aantBrt === this.wedstrijd.regels.maxBeurten) {
                 return true;
             }
-            if (!this.wedstrijd.isVastAantBrt) {
+            if (this.wedstrijd.regels.idxOptie != 1) {
                 if (this.eenVanDeSpelersHeeftCarsBereikt()) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    private eenVanDeTeamsHeeftCarsBereikt(): boolean {
+        return this.wedstrijd.teams.some(team => team.stand.aantCar === team.teamTsCar);
+    }
+
+    private eenVanDeSpelersHeeftCarsBereikt(): boolean {
+        return this.wedstrijd.spelers.some(spl => spl.stand.aantCar === spl.splTsCar);
+    }
+
+    private findIndexEersteSpelerDieCarsHeeftBereikt(): number {
+        return this.wedstrijd.spelers.findIndex(spl => spl.stand.aantCar === spl.splTsCar);
+    }
+
+    private isTeamWedstrijd(): boolean {
+        return this.wedstrijd.aantSpelers == 5;
+    }
+
+    private setMaxBeurten() {
+        if (this.wedstrijd.regels.idxOptie == 1) {
+            this.wedstrijd.regels.maxBeurten = this.wedstrijd.regels.vastAantBrt;
+        }
+        else {
+            if (this.wedstrijd.regels.maxBeurten == 0) {
+                this.wedstrijd.regels.maxBeurten = 100;
+            }
+        }
+    }
+
+    private getWedSpelers(): SpelerNamen[] {
+        let result: SpelerNamen[] = [];
+        if (this.wedstrijd.teams.length) {
+            this.wedstrijd.teams.forEach(tm => {
+                tm.spelers.forEach(spl => {
+                    result.push(new SpelerNamen(spl));
+                });
+            });
+        }
+        else {
+            this.wedstrijd.spelers.forEach(spl => {
+                result.push(new SpelerNamen(spl));
+            });
+        }
+        return result;
     }
 
     private showModal(): void {
@@ -797,66 +894,11 @@ export class WedScoreComponent extends BaseComponent implements OnInit {
             if (this.modals.length) {
                 this.showModal();
             }
-        }
-    }
-
-    private saveWedstrijd(wedstrijd: OefWedstrijd) {
-        this.busy = true;
-        this.bssApi.saveOefenWedstrijd(wedstrijd)
-        .then(() => {
-            this.busy = false;
-        })
-        .catch(err => {
-            this.alert.showError(err);
-        });
-    }
-
-    private setActiveTeamEnSpeler() {
-        if (this.isTeamWedstrijd()) {
-            this.idxTeam = this.wedstrijd.teams.findIndex(team => team.active);
-            if (this.idxTeam >= 0) {
-                this.idxSpeler = this.wedstrijd.teams[this.idxTeam].spelers.findIndex(spl => spl.active);
+            else if (this.wedstrijd.opslaanInComp && this.wedstrijd.wedGespeeld) {
+                this.idxSpeler = -1;
+                this.keyPressed.emit('Ready');
             }
-            this.activeTeam = this.wedstrijd.teams[this.idxTeam];
-            this.activeTeam.active = true;
-            this.activeSpeler = this.activeTeam.spelers[this.idxSpeler];
-            this.activeSpeler.active = true;
         }
-        else {
-            this.idxSpeler = this.wedstrijd.spelers.findIndex(spl => spl.active);
-            this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
-            this.activeSpeler.active = true;    
-        }
-    }
-
-    private isWedstrijdGestart(): boolean {
-        if (this.isTeamWedstrijd()) {
-            return this.wedstrijd.teams[0].spelers[0].stand.aantBrt > 0;
-        }
-        else {
-            return this.wedstrijd.spelers[0].stand.aantBrt > 0;
-        }
-    }
-
-    private isTeamWedstrijd(): boolean {
-        return this.wedstrijd.aantSpelers == 5;
-    }
-
-    private getWedSpelers(): SpelerNamen[] {
-        let result: SpelerNamen[] = [];
-        if (this.wedstrijd.teams.length) {
-            this.wedstrijd.teams.forEach(tm => {
-                tm.spelers.forEach(spl => {
-                    result.push(new SpelerNamen(spl));
-                });
-            });
-        }
-        else {
-            this.wedstrijd.spelers.forEach(spl => {
-                result.push(new SpelerNamen(spl));
-            });
-        }
-        return result;
     }
 
 }

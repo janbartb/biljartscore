@@ -1,0 +1,16 @@
+<div class="laatste-vijf flexbox flexmiddle arial">
+    <div class="flexgrow1" style="padding-left: .25em;">
+        <div style="font-size: 3em;">
+            @for (cars of laatste5; track $index) {
+                <span style="padding-right: .375em;" 
+                        [style.opacity]="1 - ((laatste5.length - $index - 1) * .15)">{{cars == 0 ? '­•' : cars}}</span>
+            }
+        </div>
+    </div>
+    <div style="padding-right: .5em; color: lightgray;">
+        <span style="font-size: 1.5em;">◄</span>
+    </div>
+    <div style="letter-spacing: -.06em; padding-right: .5em; color: lightgray;">
+        <span style="font-size: 2em;">laatste 5</span>
+    </div>
+</div>

@@ -1,18 +1,20 @@
 <div class="bss-scorebord">
-    @if (matchRead) {
-        <div class="bss-score-2 fullheight flexbox" [ngClass]="{'gameover': match.matchOver}">
-            <div class="fullheight flex50perc speler-container thuis" [ngClass]="{'active': idxSpeler == 0}">
-                <app-eigen-competitie-score-speler [speler]="match.spelers[0]" [cars]="match.spelers[0].stand.aantCar" 
-                        [brtn]="match.spelers[0].stand.aantBrt" [ser]="match.spelers[0].stand.serie"
-                        [showPunten]="match.telling.idxOptie == 0" [oldPunten]="oldPunten[0]" 
-                        [matchOver]="match.matchOver" (undoBusy)="resetBusy()"></app-eigen-competitie-score-speler>
+    @if (wedstrijd.aantSpelers == 2) {
+        <div class="bss-score-2 fullheight flexbox flexstretch" [ngClass]="{'gameover': wedstrijd.wedGespeeld}">
+            <div class="flex50perc speler-container wit shadow-right" [ngClass]="{'active': idxSpeler == 0}">
+                <app-score-speler [speler]="wedstrijd.spelers[0]"
+                                  [grijs]="false"
+                                  [showPunten]="wedstrijd.telling.idxOptie == 0"
+                                  [oldPunten]="oldPunten[0]"
+                                  [wedOver]="wedstrijd.wedGespeeld"></app-score-speler>
             </div>
-            <div class="fullheight flex50perc speler-container gasten" [ngClass]="{'active': idxSpeler == 1}">
-                <app-eigen-competitie-score-speler [speler]="match.spelers[1]" [cars]="match.spelers[1].stand.aantCar" 
-                        [brtn]="match.spelers[1].stand.aantBrt" [ser]="match.spelers[1].stand.serie"
-                        [showPunten]="match.telling.idxOptie == 0" [oldPunten]="oldPunten[1]" 
-                        [matchOver]="match.matchOver" (undoBusy)="resetBusy()"></app-eigen-competitie-score-speler>
-            </div>
+            <div class="flex50perc speler-container geel shadow-left" [ngClass]="{'active': idxSpeler == 1}">
+                <app-score-speler [speler]="wedstrijd.spelers[1]"
+                                  [grijs]="false"
+                                  [showPunten]="wedstrijd.telling.idxOptie == 0"
+                                  [oldPunten]="oldPunten[1]"
+                                  [wedOver]="wedstrijd.wedGespeeld"></app-score-speler>
+             </div>
         </div>
     }
     @if (modalVisible && modals.length) {
@@ -45,9 +47,6 @@
     }
     @if (isDialogOpen) {
         <app-spelers-namen [dialog]="namenDialog" (reply)="namenDialogReplied($event)"></app-spelers-namen>
-    }
-    @if (isEndOfMatchDialogOpen) {
-        <app-confirm-end-of-match [dialog]="endOfMatchDialog" (reply)="endOfMatchDialogReplied($event)"></app-confirm-end-of-match>
     }
 </div>
 <app-help>
@@ -266,7 +265,7 @@
         </table>
     </div>
 </app-help>
-@if (match.opgeslagen) {
+@if (wedstrijd.wedOpgeslagen) {
     <div class="keylock" title="Uitslag opgeslagen">
         <i class="fas fa-check-circle"></i>
     </div>

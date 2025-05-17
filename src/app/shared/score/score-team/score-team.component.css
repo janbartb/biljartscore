@@ -1,0 +1,52 @@
+.smaller {
+    transform: scale(.9) translateY(.25em);
+}
+
+.teamdata .wit { color: white; }
+.teamdata .geel { color: gold; }
+
+.teamdata .biljartbal { font-size: 6em; color: black; }
+.teamdata .bal { border-radius: 50%; font-size: 6em; }
+.teamdata .bal.wit { color: white; border: .0625em solid white; }
+.teamdata .bal.geel { color: gold; border: .0625em solid gold; }
+.teamdata .bal.geel.active { background-color: gold; color: black;}
+.teamdata .bal.wit.active { background-color: white; color: black; }
+
+.bal .digit3 { transform: translateX(-.025em) scaleX(.7); }
+
+.scoredata { background-color: white; }
+.scoredata.geel { background-color: gold; }
+.scoredata.active .changes { color: blue; }
+.scoredata.active .scale { scale: 1.5; }
+
+.laatste5.active .laatste5data { color: white; }
+.laatste5.active.geel .laatste5data { color: gold; }
+.laatste5 .lbl {
+    font-size: 3em; 
+    text-align: center;
+    transform: translateX(-.01em) scaleX(.9);
+}
+
+.extradata { color: white; }
+.extradata .clr-red { color: red; }
+.extradata.geel { color: gold;}
+.extradata.active .changes { color: #00a2ff; }
+
+.aantcar span { opacity: 1; transition: opacity .75s; }
+.aantcar span.carsHidden { opacity: 0; }
+
+.aantbrt {
+    border-radius: 1em;
+    overflow: hidden;
+    padding: 0 1.5em 0 1em;
+}
+.aantbrt span { opacity: 1; transition: opacity .75s; }
+.aantbrt span.brtnHidden, .aantbrt span.serHidden { opacity: 0; }
+.aantbrt.serie {
+    min-width: 90%;
+    text-align: center;
+    background-color: blue;
+    color: white;
+}
+
+.arial { font-family: Arial, Helvetica, sans-serif; }

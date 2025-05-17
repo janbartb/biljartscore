@@ -1,0 +1,84 @@
+<div class="fullheight flexbox flexstretch" [ngClass]="{'smaller': !speler.actief}" 
+                [style.background-color]="speler.actief ? 'black' : '#606060'">
+    <div class="flexgrow1 flexbox flexcolumn">
+        <div class="flexbox flexmiddle spelerdata active" style="height: 8em;">
+            <div class="flexgrow1" style="padding: 0 1em;">
+                <span [ngClass]="{'wit': speler.metWit, 'geel': !speler.metWit}"
+                        style="font-size: 5em; line-height: 1.25;">{{speler.splBordNaam}}</span>
+            </div>
+            <div class="arial" style="padding: 0 1em;">
+                <span style="font-size: 2.5em; color: lightgray;">moy: </span>
+                <span style="font-size: 5em;"
+                        [ngClass]="{'wit': speler.metWit, 'geel': !speler.metWit}"
+                        >{{speler.splTsMoy | number:'1.3-3':'nl-NL'}}</span>
+            </div>
+        </div>
+        <div class="flexgrow1 flexbox">
+            <div class="fullheight" style="width: 1em;"></div>
+            <div class="fullheight flexgrow1 flexbox flexcolumn">
+                <div class="flexbox flexmiddle arial scoredata active" [ngClass]="{'geel': !speler.metWit}"
+                        style="height: 14em; line-height: 1;">
+                    <div class="flex50perc aantcar" style="text-align: center;">
+                        <span [ngClass]="cssClassCars" style="font-size: 14em;">{{carsView}}</span>
+                    </div>
+                    <div style="width: 6em; text-align: center;" [ngClass]="{'changes': speler.stand.serie > 0}">
+                        <span style="font-size: 5em;">{{speler.stand.serie > 0 ? '+' : 'in'}}</span>
+                    </div>
+                    <div class="flexgrow1 flexbox flexcenter">
+                        <div class="aantbrt" [ngClass]="{'serie': speler.stand.serie > 0}">
+                            @if (speler.stand.serie > 0) {
+                                <span [ngClass]="cssClassSer" style="font-size: 9em;">{{serView}}</span>
+                            }
+                            @else {
+                                <span [ngClass]="cssClassBrtn" style="font-size: 9em;">{{brtnView}}</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="flexgrow1 flexbox flexmiddle arial extradata active" [ngClass]="{'geel': !speler.metWit}">
+                    <div style="width: 25em; line-height: 1; text-align: center;">
+                        <span style="font-size: 7em;" [ngClass]="{'changes': speler.stand.serie > 0}"
+                                >{{speler.stand.gemiddelde | number:'1.3-3':'nl-NL'}}</span>
+                    </div>
+                    <div class="flexgrow1" style="padding-right: 1.5em;">
+                        <div class="flexbox flexbetween flexmiddle" style="line-height: 1;">
+                            <span style="font-size: 3em; color: lightgray;">Perc : </span>
+                            <span style="font-size: 4em;" [ngClass]="{'changes': speler.stand.serie > 0, 
+                                    'clr-red': speler.stand.gemiddelde > 0 && speler.stand.gemiddelde / speler.splTsMoy <= 1}"
+                                    >{{(100 * speler.stand.gemiddelde / speler.splTsMoy) | number:'1.2-2':'nl-NL'}}</span>
+                        </div>
+                        <div class="flexbox flexbetween flexmiddle" style="line-height: 1;">
+                            <span style="font-size: 3em; color: lightgray;">Hoog ser : </span>
+                            <span style="font-size: 4em;" [ngClass]="{'changes': speler.stand.serie > speler.stand.hoogSer}"
+                                    >{{speler.stand.serie > speler.stand.hoogSer ? speler.stand.serie : speler.stand.hoogSer}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flexbox flexcolumn" style="width: 11em;">
+        <div class="spelerdata active" style="width: 11em; height: 10em; padding: .5em 1em;">
+            <div class="fullheight flexbox flexcenter flexmiddle clickable" (click)="balClicked()" data-kleur=""
+                    [ngClass]="{'wit': speler.metWit, 'geel': !speler.metWit, 'active biljartbal': speler.actief, 'bal': !speler.actief}">
+                <div class="arial" [ngClass]="{'digit3': speler.splTsCar > 99}">
+                    <span style="line-height: 1; letter-spacing: -.03em;">{{speler.splTsCar > 0 ? speler.splTsCar : ''}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="flexgrow1 arial laatste5 active" [ngClass]="{'geel': !speler.metWit}"
+                style="width: 11em; color: lightgray;">
+            <div class="lbl" style="position: relative; top: -.25em;">
+                <span>laatste 5</span>
+            </div>
+            <div class="laatste5data" style="position: relative; top: -.75em;">
+                @for (cars of speler.stand.laatste5brt.slice().reverse(); track $index) {
+                    <div style="text-align: center;">
+                        <span style="font-size: 4em; letter-spacing: -.075em; line-height: .875em;"
+                                [style.opacity]="1 - ($index * .15)">{{cars == 0 ? '­•' : cars}}</span>
+                    </div>    
+                }
+            </div>
+        </div>
+    </div>
+</div>

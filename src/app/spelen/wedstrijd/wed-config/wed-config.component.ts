@@ -192,7 +192,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
                 });
             }
         }
-        this.bssApi.saveWedstrijd(this.wedstrijd)
+        this.bssApi.saveOefenWedstrijd(this.wedstrijd)
         .then(resp => {
             this.router.navigate(['wedstrijd']);
         })
@@ -273,7 +273,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         this.optieLijst.fillItems(opts);
         let subOpts = ['Een vast aantal caramboles voor iedere speler', 'Bereken aantal caramboles op basis van moyenne van speler'];
         Promise.all([
-            this.bssApi.getWedstrijd()
+            this.bssApi.getOefenWedstrijd()
         ])
         .then(results => {
             if (results[0].gevonden) {

@@ -72,7 +72,7 @@ export class WedLijstComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.bssApi.getWedstrijd()
+        this.bssApi.getOefenWedstrijd()
         .then(resp => {
             if (resp.gevonden) {
                 this.wedstrijd = resp.wedstrijd;

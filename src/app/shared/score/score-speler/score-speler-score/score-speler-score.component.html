@@ -1,0 +1,39 @@
+<div class="score-data flexbox flexstretch arial">
+    <!-- caramboles -->
+    <div class="score-left">
+        <div class="score-cars">
+            <span [ngClass]="cssClassCars">{{carsView}}</span>
+        </div>
+    </div>
+    <!-- beurten/serie en moyenne -->
+    <div class="score-right">
+        <div style="height: 1em;"></div>
+        <div class="flexbox flexmiddle" style="height: 6em;">
+            @if (serie > 0) {
+                <div class="score-txt changes">
+                    <span>+</span>
+                </div>
+                <div class="flexgrow1 flexbox flexright" style="height: 5em; padding-right: .5em;">
+                    <div class="score-brt score-ser">
+                        <span [ngClass]="cssClassSer">{{serView}}</span>
+                    </div>
+                </div>
+            }
+            @else {
+                <div class="score-txt">
+                    <span>in</span>
+                </div>
+                <div class="flexgrow1 flexbox flexright" style="height: 5em; padding-right: .5em;">
+                    <div class="score-brt">
+                        <span [ngClass]="cssClassBrtn">{{brtnView}}</span>
+                    </div>
+                </div>
+            }
+        </div>
+        <div style="height: 6em;">
+            <div class="score-moy" [ngClass]="{'changes': serie > 0}">
+                <span>{{moy | number:'1.3-3':'nl-NL'}}</span>
+            </div>
+        </div>
+    </div>
+</div>

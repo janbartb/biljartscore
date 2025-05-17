@@ -59,9 +59,9 @@ import { EigenCompetitieComponent } from './spelen/eigen/eigen-competitie/eigen-
 import { EigenCompetitieSpelerComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-speler/eigen-competitie-speler.component';
 import { EigenCompetitieSchemaComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-schema/eigen-competitie-schema.component';
 import { EigenCompetitieMatchComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-match/eigen-competitie-match.component';
-import { EigenCompetitieScoreComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-score/eigen-competitie-score.component';
 import { EigenCompetitieLijstComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-lijst/eigen-competitie-lijst.component';
 import { EigenCompetitiePlanningComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-planning/eigen-competitie-planning.component';
+import { EigenCompetitieScorebordComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-scorebord/eigen-competitie-scorebord.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -120,7 +120,7 @@ export const routes: Routes = [
     { path: 'wedstrijd/aantspl', component: WedAantSpelersComponent },
     { path: 'wedstrijd', component: WedstrijdComponent },
     { path: 'eigencomps/:naam/match/:ronde/:idxspl/:idxteg', component: EigenCompetitieMatchComponent },
-    { path: 'eigencomps/:naam/score/:ronde/:idxspl/:idxteg', component: EigenCompetitieScoreComponent },
+    { path: 'eigencomps/:naam/score/:ronde/:idxspl/:idxteg', component: EigenCompetitieScorebordComponent },
     { path: 'eigencomps/:naam/lijst/:ronde/:idxspl/:idxteg', component: EigenCompetitieLijstComponent },
     { path: 'eigencomps/:naam/schema/:ronde', component: EigenCompetitieSchemaComponent },
     { path: 'eigencomps/:naam/planning/:ronde', component: EigenCompetitiePlanningComponent },

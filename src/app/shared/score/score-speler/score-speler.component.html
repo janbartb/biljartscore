@@ -1,0 +1,26 @@
+<div class="bord" [ngClass]="{'active': speler.actief, 'smaller': !speler.actief, 'wit': speler.metWit, 'geel': !speler.metWit, 'grijs': grijs}">
+    <div>
+        <app-score-speler-speler [naam]="speler.splBordNaam"
+                                [moy]="speler.splTsMoy"
+                                [cars]="speler.splTsCar"
+                                [actief]="speler.actief"
+                                [wit]="speler.metWit"></app-score-speler-speler>
+    </div>
+    <div>
+        <app-score-speler-score [moy]="speler.stand.gemiddelde"
+                                [serie]="speler.stand.serie"
+                                [cars]="speler.stand.aantCar"
+                                [brtn]="speler.stand.aantBrt"
+                                [ser]="speler.stand.serie"></app-score-speler-score>
+    </div>
+    <div>
+        <app-score-speler-laatste [laatste5]="speler.stand.laatste5brt"></app-score-speler-laatste>
+    </div>
+    <div>
+        <app-score-speler-extra [showPunten]="showPunten"
+                                [wedOver]="wedOver"
+                                [tsMoy]="speler.splTsMoy"
+                                [stand]="speler.stand"
+                                [oldPunten]="oldPunten"></app-score-speler-extra>
+    </div>
+</div>

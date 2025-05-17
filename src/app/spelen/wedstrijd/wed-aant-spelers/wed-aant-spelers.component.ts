@@ -90,7 +90,7 @@ export class WedAantSpelersComponent extends BaseComponent implements OnInit {
 
     ngOnInit(): void {
         this.fillAantalLijst();
-        this.bssApi.getWedstrijd()
+        this.bssApi.getOefenWedstrijd()
         .then(resp => {
             if (resp.gevonden) {
                 this.wedstrijd = resp.wedstrijd;
@@ -132,7 +132,7 @@ export class WedAantSpelersComponent extends BaseComponent implements OnInit {
     }
 
     private saveWedstrijdAndContinue() {
-        this.bssApi.saveWedstrijd(this.wedstrijd)
+        this.bssApi.saveOefenWedstrijd(this.wedstrijd)
         .then(resp => {
             this.router.navigate(['wedstrijd/spelers']);
         })

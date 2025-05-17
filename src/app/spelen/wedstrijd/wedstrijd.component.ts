@@ -165,7 +165,7 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.bssApi.getWedstrijd()
+        this.bssApi.getOefenWedstrijd()
         .then(resp => {
             if (!resp.gevonden) {
                 this.router.navigate(['wedstrijd/aantspl']);
@@ -273,7 +273,7 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
     }
 
     private naarScorebord() {
-        this.bssApi.saveWedstrijd(this.wedstrijd)
+        this.bssApi.saveOefenWedstrijd(this.wedstrijd)
         .then(resp => {
             this.router.navigate(['wedstrijd/score']);
         })

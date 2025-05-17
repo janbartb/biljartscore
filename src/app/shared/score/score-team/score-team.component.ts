@@ -1,29 +1,25 @@
 import { DecimalPipe, NgClass } from '@angular/common';
-import { Component, effect, EventEmitter, input, Input, InputSignal, Output } from '@angular/core';
-import { CmpMatchSpeler, CmpSpeler } from '../../../../../model/competitie';
-import { defaultEquals } from '@angular/core/primitives/signals';
+import { Component, effect, EventEmitter, input, Input, Output } from '@angular/core';
+import { WedTeam } from '../../../model/wedstrijd';
 
 @Component({
-    selector: 'app-eigen-competitie-score-speler',
+    selector: 'app-score-team',
     standalone: true,
     imports: [
         NgClass,
         DecimalPipe
     ],
-    templateUrl: './eigen-competitie-score-speler.component.html',
-    styleUrl: './eigen-competitie-score-speler.component.css'
+    templateUrl: './score-team.component.html',
+    styleUrl: './score-team.component.css'
 })
-export class EigenCompetitieScoreSpelerComponent {
-    @Input() speler: CmpMatchSpeler = new CmpMatchSpeler(new CmpSpeler(1), true);
+export class ScoreTeamComponent {
+    @Input() team: WedTeam = new WedTeam();
     cars = input(0);
     carsView: number = 0;
     brtn = input(0);
     brtnView: number = 0;
     ser = input(0);
     serView: number = 0;
-    @Input() oldPunten: number = 0;
-    @Input() showPunten: boolean = false;
-    @Input() matchOver: boolean = false;
     @Output() undoBusy: EventEmitter<boolean> = new EventEmitter<boolean>();
     cssClassCars: string = '';
     cssClassBrtn: string = '';
@@ -68,4 +64,5 @@ export class EigenCompetitieScoreSpelerComponent {
     balClicked() {
         this.undoBusy.emit(true);
     }
+
 }

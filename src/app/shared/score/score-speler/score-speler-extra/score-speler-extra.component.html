@@ -1,0 +1,66 @@
+<div class="extra-data arial">
+    @if (showPunten || wedOver) {
+        <div class="fullheight flexbox flexstretch" style="padding: 0 .5em;">
+            <div class="flexgrow1" style="padding: .25em 1em 0 0;">
+                <div class="score-perc flexbox flexbetween">
+                    <div>
+                        <span style="font-size: 2.5em; line-height: 1.25; color: #444444;">Perc.</span>
+                    </div>
+                    <div style="padding-right: .125em; line-height: 1;">
+                        @if (stand.serie > 0) {
+                            <span style="font-size: 3em;" class="changes">{{(100 * stand.gemiddelde / tsMoy) | number:'1.2-2':'nl-NL'}}</span>
+                        }
+                        @else {
+                            <span style="font-size: 3em;" [ngClass]="{'clr-red': stand.aantCar > 0 && (stand.gemiddelde / tsMoy) <= 1}"
+                                >{{(100 * stand.gemiddelde / tsMoy) | number:'1.2-2':'nl-NL'}}</span>
+                        }
+                    </div>
+                </div>
+                <div class="score-hser flexbox flexbetween">
+                    <div>
+                        <span style="font-size: 2.5em; line-height: 1.25; color: #444444;">Hoog. ser.</span>
+                    </div>
+                    <div [ngClass]="{'changes': stand.serie > stand.hoogSer}" style="padding-right: .125em; line-height: 1;">
+                        <span style="font-size: 3em;">{{stand.serie > stand.hoogSer ? stand.serie : stand.hoogSer}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="score-pnt flexbox flexmiddle">
+                <div style="padding: 0 .5em;">
+                    <span style="font-size: 2.25em; color: #444444;">Pnt</span>
+                </div>
+                <div class="score-pnt-container flexbox flexcenter flexmiddle" 
+                        [ngClass]="{'changes': stand.punten != oldPunten && !wedOver, 'klaar': wedOver}">
+                    <div style="padding: 0 .25em; line-height: 1;">
+                        <span style="font-size: 5em;">{{stand.punten}}</span>
+                    </div>
+                </div>    
+            </div>
+        </div>
+    }
+    @else {
+        <div style="padding: 0 1em;">
+            <div class="score-perc flexbox flexmiddle" style="height: 3.25em;">
+                <div style="font-size: 2.25em; color: #444444;">Percentage</div>
+                <div class="flexgrow1" style="font-size: 2.25em; text-align: right;">
+                    @if (stand.serie > 0) {
+                        <span class="changes">{{(100 * stand.gemiddelde / tsMoy) | number:'1.2-2':'nl-NL'}}</span>
+                    }
+                    @else if (stand.aantCar > 0 && stand.gemiddelde < tsMoy) {
+                        <span class="clr-red">{{(100 * stand.gemiddelde / tsMoy) | number:'1.2-2':'nl-NL'}}</span>
+                    }
+                    @else {
+                        <span>{{(100 * stand.gemiddelde / tsMoy) | number:'1.2-2':'nl-NL'}}</span>
+                    }
+                </div>    
+            </div>
+            <div class="score-hser flexbox flexmiddle" style="height: 3.25em;">
+                <div style="font-size: 2.25em; color: #444444;">Hoogste serie</div>
+                <div class="flexgrow1" style="font-size: 2.25em; text-align: right;" [ngClass]="{'changes': stand.serie > stand.hoogSer}">
+                    <span>{{stand.serie > stand.hoogSer ? stand.serie : stand.hoogSer}}</span>
+                </div>
+            </div>
+            <div style="height: .25em;"></div>
+        </div>
+    }
+</div>

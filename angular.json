@@ -36,6 +36,7 @@
                             "src/modals.css",
                             "src/dialogs.css",
                             "src/help.css",
+                            "src/scorebord.css",
                             "src/balls.css"
                         ],
                         "scripts": []

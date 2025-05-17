@@ -13,6 +13,7 @@ import { Match, MatchLeesResultaat, TeamMatch, TeamMatchLeesResultaat } from '..
 import { StatusService } from './status.service';
 import { BpCompetitie, BpDistrict, BpMoyTabel, CompTemp, TeamPageData } from '../model/bpoint';
 import { CmpMatchLeesResultaat, Competitie, CompetitieMatch, CompLeesResultaat } from '../model/competitie';
+import { Wedstrijd, WedstrijdLeesResultaat } from '../model/wedstrijd';
 
 @Injectable({
     providedIn: 'root'
@@ -235,7 +236,12 @@ export class ApiService {
         return compSeizoenen.seizoenen;
     }
 
-    async getWedstrijd(): Promise<OefWedstrijdLeesResultaat> {
+    async getWedstrijd(): Promise<WedstrijdLeesResultaat> {
+        const result: WedstrijdLeesResultaat = await this.getResource(this.dbUrl + `/wedstrijd`);
+        return result;
+    }
+
+    async getOefenWedstrijd(): Promise<OefWedstrijdLeesResultaat> {
         const result: OefWedstrijdLeesResultaat = await this.getResource(this.dbUrl + `/wedstrijd`);
         return result;
     }
@@ -584,7 +590,22 @@ export class ApiService {
 
     // WEDSTRIJD
 
-    async saveWedstrijd(wedstrijd: OefWedstrijd): Promise<ApiResponse> {
+    async saveWedstrijd(wedstrijd: Wedstrijd): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + `/wedstrijd`, {
+            method: 'POST',
+            body: JSON.stringify(wedstrijd),
+            headers: this.myHeaders
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
+    // OEFEN WEDSTRIJD
+
+    async saveOefenWedstrijd(wedstrijd: OefWedstrijd): Promise<ApiResponse> {
         const response: Response = await fetch(this.dbUrl + `/wedstrijd`, {
             method: 'POST',
             body: JSON.stringify(wedstrijd),

@@ -178,7 +178,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
             this.wedstrijd.tsCaramboles = 0;
             this.helper.clearWedstrijdResultaten(this.wedstrijd);
         }
-        this.bssApi.saveWedstrijd(this.wedstrijd)
+        this.bssApi.saveOefenWedstrijd(this.wedstrijd)
         .then(resp => {
             const gotoUrl = this.router.url.replace('spelers', 'config');
             this.router.navigate([gotoUrl]);
@@ -282,7 +282,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         Promise.all([
             this.bssApi.getVerenigingenKort(),
             this.bssApi.getSpelersLijst(this.spelId),
-            this.bssApi.getWedstrijd()
+            this.bssApi.getOefenWedstrijd()
         ])
         .then(results => {
             let verenigingen = results[0];
