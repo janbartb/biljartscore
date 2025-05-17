@@ -22,7 +22,6 @@ import { SpelkeuzeComponent } from './spelen/spelkeuze/spelkeuze.component';
 import { WedstrijdComponent } from './spelen/wedstrijd/wedstrijd.component';
 import { WedSpelersComponent } from './spelen/wedstrijd/wed-spelers/wed-spelers.component';
 import { WedConfigComponent } from './spelen/wedstrijd/wed-config/wed-config.component';
-import { WedScoreComponent } from './spelen/wedstrijd/wed-score/wed-score.component';
 import { KnbbTeamMatchComponent } from './spelen/knbb-team-match/knbb-team-match.component';
 import { KnbbTeamMatchScoreComponent } from './spelen/knbb-team-match/knbb-team-match-score/knbb-team-match-score.component';
 import { KnbbTeamMatchSetupComponent } from './spelen/knbb-team-match/knbb-team-match-setup/knbb-team-match-setup.component';
@@ -62,6 +61,7 @@ import { EigenCompetitieMatchComponent } from './spelen/eigen/eigen-competitie/e
 import { EigenCompetitieLijstComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-lijst/eigen-competitie-lijst.component';
 import { EigenCompetitiePlanningComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-planning/eigen-competitie-planning.component';
 import { EigenCompetitieScorebordComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-scorebord/eigen-competitie-scorebord.component';
+import { WedScorebordComponent } from './spelen/wedstrijd/wed-scorebord/wed-scorebord.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -113,7 +113,7 @@ export const routes: Routes = [
     { path: 'onderhoud', component: OnderhoudComponent },
     { path: 'config', component: ConfigComponent },
     { path: 'spelkeuze', component: SpelkeuzeComponent },
-    { path: 'wedstrijd/score', component: WedScoreComponent },
+    { path: 'wedstrijd/score', component: WedScorebordComponent },
     { path: 'wedstrijd/config', component: WedConfigComponent },
     { path: 'wedstrijd/lijst', component: WedLijstComponent },
     { path: 'wedstrijd/spelers', component: WedSpelersComponent },

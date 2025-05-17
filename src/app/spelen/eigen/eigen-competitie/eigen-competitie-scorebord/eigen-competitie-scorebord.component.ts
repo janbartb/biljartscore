@@ -1,11 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../../base/base.component';
 import { ActivatedRoute } from '@angular/router';
-import { CmpSplWedstrijd, Competitie, CompetitieMatch } from '../../../../model/competitie';
+import { CmpMatchSpeler, CmpSplWedstrijd, Competitie, CompetitieMatch } from '../../../../model/competitie';
 import { HelperService } from '../../../../services/helper.service';
 import { ConfirmEndOfMatchDialog } from '../../../../model/dialogs';
-import { Wedstrijd } from '../../../../model/wedstrijd';
-import { ScoreService } from '../../../../services/score.service';
+import { WedSpeler, Wedstrijd } from '../../../../model/wedstrijd';
 import { ScoreComponent } from '../../../../shared/score/score.component';
 import { ConfirmEndOfMatchComponent } from '../../../../shared/confirm-end-of-match/confirm-end-of-match.component';
 
@@ -22,7 +21,6 @@ import { ConfirmEndOfMatchComponent } from '../../../../shared/confirm-end-of-ma
 export class EigenCompetitieScorebordComponent extends BaseComponent implements OnInit {
     route = inject(ActivatedRoute);
     helper = inject(HelperService);
-    scoreService = inject(ScoreService);
 
     comp: Competitie = new Competitie('');
     match: CompetitieMatch = new CompetitieMatch();
@@ -56,7 +54,7 @@ export class EigenCompetitieScorebordComponent extends BaseComponent implements 
     }
 
     updateAndSaveMatch(wed: Wedstrijd) {
-        this.scoreService.updateCompMatchFromWedstrijd(this.match, wed);
+        this.updateCompMatchFromWedstrijd(this.match, wed);
         this.saveMatch();
     }
 
@@ -104,24 +102,7 @@ export class EigenCompetitieScorebordComponent extends BaseComponent implements 
                 this.appData.previousPage();
                 return;
             }
-            this.wedstrijd = this.scoreService.createWedFromCompMatch(this.match);
-            // this.maxBeurten = (this.match.regels.maxBeurten > 0) ? this.match.regels.maxBeurten : 100;
-            // if (this.match.matchOver) {
-            //     this.oldPunten[0] = this.match.spelers[0].stand.punten;
-            //     this.oldPunten[1] = this.match.spelers[1].stand.punten;
-            //     const modalMsg = new ModalMessage('success', ['▪ ▪ ▪ ▪ EINDE WEDSTRIJD ▪ ▪ ▪ ▪'], '', 3);
-            //     this.modals.push(modalMsg);
-            //     this.showModal();
-            // }
-            // else {
-            //     this.idxSpeler = this.getIndexActieveSpeler(this.match);
-            //     this.activeSpeler = this.match.spelers[this.idxSpeler];
-            //     this.activeSpeler.active = true;
-            //     this.verhoogBeurtenEnBerekenData(this.activeSpeler);
-            //     this.oldPunten[0] = this.match.spelers[0].stand.punten;
-            //     this.oldPunten[1] = this.match.spelers[1].stand.punten;
-            //     this.checkForSpelerMessages();
-            // }
+            this.wedstrijd = this.createWedFromCompMatch(this.match);
             this.wedReady = true;
         })
         .catch(err => {
@@ -136,7 +117,7 @@ export class EigenCompetitieScorebordComponent extends BaseComponent implements 
     }
 
     private matchToevoegenAanComp(wed: Wedstrijd) {
-        this.scoreService.updateCompMatchFromWedstrijd(this.match, wed);
+        this.updateCompMatchFromWedstrijd(this.match, wed);
         this.match.spelers.forEach((spl, idx) => {
             const idxCmpSpl = (idx == 0) ? this.idxSpl : this.idxTeg;
             const idxCmpTeg = (idx == 0) ? this.idxTeg : this.idxSpl;
@@ -182,4 +163,41 @@ export class EigenCompetitieScorebordComponent extends BaseComponent implements 
         });
     }
 
+    private createWedFromCompMatch(match: CompetitieMatch): Wedstrijd {
+        let result = new Wedstrijd();
+        Object.assign(result.regels, match.regels);
+        Object.assign(result.telling, match.telling);
+        result.opslaanInComp = true;
+        result.wedOpgeslagen = match.opgeslagen;
+        result.wedGespeeld = match.matchOver;
+        match.spelers.forEach(spl => {
+            result.spelers.push(this.createWedSpelerFromCompMatchSpeler(spl));
+        });
+        return result;
+    }
+
+    private createWedSpelerFromCompMatchSpeler(speler: CmpMatchSpeler): WedSpeler {
+        let result = new WedSpeler();
+        result.splId = speler.id;
+        result.splNaam = speler.naam;
+        result.splBordNaam = speler.bordNaam;
+        result.splSpreekNaam = speler.spreekNaam;
+        result.metWit = speler.metWit;
+        result.actief = speler.active;
+        result.splTsMoy = speler.tsMoy;
+        result.splTsCar = speler.tsCar;
+        result.splTsBrt = speler.tsBrt;
+        Object.assign(result.stand, speler.stand);
+        return result;
+    }
+
+    private updateCompMatchFromWedstrijd(match: CompetitieMatch, wed: Wedstrijd) {
+        match.matchOver = wed.wedGespeeld;
+        match.spelers.forEach((spl, idx) => {
+            const wedSpl = wed.spelers[idx];
+            spl.active = wedSpl.actief;
+            spl.metWit = wedSpl.metWit;
+            Object.assign(spl.stand, wedSpl.stand);
+        });
+    }
 }

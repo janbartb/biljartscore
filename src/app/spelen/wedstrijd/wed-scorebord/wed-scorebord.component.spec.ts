@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WedScoreSpelerComponent } from './wed-score-speler.component';
+import { WedScorebordComponent } from './wed-scorebord.component';
 
-describe('WedScoreSpelerComponent', () => {
-  let component: WedScoreSpelerComponent;
-  let fixture: ComponentFixture<WedScoreSpelerComponent>;
+describe('WedScorebordComponent', () => {
+  let component: WedScorebordComponent;
+  let fixture: ComponentFixture<WedScorebordComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WedScoreSpelerComponent]
+      imports: [WedScorebordComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(WedScoreSpelerComponent);
+    fixture = TestBed.createComponent(WedScorebordComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

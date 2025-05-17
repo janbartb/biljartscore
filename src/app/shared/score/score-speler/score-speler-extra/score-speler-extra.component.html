@@ -42,22 +42,22 @@
         <div style="padding: 0 1em;">
             <div class="score-perc flexbox flexmiddle" style="height: 3.25em;">
                 <div style="font-size: 2.25em; color: #444444;">Percentage</div>
-                <div class="flexgrow1" style="font-size: 2.25em; text-align: right;">
+                <div class="flexgrow1" style="text-align: right; padding-right: .125em;">
                     @if (stand.serie > 0) {
-                        <span class="changes">{{(100 * stand.gemiddelde / tsMoy) | number:'1.2-2':'nl-NL'}}</span>
+                        <span class="changes" style="font-size: 2.25em;">{{(100 * stand.gemiddelde / tsMoy) | number:'1.2-2':'nl-NL'}}</span>
                     }
                     @else if (stand.aantCar > 0 && stand.gemiddelde < tsMoy) {
-                        <span class="clr-red">{{(100 * stand.gemiddelde / tsMoy) | number:'1.2-2':'nl-NL'}}</span>
+                        <span class="clr-red" style="font-size: 2.25em;">{{(100 * stand.gemiddelde / tsMoy) | number:'1.2-2':'nl-NL'}}</span>
                     }
                     @else {
-                        <span>{{(100 * stand.gemiddelde / tsMoy) | number:'1.2-2':'nl-NL'}}</span>
+                        <span style="font-size: 2.25em;">{{(100 * stand.gemiddelde / tsMoy) | number:'1.2-2':'nl-NL'}}</span>
                     }
                 </div>    
             </div>
             <div class="score-hser flexbox flexmiddle" style="height: 3.25em;">
                 <div style="font-size: 2.25em; color: #444444;">Hoogste serie</div>
-                <div class="flexgrow1" style="font-size: 2.25em; text-align: right;" [ngClass]="{'changes': stand.serie > stand.hoogSer}">
-                    <span>{{stand.serie > stand.hoogSer ? stand.serie : stand.hoogSer}}</span>
+                <div class="flexgrow1" style="text-align: right; padding-right: .125em;" [ngClass]="{'changes': stand.serie > stand.hoogSer}">
+                    <span style="font-size: 2.25em;">{{stand.serie > stand.hoogSer ? stand.serie : stand.hoogSer}}</span>
                 </div>
             </div>
             <div style="height: .25em;"></div>

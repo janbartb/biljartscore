@@ -16,7 +16,7 @@
         @if (actief) {
             <div data-kleur="" class="biljartbal fullheight flexbox flexcenter flexmiddle"
                     [ngClass]="wit ? 'wit' : 'geel'">
-                <div>
+                <div style="padding-right: .125em;">
                     <span style="line-height: 1;" style="color: black;" 
                             [style.font-size]="cars > 99 ? '3.5em' : '4.5em'">{{cars > 0 ? cars : ''}}</span>
                 </div>
@@ -24,8 +24,8 @@
         }
         @else {
             <div class="bal fullheight flexbox flexcenter flexmiddle">
-                <div>
-                    <span style="line-height: 1;" [style.color]="wit ? 'white' : 'gold'" 
+                <div style="padding-right: .125em;">
+                    <span style="line-height: 1;"
                             [style.font-size]="cars > 99 ? '3.5em' : '4.5em'">{{cars > 0 ? cars : ''}}</span>
                 </div>
             </div>

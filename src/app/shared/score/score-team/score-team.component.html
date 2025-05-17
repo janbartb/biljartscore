@@ -41,13 +41,13 @@
                                 >{{team.stand.gemiddelde | number:'1.3-3':'nl-NL'}}</span>
                     </div>
                     <div class="flexgrow1" style="padding-right: 1.5em;">
-                        <div class="flexbox flexbetween flexmiddle" style="line-height: 1;">
+                        <div class="flexbox flexbetween flexmiddle" style="line-height: 1; padding-right: .125em;">
                             <span style="font-size: 3em; color: lightgray;">Perc : </span>
                             <span style="font-size: 4em;" [ngClass]="{'changes': team.stand.serie > 0, 
                                     'clr-red': team.stand.gemiddelde > 0 && team.stand.gemiddelde / team.teamTsMoy <= 1}"
                                     >{{(100 * team.stand.gemiddelde / team.teamTsMoy) | number:'1.2-2':'nl-NL'}}</span>
                         </div>
-                        <div class="flexbox flexbetween flexmiddle" style="line-height: 1;">
+                        <div class="flexbox flexbetween flexmiddle" style="line-height: 1; padding-right: .125em;">
                             <span style="font-size: 3em; color: lightgray;">Hoog ser : </span>
                             <span style="font-size: 4em;" [ngClass]="{'changes': team.stand.serie > team.stand.hoogSer}"
                                     >{{team.stand.serie > team.stand.hoogSer ? team.stand.serie : team.stand.hoogSer}}</span>

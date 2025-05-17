@@ -4,17 +4,20 @@ import { NgClass } from '@angular/common';
 import { ScoreSpelerComponent } from './score-speler/score-speler.component';
 import { SpelerNamen, SpelerNamenDialog } from '../../model/dialogs';
 import { ModalMessage } from '../../model/modal-message';
-import { ScoreService } from '../../services/score.service';
 import { SpeechService } from '../../services/speech.service';
 import { AlertService } from '../../services/alert.service';
 import { SpelersNamenComponent } from '../spelers-namen/spelers-namen.component';
 import { HelpComponent } from '../help/help.component';
+import { ScoreSpelerLandscapeComponent } from './score-speler-landscape/score-speler-landscape.component';
+import { ScoreTeamComponent } from './score-team/score-team.component';
 
 @Component({
     selector: 'app-score',
     standalone: true,
     imports: [
         ScoreSpelerComponent,
+        ScoreSpelerLandscapeComponent,
+        ScoreTeamComponent,
         SpelersNamenComponent,
         HelpComponent,
         NgClass
@@ -23,7 +26,6 @@ import { HelpComponent } from '../help/help.component';
     styleUrl: './score.component.css'
 })
 export class ScoreComponent implements OnInit {
-    scoreService = inject(ScoreService);
     spraak = inject(SpeechService);
     alert = inject(AlertService);
 
@@ -321,7 +323,6 @@ export class ScoreComponent implements OnInit {
         }
         this.setMaxBeurten();
         this.setActiveTeamEnSpeler();
-        console.log(this.wedstrijd);
         if (this.isTeamWedstrijd()) {
             this.verhoogBeurtenEnBerekenData(this.activeSpeler, this.activeTeam);
         }

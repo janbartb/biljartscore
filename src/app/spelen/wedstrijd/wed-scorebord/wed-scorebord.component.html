@@ -1,0 +1,7 @@
+<div>
+    @if (wedReady) {
+        <app-score [wedstrijd]="wedstrijd" 
+                (opslaan)="updateAndSaveOefenWed($event)" (keyPressed)="handleKey($event)"></app-score>
+    }
+</div>
+

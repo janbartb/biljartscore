@@ -92,11 +92,13 @@
 
 
 .bord .bal { border-radius: 50%; }
-.bord .bal.geel { background-color: gold; }
-.bord .bal.wit { background-color: white; }
+.bord.active.geel .bal { color: gold; }
+.bord.active.wit .bal { color: white; }
+.bord.grijs:not(.active) .bal { color: lightgray }
 
 .bord .speler-data { height: 9em; background-color: #606060; color: white; }
 .bord.active .speler-data { background-color: black; }
+.bord.grijs:not(.active) .speler-data { color: lightgray; }
 .bord.geel .speler-data { color: gold; }
 .bord .speler-naam { height: 5.5em; padding: .25em .5em; line-height: 5em; overflow: hidden; white-space: nowrap; }
 .bord .speler-naam span { font-size: 4em; }
@@ -104,6 +106,7 @@
 .bord .speler-bal { width: 9em; padding: .5em; }
 
 .bord .score-data { height: 13em; background-color: white; }
+.bord.grijs:not(.active) .score-data { background-color: #c0c0c0; }
 .bord.geel .score-data { background-color: gold; }
 .bord .score-left .score-cars { position: relative;  left: -.5em; }
 .bord .score-left .score-cars span { font-size: 11em; opacity: 1; transition: opacity .75s; }
@@ -126,9 +129,11 @@
 .bord .laatste-vijf { height: 4em; padding: 0 .5em; background-color: #606060; color: white; }
 .bord.active .laatste-vijf { background-color: black; }
 .bord.geel .laatste-vijf { color: gold; }
+.bord.grijs:not(.active) .laatste-vijf { color: lightgray; }
 
 .bord .extra-data { height: 6.75em; background-color: white; }
 .bord.geel .extra-data { background-color: gold; }
+.bord.grijs:not(.active) .extra-data { background-color: #c0c0c0; }
 .bord .score-perc .changes, .bord .score-hser .changes { color: blue; }
 
 .bord .score-pnt-container {
