@@ -102,6 +102,9 @@ export class EigenCompetitieScorebordComponent extends BaseComponent implements 
                 this.appData.previousPage();
                 return;
             }
+            if (this.match.datum == '') {
+                this.match.datum = new Date().toISOString().substring(0, 10);
+            }
             this.wedstrijd = this.createWedFromCompMatch(this.match);
             this.wedReady = true;
         })
