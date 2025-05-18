@@ -23,7 +23,6 @@ import { WedstrijdComponent } from './spelen/wedstrijd/wedstrijd.component';
 import { WedSpelersComponent } from './spelen/wedstrijd/wed-spelers/wed-spelers.component';
 import { WedConfigComponent } from './spelen/wedstrijd/wed-config/wed-config.component';
 import { KnbbTeamMatchComponent } from './spelen/knbb-team-match/knbb-team-match.component';
-import { KnbbTeamMatchScoreComponent } from './spelen/knbb-team-match/knbb-team-match-score/knbb-team-match-score.component';
 import { KnbbTeamMatchSetupComponent } from './spelen/knbb-team-match/knbb-team-match-setup/knbb-team-match-setup.component';
 import { KnbbTeamMatchCheckComponent } from './spelen/knbb-team-match/knbb-team-match-check/knbb-team-match-check.component';
 import { KnbbTeamMatchCompComponent } from './spelen/knbb-team-match/knbb-team-match-comp/knbb-team-match-comp.component';
@@ -35,7 +34,6 @@ import { KnbbMatchComponent } from './spelen/knbb-match/knbb-match.component';
 import { KnbbMatchCompComponent } from './spelen/knbb-match/knbb-match-comp/knbb-match-comp.component';
 import { KnbbMatchSetupComponent } from './spelen/knbb-match/knbb-match-setup/knbb-match-setup.component';
 import { KnbbMatchCheckComponent } from './spelen/knbb-match/knbb-match-check/knbb-match-check.component';
-import { KnbbMatchScoreComponent } from './spelen/knbb-match/knbb-match-score/knbb-match-score.component';
 import { KnbbMatchLijstComponent } from './spelen/knbb-match/knbb-match-lijst/knbb-match-lijst.component';
 import { BpHomeComponent } from './biljartpoint/bp-home/bp-home.component';
 import { BpDistrictenComponent } from './biljartpoint/bp-districten/bp-districten.component';
@@ -62,6 +60,8 @@ import { EigenCompetitieLijstComponent } from './spelen/eigen/eigen-competitie/e
 import { EigenCompetitiePlanningComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-planning/eigen-competitie-planning.component';
 import { EigenCompetitieScorebordComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-scorebord/eigen-competitie-scorebord.component';
 import { WedScorebordComponent } from './spelen/wedstrijd/wed-scorebord/wed-scorebord.component';
+import { KnbbTeamMatchScorebordComponent } from './spelen/knbb-team-match/knbb-team-match-scorebord/knbb-team-match-scorebord.component';
+import { KnbbMatchScorebordComponent } from './spelen/knbb-match/knbb-match-scorebord/knbb-match-scorebord.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -71,7 +71,7 @@ export const routes: Routes = [
     { path: 'match/setup/spelers', component: KnbbMatchSetupComponent },
     { path: 'match/setup/comp', component: KnbbMatchCompComponent },
     { path: 'match/setup/check', component: KnbbMatchCheckComponent },
-    { path: 'match/score', component: KnbbMatchScoreComponent },
+    { path: 'match/score', component: KnbbMatchScorebordComponent },
     { path: 'match', component: KnbbMatchComponent },
     { path: 'teammatch/lijst', component: KnbbTeamMatchLijstComponent },
     { path: 'teammatch/setup', children: [
@@ -80,7 +80,7 @@ export const routes: Routes = [
     ]},
     { path: 'teammatch/setup/comp', component: KnbbTeamMatchCompComponent },
     { path: 'teammatch/setup/check', component: KnbbTeamMatchCheckComponent },
-    { path: 'teammatch/score/:wedNr', component: KnbbTeamMatchScoreComponent },
+    { path: 'teammatch/score/:wedNr', component: KnbbTeamMatchScorebordComponent },
     { path: 'teammatch/:wedNr', component: KnbbTeamMatchComponent },
     { path: 'teammatch', component: KnbbTeamMatchComponent },
     { path: 'onderhoud/verenigingen/toevoegen', component: VerenigingAddComponent },
