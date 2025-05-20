@@ -40,6 +40,18 @@ class PlanWedstrijd {
     gespeeld: boolean = false;
 }
 
+class MogelijkeWed {
+    ronde: number = 0;
+    splId: string = '';
+    tegId: string = '';
+
+    constructor(rnd: number, spl: string, teg: string) {
+        this.ronde = rnd;
+        this.splId = spl;
+        this.tegId = teg;
+    }
+}
+
 @Component({
     selector: 'app-eigen-competitie-planning',
     standalone: true,
@@ -81,9 +93,6 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
             return;
         }
         this.appData.previousPage();
-        // const naam = this.comp.cmpNaam;
-        // const ronde = this.rondeIdx;
-        // this.router.navigate([`eigencomps/${naam}/schema/${ronde}`]);
     }
 
     buttonPressed(button: Button) {
@@ -197,101 +206,132 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         this.plannenWasClicked = true;
         this.clearPlanning();
         this.planning.datum = new Date().toISOString().substring(0, 10);
-        let tePlannen = this.planning.aantWed;
-        this.planning.spelers.forEach(spl => {
-            spl.ingepland = false;
-            spl.mogelijkeTegs = [];
-        });
-        for (let i = 0; i < this.comp.cmpAantRondes; i++) {
-            let weds = this.getPlanningPerRonde(i, tePlannen, this.getAanwezigeSpelers());
-            this.planning.wedstrijden.push(...weds);
-            tePlannen = tePlannen - this.planning.wedstrijden.length;
-        }
-    }
-
-    getPlanningPerRonde(idxRonde: number, tePlannen: number, aanwezigeSpelers: PlanSpeler[]): PlanWedstrijd[] {
-        let weds: PlanWedstrijd[] = [];
-        let aantSpelers = tePlannen * 2;
-        let tempSpelers = aanwezigeSpelers.slice(0, aantSpelers);
-        let spelers = this.getSpelerLijstPerRonde(idxRonde + 1, tempSpelers, this.planning.wedstrijden);
-        let idxT = 0;
-        let klaar = tePlannen <= 0 || spelers.length < 2;
+        let aantTePlannenWed = this.planning.aantWed;
+        let rondesTePlannen = 1;
+        let aanwezigeSpelers = this.getAanwezigeSpelers();
+        let aantTePlannenSpl = aantTePlannenWed * 2;
+        let resultaat: MogelijkeWed[] = [];
+        let klaar = false;
         while (!klaar) {
-            weds = this.getWedstrijden(idxRonde + 1, tePlannen, [], spelers, idxT);
-            if (weds.length == tePlannen) {
-                klaar = true;
-            }
-            else {
-                idxT++;
-                if (idxT >= spelers[0].mogelijkeTegs.length) {
-                    aantSpelers++;
-                    if (aantSpelers > this.planning.spelers.length) {
-                        tePlannen--;
-                        if (tePlannen == 0) {
+            let tePlannenSpelers = aanwezigeSpelers.slice(0, aantTePlannenSpl);
+            let weds = this.planWedstrijden(rondesTePlannen, aantTePlannenWed, aantTePlannenSpl, tePlannenSpelers);
+            klaar = weds.length == aantTePlannenWed;
+            if (!klaar) {
+                aantTePlannenSpl++;
+                if (aantTePlannenSpl > aanwezigeSpelers.length) {
+                    rondesTePlannen++;
+                    aantTePlannenSpl = aantTePlannenWed * 2;
+                    if (rondesTePlannen > this.comp.cmpAantRondes) {
+                        rondesTePlannen = 1;
+                        aantTePlannenWed--;
+                        if (aantTePlannenWed == 0) {
                             klaar = true;
+                            weds = [];
                         }
                         else {
-                            idxT = 0;
-                            aantSpelers = tePlannen * 2;
-                            tempSpelers = this.planning.spelers.slice(0, aantSpelers);
-                            spelers = this.getSpelerLijstPerRonde(idxRonde + 1, tempSpelers, this.planning.wedstrijden);
-                        }
-                    }
-                    else {
-                        idxT = 0;
-                        tempSpelers = this.planning.spelers.slice(0, aantSpelers);
-                        spelers = this.getSpelerLijstPerRonde(idxRonde + 1, tempSpelers, this.planning.wedstrijden);
+                            aantTePlannenSpl = aantTePlannenWed * 2;
+                        }                        
                     }
                 }
             }
+            if (klaar) {
+                resultaat = weds;
+            }
         }
-        return weds;
+        if (resultaat.length > 0) {
+            this.planning.wedstrijden = this.createGeplandeWedstrijden(resultaat);
+        }
     }
 
-    getWedstrijden(ronde: number, aantal: number, prevWeds: PlanWedstrijd[], prevSpelers: PlanSpeler[], idxTeg: number): PlanWedstrijd[] {
-        if (aantal == 0 || prevSpelers.length < 2) {
-            return prevWeds;
+    planWedstrijden(aantRondes: number, aantWed: number, aantSpl: number, tePlannenSpl: PlanSpeler[]): MogelijkeWed[] {
+        let result: MogelijkeWed[] = [];
+        let alleMogelijkeWeds = this.getAlleMogelijkeWedstrijden(aantRondes, tePlannenSpl);
+        //console.log(alleMogelijkeWeds);
+        if (alleMogelijkeWeds.length < aantWed) {
+            return result;
         }
-        if (idxTeg >= prevSpelers[0].mogelijkeTegs.length) {
-            return prevWeds;
-        }
-        let allWeds: PlanWedstrijd[] = JSON.parse(JSON.stringify(prevWeds));
-        let spelers: PlanSpeler[] = JSON.parse(JSON.stringify(prevSpelers));
-        let wed = this.getWedstrijd(ronde, spelers, idxTeg);
-        allWeds.push(wed);
-        spelers = this.getSpelerLijstPerRonde(ronde, spelers, allWeds);
-        let tePlannen = aantal - 1;
-        let idxT = 0;
-        let klaar = tePlannen == 0 || spelers.length < 2;
+        let mogelijkeWeds = alleMogelijkeWeds.slice(0);
+        let idxStart = 0;
+        let firstSplId = mogelijkeWeds[idxStart].splId;
+        let klaar = false;
         while (!klaar) {
-            let weds = this.getWedstrijden(ronde, tePlannen, allWeds, spelers, idxT);
-            if ((weds.length - allWeds.length) == tePlannen) {
-                allWeds = weds;
+            result = this.getGeplandeWedstrijden(mogelijkeWeds, aantWed, firstSplId);
+            if (result.length == aantWed) {
                 klaar = true;
             }
             else {
-                idxT++;
-                if (idxT >= spelers[0].mogelijkeTegs.length) {
+                idxStart++;
+                if (idxStart >= mogelijkeWeds.length) {
                     klaar = true;
+                }
+                else {
+                    mogelijkeWeds = mogelijkeWeds.slice(idxStart);
+                    if (mogelijkeWeds[0].splId != firstSplId) {
+                        klaar = true;
+                    }
                 }
             }
         }
-        return allWeds;
+        return result;
     }
 
-    private getWedstrijd(ronde: number, spelers: PlanSpeler[], idxTeg: number): PlanWedstrijd {
-        let spl = spelers[0];
-        const idx = spelers.findIndex(sp => sp.id == spl.mogelijkeTegs[idxTeg]);
-        let teg = spelers[idx];
-        let wed = new PlanWedstrijd();
-        wed.ronde = ronde;
-        wed.splId = spl.id;
-        wed.splNaam = spl.naam;
-        wed.tegId = teg.id;
-        wed.tegNaam = teg.naam;
-        spl.ingepland = true;
-        teg.ingepland = true;
-        return wed;
+    getGeplandeWedstrijden(mogelijkeWeds: MogelijkeWed[], aantWed: number, firstSplId: string): MogelijkeWed[] {
+        let result: MogelijkeWed[] = [];
+        const wed = mogelijkeWeds[0];
+        result.push(wed);
+        let wedsMogelijk = mogelijkeWeds.filter(w => w.splId != wed.splId && w.splId != wed.tegId && w.tegId != wed.splId && w.tegId != wed.tegId);
+        if (wedsMogelijk.length == 0) {
+            return result;
+        }
+        let idxStart = 0;
+        let firstId = wedsMogelijk[idxStart].splId;
+        let nrOfWed = aantWed - 1;
+        if (nrOfWed == 0) {
+            return result;
+        }
+        let weds: MogelijkeWed[] = [];
+        let klaar = false;
+        while (!klaar) {
+            weds = this.getGeplandeWedstrijden(wedsMogelijk, nrOfWed, firstId);
+            if (weds.length == nrOfWed) {
+                klaar = true;
+            }
+            else {
+                idxStart++;
+                if (idxStart >= wedsMogelijk.length) {
+                    klaar = true;
+                }
+                else {
+                    wedsMogelijk = wedsMogelijk.slice(idxStart);
+                    if (wedsMogelijk[0].splId != firstId) {
+                        klaar = true;
+                    }
+                }
+            }
+        }
+        return result.concat(weds);
+    }
+
+    getAlleMogelijkeWedstrijden(aantRondes: number, tePlannenSpl: PlanSpeler[]): MogelijkeWed[] {
+        let result: MogelijkeWed[] = [];
+        tePlannenSpl.forEach((spl, idx) => {
+            const compSpl = this.comp.cmpSpelers.find(cs => cs.splId == spl.id);
+            if (compSpl) {
+                let mogelijkeTegs: PlanSpeler[] = tePlannenSpl.slice(idx + 1);
+                for (let idxRonde = 0; idxRonde < aantRondes; idxRonde++) {
+                    mogelijkeTegs.forEach(teg => {
+                        const gespeeld = compSpl.splRondes[idxRonde].wedstrijden.some(wed => wed.tegId == teg.id);
+                        if (!gespeeld) {
+                            const alAanwezig = result.some(wed => wed.splId == spl.id && wed.tegId == teg.id);
+                            if (!alAanwezig) {
+                                result.push(new MogelijkeWed(idxRonde + 1, spl.id, teg.id));
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        return result;
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -397,6 +437,18 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         });
     }
 
+    private createGeplandeWedstrijden(weds: MogelijkeWed[]): PlanWedstrijd[] {
+        let result: PlanWedstrijd[] = [];
+        weds.forEach(wed => {
+            let planWed = new PlanWedstrijd();
+            Object.assign(planWed, wed);
+            planWed.splNaam = this.getSpelerNaam(wed.splId);
+            planWed.tegNaam = this.getSpelerNaam(wed.tegId);
+            result.push(planWed);
+        });
+        return result;
+    }
+
     private wisselSpelers(wed: PlanWedstrijd) {
         const tempId = wed.splId;
         const tempNaam = wed.splNaam;
@@ -434,42 +486,6 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
             idx = 0;
         }
         this.idxWed = idx;
-    }
-
-    private getSpelerLijstPerRonde(ronde: number, spelers: PlanSpeler[], weds: PlanWedstrijd[]): PlanSpeler[] {
-        if (spelers.length < 2) {
-            return [];
-        }
-        const idxRonde = ronde - 1;
-        let lijstSpelers: PlanSpeler[] = JSON.parse(JSON.stringify(spelers));
-        let allWeds: PlanWedstrijd[] = JSON.parse(JSON.stringify(weds));
-        allWeds.push(...this.planning.wedstrijden);
-        lijstSpelers = lijstSpelers.filter(spl => spl.aanwezig && !spl.ingepland && !allWeds.some(wed => {
-            return wed.splId == spl.id || wed.tegId == spl.id;
-        }));
-        if (spelers.length < 2) {
-            return [];
-        }
-        lijstSpelers.forEach(spl => {
-            spl.mogelijkeTegs = [];
-            let compSpl = this.comp.cmpSpelers.find(s => s.splId == spl.id);
-            if (compSpl) {
-                let splRonde = compSpl.splRondes[idxRonde];
-                lijstSpelers.forEach(teg => {
-                    const gespeeld = teg.id == spl.id || splRonde.wedstrijden.some(wed => wed.tegId == teg.id);
-                    if (!gespeeld) {
-                        spl.mogelijkeTegs.push(teg.id);
-                    }
-                });
-                if (spl.mogelijkeTegs.length == 0) {
-                    spl.ingepland = true;
-                }
-            }
-        });
-        if (lijstSpelers.some(spl => spl.ingepland)) {
-            return this.getSpelerLijstPerRonde(ronde, lijstSpelers, allWeds);
-        }
-        return lijstSpelers;
     }
 
     private getAanwezigeSpelers(): PlanSpeler[] {
@@ -550,6 +566,15 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
             return 99;
         }
         return dagen;
+    }
+
+    private getSpelerNaam(id: string): string {
+        let result = '';
+        const spl = this.comp.cmpSpelers.find(s => s.splId == id);
+        if (spl) {
+            result = spl.splBordnaam;
+        }
+        return result;
     }
 
     private setEscapeCount() {
