@@ -4,6 +4,11 @@
     border: .125em solid #b7dfb8;
     border-radius: .5em;
     background-color: #b7dfb8;
+    opacity: 1; 
+    transition: opacity .75s;
+}
+.wedspeler.switching {
+    opacity: 0;
 }
 .wedspeler.active {
     border-color: red;

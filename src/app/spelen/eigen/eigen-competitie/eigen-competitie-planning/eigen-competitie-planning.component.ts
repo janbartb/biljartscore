@@ -246,7 +246,7 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
     planWedstrijden(aantRondes: number, aantWed: number, aantSpl: number, tePlannenSpl: PlanSpeler[]): MogelijkeWed[] {
         let result: MogelijkeWed[] = [];
         let alleMogelijkeWeds = this.getAlleMogelijkeWedstrijden(aantRondes, tePlannenSpl);
-        //console.log(alleMogelijkeWeds);
+        console.log(alleMogelijkeWeds);
         if (alleMogelijkeWeds.length < aantWed) {
             return result;
         }
@@ -265,7 +265,7 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
                     klaar = true;
                 }
                 else {
-                    mogelijkeWeds = mogelijkeWeds.slice(idxStart);
+                    mogelijkeWeds = alleMogelijkeWeds.slice(idxStart);
                     if (mogelijkeWeds[0].splId != firstSplId) {
                         klaar = true;
                     }

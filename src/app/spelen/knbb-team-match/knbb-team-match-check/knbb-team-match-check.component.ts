@@ -38,6 +38,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     naamValid: boolean[][] = [[true, true, true], [true, true, true]];
     moyValid: boolean[][] = [[true, true, true], [true, true, true]];
     carValid: boolean[][] = [[true, true, true], [true, true, true]];
+    cssSwitching: boolean[][] = [[false, false, false], [false, false, false]];
     wedStatus: number[] = [0, 0, 0];
     voortgang: string[] = ['0%', '0%', '0%'];
     canMoveUp: boolean = false;
@@ -390,14 +391,22 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         if (idxNew < 0 || idxNew > 2) {
             return;
         }
-        let team = this.teams[this.idxTeam];
-        let tempSpl = team.spelers[idxNew];
-        team.spelers[idxNew] = team.spelers[idxOld];
-        team.spelers[idxOld] = tempSpl;
-        this.idxSpeler = idxNew;
-        this.isMatchValid();
-        this.hasMatchChanged();
-        this.checkIfSpelerCanBeMoved();
+        setTimeout(() => {
+            this.cssSwitching[this.idxTeam][idxOld] = true;
+            this.cssSwitching[this.idxTeam][idxNew] = true;
+            setTimeout(() => {
+                let team = this.teams[this.idxTeam];
+                let tempSpl = team.spelers[idxNew];
+                team.spelers[idxNew] = team.spelers[idxOld];
+                team.spelers[idxOld] = tempSpl;
+                this.idxSpeler = idxNew;
+                this.isMatchValid();
+                this.hasMatchChanged();
+                this.checkIfSpelerCanBeMoved();
+                this.cssSwitching[this.idxTeam][idxOld] = false;
+                this.cssSwitching[this.idxTeam][idxNew] = false;
+            }, 800);                                        
+        }, 250);
     }
 
     private veranderVanTeam(direction: number) {

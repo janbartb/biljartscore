@@ -72,7 +72,10 @@
                             <div class="flexbox flexcenter">
                                 <div>
                                     @for (spl of team.spelers; track $index; let idxS = $index) {
-                                        <div class="wedspeler" [ngClass]="{'active': idxTeam == idxT && idxSpeler == idxS, 'geel': idxT == 1}" 
+                                        <div class="wedspeler" 
+                                                [ngClass]="{'active': idxTeam == idxT && idxSpeler == idxS, 
+                                                            'geel': idxT == 1,
+                                                            'switching': cssSwitching[idxT][idxS]}" 
                                                 (click)="maakSpelerActief(idxT, idxS)" style="margin-bottom: .5em;">
                                             <div class="naam" style="font-size: 1.25em;">
                                                 <span>{{spl.splNaam}}</span>
