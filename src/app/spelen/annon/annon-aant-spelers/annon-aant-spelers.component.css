@@ -1,0 +1,12 @@
+.cars-optie {
+    height: 2em;
+}
+.cars-optie:not(.selected) {
+    cursor: pointer;
+}
+.cars-optie .optietekst {
+    color: gray;
+}
+.cars-optie.selected .optietekst {
+    color: black;
+}

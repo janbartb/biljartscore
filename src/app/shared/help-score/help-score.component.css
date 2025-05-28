@@ -1,0 +1,32 @@
+.help-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 30;
+}
+.help-card {
+    font-weight: bold;
+    box-shadow: .375em .375em .1875em #aaaaaa;
+    border-radius: .375em;
+    padding: .125em;
+    background-color: white;
+}
+.help-card-inner {
+    border: .125em solid black;
+    border-radius: .375em;
+    padding: 1em;
+}
+.mini-container .selectable {
+    cursor: pointer;
+    padding: .25em;
+    border: .125em solid white;
+    border-radius: .5em;
+}
+.mini-container.selected .selectable {
+    border-color: red;
+}
+.mini-container:not(.selected) .selectable:hover {
+    border-color: #c0c0c0;
+}

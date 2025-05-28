@@ -167,7 +167,8 @@
         <app-spelers-namen [dialog]="namenDialog" (reply)="namenDialogReplied($event)"></app-spelers-namen>
     }
 </div>
-<app-help>
+<app-help-score></app-help-score>
+<!-- <app-help>
     <div style="font-size: 1.5em; letter-spacing: -.04em;">Uitleg toetsen scorebord</div>
     <hr>
     <div style="font-size: 1.5em; letter-spacing: -.04em;">
@@ -382,7 +383,7 @@
             </tr>
         </table>
     </div>
-</app-help>
+</app-help> -->
 @if (wedstrijd.wedOpgeslagen) {
     <div class="keylock" title="Uitslag opgeslagen">
         <i class="fas fa-check-circle"></i>

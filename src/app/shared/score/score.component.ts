@@ -7,21 +7,22 @@ import { ModalMessage } from '../../model/modal-message';
 import { SpeechService } from '../../services/speech.service';
 import { AlertService } from '../../services/alert.service';
 import { SpelersNamenComponent } from '../spelers-namen/spelers-namen.component';
-import { HelpComponent } from '../help/help.component';
 import { ScoreSpelerLandscapeComponent } from './score-speler-landscape/score-speler-landscape.component';
 import { ScoreTeamComponent } from './score-team/score-team.component';
+import { HelpScoreComponent } from "../help-score/help-score.component";
 
 @Component({
     selector: 'app-score',
     standalone: true,
     imports: [
-        ScoreSpelerComponent,
-        ScoreSpelerLandscapeComponent,
-        ScoreTeamComponent,
-        SpelersNamenComponent,
-        HelpComponent,
-        NgClass
-    ],
+    ScoreSpelerComponent,
+    ScoreSpelerLandscapeComponent,
+    ScoreTeamComponent,
+    SpelersNamenComponent,
+    HelpScoreComponent,
+    NgClass,
+    HelpScoreComponent
+],
     templateUrl: './score.component.html',
     styleUrl: './score.component.css'
 })
@@ -245,6 +246,9 @@ export class ScoreComponent implements OnInit {
             return false;
         }
         if (this.alert.helpVisible && event.key != 'Shift') {
+            if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
+                return false;
+            }
             this.alert.hideHelp();
             return false;
         }        

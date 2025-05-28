@@ -1,0 +1,38 @@
+@if (alertService.helpVisible) {
+    <div class="help-container flexbox flexcenter flexmiddle">
+        <div class="help-card" (click)="alertService.hideHelp()">
+            <div class="help-card-inner">
+                <div>
+                    <div style="font-size: 1.5em; letter-spacing: -.04em;">Uitleg toetsen scorebord</div>
+                    <hr>
+                    <div class="flexbox flexstretch" style="height: 18.5em;">
+                        <div class="flexbox flexcolumn" style="width: 5.5em; padding-right: .5em; border-right: .125em solid #a0a0a0;">
+                            <div class="flex50perc flexbox flexcenter flexmiddle mini-container" [ngClass]="{'selected': activeTab == 0}">
+                                <div class="selectable" (click)="activateTab(0, $event)">
+                                    <img src="images/logi-presenter-sm.png" alt="">
+                                </div>
+                            </div>
+                            <div class="flex50perc flexbox flexcenter flexmiddle mini-container" [ngClass]="{'selected': activeTab == 1}">
+                                <div class="selectable" (click)="activateTab(1, $event)">
+                                    <img src="images/ms-num-pad-sm.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flexbox flexcenter flexmiddle" style="width: 36em;">
+                            @if (activeTab == 0) {
+                                <div>
+                                    <img src="images/hlp-score-present.png" alt="">
+                                </div>
+                            }
+                            @else {
+                                <div>
+                                    <img src="images/hlp-score-keypad.png" alt="">
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

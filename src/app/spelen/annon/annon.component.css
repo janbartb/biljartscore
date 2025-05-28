@@ -1,0 +1,28 @@
+.column {
+    color: green;
+}
+
+.column.column-speler {
+    color: black;
+}
+
+.column-score div {
+    text-align: center;
+}
+
+.annon-content span {
+    font-size: 1.25em;
+}
+
+.annon-score .category {
+    padding: .425em 0;
+}
+.annon-score .category .cat-bullet-container {
+    width: 1.0625em;
+}
+.annon-score .category .cat-bullet-container .cat-bullet {
+    width: 1em;
+}
+.annon-score .category .cat-bullet-container .cat-bullet.red {
+    background-color: red;
+}

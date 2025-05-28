@@ -16,12 +16,16 @@
     /*box-shadow: -.0625rem .0625rem .0625rem hsl(0 0% 0% / .5); */
     background-color: var(--_color-white);
     background-image: var(--_grad-light);
+    transition: background-color 1s;
 }
 
 /* snooker */
 .biljartbal[data-kleur] {
     background-color: var(--_color, var(--_color-white));
     background-image: var(--_grad-light);
+}
+.biljartbal.rood {
+    --_color: var(--_color-red);
 }
 .biljartbal[data-kleur="red"] {
     --_color: var(--_color-red);
@@ -32,17 +36,26 @@
 .biljartbal[data-kleur="yellow"] {
     --_color: var(--_color-yellow);
 }
+.biljartbal.groen {
+    --_color: var(--_color-green);
+}
 .biljartbal[data-kleur="green"] {
     --_color: var(--_color-green);
 }
 .biljartbal[data-kleur="brown"] {
     --_color: var(--_color-brown);
 }
+.biljartbal.blauw {
+    --_color: var(--_color-blue);
+}
 .biljartbal[data-kleur="blue"] {
     --_color: var(--_color-blue);
 }
 .biljartbal[data-kleur="pink"] {
     --_color: var(--_color-pink);
+}
+.biljartbal.zwart {
+    --_color: var(--_color-black);
 }
 .biljartbal[data-kleur="black"] {
     --_color: var(--_color-black);

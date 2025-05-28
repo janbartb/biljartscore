@@ -1,0 +1,98 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="'Annonceer wedstrijd - instellingen'" [spel]="'Annonceren'"
+                        (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox flexstretch">
+            <div class="flex25perc flexbox flexcolumn" style="border-right: .25em solid green;">
+                <app-section-header [title]="'Categorieën'" [cssClasses]="'w3-green-l2'" 
+                                [active]="activeSection == 0" (headerClicked)="maakSectionActief(0)"></app-section-header>
+                <div class="flexgrow1">
+                    <div style="height: 3em;"></div>
+                    <div class="flexbox flexcenter">
+                        <div class="lijst">
+                            @for (cat of annon.config.cats; track $index) {
+                                <div class="lijst-row">
+                                    <div class="lijst-col">
+                                        <span>{{cat.naam}}</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex25perc flexbox flexcolumn" style="border-right: .25em solid green;">
+                <app-section-header [title]="'Aantal spelers'" [cssClasses]="'w3-green-l2'" 
+                                [active]="activeSection == 1" (headerClicked)="maakSectionActief(1)"></app-section-header>
+                <div class="flexgrow1">
+                    <div style="height: 3em;"></div>
+                    <div class="flexbox flexcenter">
+                        <div class="lijst">
+                            @for (aantSpl of aantalLijst.filtered; track $index) {
+                                <div class="lijst-row selectable" (click)="aantalClicked($index)"
+                                        [ngClass]="{'selected': aantalLijst.selectedIdx == $index, 'hovered': aantalLijst.hoveredIdx == $index}">
+                                    <div class="lijst-col">
+                                        <span>{{aantSpl}}</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                @if (activeSection == 1 && aantalLijst.hoveredIdx >= 0 && aantalLijst.hoveredIdx != aantalLijst.selectedIdx) {
+                    <app-section-footer-btns [buttons]="sectButtons" (clickedButton)="sectButtonClicked()"
+                                                [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+            </div>
+            <div class="flexgrow1 flexbox flexcolumn">
+                <app-section-header [title]="'Aantal caramboles (per categorie)'" [cssClasses]="'w3-green-l2'" 
+                                [active]="activeSection == 2" (headerClicked)="maakSectionActief(2)"></app-section-header>
+                <div class="flexgrow1">
+                    <div style="height: 3em; line-height: 3em; text-align: center; color: green;">
+                        <span>Aantal is minimaal 3 en maximaal 10.</span>
+                    </div>
+                    <div class="flexbox flexcenter">
+                        <div>
+                            <div class="cars-optie flexbox flexmiddle" [ngClass]="{'selected': !optieKeuze}"
+                                        (click)="selectCarsOptie(false)">
+                                <div>
+                                    <i [ngClass]="optieKeuze ? 'far fa-circle' : 'fas fa-check-circle'"></i>
+                                </div>
+                                <div style="padding: 0 1em;">
+                                    <span class="optietekst">Vast aantal</span>
+                                </div>
+                                @if (!optieKeuze) {
+                                    <div>
+                                        <input type="number" style="width: 3em;" [(ngModel)]="inpCars" 
+                                                (keyup)="checkInput()" (change)="checkInput()"
+                                                [ngClass]="{'invalid': !inputOk, 'valid': inputOk}">
+                                    </div>
+                                }
+                            </div>
+                            <div class="cars-optie flexbox flexmiddle" [ngClass]="{'selected': optieKeuze}"
+                                        (click)="selectCarsOptie(true)">
+                                 <div>
+                                    <i [ngClass]="optieKeuze ? 'fas fa-check-circle' : 'far fa-circle'"></i>
+                                </div>
+                                <div style="padding: 0 1em;">
+                                    <span class="optietekst">Aantal gebaseerd op moyenne van speler</span>
+                                </div>
+                            </div>
+                            @if (annon.config.carsObvMoyenne) {
+                                <div style="color: green; padding-left: 2em;">
+                                    <span>Aantal wordt 10 x moyenne (afgerond)</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (aantalLijst.selectedIdx >= 0 && aantalLijst.hoveredIdx == aantalLijst.selectedIdx && (optieKeuze || inputOk)) {
+            <app-section-footer-btns [buttons]="pageButtons" (clickedButton)="pageButtonClicked()" 
+                                [cssFooter]="'w3-green-bdr-d2'" [cssButtons]="'font125'"></app-section-footer-btns>
+        }
+    </div>
+</div>

@@ -79,6 +79,10 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
             this.buttonPressed('4');
             return false;
         }
+        if (event.code === 'Digit5' || event.code === 'Numpad5') {
+            this.buttonPressed('5');
+            return false;
+        }
         if (event.key === 'Home') {
             this.homePressed();
             return false;
@@ -93,7 +97,8 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
         this.menu.addItem(new MenuItem('2', 'KNBB competitie single match', 'match'));
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('3', 'Oefen wedstrijd', 'wedstrijd/aantspl'));
+        this.menu.addItem(new MenuItem('4', 'Annonceer wedstrijd', 'annon/aantspl'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('4', 'Eigen competitie', 'eigencomps'));
+        this.menu.addItem(new MenuItem('5', 'Eigen competitie', 'eigencomps'));
     }
 }

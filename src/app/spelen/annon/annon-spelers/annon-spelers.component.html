@@ -1,0 +1,103 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="subtitle" [spel]="'Annonceren'"
+                        [escCount]="escapeCount" (escClicked)="escapePressed()" (prevClicked)="previousClicked()" 
+                        (hdrClicked)="headerClicked($event)"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox flexstretch">
+            <div class="flex30perc flexbox flexcolumn" style="border-right: .25em solid green;">
+                <app-section-header [title]="'Kies vereniging'" [cssClasses]="'w3-green-l2'" 
+                                [active]="activeSection == 0" (headerClicked)="maakSectionActief(0)"></app-section-header>
+                <div class="flexgrow1 scroll-container">
+                    <div style="margin-top: .5em;">
+                        <div #vereniginglijst class="scroll-content">
+                            <div class="flexbox flexcenter">
+                                <div class="lijst">
+                                    @for (ver of verenigingLijst.filtered; track $index) {
+                                        <div class="lijst-row selectable" (click)="verenigingClicked($index)"
+                                                [ngClass]="{'selected': verenigingLijst.selectedIdx == $index, 
+                                                            'hovered': verenigingLijst.hoveredIdx == $index}">
+                                            <div class="lijst-col">
+                                                <span> {{ver.naam}}</span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (activeSection == 0 && verenigingLijst.hoveredIdx != verenigingLijst.selectedIdx) {
+                    <app-section-footer-btns [buttons]="sectionButtons" (clickedButton)="enterSelectClicked()"
+                                                [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+            </div>
+            <div class="flex30perc flexbox flexcolumn" style="border-right: .25em solid green;">
+                <app-section-header [title]="'Kies speler'" [cssClasses]="'w3-green-l2'" 
+                                [active]="activeSection == 1" (headerClicked)="maakSectionActief(1)"></app-section-header>
+                @if (spelerLijst.filtered.length == 0) {
+                    <div class="label" style="text-align: center; padding-top: .25em;">
+                        @if (verenigingLijst.selectedIdx < 0) {
+                            <span>Kies eerst een vereniging</span>
+                        }
+                        @else {
+                            <span>Geen spelers aanwezig in de<br>geselecteerde vereniging</span>
+                        }    
+                    </div>
+                }
+                @else {
+                    <div class="flexgrow1 scroll-container">
+                        <div style="margin-top: .5em;">
+                            <div #spelerlijst class="scroll-content">
+                                <div class="flexbox flexcenter">
+                                    <div class="lijst">
+                                        @for (spl of spelerLijst.filtered; track $index) {
+                                            <div class="lijst-row selectable" (click)="spelerClicked($index)"
+                                                    [ngClass]="{'selected': spelerLijst.selectedIdx == $index, 
+                                                                'hovered': spelerLijst.hoveredIdx == $index}">
+                                                <div class="lijst-col">
+                                                    <span class="indicator fas fa-angle-right"> </span>
+                                                    <span> {{spl.getNaam()}}</span>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                }
+                @if (activeSection == 1 && spelerLijst.hoveredIdx >= 0) {
+                    <app-section-footer-btns [buttons]="sectionButtons" (clickedButton)="enterSelectClicked()"
+                                                [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+            </div>
+            <div class="flexgrow1 flexbox flexcolumn">
+                <app-section-header [title]="'Spelers'" [cssClasses]="'w3-green-l2'" 
+                                [active]="activeSection == 2" (headerClicked)="maakSectionActief(2)"></app-section-header>
+                @if (wedstrijd.config.aantSpelers > 0) {
+                    <div class="flexbox flexcenter">
+                        <div>
+                            <div style="margin-top: .5em;">
+                                @for (spl of wedstrijd.spelers; track $index) {
+                                    <div class="wedspeler" [ngClass]="{'active': idxActiveSpeler == $index}" (click)="maakSpelerActief($index)"
+                                            style="margin-bottom: .5em;">
+                                        <div class="label">Speler {{$index + 1}}</div>
+                                        <div class="naam">
+                                            <span>{{spl.splNaam}}</span>
+                                        </div>
+                                    </div>
+                                }    
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        @if (spelersFilled && verenigingLijst.hoveredIdx == verenigingLijst.hoveredIdx && spelerLijst.hoveredIdx < 0) {
+            <app-section-footer-btns [buttons]="pageButtons"
+                            (clickedButton)="pageButtonClicked()" [cssFooter]="'w3-green-bdr-d2'" [cssButtons]="'font125'"></app-section-footer-btns>
+        }
+    </div>
+</div>

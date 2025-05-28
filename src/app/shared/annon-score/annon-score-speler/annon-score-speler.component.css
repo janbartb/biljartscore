@@ -1,0 +1,46 @@
+.annon-score {
+    height: 18em;
+    padding: 1em 0;
+}
+.annon-score .category {
+    height: 4em;
+    padding: 0 .5em;
+}
+.annon-score .category .catnaam {
+    width: 9em;
+    color: #606060;
+}
+.active .annon-score .category .catnaam {
+    color: black;
+}
+.annon-score .category .catnaam > span {
+    font-size: 1.5em;
+}
+/* .annon-score .category .cat-bullet-container {
+    width: 3.7em;
+}
+.annon-score .category .cat-bullet-container .cat-bullet {
+    width: 3em;
+} */
+.annon-score .category .cat-bullet-container .cat-bullet.red {
+    background-color: red;
+}
+.annon-score .category .cat-bullet-container .cat-bullet.green {
+    background-color: green;
+}
+
+.annon-extra {
+    height: 5.75em;
+    padding: 0 .5em;
+}
+.annon-punten {
+    height: 4.75em;
+    width: 6em;
+    background-color: lightgray;
+    color: #606060;
+    border-radius: .5em;
+}
+.active .annon-punten {
+    background-color: white;
+    color: black;
+}

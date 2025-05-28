@@ -62,6 +62,10 @@ import { EigenCompetitieScorebordComponent } from './spelen/eigen/eigen-competit
 import { WedScorebordComponent } from './spelen/wedstrijd/wed-scorebord/wed-scorebord.component';
 import { KnbbTeamMatchScorebordComponent } from './spelen/knbb-team-match/knbb-team-match-scorebord/knbb-team-match-scorebord.component';
 import { KnbbMatchScorebordComponent } from './spelen/knbb-match/knbb-match-scorebord/knbb-match-scorebord.component';
+import { AnnonAantSpelersComponent } from './spelen/annon/annon-aant-spelers/annon-aant-spelers.component';
+import { AnnonComponent } from './spelen/annon/annon.component';
+import { AnnonSpelersComponent } from './spelen/annon/annon-spelers/annon-spelers.component';
+import { AnnonScorebordComponent } from './spelen/annon/annon-scorebord/annon-scorebord.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -113,6 +117,10 @@ export const routes: Routes = [
     { path: 'onderhoud', component: OnderhoudComponent },
     { path: 'config', component: ConfigComponent },
     { path: 'spelkeuze', component: SpelkeuzeComponent },
+    { path: 'annon/aantspl', component: AnnonAantSpelersComponent },
+    { path: 'annon/spelers', component: AnnonSpelersComponent },
+    { path: 'annon/score', component: AnnonScorebordComponent },
+    { path: 'annon', component: AnnonComponent },
     { path: 'wedstrijd/score', component: WedScorebordComponent },
     { path: 'wedstrijd/config', component: WedConfigComponent },
     { path: 'wedstrijd/lijst', component: WedLijstComponent },

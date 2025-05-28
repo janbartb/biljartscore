@@ -14,6 +14,7 @@ import { StatusService } from './status.service';
 import { BpCompetitie, BpDistrict, BpMoyTabel, CompTemp, TeamPageData } from '../model/bpoint';
 import { CmpMatchLeesResultaat, Competitie, CompetitieMatch, CompLeesResultaat } from '../model/competitie';
 import { Wedstrijd, WedstrijdLeesResultaat } from '../model/wedstrijd';
+import { Annonceer, AnnonLeesResultaat } from '../model/annonceer';
 
 @Injectable({
     providedIn: 'root'
@@ -243,6 +244,11 @@ export class ApiService {
 
     async getOefenWedstrijd(): Promise<OefWedstrijdLeesResultaat> {
         const result: OefWedstrijdLeesResultaat = await this.getResource(this.dbUrl + `/wedstrijd`);
+        return result;
+    }
+
+    async getAnnonWedstrijd(): Promise<AnnonLeesResultaat> {
+        const result: AnnonLeesResultaat = await this.getResource(this.dbUrl + `/annon`);
         return result;
     }
 
@@ -609,6 +615,21 @@ export class ApiService {
         const response: Response = await fetch(this.dbUrl + `/wedstrijd`, {
             method: 'POST',
             body: JSON.stringify(wedstrijd),
+            headers: this.myHeaders
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
+    // ANNONCEER WEDSTRIJD
+
+    async saveAnnonWedstrijd(annon: Annonceer): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + `/annon`, {
+            method: 'POST',
+            body: JSON.stringify(annon),
             headers: this.myHeaders
         });
         const json: ApiResponse = await response.json();
