@@ -3,7 +3,8 @@
         <div class="bss-score-2 fullheight" [ngClass]="{'gameover': wedstrijd.wedGespeeld}">
             <div class="fullheight speler-container active">
                 <app-annon-score-speler-landscape [speler]="wedstrijd.spelers[0]"
-                                                [cats]="wedstrijd.config.cats"></app-annon-score-speler-landscape>
+                                                [cats]="wedstrijd.config.cats"
+                                                [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler-landscape>
             </div>
         </div>
     }
@@ -11,11 +12,13 @@
         <div class="bss-score-2 fullheight flexbox flexstretch" [ngClass]="{'gameover': wedstrijd.wedGespeeld}">
             <div class="flex50perc speler-container wit shadow-right" [ngClass]="{'active': idxSpeler == 0}">
                 <app-annon-score-speler [speler]="wedstrijd.spelers[0]"
-                                        [cats]="wedstrijd.config.cats"></app-annon-score-speler>
+                                        [cats]="wedstrijd.config.cats"
+                                        [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler>
             </div>
             <div class="flex50perc speler-container wit shadow-left" [ngClass]="{'active': idxSpeler == 1}">
                 <app-annon-score-speler [speler]="wedstrijd.spelers[1]"
-                                        [cats]="wedstrijd.config.cats"></app-annon-score-speler>
+                                        [cats]="wedstrijd.config.cats"
+                                        [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler>
              </div>
         </div>
     }
@@ -24,15 +27,18 @@
             <div class="bss-score-3 fullheight flexbox flexstretch" [ngClass]="{'gameover': wedstrijd.wedGespeeld}">
                 <div class="speler-container wit" style="width: 30em;" [ngClass]="{'active shadow-right': idxSpeler == 0}">
                     <app-annon-score-speler [speler]="wedstrijd.spelers[0]"
-                                            [cats]="wedstrijd.config.cats"></app-annon-score-speler>
+                                            [cats]="wedstrijd.config.cats"
+                                            [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler>
                 </div>
                 <div class="speler-container wit" style="width: 30em;" [ngClass]="{'active shadow-left-right': idxSpeler == 1}">
                     <app-annon-score-speler [speler]="wedstrijd.spelers[1]"
-                                            [cats]="wedstrijd.config.cats"></app-annon-score-speler>
+                                            [cats]="wedstrijd.config.cats"
+                                            [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler>
                 </div>
                 <div class="speler-container wit" style="width: 30em;" [ngClass]="{'active shadow-left': idxSpeler == 2}">
                     <app-annon-score-speler [speler]="wedstrijd.spelers[2]"
-                                            [cats]="wedstrijd.config.cats"></app-annon-score-speler>
+                                            [cats]="wedstrijd.config.cats"
+                                            [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler>
                 </div>
             </div>    
         </div>
@@ -43,21 +49,25 @@
                 <div class="flex50perc speler-container-sub" [ngClass]="{'active': idxSpeler == 0 || idxSpeler == 2}">
                     <div class="bss-landscape speler-container wit" [ngClass]="{'active shadow-bottom-right': idxSpeler == 0}">
                         <app-annon-score-speler-landscape [speler]="wedstrijd.spelers[0]"
-                                                        [cats]="wedstrijd.config.cats"></app-annon-score-speler-landscape>
+                                                        [cats]="wedstrijd.config.cats"
+                                                        [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler-landscape>
                     </div>
                     <div class="bss-landscape speler-container wit" [ngClass]="{'active shadow-top-right': idxSpeler == 2}">
                         <app-annon-score-speler-landscape [speler]="wedstrijd.spelers[2]"
-                                                        [cats]="wedstrijd.config.cats"></app-annon-score-speler-landscape>
+                                                        [cats]="wedstrijd.config.cats"
+                                                        [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler-landscape>
                     </div>
                 </div>
                 <div class="flex50perc speler-container-sub" [ngClass]="{'active': idxSpeler == 1 || idxSpeler == 3}">
                     <div class="bss-landscape speler-container wit" [ngClass]="{'active shadow-bottom-left': idxSpeler == 1}">
                         <app-annon-score-speler-landscape [speler]="wedstrijd.spelers[1]"
-                                                        [cats]="wedstrijd.config.cats"></app-annon-score-speler-landscape>
+                                                        [cats]="wedstrijd.config.cats"
+                                                        [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler-landscape>
                     </div>
                     <div class="bss-landscape speler-container wit" [ngClass]="{'active shadow-top-left': idxSpeler == 3}">
                         <app-annon-score-speler-landscape [speler]="wedstrijd.spelers[3]"
-                                                        [cats]="wedstrijd.config.cats"></app-annon-score-speler-landscape>
+                                                        [cats]="wedstrijd.config.cats"
+                                                        [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler-landscape>
                     </div>
                 </div>
             </div>    

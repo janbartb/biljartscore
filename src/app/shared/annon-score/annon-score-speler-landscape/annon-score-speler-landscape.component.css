@@ -13,10 +13,15 @@
 .spelerdata .bal.wit.active { background-color: white; color: black; }
 
 .annon-score {background-color: lightgray; padding: .5em 0; }
+.pent .annon-score { padding: .75em 0; }
 .bordls.active .annon-score {background-color: white; }
 
 .annon-score .category {
     height: 5.75em;
+    padding: 0 1em;
+}
+.pent .annon-score .category {
+    height: 4.5em;
     padding: 0 1em;
 }
 .annon-score .category .catnaam {
@@ -28,6 +33,23 @@
 }
 .annon-score .category .catnaam > span {
     font-size: 2.5em;
+}
+
+.annon-score .category .vol {
+    text-align: center; 
+    color: #606060;
+}
+.active .annon-score .category .vol {
+    color: black;
+}
+.annon-score .category .vol > span {
+    font-size: 3em;
+}
+.annon-score .cat-bullet.biljartbal {
+    height: 5em;
+}
+.pent .annon-score .cat-bullet.biljartbal {
+    height: 4.25em;
 }
 /* .annon-score .category .cat-bullet-container {
     width: 5.5em;

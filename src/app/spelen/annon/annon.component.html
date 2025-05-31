@@ -1,7 +1,7 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="'Annonceer wedstrijd'" [spel]="'Annonceren'"
+            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="subtitle" [spel]="annon.config.isAnnonceer ? 'Annonceren' : 'Pentathlon'"
                         (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)"></app-page-header>
         </div>
         <div class="flexgrow1 flexbox flexstretch annon-content">
@@ -38,13 +38,20 @@
                                     <div class="annon-score" style="padding-top: 1em;">
                                         @for (cat of annon.config.cats; track $index; let idxCat = $index) {
                                             <div class="category flexbox flexmiddle">
-                                                @for (nr of annon.spelers[idxSpl].splTsCarArr; track $index) {
-                                                    <div class="cat-bullet-container flexbox flexcenter">
-                                                        <div data-kleur="" class="cat-bullet biljartbal" 
-                                                            [ngClass]="{'zwart': nr <= annon.spelers[idxSpl].stand.totaal.cars[idxCat], 
-                                                                        'wit': nr > (annon.spelers[idxSpl].stand.totaal.cars[idxCat] + annon.spelers[idxSpl].stand.serie.cars[idxCat])}">
-                                                        </div>
+                                                @if (!annon.wedGespeeld && annon.spelers[idxSpl].stand.totaal.cars[idxCat] == annon.spelers[idxSpl].splTsCar) {
+                                                    <div style="font-size: .75em; line-height: 1.25em;">
+                                                        <span>▪ ▪ ▪ V O L ▪ ▪ ▪</span>
                                                     </div>
+                                                }
+                                                @else {
+                                                    @for (nr of annon.spelers[idxSpl].splTsCarArr; track $index) {
+                                                        <div class="cat-bullet-container flexbox flexcenter">
+                                                            <div data-kleur="" class="cat-bullet biljartbal" 
+                                                                [ngClass]="{'zwart': nr <= annon.spelers[idxSpl].stand.totaal.cars[idxCat], 
+                                                                            'wit': nr > (annon.spelers[idxSpl].stand.totaal.cars[idxCat] + annon.spelers[idxSpl].stand.serie.cars[idxCat])}">
+                                                            </div>
+                                                        </div>
+                                                    }
                                                 }
                                             </div>
                                         }

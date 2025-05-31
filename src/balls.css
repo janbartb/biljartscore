@@ -18,6 +18,9 @@
     background-image: var(--_grad-light);
     transition: background-color 1s;
 }
+.biljartbal.cat-bullet {
+    aspect-ratio: auto;
+}
 
 /* snooker */
 .biljartbal[data-kleur] {

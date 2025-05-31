@@ -1,16 +1,39 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="'Annonceer wedstrijd - instellingen'" [spel]="'Annonceren'"
+            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="'Pentathlon / Annonceren - instellingen'" [spel]="'Annonceren'"
                         (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)"></app-page-header>
         </div>
         <div class="flexgrow1 flexbox flexstretch">
             <div class="flex25perc flexbox flexcolumn" style="border-right: .25em solid green;">
-                <app-section-header [title]="'Categorieën'" [cssClasses]="'w3-green-l2'" 
+                <app-section-header [title]="'Spel'" [cssClasses]="'w3-green-l2'" 
                                 [active]="activeSection == 0" (headerClicked)="maakSectionActief(0)"></app-section-header>
-                <div class="flexgrow1">
-                    <div style="height: 3em;"></div>
-                    <div class="flexbox flexcenter">
+                <div class="flexbox flexcenter">
+                    <div style="padding-top: 1em;">
+                        <div class="spel-optie flexbox flexmiddle" [ngClass]="{'selected': !spelKeuze}"
+                                        (click)="selectSpelOptie(false)">
+                            <div>
+                                <i [ngClass]="spelKeuze ? 'far fa-circle' : 'fas fa-check-circle'"></i>
+                            </div>
+                            <div style="padding: 0 1em;">
+                                <span class="optietekst">Pentathlon</span>
+                            </div>
+                        </div>
+                        <div class="spel-optie flexbox flexmiddle" [ngClass]="{'selected': spelKeuze}"
+                                        (click)="selectSpelOptie(true)">
+                            <div>
+                                <i [ngClass]="!spelKeuze ? 'far fa-circle' : 'fas fa-check-circle'"></i>
+                            </div>
+                            <div style="padding: 0 1em;">
+                                <span class="optietekst">Annonceren</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div style="height: 2em;"></div>
+                    <div style="text-align: center; color: green;">Categorieën</div>
+                    <div class="flexbox flexcenter" style="padding-top: .5em;">
                         <div class="lijst">
                             @for (cat of annon.config.cats; track $index) {
                                 <div class="lijst-row">
@@ -27,7 +50,7 @@
                 <app-section-header [title]="'Aantal spelers'" [cssClasses]="'w3-green-l2'" 
                                 [active]="activeSection == 1" (headerClicked)="maakSectionActief(1)"></app-section-header>
                 <div class="flexgrow1">
-                    <div style="height: 3em;"></div>
+                    <div style="height: 1em;"></div>
                     <div class="flexbox flexcenter">
                         <div class="lijst">
                             @for (aantSpl of aantalLijst.filtered; track $index) {

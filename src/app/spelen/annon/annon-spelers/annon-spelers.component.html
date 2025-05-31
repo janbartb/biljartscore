@@ -1,7 +1,7 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="subtitle" [spel]="'Annonceren'"
+            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="subtitle" [spel]="wedstrijd.config.isAnnonceer ? 'Annonceren' : 'Pentathlon'"
                         [escCount]="escapeCount" (escClicked)="escapePressed()" (prevClicked)="previousClicked()" 
                         (hdrClicked)="headerClicked($event)"></app-page-header>
         </div>

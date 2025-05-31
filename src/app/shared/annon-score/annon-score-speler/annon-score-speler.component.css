@@ -6,6 +6,15 @@
     height: 4em;
     padding: 0 .5em;
 }
+
+.pent .annon-score {
+    padding: .25em 0;
+}
+.pent .annon-score .category {
+    height: 3.5em;
+    padding: 0 .5em;
+}
+
 .annon-score .category .catnaam {
     width: 9em;
     color: #606060;
@@ -15,6 +24,17 @@
 }
 .annon-score .category .catnaam > span {
     font-size: 1.5em;
+}
+
+.annon-score .category .vol {
+    text-align: center; 
+    color: #606060;
+}
+.active .annon-score .category .vol {
+    color: black;
+}
+.annon-score .category .vol > span {
+    font-size: 2.5em;
 }
 /* .annon-score .category .cat-bullet-container {
     width: 3.7em;

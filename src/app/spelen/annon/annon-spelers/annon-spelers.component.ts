@@ -27,7 +27,7 @@ import { Scrolling } from '../../../model/scrolling';
 export class AnnonSpelersComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
 
-    subtitle: string = 'Annonceer wedstrijd';
+    subtitle: string = 'Pentathlon';
     activeSection: number = 0;
     verenigingLijst: List<VerenigingKort> = new List<VerenigingKort>();
     spelerLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
@@ -290,6 +290,9 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
             this.filterSpelerLijst();
             if (results[2].gevonden) {
                 this.wedOrig = results[2].annon;
+                if (this.wedOrig.config.isAnnonceer) {
+                    this.subtitle = 'Annonceren';
+                }  
                 this.subtitle += ' - ' + this.aantalTekst[this.wedOrig.config.aantSpelers];
             }
             if (this.wedOrig.config.aantSpelers == 0) {
@@ -367,22 +370,36 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
             speler.splTsCar = cars;
         }
         speler.splTsCarArr = this.getAantalBallenArr(speler.splTsCar);
+        speler.grid.isAnnon = this.wedstrijd.config.isAnnonceer;
         if (this.wedstrijd.config.aantSpelers == 2 || this.wedstrijd.config.aantSpelers == 3) {
             // portrait view
             speler.grid.balWidth = 3;
-            speler.grid.balContainerWidth = 18.5 / speler.splTsCar;
-            if (speler.splTsCar > 6) {
+            speler.grid.balContainerWidth = 3.125;
+            if (speler.splTsCar > 5) {
+                speler.grid.balContainerWidth = 18.5 / speler.splTsCar;
                 speler.grid.balWidth = speler.grid.balContainerWidth - .125;
             }
         }
         else {
             // landscape view
-            speler.grid.balWidth = 5;
-            speler.grid.balContainerWidth = 28.5 / speler.splTsCar;
-            if (speler.splTsCar > 5) {
-                speler.grid.balWidth = speler.grid.balContainerWidth - .25;
+            if (speler.grid.isAnnon) {
+                speler.grid.balWidth = 5;
+                speler.grid.balContainerWidth = 5.7;
+                if (speler.splTsCar > 5) {
+                    speler.grid.balContainerWidth = 28.5 / speler.splTsCar;
+                    speler.grid.balWidth = speler.grid.balContainerWidth - .25;
+                }
+            }
+            else {
+                speler.grid.balWidth = 4.25;
+                speler.grid.balContainerWidth = 4.75;
+                if (speler.splTsCar > 6) {
+                    speler.grid.balContainerWidth = 28.5 / speler.splTsCar;
+                    speler.grid.balWidth = speler.grid.balContainerWidth - .25;
+                }
             }
         }
+        console.log(speler.grid);
         speler.stand = new AnnonSpelerStand(this.wedstrijd.config.cats.length);
         this.setWedstrijdChanged();
         this.maakVolgendeSpelerActief();

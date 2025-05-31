@@ -1,4 +1,4 @@
-<div class="bord wit" [ngClass]="{'active': speler.actief, 'smaller': !speler.actief, 'grijs': grijs}">
+<div class="bord wit" [ngClass]="{'active': speler.actief, 'smaller': !speler.actief, 'pent': !speler.grid.isAnnon, 'grijs': grijs}">
     <div class="speler-data flexbox flexstretch">
         <!-- naam en te spelen moyenne -->
         <div style="width: 20em;">
@@ -26,14 +26,21 @@
                 <div class="catnaam">
                     <span>{{cat.naam}}</span>
                 </div>
-                @for (nr of speler.splTsCarArr; track $index) {
-                    <div class="cat-bullet-container flexbox flexcenter" [style.width]="speler.grid.balContainerWidth + 'em'">
-                        <div data-kleur="" class="cat-bullet biljartbal" [style.width]="speler.grid.balWidth + 'em'" 
-                            [ngClass]="{'zwart': nr <= speler.stand.totaal.cars[idx], 
-                                        'rood': nr > speler.stand.totaal.cars[idx] && nr <= (speler.stand.totaal.cars[idx] + speler.stand.serie.cars[idx]), 
-                                        'wit': nr > (speler.stand.totaal.cars[idx] + speler.stand.serie.cars[idx])}">
-                        </div>
+                @if (speler.stand.totaal.cars[idx] == speler.splTsCar && !wedklaar) {
+                    <div class="flexgrow1 vol">
+                        <span>▪ ▪ ▪ V O L ▪ ▪ ▪</span>
                     </div>
+                }
+                @else {
+                    @for (nr of speler.splTsCarArr; track $index) {
+                        <div class="cat-bullet-container flexbox flexcenter" [style.width]="speler.grid.balContainerWidth + 'em'">
+                            <div data-kleur="" class="cat-bullet biljartbal" style="height: 3em;" [style.width]="speler.grid.balWidth + 'em'" 
+                                [ngClass]="{'zwart': nr <= speler.stand.totaal.cars[idx], 
+                                            'rood': nr > speler.stand.totaal.cars[idx] && nr <= (speler.stand.totaal.cars[idx] + speler.stand.serie.cars[idx]), 
+                                            'wit': nr > (speler.stand.totaal.cars[idx] + speler.stand.serie.cars[idx])}">
+                            </div>
+                        </div>
+                    }
                 }
             </div>
         }

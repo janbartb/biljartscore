@@ -10,3 +10,13 @@
 .cars-optie.selected .optietekst {
     color: black;
 }
+
+.spel-optie:not(.selected) {
+    cursor: pointer;
+}
+.spel-optie .optietekst {
+    color: gray;
+}
+.spel-optie.selected .optietekst {
+    color: black;
+}

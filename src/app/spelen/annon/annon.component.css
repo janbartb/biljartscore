@@ -22,6 +22,7 @@
 }
 .annon-score .category .cat-bullet-container .cat-bullet {
     width: 1em;
+    height: 1em;
 }
 .annon-score .category .cat-bullet-container .cat-bullet.red {
     background-color: red;

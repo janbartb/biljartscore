@@ -5,17 +5,11 @@ export class Annonceer {
 }
 
 export class AnnonConfig {
+    isAnnonceer: boolean = false;
     aantSpelers: number = 0;
     cats: AnnonCat[] = [];
     carsObvMoyenne: boolean = false;
     vastAantCars: number = 5;
-
-    constructor() {
-        this.cats.push(new AnnonCat('rood', 'Over rood'));
-        this.cats.push(new AnnonCat('dir', 'Direct'));
-        this.cats.push(new AnnonCat('los', 'Losse band', 'Losseband'));
-        this.cats.push(new AnnonCat('drie', 'Drieband'));        
-    }
 }
 
 export class AnnonSpeler {
@@ -72,6 +66,8 @@ export class AnnonCat {
 }
 
 export class AnnonGrid {
+    isAnnon: boolean = false;
+    catHeight: number = 0;
     balContainerWidth: number = 0;
     balWidth: number = 0;
 }

@@ -167,7 +167,7 @@ export class AnnonScoreComponent implements OnInit {
             this.alert.hideHelp();
             return false;
         }        
-        if (event.key === 'Escape' || event.key === 'Backspace') {
+        if (event.key === 'Escape' || event.code === 'NumpadDivide') {
             this.keyPressed.emit('Escape');
             return false;
         }
@@ -183,7 +183,7 @@ export class AnnonScoreComponent implements OnInit {
             this.toggleTestMode();
             return false;
         }
-        if (event.code === 'KeyH' || event.key === '/' || event.code == 'Slash') {
+        if (event.code === 'KeyH' || event.code == 'NumpadDecimal') {
             this.alert.showHelp();
             return false;
         }
@@ -196,36 +196,48 @@ export class AnnonScoreComponent implements OnInit {
                 this.enterPressed();
                 return false;
             }
-            if (event.code == 'Numpad7' || event.code == 'Digit1') {
-                this.addToSerie(0);
+            if (event.code == 'Backspace' || event.code == 'Digit1') {
+                if (!this.wedstrijd.config.isAnnonceer) {
+                    this.addToSerie(0);
+                }
                 return false;
             }
-            if (event.code == 'Numpad4' || event.code == 'Digit2') {
-                this.addToSerie(1);
+            if (event.code == 'Numpad7' || event.code == 'Digit2') {
+                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 0 : 1);
                 return false;
             }
-            if (event.code == 'Numpad1' || event.code == 'Digit3') {
-                this.addToSerie(2);
+            if (event.code == 'Numpad4' || event.code == 'Digit3') {
+                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 1 : 2);
                 return false;
             }
-            if (event.code == 'Numpad0' || event.code == 'Digit4') {
-                this.addToSerie(3);
+            if (event.code == 'Numpad1' || event.code == 'Digit4') {
+                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 2 : 3);
                 return false;
             }
-            if (event.code == 'Numpad9' || event.code == 'Digit6') {
-                this.removeFromSerie(0);
+            if (event.code == 'Numpad0' || event.code == 'Digit5') {
+                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 3 : 4);
                 return false;
             }
-            if (event.code == 'Numpad6' || event.code == 'Digit7') {
-                this.removeFromSerie(1);
+            if (event.code == 'NumpadMultiply' || event.code == 'Digit6') {
+                if (!this.wedstrijd.config.isAnnonceer) {
+                    this.removeFromSerie(0);
+                }
                 return false;
             }
-            if (event.code == 'Numpad3' || event.code == 'Digit8') {
-                this.removeFromSerie(2);
+            if (event.code == 'Numpad9' || event.code == 'Digit7') {
+                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 0 : 1);
                 return false;
             }
-            if (event.code == 'NumpadDecimal' || event.code == 'Digit9') {
-                this.removeFromSerie(3);
+            if (event.code == 'Numpad6' || event.code == 'Digit8') {
+                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 1 : 2);
+                return false;
+            }
+            if (event.code == 'Numpad3' || event.code == 'Digit9') {
+                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 2 : 3);
+                return false;
+            }
+            if (event.code == 'NumpadDecimal' || event.code == 'Digit0') {
+                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 3 : 4);
                 return false;
             }
         }
@@ -290,9 +302,16 @@ export class AnnonScoreComponent implements OnInit {
     }
 
     private undoLaatsteBeurt(): boolean {
-        if (this.wedstrijd.spelers[1].stand.aantBrt === 0) {
-            return false;
-        }    
+        if (this.wedstrijd.spelers.length == 1) {
+            if (this.wedstrijd.spelers[0].stand.aantBrt === 1) {
+                return false;
+            }
+        }
+        else {
+            if (this.wedstrijd.spelers[1].stand.aantBrt === 0) {
+                return false;
+            }    
+        }
         const wasWedOver = this.wedstrijd.wedGespeeld;
         if (this.wedstrijd.wedGespeeld) {
             this.wedstrijd.wedGespeeld = false;
@@ -378,7 +397,7 @@ export class AnnonScoreComponent implements OnInit {
                 result++;
             }
         }
-        if (result == 4) {
+        if (result == this.wedstrijd.config.cats.length) {
             result++;
         }
         return result;

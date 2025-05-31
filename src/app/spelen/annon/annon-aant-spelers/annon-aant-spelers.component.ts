@@ -1,6 +1,6 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../base/base.component';
-import { Annonceer, AnnonConfig, AnnonSpeler } from '../../../model/annonceer';
+import { AnnonCat, Annonceer, AnnonConfig, AnnonSpeler } from '../../../model/annonceer';
 import { List } from '../../../model/list';
 import { Button } from '../../../model/button';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
@@ -30,6 +30,7 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
     aantalLijst: List<string> = new List<string>();
     annonChanged: boolean = false;
     activeSection: number = 1;
+    spelKeuze: boolean = false;
     optieKeuze: boolean = false;
     inpCars: number = 0;
     inputOk: boolean = true;
@@ -84,6 +85,14 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
         this.aantalLijst.selectedIdx = this.aantalLijst.hoveredIdx = idx;
     }
 
+    selectSpelOptie(isAnnon: boolean) {
+        this.activeSection = 0;
+        if (isAnnon != this.spelKeuze) {
+            this.spelKeuze = this.annon.config.isAnnonceer = isAnnon;
+            this.setConfigSpel(this.annon.config, this.spelKeuze);
+        }
+    }
+
     selectCarsOptie(obvMoy: boolean) {
         this.optieKeuze = this.annon.config.carsObvMoyenne = obvMoy;
         this.activeSection = 2;
@@ -91,11 +100,11 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
 
     private changeSection(direction: number) {
         let idx = this.activeSection + direction;
-        if (idx < 1) {
+        if (idx < 0) {
             idx = 2;
         }
         if (idx > 2) {
-            idx = 1;
+            idx = 0;
         }
         this.maakSectionActief(idx);
     }
@@ -148,7 +157,10 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
                 return true;
             }
             if (event.key === 'ArrowUp') {
-                if (this.activeSection == 1) {
+                if (this.activeSection == 0) {
+                    this.selectSpelOptie(!this.spelKeuze);
+                }
+                else if (this.activeSection == 1) {
                     this.aantalLijst.hoverPreviousItem();
                 }
                 else if (this.activeSection == 2) {
@@ -157,7 +169,10 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
                 return false;
             }
             if (event.key === 'ArrowDown') {
-                if (this.activeSection == 1) {
+                if (this.activeSection == 0) {
+                    this.selectSpelOptie(!this.spelKeuze);
+                }
+                else if (this.activeSection == 1) {
                     this.aantalLijst.hoverNextItem();
                 }
                 else if (this.activeSection == 2) {
@@ -192,12 +207,14 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
                     this.aantalLijst.selectedIdx = this.aantalLijst.hoveredIdx = this.annon.config.aantSpelers - 1;
                 }
                 this.origConfig = JSON.parse(JSON.stringify(this.annon.config));
+                this.spelKeuze = this.annon.config.isAnnonceer;
                 this.optieKeuze = this.annon.config.carsObvMoyenne;
                 this.inpCars = this.annon.config.vastAantCars;
                 this.inputOk = this.helper.isValidInteger('' + this.inpCars) && this.inpCars > 2 && this.inpCars < 11;
             }
             else {
                 this.inputOk = false;
+                this.setConfigSpel(this.annon.config);
             }
         })
         .catch(err => {
@@ -206,6 +223,9 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
     }
 
     private configChanged(): boolean {
+        if (this.spelKeuze != this.origConfig.isAnnonceer) {
+            return true;
+        }
         if (this.optieKeuze != this.origConfig.carsObvMoyenne) {
             return true;
         }
@@ -220,6 +240,8 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
 
     private initWedstrijd() {
         this.annon = new Annonceer();
+        this.annon.config = new AnnonConfig();
+        this.setConfigSpel(this.annon.config, this.spelKeuze);
         this.annon.config.aantSpelers = this.aantalLijst.selectedIdx + 1;
         this.annon.config.carsObvMoyenne = this.optieKeuze;
         this.annon.config.vastAantCars = this.inpCars;
@@ -232,6 +254,24 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
         }
         if (this.annon.config.aantSpelers > 3) {
             this.annon.spelers.push(new AnnonSpeler(this.annon.config.cats.length));
+        }
+    }
+
+    private setConfigSpel(config: AnnonConfig, isAnnon?: boolean) {
+        config.isAnnonceer = isAnnon ? true : false;
+        config.cats = [];
+        if (config.isAnnonceer) {
+            config.cats.push(new AnnonCat('rood', 'Over rood'));
+            config.cats.push(new AnnonCat('dir', 'Direct'));
+            config.cats.push(new AnnonCat('los', 'Losse band', 'Losseband'));
+            config.cats.push(new AnnonCat('drie', 'Drieband'));        
+        }
+        else {
+            config.cats.push(new AnnonCat('dir', 'Direct'));
+            config.cats.push(new AnnonCat('1', '1 band', 'Eenband'));
+            config.cats.push(new AnnonCat('2', '2 band', 'Tweeband'));
+            config.cats.push(new AnnonCat('3', '3 band', 'Drieband'));
+            config.cats.push(new AnnonCat('los', 'Los band', 'Losband'));
         }
     }
 

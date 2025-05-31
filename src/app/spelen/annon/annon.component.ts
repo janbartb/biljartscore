@@ -19,6 +19,7 @@ import { ButtonComponent } from '../../shared/button-group/button/button.compone
     styleUrl: './annon.component.css'
 })
 export class AnnonComponent extends BaseComponent implements OnInit {
+    subtitle: string = '';
     annon: Annonceer = new Annonceer();
     wedGestart: boolean = false;
     columns: number[] = [];
@@ -107,6 +108,7 @@ export class AnnonComponent extends BaseComponent implements OnInit {
                 this.router.navigate(['annon/aantspl']);
                 return;
             }
+            this.subtitle = this.annon.config.isAnnonceer ? 'Annonceren' : 'Pentathlon';
             console.log(this.annon);
             let idxSpl = -1;
             this.columns.push(idxSpl);
