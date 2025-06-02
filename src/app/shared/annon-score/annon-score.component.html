@@ -110,7 +110,12 @@
     <hr>
     <div class="flexbox flexcenter">
         <div>
-            <img src="images/hlp-annon-keypad.png" alt="">
+            @if (wedstrijd.config.isAnnonceer) {
+                <img src="images/hlp-annon-keypad.png" alt="">
+            }
+            @else {
+                <img src="images/hlp-penta-keypad.png" alt="">
+            }
         </div>
     </div>
 </app-help>
