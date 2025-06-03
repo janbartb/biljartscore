@@ -14,6 +14,9 @@
                             <div [style.font-size]="raster.fontsize + 'em'">{{spl.splBordnaam}}</div>
                     </div>
                 }
+                <div class="cell-container" [style.width]="raster.rightCellw + 'em'">
+                    <div></div>
+                </div>
             </div>
             @for (spl of schema.spelers; let idxS = $index; track $index) {
                 <div class="flexbox flexstretch" [style.height]="raster.cellh + 'em'">
@@ -58,6 +61,9 @@
                             </div>
                         </div>
                     }
+                    <div class="cell-container flexbox flexright flexmiddle" [style.width]="raster.rightCellw + 'em'">
+                        <div style="color: darkred;" [style.font-size]="raster.fontsize + 'em'">{{totalen[idxS].rondeTotalen[idxRonde + 1].aantPnt}}</div>
+                    </div>
                 </div>    
             }
         </div>

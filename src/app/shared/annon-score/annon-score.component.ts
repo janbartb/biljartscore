@@ -262,11 +262,26 @@ export class AnnonScoreComponent implements OnInit {
         let msgType = 'info';
         let msg = this.wedstrijd.config.cats[idxCat].naam;
         let spk = this.wedstrijd.config.cats[idxCat].spkNaam;
-        const aantal = this.activeSpeler.stand.totaal.cars[idxCat] + this.activeSpeler.stand.serie.cars[idxCat];
-        if (aantal < this.activeSpeler.splTsCar) {
+        const aantalWas = this.activeSpeler.stand.totaal.cars[idxCat];
+        let aantalBij = this.activeSpeler.stand.serie.cars[idxCat];
+        let aantalTot = aantalWas + aantalBij;
+        if (aantalTot < this.activeSpeler.splTsCar) {
             this.activeSpeler.stand.serie.cars[idxCat]++;
-            msg += (aantal < this.activeSpeler.splTsCar - 1) ? ' - totaal ' + (aantal + 1) : ' is vol';
-            spk += (aantal < this.activeSpeler.splTsCar - 1) ? ', totaal ' + (aantal + 1) : ', is vol';
+            aantalBij++;
+            aantalTot++;
+            const remaining = this.activeSpeler.splTsCar - aantalTot;
+            if (remaining == 0) {
+                msg += ' is vol';
+                spk += ' is vol';
+            }
+            else if (remaining < 4) {
+                msg += ': ' + aantalBij + ' - nog ' + remaining;
+                spk += ', ' + aantalBij + ', en nog ' + remaining;
+            }
+            else {
+                msg += ': ' + aantalBij;
+                spk += ', ' + aantalBij;
+            }
         }
         else {
             msg += ' is al vol';

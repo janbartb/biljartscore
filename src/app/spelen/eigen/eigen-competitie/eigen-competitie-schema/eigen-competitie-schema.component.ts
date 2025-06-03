@@ -12,6 +12,7 @@ class Raster {
     cellh: number = 0;
     topCellh: number = 0;
     leftCellw: number = 0;
+    rightCellw: number = 0;
     cssScale: string = 'scale100';
     fontsize: number = 20;
     arr: number[] = [];
@@ -200,6 +201,8 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
             this.berekenTotalen();
             this.sortTotalen(this.idxRonde);
             this.schema = this.createRondeSchema(this.idxRonde);
+            console.log(this.schema);
+            console.log(this.totalen);
         })
         .catch(err => {
             this.alert.showError(err);
@@ -299,45 +302,44 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
             });
             result.spelers.push(speler);
         });
-        console.log(result);
         return result;
     }
 
-    createRondeSchemaOud(ronde: number): CmpSchemaRonde {
-        let result = new CmpSchemaRonde();
-        this.competitie.cmpSpelers.forEach(spl => {
-            let speler = new CmpSchemaSpeler();
-            speler.splId = spl.splId;
-            speler.splInits = spl.splInit;
-            speler.splBordnaam = spl.splBordnaam;
-            this.competitie.cmpSpelers.forEach(teg => {
-                let wed = new CmpSchemaWedstrijd();
-                wed.tegId = teg.splId;
-                wed.tegInits = teg.splInit;
-                wed.tegBordNaam = teg.splBordnaam;
-                let splWed = spl.splRondes[ronde].wedstrijden.find(w => w.tegId == teg.splId);
-                if (splWed) {
-                    let tegWed = teg.splRondes[ronde].wedstrijden.find(w => w.tegId == spl.splId);
-                    if (tegWed) {
-                        wed.gespeeld = true;
-                        wed.wedOver = splWed.wedOver;
-                        wed.metWit = splWed.metWit;
-                        wed.punten = splWed.aantPnt;
-                        if (wed.wedOver) {
-                            wed.winst = (splWed.aantPnt > tegWed.aantPnt) ? 2 : (splWed.aantPnt == tegWed.aantPnt) ? 1 : 0;
-                        }
-                    }
-                    else {
-                        this.alert.showError('Vreemd! Wedstrijd niet gevonden : ' + spl.splId + ' - ' + teg.splId);
-                    }
-                }
-                speler.splWeds.push(wed);
-            });
-            result.spelers.push(speler);
-        });
-        console.log(result);
-        return result;
-    }
+    // createRondeSchemaOud(ronde: number): CmpSchemaRonde {
+    //     let result = new CmpSchemaRonde();
+    //     this.competitie.cmpSpelers.forEach(spl => {
+    //         let speler = new CmpSchemaSpeler();
+    //         speler.splId = spl.splId;
+    //         speler.splInits = spl.splInit;
+    //         speler.splBordnaam = spl.splBordnaam;
+    //         this.competitie.cmpSpelers.forEach(teg => {
+    //             let wed = new CmpSchemaWedstrijd();
+    //             wed.tegId = teg.splId;
+    //             wed.tegInits = teg.splInit;
+    //             wed.tegBordNaam = teg.splBordnaam;
+    //             let splWed = spl.splRondes[ronde].wedstrijden.find(w => w.tegId == teg.splId);
+    //             if (splWed) {
+    //                 let tegWed = teg.splRondes[ronde].wedstrijden.find(w => w.tegId == spl.splId);
+    //                 if (tegWed) {
+    //                     wed.gespeeld = true;
+    //                     wed.wedOver = splWed.wedOver;
+    //                     wed.metWit = splWed.metWit;
+    //                     wed.punten = splWed.aantPnt;
+    //                     if (wed.wedOver) {
+    //                         wed.winst = (splWed.aantPnt > tegWed.aantPnt) ? 2 : (splWed.aantPnt == tegWed.aantPnt) ? 1 : 0;
+    //                     }
+    //                 }
+    //                 else {
+    //                     this.alert.showError('Vreemd! Wedstrijd niet gevonden : ' + spl.splId + ' - ' + teg.splId);
+    //                 }
+    //             }
+    //             speler.splWeds.push(wed);
+    //         });
+    //         result.spelers.push(speler);
+    //     });
+    //     console.log(result);
+    //     return result;
+    // }
 
     private berekenTotalen() {
         this.competitie.cmpSpelers.forEach(speler => {
@@ -439,11 +441,39 @@ export class EigenCompetitieSchemaComponent extends BaseComponent implements OnI
         }
         result.cellh = Math.floor(202 / (aantSpl + 1));
         result.topCellh = 202 - (result.cellh * aantSpl);
-        result.cellw = Math.floor(464 / (aantSpl + 1));
-        result.leftCellw = 464 - (result.cellw * aantSpl);
+        const halfWidth = Math.floor(464 / ((2 * aantSpl) + 3));
+        result.cellw = 2 * halfWidth;
+        result.rightCellw = halfWidth;
+        result.leftCellw = 464 - ((result.cellw * aantSpl) + result.rightCellw);
         console.log(result);
         return result;
     }
+
+    // createRasterOld(): Raster {
+    //     let result = new Raster();
+    //     const aantSpl = this.competitie.cmpSpelers.length
+    //     for (let i = 0; i < aantSpl; i++) {
+    //         result.arr.push(i);
+    //     }
+    //     result.cssScale = 'scale110';
+    //     if (aantSpl > 4) {
+    //         result.cssScale = 'scale120';
+    //     }
+    //     if (aantSpl > 9) {
+    //         result.cssScale = 'scale125';
+    //     }
+    //     const fontTabel = [0, 0, 0, 3, 3, 3, 2.5, 2.25, 2, 1.75, 1.75, 1.625, 1.5, 1.375, 1.3, 1.25];
+    //     if (aantSpl > 2) {
+    //         const aant = aantSpl - 2;
+    //         result.fontsize -= (aant * fontTabel[aantSpl]);
+    //     }
+    //     result.cellh = Math.floor(202 / (aantSpl + 1));
+    //     result.topCellh = 202 - (result.cellh * aantSpl);
+    //     result.cellw = Math.floor(464 / (aantSpl + 1));
+    //     result.leftCellw = 464 - (result.cellw * aantSpl);
+    //     console.log(result);
+    //     return result;
+    // }
 
     setEscapeCount(nr: number) {
         this.escapeCount = nr;
