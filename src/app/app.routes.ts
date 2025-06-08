@@ -66,6 +66,7 @@ import { AnnonAantSpelersComponent } from './spelen/annon/annon-aant-spelers/ann
 import { AnnonComponent } from './spelen/annon/annon.component';
 import { AnnonSpelersComponent } from './spelen/annon/annon-spelers/annon-spelers.component';
 import { AnnonScorebordComponent } from './spelen/annon/annon-scorebord/annon-scorebord.component';
+import { EigenCompetitieWedsComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-weds/eigen-competitie-weds.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -130,6 +131,7 @@ export const routes: Routes = [
     { path: 'eigencomps/:naam/match/:ronde/:idxspl/:idxteg', component: EigenCompetitieMatchComponent },
     { path: 'eigencomps/:naam/score/:ronde/:idxspl/:idxteg', component: EigenCompetitieScorebordComponent },
     { path: 'eigencomps/:naam/lijst/:ronde/:idxspl/:idxteg', component: EigenCompetitieLijstComponent },
+    { path: 'eigencomps/:naam/wedstrijden', component: EigenCompetitieWedsComponent },
     { path: 'eigencomps/:naam/schema/:ronde', component: EigenCompetitieSchemaComponent },
     { path: 'eigencomps/:naam/planning/:ronde', component: EigenCompetitiePlanningComponent },
     { path: 'eigencomps/:naam/:splId/:ronde', component: EigenCompetitieSpelerComponent },

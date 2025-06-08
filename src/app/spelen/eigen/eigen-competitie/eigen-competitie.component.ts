@@ -34,6 +34,7 @@ export class EigenCompetitieComponent extends BaseComponent implements OnInit {
     schemaButton: Button = new Button('S', 'Schema', true);
     planningButton: Button = new Button('P', 'Planning', true);
     wedButton: Button = new Button('Enter', 'Wedstrijden', true);
+    wedsButton: Button = new Button('W', 'Wedstrijden', true);
     rondeButtons: Button[] = [];
 
     override escapePressed(): void {
@@ -55,6 +56,9 @@ export class EigenCompetitieComponent extends BaseComponent implements OnInit {
             else if (button.key == 'P') {
                 this.planningButtonClicked();
             }
+            else if (button.key == 'W') {
+                this.wedstrijdenClicked();
+            }
             else if (button.key == 'Enter') {
                 this.spelerClicked(this.idxSpeler);
             }
@@ -67,6 +71,11 @@ export class EigenCompetitieComponent extends BaseComponent implements OnInit {
         const splId = selected.speler.splId;
         const ronde = this.idxRonde;
         this.appData.gotoPage(this.router.url, `eigencomps/${naam}/${splId}/${ronde}`);
+    }
+
+    wedstrijdenClicked() {
+        const naam = this.competitie.cmpNaam;
+        this.appData.gotoPage(this.router.url, `eigencomps/${naam}/wedstrijden`);
     }
 
     schemaButtonClicked() {
@@ -130,6 +139,10 @@ export class EigenCompetitieComponent extends BaseComponent implements OnInit {
         }
         if (event.code === 'KeyP') {
             this.buttonPressed(this.planningButton);
+            return false;
+        }
+        if (event.code === 'KeyW' && this.idxSpeler < 0) {
+            this.buttonPressed(this.wedsButton);
             return false;
         }
         if (event.key === 'Enter' && this.idxSpeler >= 0) {
