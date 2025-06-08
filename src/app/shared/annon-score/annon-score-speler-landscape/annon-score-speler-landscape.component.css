@@ -1,9 +1,9 @@
-.smaller {
-    transform: scale(.9) translateY(.25em);
-}
-
-.bordls { background-color: #606060; }
+.bordls { background-color: #606060; transition: transform .5s; }
 .bordls.active { background-color: black; }
+.bordls.smaller {
+    transform: scale(.9);
+    /* transform: scale(.9) translateY(.25em); */
+}
 
 .spelerdata .wit { color: white; }
 

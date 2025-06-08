@@ -1,5 +1,7 @@
-.smaller {
-    transform: scale(.9) translateY(.25em);
+.bordt {  transition: transform .5s; }
+.bordt.smaller {
+    transform: scale(.9);
+    /* transform: scale(.9) translateY(.25em); */
 }
 
 .teamdata .wit { color: white; }
