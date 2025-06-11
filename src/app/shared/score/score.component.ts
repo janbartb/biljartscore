@@ -47,6 +47,7 @@ export class ScoreComponent implements OnInit {
     speechToggled: boolean = false;
     isDialogOpen: boolean = false;
     oldPunten: number[] = [0, 0];
+    tempCars: number = 0;
     
     enterPressed(): void {
         if (this.wedstrijd.wedGespeeld) {
@@ -79,9 +80,6 @@ export class ScoreComponent implements OnInit {
             this.modals.push(modalMsg);
             this.showModal();
         }
-    }
-
-    followUpEnter() {
         this.activeSpeler.stand.aantCar += this.activeSpeler.stand.serie;
         if (this.activeSpeler.stand.serie > this.activeSpeler.stand.hoogSer) {
             this.activeSpeler.stand.hoogSer = this.activeSpeler.stand.serie;
@@ -111,6 +109,9 @@ export class ScoreComponent implements OnInit {
         if (this.wedstrijd.telling.idxOptie == 0) {
             this.oldPunten[this.idxSpeler] = this.activeSpeler.stand.punten;
         }
+    }
+
+    followUpEnter() {
         // check for einde wedstrijd
         if (this.isWedstrijdOver()) {
             this.wedstrijd.spelers.forEach((spl, idx) => {

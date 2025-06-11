@@ -74,12 +74,12 @@ export class AnnonScoreComponent implements OnInit {
             this.modals.push(modalMsg);
             this.showModal();
         }
-    }
-
-    followUpEnter() {
         this.werkScoreSpelerBij(this.activeSpeler);
         this.activeSpeler.stand.scores.push(this.activeSpeler.stand.serie);
         this.activeSpeler.stand.serie = new AnnonSerie(this.wedstrijd.config.cats.length);
+    }
+
+    followUpEnter() {
         // check for einde wedstrijd
         if (this.isWedstrijdOver()) {
             this.wedstrijd.wedGespeeld = true;
