@@ -40,7 +40,7 @@ export class BpLokaliteitComponent extends BaseComponent implements OnInit {
     addButtons: Button[] = [new Button('Enter', 'Toevoegen aan BSS', true)];
     pageButtons: Button[] = [
         new Button('W', 'Wijzigen', true),
-        new Button('Enter', 'Naar team', true)
+        new Button('Enter', 'Naar vereniging', true)
     ];
 
     lokForm!: FormGroup | null;

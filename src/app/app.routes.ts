@@ -67,6 +67,7 @@ import { AnnonComponent } from './spelen/annon/annon.component';
 import { AnnonSpelersComponent } from './spelen/annon/annon-spelers/annon-spelers.component';
 import { AnnonScorebordComponent } from './spelen/annon/annon-scorebord/annon-scorebord.component';
 import { EigenCompetitieWedsComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-weds/eigen-competitie-weds.component';
+import { BpTeamComponent } from './biljartpoint/bp-competitie-team/bp-team/bp-team.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -145,6 +146,7 @@ export const routes: Routes = [
     { path: 'bpoint/compteams', component: BpCompetitieTeamsComponent },
     { path: 'bpoint/lokaliteit', component: BpLokaliteitComponent },
     { path: 'bpoint/vereniging', component: BpVerenigingComponent },
+    { path: 'bpoint/team', component: BpTeamComponent },
     { path: 'bpoint/spelers', component: BpSpelersComponent },
     { path: 'bpoint/moyennes', component: BpMoyennesComponent },
     { path: 'error/:condition', component: ErrorPageComponent },

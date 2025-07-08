@@ -16,14 +16,14 @@ import { ButtonComponent } from "../../../shared/button-group/button/button.comp
     selector: 'app-bp-vereniging',
     standalone: true,
     imports: [
-    PageHeaderComponent,
-    SectionHeaderComponent,
-    SectionFooterBtnsComponent,
-    ReactiveFormsModule,
-    FormsModule,
-    NgClass,
-    ButtonComponent
-],
+        PageHeaderComponent,
+        SectionHeaderComponent,
+        SectionFooterBtnsComponent,
+        ReactiveFormsModule,
+        FormsModule,
+        NgClass,
+        ButtonComponent
+    ],
     templateUrl: './bp-vereniging.component.html',
     styleUrl: './bp-vereniging.component.css'
 })
@@ -34,37 +34,36 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
     bssComp: KnbbCompetitie = new KnbbCompetitie();
     bpTeam: BpTeam = new BpTeam();
     bssTeam: Team = new Team();
-    bpSpelers: TeamPageSpeler[] = [];
     vereniging: Vereniging = new Vereniging();
     verenigingen: Vereniging[] = [];
     existingVerIds: string[] = [];
-    existingTeamIds: string[] = [];
     lokaliteit: Lokaliteit = new Lokaliteit();
     sectTitleVer: string = 'BSS vereniging';
-    sectTitleTeam: string = 'BSS team';
     modeVer: string = 'view';
-    modeTeam: string = 'view';
     teamInBss: boolean = false;
     teamInComp: boolean = false;
-    teamIdOk: boolean = false;
     dataReady: boolean = false;
 
     verButton: Button = new Button('', 'Nieuwe vereniging', false);
     saveButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
     pageButtons: Button[] = [
-        new Button('Enter', 'Naar spelers', true)
+        new Button('Enter', 'Naar team', true)
     ];
 
     verenigingForm!: FormGroup | null;
-    teamForm!: FormGroup | null;
 
     override escapePressed(): void {
         if (this.escapeCount > 0) {
             if (this.verenigingen.length > 0) {
                 this.vereniging = this.verenigingen[0];
+                if (this.bpTeam.bssVerId != '') {
+                    const idx = this.verenigingen.findIndex(ver => ver.verId == this.bpTeam.bssVerId);
+                    if (idx >= 0) {
+                        this.vereniging = this.verenigingen[idx];
+                    }
+                }
                 this.modeVer = 'view';
                 this.verenigingForm = null;
-                this.createTeamForm(true);
             }
             this.escapeCount = 0;
             return;
@@ -84,7 +83,7 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
                 this.opslaanClicked();
             }
             else {
-                this.naarSpelersClicked();
+                this.naarTeamClicked();
             }
         }, 300);
     }
@@ -93,87 +92,31 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
         this.router.navigate(['bpoint/spelers']);
     }
 
+    naarTeamClicked() {
+        this.bpTeam.bssVerId = this.vereniging.verId;
+        localStorage.setItem('bpTeam', JSON.stringify(this.bpTeam));
+        this.router.navigate(['bpoint/team']);
+    }
+
     opslaanClicked() {
         if (this.verenigingForm && this.modeVer == 'add') {
-            this.verenigingEnTeamToevoegen();
+            this.verenigingToevoegenEnNaarTeam();
             return;
-        }
-        if (this.teamForm && this.modeTeam == 'add') {
-            this.teamAanVerenigingToevoegen();
-            return;
-        }
-        if (!this.teamInComp) {
-            this.teamAanCompetitieToevoegen();
         }
     }
 
-    private verenigingEnTeamToevoegen() {
+    private verenigingToevoegenEnNaarTeam() {
         let vereniging = new Vereniging();
         vereniging.verId = this.verId?.value;
         vereniging.naam = this.verNaam?.value;
         vereniging.locatie = this.lokId?.value;
         vereniging.korteNaam = this.korteNaam?.value;
-        let team = new Team();
-        team.verId = vereniging.verId;
-        team.teamId = this.teamId?.value;
-        team.knbbId = this.knbbId?.value;
-        team.spelsoort = this.bpComp.spelsoortId;
-        team.klasse = this.klasse?.value;
-        team.volgNr = +this.volgNr?.value;
-        team.naam = this.teamNaam?.value;
 
-        vereniging.teams.push(team);
         this.bssApi.addVereniging(vereniging)
         .then(resp => {
             this.vereniging = vereniging;
-            this.bssTeam = team;
-            this.teamAanCompetitieToevoegen();
-        })
-        .catch(err => {
-            this.alert.showError(err);
-        });
-    }
-
-    private teamAanVerenigingToevoegen() {
-        let team = new Team();
-        team.verId = this.vereniging.verId;
-        team.teamId = this.teamId?.value;
-        team.knbbId = this.knbbId?.value;
-        team.spelsoort = this.bpComp.spelsoortId;
-        team.klasse = this.klasse?.value;
-        team.volgNr = +this.volgNr?.value;
-        team.naam = this.teamNaam?.value;
-
-        this.vereniging.teams.push(team);
-        this.bssApi.updateVereniging(this.vereniging)
-        .then(resp => {
-            this.bssTeam = team;
-            this.teamAanCompetitieToevoegen();
-        })
-        .catch(err => {
-            this.alert.showError(err);
-        });
-        
-    }
-
-    private teamAanCompetitieToevoegen() {
-        let compTeam = new KnbbCompTeam(this.bssTeam.verId, this.bssTeam.teamId);
-        this.bssComp.teams.push(compTeam);
-        this.bssApi.updateKnbbCompetitie(this.bssComp)
-        .then(resp => {
-            this.teamInBss = true;
-            this.teamInComp = true;
-            this.verenigingen = [];
-            this.modeTeam = 'view';
-            this.modeVer = 'view';
-            this.createVerenigingForm();
-            this.createTeamForm();
-            this.bpTeam.bssVerId = this.bssTeam.verId;
-            this.bpTeam.bssTeamId = this.bssTeam.teamId;
-            localStorage.setItem('bpTeam', JSON.stringify(this.bpTeam));
-            this.sectTitleVer = 'BSS vereniging';
-            this.sectTitleTeam = 'BSS team';
-            this.alert.showAlert('Vereniging en team succesvol verwerkt in BSS.', 'success');
+            this.bpTeam.bssVerId = this.vereniging.verId;
+            this.naarTeamClicked();
         })
         .catch(err => {
             this.alert.showError(err);
@@ -185,12 +128,11 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
         this.sectTitleVer = 'BSS vereniging toevoegen';
         this.vereniging = new Vereniging();
         this.createVerenigingForm(true);
-        this.createTeamForm(true);
         this.escapeCount++;
     }
 
     verenigingChanged() {
-        this.createTeamForm(true);
+        this.bpTeam.bssVerId = this.vereniging.verId;
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -202,17 +144,14 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.key === 'Enter') {
-            if (this.modeTeam == 'view') {
-                if (this.teamInComp) {
-                    this.buttonPressed(this.pageButtons[0]);
-                }
-                else {
+            if (this.verenigingForm) {
+                if (this.verenigingForm.valid) {
                     this.buttonPressed(this.saveButtons[0]);
+                    return false;
                 }
-                return false;
             }
-            if ((!this.verenigingForm || this.verenigingForm.valid) && this.teamForm && this.teamForm.valid && this.teamIdOk) {
-                this.buttonPressed(this.saveButtons[0]);
+            else {
+                this.buttonPressed(this.pageButtons[0]);
                 return false;
             }
             return true;
@@ -237,12 +176,6 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
             return;
         }
         this.bpTeam = JSON.parse(team);
-        const spelers = localStorage.getItem('bpSpelers');
-        if (!spelers) {
-            this.alert.showError('Geen team (spelers) geselecteerd.');
-            return;
-        }
-        this.bpSpelers = JSON.parse(spelers);
         
         Promise.all([
             this.bssApi.getVerenigingen(),
@@ -258,29 +191,31 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
                 this.verenigingen = results[0].filter(ver => ver.locatie == this.lokaliteit.lokId);
                 if (this.verenigingen.length) {
                     this.vereniging = this.verenigingen[0];
-                    this.sectTitleVer = 'BSS vereniging selecteren';
+                    this.sectTitleVer = 'BSS vereniging selecteren of toevoegen';
+                    if (this.bpTeam.bssVerId != '') {
+                        const idx = this.verenigingen.findIndex(ver => ver.verId == this.bpTeam.bssVerId);
+                        if (idx >= 0) {
+                            this.vereniging = this.verenigingen[idx];
+                        }
+                    }
+                    this.bpTeam.bssVerId = this.vereniging.verId;
                 }
                 else {
                     this.modeVer = 'add';
                     this.createVerenigingForm(true);
                     this.sectTitleVer = 'BSS vereniging toevoegen';
                 }
-                this.modeTeam = 'add';
-                this.createTeamForm(true);
-                this.sectTitleTeam = 'BSS team toevoegen';
             }
             else {
                 this.teamInBss = true;
                 this.teamInComp = this.bssComp.teams.some(tm => tm.verId == this.bssTeam.verId && tm.teamId == this.bssTeam.teamId);
-                if (!this.teamInComp) {
-                    this.sectTitleTeam = 'BSS team toevoegen';
-                }
-                if (this.teamInBss && this.teamInComp) {
+                if (this.teamInComp) {
                     this.naarSpelersClicked();
-                    return;
                 }
-                this.createVerenigingForm();
-                this.createTeamForm();
+                else {
+                    this.naarTeamClicked();
+                }
+                return;
             }
             this.dataReady = true;
         })
@@ -322,33 +257,6 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
         }
     }
 
-    private createTeamForm(forAdd?: boolean) {
-        if (forAdd) {
-            const idVolgNr = this.getTeamVolgnr(); 
-            this.teamForm = this.fb.nonNullable.group({
-                teamId: [this.bpComp.spelsoortId + '-' + this.bpComp.klasse + '-' + idVolgNr],
-                knbbId: [this.bpTeam.knbbId, [Validators.required, notEmpty()]],
-                klasse: [this.bpComp.klasse, [Validators.required, notEmpty()]],
-                volgNr: [idVolgNr, [Validators.min(1)]],
-                teamNaam: [this.bpTeam.naam, [Validators.required, notEmpty()]]
-            });
-            this.checkTeamId();
-            this.volgNr?.valueChanges.subscribe(val => {
-                this.teamId?.setValue(this.bpComp.spelsoortId + '-' + this.bpComp.klasse + '-' + val);
-                this.checkTeamId();
-            });
-        }
-        else {
-            this.teamForm = this.fb.nonNullable.group({
-                teamId: [this.bssTeam.teamId],
-                knbbId: [this.bssTeam.knbbId],
-                klasse: [this.bssTeam.klasse],
-                volgNr: [this.bssTeam.volgNr],
-                teamNaam: [this.bssTeam.naam, [Validators.required, notEmpty()]]
-            });
-        }
-    }
-
     private getTeamVolgnr(): number {
         let result = 1;
         let idPrefix = this.bpComp.spelsoortId + '-' + this.bpComp.klasse + '-';
@@ -368,10 +276,6 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
             }
         }
         return result;
-    }
-
-    private checkTeamId() {
-        this.teamIdOk = this.vereniging.teams.every(tm => tm.teamId != this.teamId?.value);
     }
 
     private createVerenigingId(naam: string): string {
@@ -414,19 +318,4 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
         return this.verenigingForm?.get('korteNaam');
     }
 
-    get teamId() {
-        return this.teamForm?.get('teamId');
-    }
-    get knbbId() {
-        return this.teamForm?.get('knbbId');
-    }
-    get klasse() {
-        return this.teamForm?.get('klasse');
-    }
-    get volgNr() {
-        return this.teamForm?.get('volgNr');
-    }
-    get teamNaam() {
-        return this.teamForm?.get('teamNaam');
-    }
 }
