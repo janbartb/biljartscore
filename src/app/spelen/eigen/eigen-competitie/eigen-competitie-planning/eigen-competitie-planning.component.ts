@@ -283,8 +283,7 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         if (wedsMogelijk.length == 0) {
             return result;
         }
-        let idxStart = 0;
-        let firstId = wedsMogelijk[idxStart].splId;
+        let firstId = wedsMogelijk[0].splId;
         let nrOfWed = aantWed - 1;
         if (nrOfWed == 0) {
             return result;
@@ -292,6 +291,7 @@ export class EigenCompetitiePlanningComponent extends BaseComponent implements O
         let weds: MogelijkeWed[] = [];
         let klaar = false;
         while (!klaar) {
+            let idxStart = 0;
             weds = this.getGeplandeWedstrijden(wedsMogelijk, nrOfWed, firstId);
             if (weds.length == nrOfWed) {
                 klaar = true;
