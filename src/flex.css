@@ -34,6 +34,9 @@
 .flexbox.flexstart {
     align-items: flex-start;
 }
+.flexbox.flexend {
+    align-items: flex-end;
+}
 .flexbox.flexstretch {
     align-items: stretch;
 }

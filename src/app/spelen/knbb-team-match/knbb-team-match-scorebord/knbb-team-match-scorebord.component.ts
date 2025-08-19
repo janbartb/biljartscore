@@ -1,16 +1,16 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ScoreComponent } from '../../../shared/score/score.component';
 import { MatchSpeler, TeamMatch } from '../../../model/match';
 import { WedSpeler, Wedstrijd } from '../../../model/wedstrijd';
 import { BaseComponent } from '../../../base/base.component';
 import { ActivatedRoute } from '@angular/router';
 import { HelperService } from '../../../services/helper.service';
+import { ScorebordComponent } from '../../../shared/scorebord/scorebord.component';
 
 @Component({
     selector: 'app-knbb-team-match-scorebord',
     standalone: true,
     imports: [
-        ScoreComponent
+        ScorebordComponent
     ],
     templateUrl: './knbb-team-match-scorebord.component.html',
     styleUrl: './knbb-team-match-scorebord.component.css'

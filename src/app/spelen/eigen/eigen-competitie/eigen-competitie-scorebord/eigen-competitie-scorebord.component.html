@@ -1,7 +1,7 @@
 <div>
     @if (wedReady) {
-        <app-score [wedstrijd]="wedstrijd" 
-                (opslaan)="updateAndSaveMatch($event)" (keyPressed)="handleKey($event)"></app-score>
+        <app-scorebord [wedstrijd]="wedstrijd" 
+                (opslaan)="updateAndSaveMatch($event)" (keyPressed)="handleKey($event)"></app-scorebord>
     }
     @if (isEndOfMatchDialogOpen) {
         <app-confirm-end-of-match [dialog]="endOfMatchDialog" (reply)="endOfMatchDialogReplied($event)"></app-confirm-end-of-match>

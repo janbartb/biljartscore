@@ -5,14 +5,14 @@ import { CmpMatchSpeler, CmpSplWedstrijd, Competitie, CompetitieMatch } from '..
 import { HelperService } from '../../../../services/helper.service';
 import { ConfirmEndOfMatchDialog } from '../../../../model/dialogs';
 import { WedSpeler, Wedstrijd } from '../../../../model/wedstrijd';
-import { ScoreComponent } from '../../../../shared/score/score.component';
 import { ConfirmEndOfMatchComponent } from '../../../../shared/confirm-end-of-match/confirm-end-of-match.component';
+import { ScorebordComponent } from '../../../../shared/scorebord/scorebord.component';
 
 @Component({
     selector: 'app-eigen-competitie-scorebord',
     standalone: true,
     imports: [
-        ScoreComponent,
+        ScorebordComponent,
         ConfirmEndOfMatchComponent
     ],
     templateUrl: './eigen-competitie-scorebord.component.html',

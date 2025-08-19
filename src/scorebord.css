@@ -153,3 +153,68 @@
 .bord.geel .score-pnt-container.klaar { color: gold }
 
 .clr-red { color: red; }
+.gewijzigd { color: #0099ff; }
+
+.bss-border {
+    border: .5em solid gray;
+}
+.bss-border.for-left {
+    border-width: .5em .25em .5em .5em;
+}
+.bss-border.for-right {
+    border-width: .5em .5em .5em .25em;
+}
+.bss-border.for-middle {
+    border-width: .5em .25em .5em .25em;
+}
+
+.wed-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2.5em;
+    z-index: 20;
+    color: black;
+}
+.wed-message.wed-message-landscape {
+    height: 3.75em;
+}
+.wed-message.info {
+    background-color: blue;
+    color: white;
+}
+.wed-message.warning {
+    background-color: chocolate;
+    color: white;
+}
+.wed-message.error {
+    background-color: red;
+    color: white;
+}
+.wed-message.success {
+    background-color: green;
+    color: white;
+}
+
+.notification {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 11.25em;
+    padding: .5em;
+    z-index: 20;
+    overflow: hidden;
+}
+.notification-content {
+    width: 100%;
+    height: 100%;
+    background-color: blue;
+    color: white;
+    translate: 0 10.75em;
+    transition: translate .5s;
+}
+.notification-content.visible {
+    translate: 0 0;
+}
