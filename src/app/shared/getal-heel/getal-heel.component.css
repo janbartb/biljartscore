@@ -1,0 +1,21 @@
+.getal-container {
+    width: .53125em;
+    height: .8125em;
+    overflow: hidden;
+}
+
+.getal {
+    line-height: .8; 
+    letter-spacing: -.025em;
+    translate: 0 0;
+    transition: translate .4s;
+}
+.getal.notrans {
+    transition: none;
+}
+.getal.getalUp {
+    translate: 0 -.8125em;
+}
+.getal.getalDown {
+    translate: 0 .8125em;
+}

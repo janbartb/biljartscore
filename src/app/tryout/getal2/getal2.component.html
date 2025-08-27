@@ -1,0 +1,5 @@
+<div class="flexbox">
+    @for (cijfer of cijfers; track $index) {
+        <app-cijfer2 [cijfer]="cijfer" [useZero]="useZeroes[$index]" [moveUp]="moveUp"></app-cijfer2>
+    }
+</div>

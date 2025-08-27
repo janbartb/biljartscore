@@ -34,23 +34,25 @@
                         </div>
                     </div>
                     <div style="width: 16em;">
-                        <div class="flexbox flexright flexend" style="height: 7em;">
-                            @if (team.stand.serie > 0) {
-                                <div style="padding-right: 1em; color: rgb(0, 153, 255);">
-                                    <span style="font-size: 5em; line-height: 1.2;">+</span>
+                        <div class="brt-ser-container flexbox flexright" style="height: 7em;">
+                            <div class="brt-ser" [ngClass]="{'serie': team.stand.serie > 0, 'notrans': team.stand.serie < 1}">
+                                <div class="flexbox flexright flexend" style="height: 7em;">
+                                    <div style="padding-right: 1em; color: #c0c0c0;">
+                                        <span style="font-size: 3.5em;">in</span>
+                                    </div>
+                                    <div style="font-size: 7em;">
+                                        <app-getal [getal]="team.stand.aantBrt" [maxCijfers]="maxCijfersBrt"></app-getal>
+                                    </div>
                                 </div>
-                                <div style="color: rgb(0, 153, 255); font-size: 7em;">
-                                    <app-getal [getal]="team.stand.serie" [maxCijfers]="maxCijfersSer"></app-getal>
+                                <div class="flexbox flexright flexend" style="height: 7em;">
+                                    <div style="padding-right: 1em; color: rgb(0, 153, 255);">
+                                        <span style="font-size: 5em; line-height: 1.2;">+</span>
+                                    </div>
+                                    <div style="color: rgb(0, 153, 255); font-size: 7em;">
+                                        <app-getal [getal]="team.stand.serie" [maxCijfers]="maxCijfersSer" [isSerie]="true"></app-getal>
+                                    </div>
                                 </div>
-                            }
-                            @else {
-                                <div style="padding-right: 1em; color: #c0c0c0;">
-                                    <span style="font-size: 3.5em;">in</span>
-                                </div>
-                                <div style="font-size: 7em;">
-                                    <app-getal [getal]="team.stand.aantBrt" [maxCijfers]="maxCijfersBrt"></app-getal>
-                                </div>
-                            }
+                            </div>
                         </div>
                         <div class="flexbox flexright flexstart" style="height: 7em;">
                             <div style="padding-top: .25em; padding-right: .25em;">

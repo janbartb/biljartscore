@@ -1,5 +1,12 @@
 <div class="bss-scorebord">
-    @if (wedstrijd.message.visible) {
+    @if (keysLocked) {
+        <div class="wed-message flexbox flexcenter flexmiddle">
+            <div style="font-size: 1.75em; line-height: 1; translate: 0 -.125em;">
+                <i class="fas fa-lock"></i>
+            </div>
+        </div>
+    }
+    @else if (wedstrijd.message.visible) {
         <div class="wed-message flexbox flexcenter flexmiddle" 
                 [ngClass]="[wedstrijd.message.type]">
             <div style="font-size: 1.75em; line-height: 1;">{{wedstrijd.message.text}}</div>
@@ -137,6 +144,7 @@
                             <div class="bss-portrait" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 0}">
                                 <app-scorebord-speler [speler]="wedstrijd.teams[0].spelers[0]"
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
+                                                    [teamCar]="wedstrijd.teams[0].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
                                                     [border]="'bss-border for-left'"></app-scorebord-speler>
                             </div>
@@ -145,6 +153,7 @@
                             <div class="bss-portrait" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 1}">
                                 <app-scorebord-speler [speler]="wedstrijd.teams[0].spelers[1]"
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
+                                                    [teamCar]="wedstrijd.teams[0].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
                                                     [border]="'bss-border for-middle'"></app-scorebord-speler>
                             </div>
@@ -165,6 +174,7 @@
                             <div class="bss-portrait" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 0}">
                                 <app-scorebord-speler [speler]="wedstrijd.teams[1].spelers[0]"
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
+                                                    [teamCar]="wedstrijd.teams[1].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
                                                     [border]="'bss-border for-middle'"></app-scorebord-speler>
                             </div>
@@ -173,6 +183,7 @@
                             <div class="bss-portrait" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 1}">
                                 <app-scorebord-speler [speler]="wedstrijd.teams[1].spelers[1]"
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
+                                                    [teamCar]="wedstrijd.teams[1].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
                                                     [border]="'bss-border for-right'"></app-scorebord-speler>
                             </div>
@@ -182,20 +193,38 @@
             </div>    
         </div>
     }
-    <div class="notification">
-        <div class="notification-content flexbox flexcenter flexmiddle arial" [ngClass]="{ 'visible': modalVisible }">
-            <div>
-                @if (modals.length && modals[0].texts.length) {
-                    @if (modals[0].type == 'serie') {
-                        <span style="font-size: 5em;">{{modals[0].texts[0]}}</span>
+    @if (wedstrijd.aantSpelers > 2 && wedstrijd.aantSpelers < 5 && idxSpeler > 1) {
+        <div class="notification-top">
+            <div class="notification-top-content flexbox flexcenter flexmiddle arial" [ngClass]="{ 'visible': modalVisible }">
+                <div>
+                    @if (modals.length && modals[0].texts.length) {
+                        @if (modals[0].type == 'serie') {
+                            <span style="font-size: 5em;">{{modals[0].texts[0]}}</span>
+                        }
+                        @else {
+                            <span style="font-size: 4em;">{{modals[0].texts[0]}}</span>
+                        }
                     }
-                    @else {
-                        <span style="font-size: 4em;">{{modals[0].texts[0]}}</span>
-                    }
-                }
+                </div>
             </div>
         </div>
-    </div>
+    }
+    @else {
+        <div class="notification">
+            <div class="notification-content flexbox flexcenter flexmiddle arial" [ngClass]="{ 'visible': modalVisible }">
+                <div>
+                    @if (modals.length && modals[0].texts.length) {
+                        @if (modals[0].type == 'serie') {
+                            <span style="font-size: 5em;">{{modals[0].texts[0]}}</span>
+                        }
+                        @else {
+                            <span style="font-size: 4em;">{{modals[0].texts[0]}}</span>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
     @if (isDialogOpen) {
         <app-spelers-namen [dialog]="namenDialog" (reply)="namenDialogReplied($event)"></app-spelers-namen>
     }

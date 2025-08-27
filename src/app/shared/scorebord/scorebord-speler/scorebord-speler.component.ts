@@ -17,6 +17,7 @@ import { GetalComponent } from '../../getal/getal.component';
 export class ScorebordSpelerComponent implements OnInit {
     @Input() speler: WedSpeler = new WedSpeler();
     @Input() maxBrt: number = 0;
+    @Input() teamCar: number = 0;
     @Input() showPunten: boolean = false;
     @Input() oldPunten: number = 0;
     @Input() wedOver: boolean = false;
@@ -27,8 +28,10 @@ export class ScorebordSpelerComponent implements OnInit {
     maxCijfersSer: number = 3;
 
     ngOnInit(): void {
-        if (this.speler.splTsCar > 0) {
-            this.maxCijfersCar = this.maxCijfersSer = ('' + this.speler.splTsCar).length;
+        console.log(this.maxBrt);
+        if (this.speler.splTsCar > 0 || this.teamCar > 0) {
+            const tsCar = (this.teamCar > 0) ? this.teamCar : this.speler.splTsCar;
+            this.maxCijfersCar = this.maxCijfersSer = ('' + tsCar).length;
         }
         if (this.maxBrt > 0) {
             this.maxCijfersBrt = ('' + this.maxBrt).length;

@@ -7,7 +7,7 @@
 .cijfers {
     position: absolute;
     top: 0;
-    transition: top 2s ease;
+    transition: top 1s ease;
 }
 .cijfers.plus0 {
     top: 0;

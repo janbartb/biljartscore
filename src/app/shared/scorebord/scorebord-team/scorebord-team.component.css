@@ -5,3 +5,19 @@
    border-width: 3em 4.5em 0 4.5em;
    border-color: #FF0000 transparent transparent transparent;
 }
+
+.brt-ser-container {
+    position: relative;
+    overflow: hidden;
+}
+.brt-ser {
+    position: absolute;
+    top: 0;
+    transition: top 2s ease;
+}
+.brt-ser.serie {
+    top: -7em;
+}
+.brt-ser.notrans {
+    transition: none;
+}

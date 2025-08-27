@@ -38,6 +38,7 @@ export class ScorebordComponent implements OnInit {
     idxTeam: number = -1;
     actieveSpeler: WedSpeler = new WedSpeler();
     actieveTeam: WedTeam = new WedTeam();
+    aantBereikt: boolean = false;
     namenDialog: SpelerNamenDialog = new SpelerNamenDialog();
     modals: ModalMessage[] = [];
     modalVisible: boolean = false;
@@ -376,12 +377,28 @@ export class ScorebordComponent implements OnInit {
                 }        
             }
         }
+        if (!this.keysLocked) {
+            if (nr > 0) {
+                this.keysLocked = true;
+                setTimeout(() => {
+                    this.keysLocked = false;
+                }, 3000);
+            }
+        }
         this.actieveSpeler.message.hide();
         this.actieveSpeler.stand.serie += nr;
         if (this.isTeamWedstrijd()) {
             this.actieveTeam.stand.serie += nr;
         }
-        let aantBereikt = this.checkForSerieMessages();
+        this.aantBereikt = this.checkForSerieMessages();
+        // if (nr > 0) {
+        //     if (!aantBereikt && !this.testMode) {
+        //         this.keysLocked = true;
+        //         setTimeout(() => {
+        //             this.keysLocked = false;
+        //         }, 3000);
+        //     }
+        // }
         setTimeout(() => {
             this.actieveSpeler.message.show();
             this.actieveSpeler.stand.gemiddelde = this.getGemiddelde(this.actieveSpeler);
@@ -396,18 +413,12 @@ export class ScorebordComponent implements OnInit {
                     this.actieveSpeler.stand.punten = this.getPunten(this.actieveSpeler);
                 }
             }
-            if (nr > 0) {
-                if (!aantBereikt && !this.testMode) {
-                    this.keysLocked = true;
-                    setTimeout(() => {
-                        this.keysLocked = false;
-                    }, 3000);
-                }
-            }
-            if (aantBereikt) {
+            if (this.aantBereikt) {
+                this.aantBereikt = false;
+                this.keysLocked = false;
                 this.enterPressed();
             }
-        }, 750);
+        }, 2000);
     }
 
     private checkForSerieMessages(): boolean {
@@ -417,10 +428,13 @@ export class ScorebordComponent implements OnInit {
         let msgs: string[] = [];
         let spk = '';
         let msgType = 'info';
-        if (this.wedstrijd.regels.idxOptie == 1) {  // vast aantal beurten
+        if (this.actieveSpeler.stand.serie == 0) {
             return false;
         }
-        const remainingCar = this.actieveSpeler.splTsCar - this.actieveSpeler.stand.aantCar - this.actieveSpeler.stand.serie;
+        let remainingCar = 100;
+        if (this.wedstrijd.regels.idxOptie != 1) {  // geen vast aantal beurten
+            remainingCar = this.actieveSpeler.splTsCar - this.actieveSpeler.stand.aantCar - this.actieveSpeler.stand.serie;
+        }
         if (remainingCar === 0) {
             return true;
         }
@@ -436,15 +450,17 @@ export class ScorebordComponent implements OnInit {
             spk = `${this.actieveSpeler.stand.serie}`;
             msgType = 'serie';
         }
-        if (msgs.length > 0) {
-            const modalMsg = new ModalMessage(msgType, msgs, spk, 3);
-            this.modals.push(modalMsg);
-            this.showModal();
-            return false;
-        }
-        if (spk.length) {
-            this.textsToSpeak.push(spk);
-            this.speakTexts();
+        if (this.actieveSpeler.stand.serie > 0) {
+            if (msgs.length > 0) {
+                const modalMsg = new ModalMessage(msgType, msgs, spk, 3);
+                this.modals.push(modalMsg);
+                this.showModal();
+                return false;
+            }
+            if (spk.length) {
+                this.textsToSpeak.push(spk);
+                this.speakTexts();
+            }
         }
         return false;
     }
@@ -453,10 +469,13 @@ export class ScorebordComponent implements OnInit {
         let msgs: string[] = [];
         let spk = '';
         let msgType = 'info';
-        if (this.wedstrijd.regels.idxOptie == 1) {  // vast aantal beurten
+        if (this.actieveTeam.stand.serie == 0) {
             return false;
         }
-        const remainingCar = this.actieveTeam.teamTsCar - this.actieveTeam.stand.aantCar - this.actieveTeam.stand.serie;
+        let remainingCar = 100;
+        if (this.wedstrijd.regels.idxOptie != 1) {  // geen vast aantal beurten
+            remainingCar = this.actieveTeam.teamTsCar - this.actieveTeam.stand.aantCar - this.actieveTeam.stand.serie;
+        }
         if (remainingCar === 0) {
             return true;
         }
@@ -472,15 +491,17 @@ export class ScorebordComponent implements OnInit {
             spk = `${this.actieveTeam.stand.serie}`;
             msgType = 'serie';
         }
-        if (msgs.length > 0) {
-            const modalMsg = new ModalMessage(msgType, msgs, spk, 3);
-            this.modals.push(modalMsg);
-            this.showModal();
-            return false;
-        }
-        if (spk.length) {
-            this.textsToSpeak.push(spk);
-            this.speakTexts();
+        if (this.actieveTeam.stand.serie > 0) {
+            if (msgs.length > 0) {
+                const modalMsg = new ModalMessage(msgType, msgs, spk, 3);
+                this.modals.push(modalMsg);
+                this.showModal();
+                return false;
+            }
+            if (spk.length) {
+                this.textsToSpeak.push(spk);
+                this.speakTexts();
+            }
         }
         return false;
     }
@@ -594,19 +615,21 @@ export class ScorebordComponent implements OnInit {
 
     private verhoogBeurtenEnBerekenData(spl: WedSpeler, team?: WedTeam): void {
         spl.stand.aantBrt++;
-        spl.stand.gemiddelde = this.getGemiddelde(spl);
-        if (team) {
-            team.stand.aantBrt++;
-            team.stand.gemiddelde = this.getTeamGemiddelde(team);
-            if (this.wedstrijd.telling.idxOptie == 0) {
-                team.stand.punten = this.getTeamPunten(team);
+        setTimeout(() => {
+            spl.stand.gemiddelde = this.getGemiddelde(spl);
+            if (team) {
+                team.stand.aantBrt++;
+                team.stand.gemiddelde = this.getTeamGemiddelde(team);
+                if (this.wedstrijd.telling.idxOptie == 0) {
+                    team.stand.punten = this.getTeamPunten(team);
+                }
             }
-        }
-        else {
-            if (this.wedstrijd.telling.idxOptie == 0) {
-                spl.stand.punten = this.getPunten(spl);
+            else {
+                if (this.wedstrijd.telling.idxOptie == 0) {
+                    spl.stand.punten = this.getPunten(spl);
+                }
             }
-        }
+        }, 2000);
     }
 
     private verminderBeurtenEnBerekenData(spl: WedSpeler, team?: WedTeam): void {
@@ -840,6 +863,9 @@ export class ScorebordComponent implements OnInit {
             punten = Math.floor(10 * (spl.stand.aantCar + spl.stand.serie) / spl.splTsCar);
         }
         else {
+            if (this.wedstrijd.aantSpelers != 2) {
+                return 0;
+            }
             if (idx != undefined && idx != null) {
                 let teg = this.wedstrijd.spelers[Math.abs(idx - 1)];
                 if (this.wedstrijd.regels.idxOptie == 1) {
@@ -1077,6 +1103,11 @@ export class ScorebordComponent implements OnInit {
                 this.speakTexts();
             }, 3000);
         }
+    }
+
+    private async delay(ms: number) {
+        // Creates a promise that resolves after <ms> milliseconds
+        await new Promise(resolve => setTimeout(resolve, ms));
     }
 
 }

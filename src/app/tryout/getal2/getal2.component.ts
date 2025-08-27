@@ -1,18 +1,18 @@
 import { Component, effect, Input, input } from '@angular/core';
-import { CijferComponent } from '../cijfer/cijfer.component';
+import { Cijfer2Component } from '../cijfer2/cijfer2.component';
+import { max } from 'rxjs';
 
 @Component({
-    selector: 'app-getal',
+    selector: 'app-getal2',
     standalone: true,
     imports: [
-        CijferComponent
+        Cijfer2Component
     ],
-    templateUrl: './getal.component.html',
-    styleUrl: './getal.component.css'
+    templateUrl: './getal2.component.html',
+    styleUrl: './getal2.component.css'
 })
-export class GetalComponent {
+export class Getal2Component {
     getal = input(0);
-    @Input() isSerie: boolean = false;
     @Input() maxCijfers: number = 1;
 
     getalOld: number = 0;
@@ -21,9 +21,9 @@ export class GetalComponent {
     moveUp: boolean = true;
 
     constructor() {
-        // this.getalOld = this.getal();
-        // this.useZeroes = this.getUseZeroes();
-        // this.cijfers = this.getCijfers();
+        this.getalOld = this.getal();
+        this.useZeroes = this.getUseZeroes();
+        this.cijfers = this.getCijfers();
         effect(() => {
             const g = this.getal();
             this.moveUp = this.getal() >= this.getalOld;
@@ -59,4 +59,5 @@ export class GetalComponent {
         }
         return txt.split('');
     }
+
 }

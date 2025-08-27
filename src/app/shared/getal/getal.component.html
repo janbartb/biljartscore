@@ -1,5 +1,5 @@
 <div class="flexbox">
     @for (cijfer of cijfers; track $index) {
-        <app-cijfer [cijfer]="cijfer" [moveUp]="moveUp"></app-cijfer>
+        <app-cijfer [cijfer]="cijfer" [useZero]="useZeroes[$index]" [isSerie]="isSerie" [moveUp]="moveUp"></app-cijfer>
     }
 </div>

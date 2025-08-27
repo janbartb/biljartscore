@@ -202,8 +202,7 @@
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 11.25em;
-    padding: .5em;
+    height: 10em;
     z-index: 20;
     overflow: hidden;
 }
@@ -212,9 +211,30 @@
     height: 100%;
     background-color: blue;
     color: white;
-    translate: 0 10.75em;
+    translate: 0 10em;
     transition: translate .5s;
 }
 .notification-content.visible {
+    translate: 0 0;
+}
+
+.notification-top {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 10em;
+    z-index: 20;
+    overflow: hidden;
+}
+.notification-top-content {
+    width: 100%;
+    height: 100%;
+    background-color: blue;
+    color: white;
+    translate: 0 -10em;
+    transition: translate .5s;
+}
+.notification-top-content.visible {
     translate: 0 0;
 }
