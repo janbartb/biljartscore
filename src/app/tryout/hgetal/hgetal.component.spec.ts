@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Getal2Component } from './getal2.component';
+import { HgetalComponent } from './hgetal.component';
 
-describe('Getal2Component', () => {
-  let component: Getal2Component;
-  let fixture: ComponentFixture<Getal2Component>;
+describe('HgetalComponent', () => {
+  let component: HgetalComponent;
+  let fixture: ComponentFixture<HgetalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Getal2Component]
+      imports: [HgetalComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Getal2Component);
+    fixture = TestBed.createComponent(HgetalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

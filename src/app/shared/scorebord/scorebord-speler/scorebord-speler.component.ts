@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { WedSpeler } from '../../../model/wedstrijd';
 import { DecimalPipe, NgClass } from '@angular/common';
 import { GetalComponent } from '../../getal/getal.component';
+import { GetalHeelComponent } from "../../getal-heel/getal-heel.component";
 
 @Component({
     selector: 'app-scorebord-speler',
@@ -9,8 +10,9 @@ import { GetalComponent } from '../../getal/getal.component';
     imports: [
         GetalComponent,
         DecimalPipe,
-        NgClass
-    ],
+        NgClass,
+        GetalHeelComponent
+],
     templateUrl: './scorebord-speler.component.html',
     styleUrl: './scorebord-speler.component.css'
 })

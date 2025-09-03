@@ -77,8 +77,15 @@
                     </div>
                 </div>
                 <div class="flexbox flexright flexstart" style="height: 6em;">
-                    <div style="padding-top: .25em; padding-right: .25em;">
-                        <span style="font-size: 4em; line-height: 1;">{{speler.stand.gemiddelde | number:'1.3-3':'nl-NL'}}</span>
+                    <div style="padding-top: .25em;">
+                        @if (speler.stand.gemiddelde < 100) {
+                            <app-getal-heel style="font-size: 4em;" [getal]="(speler.stand.gemiddelde | number:'1.3-3':'nl-NL') || '0,000'"
+                                            [komma]="true" [maxCijfers]="5" [border]="false"></app-getal-heel>
+                        }
+                        @else {
+                            <app-getal-heel style="font-size: 4em;" [getal]="(speler.stand.gemiddelde | number:'1.2-2':'nl-NL') || '0,00'"
+                                            [komma]="true" [maxCijfers]="5" [border]="false"></app-getal-heel>
+                        }
                     </div>
                 </div>
             </div>

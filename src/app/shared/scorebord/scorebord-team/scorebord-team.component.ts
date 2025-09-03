@@ -2,12 +2,14 @@ import { Component, Input, OnInit } from '@angular/core';
 import { WedTeam } from '../../../model/wedstrijd';
 import { GetalComponent } from '../../getal/getal.component';
 import { DecimalPipe, NgClass } from '@angular/common';
+import { GetalHeelComponent } from '../../getal-heel/getal-heel.component';
 
 @Component({
     selector: 'app-scorebord-team',
     standalone: true,
     imports: [
         GetalComponent,
+        GetalHeelComponent,
         DecimalPipe,
         NgClass
     ],

@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { WedSpeler } from '../../../model/wedstrijd';
 import { GetalComponent } from '../../getal/getal.component';
 import { DecimalPipe, NgClass } from '@angular/common';
+import { GetalHeelComponent } from "../../getal-heel/getal-heel.component";
 
 @Component({
     selector: 'app-scorebord-speler-landscape',
@@ -9,7 +10,8 @@ import { DecimalPipe, NgClass } from '@angular/common';
     imports: [
         GetalComponent,
         DecimalPipe,
-        NgClass
+        NgClass,
+        GetalHeelComponent
     ],
     templateUrl: './scorebord-speler-landscape.component.html',
     styleUrl: './scorebord-speler-landscape.component.css'

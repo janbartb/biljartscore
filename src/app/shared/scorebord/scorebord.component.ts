@@ -615,10 +615,12 @@ export class ScorebordComponent implements OnInit {
 
     private verhoogBeurtenEnBerekenData(spl: WedSpeler, team?: WedTeam): void {
         spl.stand.aantBrt++;
+        if (team) {
+            team.stand.aantBrt++;
+        }
         setTimeout(() => {
             spl.stand.gemiddelde = this.getGemiddelde(spl);
             if (team) {
-                team.stand.aantBrt++;
                 team.stand.gemiddelde = this.getTeamGemiddelde(team);
                 if (this.wedstrijd.telling.idxOptie == 0) {
                     team.stand.punten = this.getTeamPunten(team);

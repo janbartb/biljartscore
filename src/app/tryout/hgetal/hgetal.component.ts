@@ -1,16 +1,16 @@
 import { NgClass } from '@angular/common';
-import { Component, effect, Input, input } from '@angular/core';
+import { Component, effect, Input, input, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'app-getal-heel',
+    selector: 'app-hgetal',
     standalone: true,
     imports: [
         NgClass
     ],
-    templateUrl: './getal-heel.component.html',
-    styleUrl: './getal-heel.component.css'
+    templateUrl: './hgetal.component.html',
+    styleUrl: './hgetal.component.css'
 })
-export class GetalHeelComponent {
+export class HgetalComponent implements OnInit {
     getal = input('0');
     @Input() border: boolean = false;
     @Input() maxCijfers: number = 1;

@@ -5,19 +5,16 @@
                     (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="escapePressed()"></app-page-header>
         </div>
         <div class="flexgrow1">
-            <div class="flexbox flexstretch">
-                <div class="flex50perc arial" style="margin: 100px 0 0 10px; font-size: 12em;">
-                    <app-getal2 [getal]="getal" [maxCijfers]="maxCijfers"></app-getal2>
-                </div>
-                <div class="flex50perc">
-                    <div style="margin: 20px 0 0 100px;">
-                        <button (click)="increaseVal()">increase</button>
-                    </div>
-                    <div style="margin: 20px 0 0 100px;">
-                        <button (click)="decreaseVal()">decrease</button>
+            <div class="arial" style="margin-top: 100px; margin-left: 100px;">
+                <div class="flexbox">
+                    <div style="font-size: 8em;">
+                        <app-hgetal [getal]="getal" [maxCijfers]="2" [komma]="false" [border]="true"></app-hgetal>
                     </div>
                 </div>
             </div>
+        </div>
+        <div style="margin-top: 1em;">
+            <button (click)="increase()">Increase</button>
         </div>
     </div>
 </div>
