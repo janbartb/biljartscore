@@ -11,6 +11,15 @@ import { ScorebordSpelerLandscapeComponent } from './scorebord-speler-landscape/
 import { ScorebordTeamComponent } from './scorebord-team/scorebord-team.component';
 import { SpelersNamenComponent } from '../spelers-namen/spelers-namen.component';
 import { HelpScoreComponent } from '../help-score/help-score.component';
+import { Apparaat, Config } from '../../model/config';
+import { StatusService } from '../../services/status.service';
+
+class ActieToetsen {
+    beurtPlus: string[] = [];
+    beurtMin: string[] = [];
+    seriePlus: string[] = [];
+    serieMin: string[] = [];
+}
 
 @Component({
     selector: 'app-scorebord',
@@ -29,6 +38,7 @@ import { HelpScoreComponent } from '../help-score/help-score.component';
 export class ScorebordComponent implements OnInit {
     spraak = inject(SpeechService);
     alert = inject(AlertService);
+    appData = inject(StatusService);
 
     @Input() wedstrijd: Wedstrijd = new Wedstrijd();
     @Output() opslaan: EventEmitter<Wedstrijd> = new EventEmitter<Wedstrijd>();
@@ -39,6 +49,7 @@ export class ScorebordComponent implements OnInit {
     actieveSpeler: WedSpeler = new WedSpeler();
     actieveTeam: WedTeam = new WedTeam();
     aantBereikt: boolean = false;
+    toetsen: ActieToetsen = new ActieToetsen();
     namenDialog: SpelerNamenDialog = new SpelerNamenDialog();
     modals: ModalMessage[] = [];
     modalVisible: boolean = false;
@@ -256,13 +267,8 @@ export class ScorebordComponent implements OnInit {
             this.alert.hideHelp();
             return false;
         }        
-        if (event.key === 'Escape' || event.key === 'Backspace' || event.code == 'F5') {
-            if (this.actieveSpeler.stand.serie > 0) {
-                this.addNumberToSerie('-1');
-            }
-            else {
-                this.keyPressed.emit('Escape');
-            }
+        if (event.key === 'Escape') {
+            this.keyPressed.emit('Escape');
             return false;
         }
         if (event.code === 'KeyN') {
@@ -277,20 +283,20 @@ export class ScorebordComponent implements OnInit {
             this.toggleTestMode();
             return false;
         }
-        if (event.code === 'KeyH' || event.key === '/' || event.code == 'Slash') {
+        if (event.code === 'KeyH') {
             this.alert.showHelp();
             return false;
         }
-        if (event.code === 'KeyL' || event.key === '*') {
+        if (event.code === 'KeyL') {
             this.keyPressed.emit('Lijst');
             return false;
         }
-        if (event.key === 'Delete' || event.code === 'NumpadDecimal' || event.code == 'Period') {
+        if (this.toetsen.beurtMin.indexOf(event.code) >= 0) {
             this.undoLaatsteBeurt();
             return false;
         }
         if (!this.wedstrijd.wedGespeeld) {
-            if (event.key === 'Enter' || event.key == 'PageDown') {
+            if (this.toetsen.beurtPlus.indexOf(event.code) >= 0) {
                 this.enterPressed();
                 return false;
             }
@@ -302,11 +308,11 @@ export class ScorebordComponent implements OnInit {
                 this.addNumberToSerie(event.code.substring(6));
                 return false;
             }
-            if (event.code === 'Space' || event.key === '+' || event.key == 'PageUp') {
+            if (this.toetsen.seriePlus.indexOf(event.code) >= 0) {
                 this.addNumberToSerie('1');
                 return false;
             }
-            if (event.key === '-') {
+            if (this.toetsen.serieMin.indexOf(event.code) >= 0) {
                 this.addNumberToSerie('-1');
                 return false;
             }
@@ -319,6 +325,12 @@ export class ScorebordComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        const apparaten: Apparaat[] = this.appData.getConfig()?.apparaten || [];
+        const toetsenOk = this.setActieToetsen(apparaten);
+        if (!toetsenOk) {
+            this.alert.showAlert('Apparaten configuratie niet gevonden. Default toetsen worden gebruikt.', 'warning', 5);
+            this.setDefaultActieToetsen();
+        }
         if (this.wedstrijd.wedGespeeld) {
             if (this.wedstrijd.telling.idxOptie == 0) {
                 if (this.isTeamWedstrijd()) {
@@ -655,12 +667,12 @@ export class ScorebordComponent implements OnInit {
 
     private undoLaatsteBeurt(): boolean {
         if (this.isTeamWedstrijd()) {
-            if (this.wedstrijd.teams[1].stand.aantBrt === 0) {
+            if (this.wedstrijd.teams[0].spelers[0].actief && this.wedstrijd.teams[0].spelers[0].stand.aantBrt === 1) {
                 return false;
             }    
         }
         else {
-            if (this.wedstrijd.spelers[0].stand.aantBrt === 1) {
+            if (this.wedstrijd.spelers[0].actief && this.wedstrijd.spelers[0].stand.aantBrt === 1) {
                 return false;
             }    
         }
@@ -1066,6 +1078,39 @@ export class ScorebordComponent implements OnInit {
             });
         }
         return result;
+    }
+
+    private setActieToetsen(apparaten: Apparaat[]): boolean {
+        if (!apparaten.length) {
+            return false;
+        }
+        let obj: any = {
+            beurtPlus: [],
+            beurtMin: [],
+            seriePlus: [],
+            serieMin: []
+        };
+        apparaten.forEach(apparaat => {
+            const spel = apparaat.spelen.find(sp => sp.id == '3BA');
+            if (spel) {
+                spel.acties.forEach(actie => {
+                    obj[actie.id].push(actie.code);
+                });
+            }
+        });
+        if (!(obj.beurtPlus.length && obj.beurtMin.length && obj.seriePlus.length && obj.serieMin.length)) {
+            return false;
+        }
+        Object.assign(this.toetsen, obj);
+        console.log(this.toetsen);
+        return true;
+    }
+
+    private setDefaultActieToetsen() {
+        this.toetsen.beurtPlus = ['Enter', 'NumpadEnter', 'PageDown'];
+        this.toetsen.beurtMin = ['Period', 'NumpadDecimal'];
+        this.toetsen.seriePlus = ['Space', 'NumpadAdd', 'PageUp'];
+        this.toetsen.serieMin = ['Minus', 'NumpadSubtract', 'F5'];
     }
 
     private showModal(): void {

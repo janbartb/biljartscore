@@ -30,7 +30,6 @@ export class ScorebordSpelerComponent implements OnInit {
     maxCijfersSer: number = 3;
 
     ngOnInit(): void {
-        console.log(this.maxBrt);
         if (this.speler.splTsCar > 0 || this.teamCar > 0) {
             const tsCar = (this.teamCar > 0) ? this.teamCar : this.speler.splTsCar;
             this.maxCijfersCar = this.maxCijfersSer = ('' + tsCar).length;

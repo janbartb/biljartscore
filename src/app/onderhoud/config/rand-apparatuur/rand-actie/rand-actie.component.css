@@ -1,0 +1,12 @@
+.rand-actie {
+    border: .125em solid white;
+    border-radius: .5em;
+    background-color: lightgray;
+}
+.rand-actie.editable {
+    background-color: lightgreen;
+    cursor: pointer;
+}
+.rand-actie.editable.selected {
+    border-color: red;
+}

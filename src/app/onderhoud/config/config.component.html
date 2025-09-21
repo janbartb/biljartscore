@@ -1,7 +1,7 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="'Instellingen'" [spel]="appData.getSpelNaam()"
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="'Instellingen'" [spel]="''"
                         (prevClicked)="previousPressed()"></app-page-header>
         </div>
         <div class="flexgrow1 flexbox flexcenter">
@@ -104,7 +104,7 @@
                 }
             </div>
         </div>
-        <app-section-footer-btns [buttons]="buttons" (clickedButton)="enterClicked()"
+        <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)"
                                             [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
     </div>
 </div>

@@ -33,7 +33,10 @@ export class ConfigComponent extends BaseComponent implements OnInit {
     klassen: string[] = [];
     verenigingen: VerenigingKort[] = [];
     spraakTest: string = 'Dit is een test';
-    buttons: Button[] = [new Button('Enter', 'Opslaan', true)];
+    buttons: Button[] = [
+        new Button('Enter', 'Opslaan', true),
+        new Button('', 'Randapparatuur', false)
+    ];
     formCreated: boolean = false;
     voices: SpeechSynthesisVoice[] = [];
 
@@ -44,7 +47,7 @@ export class ConfigComponent extends BaseComponent implements OnInit {
             this.buttons[0].selected = true;
             setTimeout(() => {
                 this.buttons[0].selected = false;
-                this.enterClicked();
+                this.buttonClicked(idx);
             }, 500);
         }
     }
@@ -53,10 +56,23 @@ export class ConfigComponent extends BaseComponent implements OnInit {
         super.escapePressed();
     }
 
+    buttonClicked(idx: number) {
+        if (idx == 0) {
+            this.enterClicked();
+        }
+        else if (idx == 1) {
+            this.randApparatuurClicked();
+        }
+    }
+
     enterClicked() {
         if (this.configForm && this.configForm.valid) {
             this.configOpslaan();
         }
+    }
+
+    randApparatuurClicked() {
+        this.appData.gotoPage(this.router.url, this.router.url + '/rand');
     }
 
     toggleSpeech() {

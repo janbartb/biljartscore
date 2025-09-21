@@ -44,7 +44,6 @@ export class GetalComponent {
                 result.unshift(this.getal() >= Math.pow(10, diff + 1));
             }
         }
-        console.log(result);
         return result;
     }
 

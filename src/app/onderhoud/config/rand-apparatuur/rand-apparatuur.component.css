@@ -1,0 +1,38 @@
+.apparaat-container {
+    padding: .5em;
+}
+.apparaat-container.met-border {
+    border-top: .25em solid #93cf95;
+}
+.apparaat-selector {
+    border: .125em solid white;
+    border-radius: .5em;
+    padding: .5em;
+}
+.apparaat-selector.selected {
+    border-color: red;
+}
+.apparaat-selector:not(.selected):hover {
+    border-color: grey;
+}
+.apparaat-selector img {
+    cursor: pointer;
+}
+.apparaat-selector.selected img {
+    cursor: not-allowed;
+}
+
+.spelkeuze {
+    border: .125em solid white;
+    border-radius: .5em;
+    padding: 0 1em;
+    cursor: pointer;
+    margin: 0 1em;
+}
+.spelkeuze.selected {
+    border-color: red;
+    cursor: not-allowed;
+}
+.spelkeuze:not(.selected):hover {
+    border-color: gray;
+}

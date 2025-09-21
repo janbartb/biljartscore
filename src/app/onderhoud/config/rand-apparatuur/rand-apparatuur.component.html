@@ -1,0 +1,74 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="'Instellingen randapparatuur' + subtitle" [spel]="''"
+                        (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="label" style="height: 2em; line-height: 1.75em; text-align: center; border-bottom: .25em solid green;">
+            <span>Selecteer een apparaat en een spel en klik op een (groene) actie om de toets te wijzigen.</span>
+        </div>
+        <div class="flexgrow1 flexbox flexstretch">
+            <div style="border-right: .25em solid green; width: 12em;">
+                <app-section-header [title]="'Apparaat'" [cssClasses]="'w3-green-l2'"></app-section-header>
+                @for (apparaat of apparaten; track $index) {
+                    <div class="apparaat-container" [ngClass]="{'met-border': $index > 0}" [style.height]="apparaatContainerHeight">
+                        <div class="fullheight apparaat-selector" [ngClass]="{'selected': $index == idxApparaat}">
+                            <div class="fullheight">
+                                <img [src]="'images/' + apparaat.image" alt="" style="width: 100%; height: 100%; object-fit: contain;"
+                                        (click)="selecteerApparaat($index, $event)">
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="flexgrow1 flexbox flexcolumn">
+                <app-section-header [title]="'Spel'" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <div style="height: 3em; border-bottom: .25em solid green;">
+                    <div class="flexbox flexcenter flexmiddle" style="height: 2.75em;">
+                        <div class="flexbox">
+                            @if (idxApparaat >= 0) {
+                                @for (spel of apparaten[idxApparaat].spelen; track $index) {
+                                    <div class="spelkeuze" [ngClass]="{'selected': $index == idxSpel}" (click)="selecteerSpel($index)">
+                                        <span>{{spel.naam}}</span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <app-section-header [title]="'Acties'" [cssClasses]="'w3-green-l2'"></app-section-header>
+                <div style="height: 2em; padding-right: .5em;">
+                    @if (acties.length) {
+                        <div class="flexbox flexmiddle label" style="padding: 0 .75em 0 .75em;">
+                            <div class="flexgrow1" style="padding-left: .5em;">
+                                <span>Actie</span>
+                            </div>
+                            <div style="width: 10em; padding: 0 .5em; text-align: center;">
+                                <span>Toets-code</span>
+                            </div>
+                            <div style="width: 8em; padding: 0 .5em; text-align: center;">
+                                <span>Toets</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="flexgrow1 scroll-container">
+                    <div #actielijst class="scroll-content">
+                        <div>
+                            @for (actie of acties; track $index) {
+                                <div style="padding: 0 .5em;">
+                                    <app-rand-actie [actie]="actie" [selected]="$index == idxActie" 
+                                            [apparaat]="apparaatNaam" (click)="selecteerActie($index, $event)"></app-rand-actie>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                @if (idxSpel >= 0) {
+                    <app-section-footer-btns [buttons]="buttons" [btnsDisabled]="[!toetsenGewijzigd]" (clickedButton)="enterClicked()"
+                                [cssFooter]="'w3-green-bdr-l2'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+            </div>
+        </div>
+    </div>
+</div>

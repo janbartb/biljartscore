@@ -9,6 +9,25 @@ import { SpelerNamen, SpelerNamenDialog } from '../../model/dialogs';
 import { ModalMessage } from '../../model/modal-message';
 import { SpelersNamenComponent } from '../spelers-namen/spelers-namen.component';
 import { HelpComponent } from '../help/help.component';
+import { Apparaat } from '../../model/config';
+import { StatusService } from '../../services/status.service';
+
+class ActieToetsen {
+    beurtPlus: string[] = [];
+    beurtMin: string[] = [];
+    roodPlus: string[] = [];
+    dirPlus: string[] = [];
+    losPlus: string[] = [];
+    eenPlus: string[] = [];
+    tweePlus: string[] = [];
+    driePlus: string[] = [];
+    roodMin: string[] = [];
+    dirMin: string[] = [];
+    losMin: string[] = [];
+    eenMin: string[] = [];
+    tweeMin: string[] = [];
+    drieMin: string[] = [];
+}
 
 @Component({
     selector: 'app-annon-score',
@@ -26,6 +45,7 @@ import { HelpComponent } from '../help/help.component';
 export class AnnonScoreComponent implements OnInit {
     spraak = inject(SpeechService);
     alert = inject(AlertService);
+    appData = inject(StatusService);
 
     @Input() wedstrijd: Annonceer = new Annonceer();
     @Output() opslaan: EventEmitter<Annonceer> = new EventEmitter<Annonceer>();
@@ -36,6 +56,7 @@ export class AnnonScoreComponent implements OnInit {
     modals: ModalMessage[] = [];
     idxTeam: number = -1;
     idxSpeler: number = -1;
+    toetsen: ActieToetsen = new ActieToetsen();
     modalVisible: boolean = false;
     keysLocked: boolean = false;
     testMode: boolean = false;
@@ -167,7 +188,7 @@ export class AnnonScoreComponent implements OnInit {
             this.alert.hideHelp();
             return false;
         }        
-        if (event.key === 'Escape' || event.code === 'NumpadDivide') {
+        if (event.key === 'Escape') {
             this.keyPressed.emit('Escape');
             return false;
         }
@@ -183,61 +204,66 @@ export class AnnonScoreComponent implements OnInit {
             this.toggleTestMode();
             return false;
         }
-        if (event.code === 'KeyH' || event.code == 'NumpadDecimal') {
+        if (event.code === 'KeyH') {
             this.alert.showHelp();
             return false;
         }
-        if (event.key === 'Delete' || event.code === 'NumpadSubtract') {
+        if (this.toetsen.beurtMin.indexOf(event.code) >= 0) {
             this.undoLaatsteBeurt();
             return false;
         }
         if (!this.wedstrijd.wedGespeeld) {
-            if (event.key === 'Enter' || event.key == 'PageDown') {
+            if (this.toetsen.beurtPlus.indexOf(event.code) >= 0) {
                 this.enterPressed();
                 return false;
             }
-            if (event.code == 'Backspace' || event.code == 'Digit1') {
-                if (!this.wedstrijd.config.isAnnonceer) {
-                    this.addToSerie(0);
-                }
+            if (this.toetsen.roodPlus.indexOf(event.code) >= 0) {
+                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 0 : -1);
                 return false;
             }
-            if (event.code == 'Numpad7' || event.code == 'Digit2') {
-                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 0 : 1);
+            if (this.toetsen.dirPlus.indexOf(event.code) >= 0) {
+                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 1 : 0);
                 return false;
             }
-            if (event.code == 'Numpad4' || event.code == 'Digit3') {
-                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 1 : 2);
+            if (this.toetsen.eenPlus.indexOf(event.code) >= 0) {
+                this.addToSerie(this.wedstrijd.config.isAnnonceer ? -1 : 1);
                 return false;
             }
-            if (event.code == 'Numpad1' || event.code == 'Digit4') {
-                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 2 : 3);
+            if (this.toetsen.tweePlus.indexOf(event.code) >= 0) {
+                this.addToSerie(this.wedstrijd.config.isAnnonceer ? -1 : 2);
                 return false;
             }
-            if (event.code == 'Numpad0' || event.code == 'Digit5') {
-                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 3 : 4);
+            if (this.toetsen.driePlus.indexOf(event.code) >= 0) {
+                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 3 : 3);
                 return false;
             }
-            if (event.code == 'NumpadMultiply' || event.code == 'Digit6') {
-                if (!this.wedstrijd.config.isAnnonceer) {
-                    this.removeFromSerie(0);
-                }
+            if (this.toetsen.losPlus.indexOf(event.code) >= 0) {
+                this.addToSerie(this.wedstrijd.config.isAnnonceer ? 2 : 4);
                 return false;
             }
-            if (event.code == 'Numpad9' || event.code == 'Digit7') {
-                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 0 : 1);
+
+            if (this.toetsen.roodMin.indexOf(event.code) >= 0) {
+                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 0 : -1);
                 return false;
             }
-            if (event.code == 'Numpad6' || event.code == 'Digit8') {
-                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 1 : 2);
+            if (this.toetsen.dirMin.indexOf(event.code) >= 0) {
+                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 1 : 0);
                 return false;
             }
-            if (event.code == 'Numpad3' || event.code == 'Digit9') {
-                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 2 : 3);
+            if (this.toetsen.eenMin.indexOf(event.code) >= 0) {
+                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? -1 : 1);
                 return false;
             }
-            if (event.code == 'NumpadDecimal' || event.code == 'Digit0') {
-                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 3 : 4);
+            if (this.toetsen.tweeMin.indexOf(event.code) >= 0) {
+                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? -1 : 2);
+                return false;
+            }
+            if (this.toetsen.drieMin.indexOf(event.code) >= 0) {
+                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 3 : 3);
+                return false;
+            }
+            if (this.toetsen.losMin.indexOf(event.code) >= 0) {
+                this.removeFromSerie(this.wedstrijd.config.isAnnonceer ? 2 : 4);
                 return false;
             }
         }
@@ -245,6 +271,12 @@ export class AnnonScoreComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        const apparaten: Apparaat[] = this.appData.getConfig()?.apparaten || [];
+        const toetsenOk = this.setActieToetsen(apparaten, this.wedstrijd.config.isAnnonceer);
+        if (!toetsenOk) {
+            this.alert.showAlert('Apparaten configuratie niet gevonden. Default toetsen worden gebruikt.', 'warning', 5);
+            this.setDefaultActieToetsen(this.wedstrijd.config.isAnnonceer);
+        }
         if (this.wedstrijd.wedGespeeld) {
             const modalMsg = new ModalMessage('success', ['▪ ▪ ▪ ▪ EINDE WEDSTRIJD ▪ ▪ ▪ ▪'], '', 3);
             this.modals.push(modalMsg);
@@ -257,6 +289,9 @@ export class AnnonScoreComponent implements OnInit {
 
     private addToSerie(idxCat: number): boolean {
         if (this.keysLocked && !this.testMode) {
+            return false;
+        }
+        if (idxCat == -1) {
             return false;
         }
         let msgType = 'info';
@@ -445,6 +480,87 @@ export class AnnonScoreComponent implements OnInit {
             result.push(new SpelerNamen(spl));
         });
         return result;
+    }
+
+    private setActieToetsen(apparaten: Apparaat[], isAnnon: boolean): boolean {
+        if (!apparaten.length) {
+            return false;
+        }
+        let obj: any = {
+            beurtPlus: [],
+            beurtMin: [],
+            roodPlus: [],
+            dirPlus: [],
+            eenPlus: [],
+            tweePlus: [],
+            driePlus: [],
+            losPlus: [],
+            roodMin: [],
+            dirMin: [],
+            eenMin: [],
+            tweeMin: [],
+            drieMin: [],
+            losMin: []
+        };
+        const gekozenSpel = isAnnon ? 'ANN' : 'PEN';
+        apparaten.forEach(apparaat => {
+            const spel = apparaat.spelen.find(sp => sp.id == gekozenSpel);
+            if (spel) {
+                spel.acties.forEach(actie => {
+                    obj[actie.id].push(actie.code);
+                });
+            }
+        });
+        if (!(obj.beurtPlus.length && obj.beurtMin.length && obj.dirPlus.length && obj.dirMin.length 
+                    && obj.losPlus.length && obj.losMin.length && obj.driePlus.length && obj.drieMin.length)) {
+            return false;
+        }
+        if (isAnnon) {
+            if (!(obj.roodPlus.length && obj.roodMin.length)) {
+                return false;
+            }
+        }
+        else {
+            if (!(obj.eenPlus.length && obj.eenMin.length && obj.tweePlus.length && obj.tweeMin.length)) {
+                return false;
+            }
+        }
+        Object.assign(this.toetsen, obj);
+        console.log(this.toetsen);
+        return true;
+    }
+
+    private setDefaultActieToetsen(isAnnon: boolean) {
+        this.toetsen.beurtPlus = ['Enter', 'NumpadEnter'];
+        this.toetsen.beurtMin = ['Period', 'NumpadSubtract'];
+        if (isAnnon) {
+            this.toetsen.roodPlus = ['Digit2', 'Numpad7'];
+            this.toetsen.dirPlus = ['Digit3', 'Numpad4'];
+            this.toetsen.losPlus = ['Digit4', 'Numpad1'];
+            this.toetsen.eenPlus = ['', ''];
+            this.toetsen.tweePlus = ['', ''];
+            this.toetsen.driePlus = ['Digit5', 'Numpad0'];
+            this.toetsen.roodMin = ['Digit7', 'Numpad9'];
+            this.toetsen.dirMin = ['Digit8', 'Numpad6'];
+            this.toetsen.losMin = ['Digit9', 'Numpad3'];
+            this.toetsen.eenMin = ['', ''];
+            this.toetsen.tweeMin = ['', ''];
+            this.toetsen.drieMin = ['Digit0', 'NumpadDecimal'];
+        }
+        else {
+            this.toetsen.roodPlus = ['', ''];
+            this.toetsen.dirPlus = ['Digit1', 'Backspace'];
+            this.toetsen.eenPlus = ['Digit2', 'Numpad7'];
+            this.toetsen.tweePlus = ['Digit3', 'Numpad4'];
+            this.toetsen.driePlus = ['Digit4', 'Numpad1'];
+            this.toetsen.losPlus = ['Digit5', 'Numpad0'];
+            this.toetsen.roodMin = ['', ''];
+            this.toetsen.dirMin = ['Digit6', 'NumpadMultiply'];
+            this.toetsen.eenMin = ['Digit7', 'Numpad9'];
+            this.toetsen.tweeMin = ['Digit8', 'Numpad6'];
+            this.toetsen.drieMin = ['Digit9', 'Numpad3'];
+            this.toetsen.losMin = ['Digit0', 'NumpadDecimal'];
+        }
     }
 
     private showModal(): void {

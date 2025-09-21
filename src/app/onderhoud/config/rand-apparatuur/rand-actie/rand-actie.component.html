@@ -1,0 +1,18 @@
+<div class="rand-actie" [ngClass]="{'editable': actie.editable, 'selected': selected}">
+    <div class="flexbox flexmiddle">
+        <div class="flexgrow1" style="overflow: hidden; padding-left: .5em;">
+            <span>{{actie.omschr}}</span>
+        </div>
+        <div style="width: 10em; padding: 0 .5em; overflow: hidden; text-align: center;">
+            <span>{{actie.code}}</span>
+        </div>
+        <div style="width: 8em; padding: 0 .5em; overflow: hidden; text-align: center;">
+            <span>{{actie.key}}</span>
+        </div>
+    </div>
+</div>
+@if (selected) {
+    <div class="label" style="text-align: center; line-height: 1.25; padding-bottom: .5em;">
+        <span style="font-size: .75em;">Druk op een toets op het {{apparaat}} om die aan deze actie te koppelen.</span>
+    </div>
+}

@@ -69,6 +69,7 @@ import { AnnonScorebordComponent } from './spelen/annon/annon-scorebord/annon-sc
 import { EigenCompetitieWedsComponent } from './spelen/eigen/eigen-competitie/eigen-competitie-weds/eigen-competitie-weds.component';
 import { BpTeamComponent } from './biljartpoint/bp-competitie-team/bp-team/bp-team.component';
 import { TryoutComponent } from './tryout/tryout.component';
+import { RandApparatuurComponent } from './onderhoud/config/rand-apparatuur/rand-apparatuur.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -119,6 +120,7 @@ export const routes: Routes = [
         { path: ':naam', component: CompetitieComponent }
     ]},
     { path: 'onderhoud', component: OnderhoudComponent },
+    { path: 'config/rand', component: RandApparatuurComponent },
     { path: 'config', component: ConfigComponent },
     { path: 'spelkeuze', component: SpelkeuzeComponent },
     { path: 'annon/aantspl', component: AnnonAantSpelersComponent },
