@@ -51,10 +51,9 @@
                 <app-section-header [title]="'Spelers in competitie'" [cssClasses]="'w3-green-l2'"></app-section-header>
                 <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
                     <div class="lijst-row">
-                        <div class="lijst-col" style="width: 14em;">Naam</div>
-                        <div class="lijst-col num" style="width: 5em;">Moy</div>
+                        <div class="lijst-col" style="width: 15em;">Naam</div>
+                        <div class="lijst-col num" style="width: 6em;">Moy</div>
                         <div class="lijst-col num" style="width: 4em;">Cars</div>
-                        <div class="lijst-col num" style="width: 10em;">#wed gespeeld</div>
                     </div>
                 </div>
                 <div class="flexgrow1 scroll-container">
@@ -64,17 +63,14 @@
                                 @for (speler of competitie.cmpSpelers; track $index) {
                                     <div class="lijst-row selectable" (click)="compSpelerClicked($index)"
                                             [ngClass]="{'selected': spelerLijst.selectedIdx == $index, 'hovered': spelerLijst.hoveredIdx == $index}">
-                                        <div class="lijst-col" style="width: 14em;">
+                                        <div class="lijst-col" style="width: 15em;">
                                             <span>{{speler.splNaam}}</span>
                                         </div>
-                                        <div class="lijst-col num" style="width: 5em;">
+                                        <div class="lijst-col num" style="width: 6em;">
                                             <span>{{speler.splMoyenne | number:'1.3-3':'nl-NL'}}</span>
                                         </div>
                                         <div class="lijst-col num" style="width: 4em;">
                                             <span>{{speler.splTeSpelenCar > 0 ? speler.splTeSpelenCar : '-'}}</span>
-                                        </div>
-                                        <div class="lijst-col num" style="width: 10em; padding-right: 4em;">
-                                            <span>{{getAantGespeeldeWedstrijden(speler)}}</span>
                                         </div>
                                     </div>
                                 }

@@ -41,7 +41,10 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     spelersFilled: boolean = false;
     wedstrijdChanged: boolean = false;
 
-    pageButtons: Button[] = [new Button('Enter', 'Ga verder', true)];
+    pageButtons: Button[] = [
+        new Button('Enter', 'Ga verder', true),
+        new Button('S', 'Spelers zelf invullen', true)
+    ];
     sectionButtons: Button[] = [new Button('Enter', 'Selecteer', true)];
 
     aantalTekst: string[] = [

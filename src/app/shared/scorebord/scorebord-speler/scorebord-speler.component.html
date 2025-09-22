@@ -15,11 +15,11 @@
             }
         </div>
     </div>
-    <div style="height: 31.25em;" [ngClass]="border" [style.background-color]="speler.metWit ? '#f3f3f3' : 'gold'">
+    <div style="height: 31.25em; max-width: 30em;" [ngClass]="border" [style.background-color]="speler.metWit ? '#f3f3f3' : 'gold'">
         <!-- SPELER -->
         <div>
             <div class="flexbox flexstretch" style="height: 8em; background-color: black;" [style.color]="speler.metWit ? '#f3f3f3' : 'gold'">
-                <div class="flexgrow1" style="padding: 0 .5em;">
+                <div class="flexgrow1" style="padding: 0 .5em; overflow: hidden;">
                     <div style="height: 5em; overflow: hidden; line-height: 5em; white-space: nowrap;">
                         <span style="font-size: 4em; position: relative; top: -.125em;">{{speler.splBordNaam}}</span>
                     </div>

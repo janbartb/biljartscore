@@ -15,11 +15,11 @@
             }
         </div>
     </div>
-    <div class="flexbox flexstretch" [ngClass]="border" style="height: 29.75em;" [style.background-color]="team.metWit ? '#f3f3f3' : 'gold'">
+    <div class="flexbox flexstretch" [ngClass]="border" style="height: 29.75em; max-width: 60em;" [style.background-color]="team.metWit ? '#f3f3f3' : 'gold'">
         <!-- LINKER DEEL -->
-        <div class="flexgrow1">
+        <div class="flexgrow1" style="max-width: 44em;">
             <div class="flexbox flexmiddle" style="height: 6.75em;">
-                <div class="flexgrow1" style="overflow: hidden; padding-left: .5em; padding-top: .5em; line-height: 6em;">
+                <div class="flexgrow1" style="overflow: hidden; padding-left: .5em; padding-top: .5em; line-height: 6em; white-space: nowrap;">
                     <span style="font-size: 5.5em;">{{team.teamNaam}}</span>
                 </div>
                 <div class="arial" style="width: 14em; padding-right: .5em; text-align: right;">
