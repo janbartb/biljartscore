@@ -84,7 +84,7 @@
                                     <i [ngClass]="optieKeuze ? 'far fa-circle' : 'fas fa-check-circle'"></i>
                                 </div>
                                 <div style="padding: 0 1em;">
-                                    <span class="optietekst">Vast aantal</span>
+                                    <span class="optietekst">Vast aantal per {{txtSpeler}}</span>
                                 </div>
                                 @if (!optieKeuze) {
                                     <div>
@@ -100,7 +100,7 @@
                                     <i [ngClass]="optieKeuze ? 'fas fa-check-circle' : 'far fa-circle'"></i>
                                 </div>
                                 <div style="padding: 0 1em;">
-                                    <span class="optietekst">Aantal gebaseerd op moyenne van speler</span>
+                                    <span class="optietekst">Aantal gebaseerd op moyenne van {{txtSpeler}}</span>
                                 </div>
                             </div>
                             @if (annon.config.carsObvMoyenne) {

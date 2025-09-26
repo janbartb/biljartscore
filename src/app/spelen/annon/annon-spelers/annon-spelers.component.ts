@@ -8,7 +8,7 @@ import { HelperService } from '../../../services/helper.service';
 import { List } from '../../../model/list';
 import { VerenigingKort } from '../../../model/vereniging';
 import { SpelerWrapper } from '../../../model/speler';
-import { Annonceer, AnnonSpeler, AnnonSpelerStand } from '../../../model/annonceer';
+import { Annonceer, AnnonGrid, AnnonSpeler, AnnonSpelerStand, AnnonTeam } from '../../../model/annonceer';
 import { Button } from '../../../model/button';
 import { Scrolling } from '../../../model/scrolling';
 
@@ -154,6 +154,9 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         this.filterSpelerLijst();
         this.spelerLijst.selectedIdx = this.spelerLijst.hoveredIdx = -1;
         this.wedstrijd = this.copyWedstrijd();
+        if (this.wedstrijd.teams.length > 0) {
+            this.idxActiveTeam = 0;
+        }
         this.idxActiveSpeler = 0;
         this.setSpelersFilled();
         this.wedstrijdChanged = false;
@@ -167,10 +170,23 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         console.log(this.wedstrijd);
         if (this.wedstrijdChanged) {
             this.wedstrijd.wedGespeeld = false;
-            this.wedstrijd.spelers.forEach(spl => {
-                spl.actief = false;
-                spl.stand = new AnnonSpelerStand(this.wedstrijd.config.cats.length);
-            });
+            if (this.wedstrijd.config.aantSpelers == 5) {
+                this.wedstrijd.teams.forEach(tm => {
+                    this.fillTeamData(tm);
+                    tm.actief = false;
+                    tm.stand = new AnnonSpelerStand(this.wedstrijd.config.cats.length);
+                    tm.spelers.forEach(spl => {
+                        spl.actief = false;
+                        spl.stand = new AnnonSpelerStand(this.wedstrijd.config.cats.length);
+                    });
+                });
+            }
+            else {
+                this.wedstrijd.spelers.forEach(spl => {
+                    spl.actief = false;
+                    spl.stand = new AnnonSpelerStand(this.wedstrijd.config.cats.length);
+                });
+            }
         }
         this.bssApi.saveAnnonWedstrijd(this.wedstrijd)
         .then(resp => {
@@ -181,8 +197,11 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         });
     }
 
-    maakSpelerActief(idxSpl: number) {
+    maakSpelerActief(idxSpl: number, idxTeam?: number) {
         this.idxActiveSpeler = idxSpl;
+        if (idxTeam != undefined) {
+            this.idxActiveTeam = idxTeam;
+        }
     }
 
     maakSectionActief(idx: number) {
@@ -352,7 +371,7 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
     }
 
     private addSpelerToWedstrijd(spelerToAdd: SpelerWrapper) {
-        let speler: AnnonSpeler = this.getWedstrijdSpeler(this.idxActiveSpeler);
+        let speler: AnnonSpeler = this.getWedstrijdSpeler(this.idxActiveSpeler, this.idxActiveTeam);
         if (speler && speler.splId == spelerToAdd.speler.id) {
             this.maakVolgendeSpelerActief();
             return;
@@ -371,8 +390,64 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         }
         speler.splTsCarArr = this.getAantalBallenArr(speler.splTsCar);
         speler.grid.isAnnon = this.wedstrijd.config.isAnnonceer;
-        if (this.wedstrijd.config.aantSpelers == 2 || this.wedstrijd.config.aantSpelers == 3) {
-            // portrait view
+        if (this.wedstrijd.config.aantSpelers == 2 || this.wedstrijd.config.aantSpelers == 3 || this.wedstrijd.config.aantSpelers == 5) {
+            this.setSpelerGrid(speler, true);
+        }
+        else {
+            this.setSpelerGrid(speler, false);
+        }
+        console.log(speler.grid);
+        speler.stand = new AnnonSpelerStand(this.wedstrijd.config.cats.length);
+        this.setWedstrijdChanged();
+        this.maakVolgendeSpelerActief();
+        this.setSpelersFilled();
+    }
+
+    private fillTeamData(team: AnnonTeam) {
+        team.teamTsMoy = (team.spelers[0].splTsMoy + team.spelers[1].splTsMoy) / 2;
+        team.grid.isAnnon = this.wedstrijd.config.isAnnonceer;
+        team.stand = new AnnonSpelerStand(this.wedstrijd.config.cats.length);
+        if (!this.wedstrijd.config.carsObvMoyenne) {
+            team.teamTsCar = this.wedstrijd.config.vastAantCars;
+            team.teamTsCarArr = this.getAantalBallenArr(team.teamTsCar);
+            this.setTeamGrid(team);
+            return;
+        }
+        // aantal cars op basis van gemiddelde
+        let cars = Math.round(10 * team.teamTsMoy);
+        if (cars < 3) { cars = 3; }
+        if (cars > 10) { cars = 10; }
+        team.teamTsCar = cars;
+        team.teamTsCarArr = this.getAantalBallenArr(team.teamTsCar);
+        this.setTeamGrid(team);
+        team.spelers.forEach(spl => {
+            spl.splTsCar = team.teamTsCar;
+            spl.splTsCarArr = this.getAantalBallenArr(spl.splTsCar);
+            this.setSpelerGrid(spl, true);
+        });
+    }
+
+    private setTeamGrid(team: AnnonTeam) {
+        if (team.grid.isAnnon) {
+            team.grid.balWidth = 5;
+            team.grid.balContainerWidth = 5.7;
+            if (team.teamTsCar > 5) {
+                team.grid.balContainerWidth = 28.5 / team.teamTsCar;
+                team.grid.balWidth = team.grid.balContainerWidth - .25;
+            }
+        }
+        else {
+            team.grid.balWidth = 4.25;
+            team.grid.balContainerWidth = 4.75;
+            if (team.teamTsCar > 6) {
+                team.grid.balContainerWidth = 28.5 / team.teamTsCar;
+                team.grid.balWidth = team.grid.balContainerWidth - .25;
+            }
+        }
+    }
+
+    private setSpelerGrid(speler: AnnonSpeler, isPortrait: boolean) {
+        if (isPortrait) {
             speler.grid.balWidth = 3;
             speler.grid.balContainerWidth = 3.125;
             if (speler.splTsCar > 5) {
@@ -381,7 +456,6 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
             }
         }
         else {
-            // landscape view
             if (speler.grid.isAnnon) {
                 speler.grid.balWidth = 5;
                 speler.grid.balContainerWidth = 5.7;
@@ -399,11 +473,6 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
                 }
             }
         }
-        console.log(speler.grid);
-        speler.stand = new AnnonSpelerStand(this.wedstrijd.config.cats.length);
-        this.setWedstrijdChanged();
-        this.maakVolgendeSpelerActief();
-        this.setSpelersFilled();
     }
 
     private getAantalBallenArr(aantal: number): number[] {
@@ -414,7 +483,10 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         return result;
     }
 
-    private getWedstrijdSpeler(idxSpl: number): AnnonSpeler {
+    private getWedstrijdSpeler(idxSpl: number, idxTeam: number): AnnonSpeler {
+        if (idxTeam >= 0) {
+            return this.wedstrijd.teams[idxTeam].spelers[idxSpl];
+        }
         return this.wedstrijd.spelers[idxSpl];
     }
 
@@ -423,11 +495,30 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
             return;
         }
         let idxSpl = this.idxActiveSpeler;
-        idxSpl--;
-        if (idxSpl < 0) {
-            idxSpl = this.wedstrijd.config.aantSpelers - 1;
+        let idxTeam = this.idxActiveTeam;
+        if (this.wedstrijd.config.aantSpelers == 5) {
+            if (idxSpl == 1) {
+                idxSpl--;
+            }
+            else {
+                if (idxTeam == 1) {
+                    idxTeam--;
+                    idxSpl = 1;
+                }
+                else {
+                    idxTeam = 1;
+                    idxSpl = 1;
+                }
+            }
+            this.maakSpelerActief(idxSpl, idxTeam);
         }
-        this.maakSpelerActief(idxSpl);
+        else {
+            idxSpl--;
+            if (idxSpl < 0) {
+                idxSpl = this.wedstrijd.config.aantSpelers - 1;
+            }
+            this.maakSpelerActief(idxSpl);
+        }
     }
 
     private maakVolgendeSpelerActief() {
@@ -435,16 +526,42 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
             return;
         }
         let idxSpl = this.idxActiveSpeler;
-        idxSpl++;
-        if (idxSpl >= this.wedstrijd.config.aantSpelers) {
-            idxSpl = 0;
+        let idxTeam = this.idxActiveTeam;
+        if (this.wedstrijd.config.aantSpelers == 5) {
+            if (idxSpl == 0) {
+                idxSpl++;
+            }
+            else {
+                if (idxTeam == 0) {
+                    idxTeam++;
+                    idxSpl = 0;
+                }
+                else {
+                    console.log('jaja')
+                    idxTeam = 0;
+                    idxSpl = 0;
+                }
+            }
+            this.maakSpelerActief(idxSpl, idxTeam);
         }
-        this.maakSpelerActief(idxSpl);
+        else {
+            idxSpl++;
+            if (idxSpl >= this.wedstrijd.config.aantSpelers) {
+                idxSpl = 0;
+            }
+            this.maakSpelerActief(idxSpl);
+        }
     }
 
     private setSpelersFilled() {
         this.spelersFilled = false;
         if (this.wedstrijd.config.aantSpelers == 0) {
+            return;
+        }
+        if (this.wedstrijd.config.aantSpelers == 5) {
+            this.spelersFilled = this.wedstrijd.teams.every(team => {
+                return team.spelers.every(spl => spl.splId != '');
+            });
             return;
         }
         this.spelersFilled = this.wedstrijd.spelers.every(spl => spl.splId != '');
@@ -471,9 +588,18 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
             this.wedstrijdChanged = true;
             return;
         }
-        this.wedstrijdChanged = this.wedstrijd.spelers.some((spl, idx) => {
-            return spl.splId != this.wedOrig.spelers[idx].splId;
-        });
+        if (this.wedstrijd.config.aantSpelers == 5) {
+            this.wedstrijdChanged = this.wedstrijd.teams.some((team, idxT) => {
+                return team.spelers.some((spl, idxS) => {
+                    return spl.splId != this.wedOrig.teams[idxT].spelers[idxS].splId;
+                });
+            });
+        }
+        else {
+            this.wedstrijdChanged = this.wedstrijd.spelers.some((spl, idx) => {
+                return spl.splId != this.wedOrig.spelers[idx].splId;
+            });
+        }
     }
 
     private copyWedstrijd(): Annonceer {

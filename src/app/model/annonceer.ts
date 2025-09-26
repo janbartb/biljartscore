@@ -1,6 +1,7 @@
 export class Annonceer {
     config: AnnonConfig = new AnnonConfig();
     wedGespeeld: boolean = false;
+    teams: AnnonTeam[] = [];
     spelers: AnnonSpeler[] = [];
 }
 
@@ -10,6 +11,23 @@ export class AnnonConfig {
     cats: AnnonCat[] = [];
     carsObvMoyenne: boolean = false;
     vastAantCars: number = 5;
+}
+
+export class AnnonTeam {
+    teamId: string = '';
+    teamNaam: string = '';
+    metWit: boolean = true;
+    actief: boolean = false;
+    teamTsCar: number = 0;
+    teamTsCarArr: number[] = [];
+    teamTsMoy: number = 0;
+    grid: AnnonGrid = new AnnonGrid();
+    stand!: AnnonSpelerStand;
+    spelers: AnnonSpeler[] = [];
+
+    constructor(aantCats: number) {
+        this.stand = new AnnonSpelerStand(aantCats);
+    }
 }
 
 export class AnnonSpeler {

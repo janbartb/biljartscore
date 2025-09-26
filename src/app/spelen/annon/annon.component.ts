@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { BaseComponent } from '../../base/base.component';
-import { Annonceer, AnnonSpelerStand } from '../../model/annonceer';
+import { Annonceer, AnnonSpeler, AnnonSpelerStand, AnnonTeam } from '../../model/annonceer';
 import { Button } from '../../model/button';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DecimalPipe, NgClass } from '@angular/common';
@@ -21,6 +21,7 @@ import { ButtonComponent } from '../../shared/button-group/button/button.compone
 export class AnnonComponent extends BaseComponent implements OnInit {
     subtitle: string = '';
     annon: Annonceer = new Annonceer();
+    annonOrig: Annonceer = new Annonceer();
     wedGestart: boolean = false;
     columns: number[] = [];
     colWidth: number = 0;
@@ -57,11 +58,26 @@ export class AnnonComponent extends BaseComponent implements OnInit {
     }
 
     opnieuwClicked() {
-        this.annon.spelers.forEach(spl => {
-            spl.actief = false;
-            spl.stand = new AnnonSpelerStand(this.annon.config.cats.length);
-        });
-        this.annon.spelers[0].actief = true;
+        if (this.annonOrig.config.aantSpelers == 5) {
+            this.annonOrig.teams.forEach(team => {
+                team.actief = false;
+                team.stand = new AnnonSpelerStand(this.annonOrig.config.cats.length);
+                team.spelers.forEach(spl => {
+                    spl.actief = false;
+                    spl.stand = new AnnonSpelerStand(this.annonOrig.config.cats.length);
+                });
+            });
+            this.annonOrig.teams[0].actief = true;
+            this.annonOrig.teams[0].spelers[0].actief = true;
+        }
+        else {
+            this.annonOrig.spelers.forEach(spl => {
+                spl.actief = false;
+                spl.stand = new AnnonSpelerStand(this.annonOrig.config.cats.length);
+            });
+            this.annonOrig.spelers[0].actief = true;
+        }
+        this.annonOrig.wedGespeeld = false;
         this.naarScorebord();
     }
 
@@ -103,13 +119,13 @@ export class AnnonComponent extends BaseComponent implements OnInit {
                 this.router.navigate(['annon/aantspl']);
                 return;
             }
-            this.annon = resp.annon;
-            if (this.annon.spelers.length == 0 || this.annon.config.aantSpelers == 0) {
+            this.annonOrig = resp.annon;
+            if (this.annonOrig.config.aantSpelers == 0) {
                 this.router.navigate(['annon/aantspl']);
                 return;
             }
-            this.subtitle = this.annon.config.isAnnonceer ? 'Annonceren' : 'Pentathlon';
-            console.log(this.annon);
+            this.subtitle = this.annonOrig.config.isAnnonceer ? 'Annonceren' : 'Pentathlon';
+            this.setAnnon();
             let idxSpl = -1;
             this.columns.push(idxSpl);
             this.annon.spelers.forEach(() => {
@@ -122,7 +138,13 @@ export class AnnonComponent extends BaseComponent implements OnInit {
                 this.enterButton.text = 'Naar scorebord';
             }
             else {
-                this.annon.spelers[0].actief = true;
+                if (this.annonOrig.config.aantSpelers == 5) {
+                    this.annonOrig.teams[0].actief = true;
+                    this.annonOrig.teams[0].spelers[0].actief = true;
+                }
+                else {
+                    this.annonOrig.spelers[0].actief = true;
+                }
                 this.enterButton.text = 'Start wedstrijd';
             }
         })
@@ -131,8 +153,27 @@ export class AnnonComponent extends BaseComponent implements OnInit {
         });        
     }
 
+    private setAnnon() {
+        this.annon = JSON.parse(JSON.stringify(this.annonOrig));
+        if (this.annon.config.aantSpelers == 5) {
+            this.annon.teams.forEach(tm => {
+                this.annon.spelers.push(this.maakSpelerVanTeam(tm));
+            });
+        }
+    }
+
+    private maakSpelerVanTeam(team: AnnonTeam): AnnonSpeler {
+        let spl = new AnnonSpeler(this.annon.config.cats.length);
+        spl.splBordNaam = `${team.spelers[0].splBordNaam} - ${team.spelers[1].splBordNaam}`;
+        spl.splTsCar = team.teamTsCar;
+        spl.splTsCarArr = team.teamTsCarArr;
+        spl.splTsMoy = team.teamTsMoy;
+        spl.stand = team.stand;
+        return spl;
+    }
+
     private naarScorebord() {
-        this.bssApi.saveAnnonWedstrijd(this.annon)
+        this.bssApi.saveAnnonWedstrijd(this.annonOrig)
         .then(resp => {
             this.router.navigate(['annon/score']);
         })

@@ -1,6 +1,6 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../base/base.component';
-import { AnnonCat, Annonceer, AnnonConfig, AnnonSpeler } from '../../../model/annonceer';
+import { AnnonCat, Annonceer, AnnonConfig, AnnonSpeler, AnnonTeam } from '../../../model/annonceer';
 import { List } from '../../../model/list';
 import { Button } from '../../../model/button';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
@@ -28,6 +28,7 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
     annon: Annonceer = new Annonceer();
     origConfig: AnnonConfig = new AnnonConfig();
     aantalLijst: List<string> = new List<string>();
+    txtSpeler: string = 'speler';
     annonChanged: boolean = false;
     activeSection: number = 1;
     spelKeuze: boolean = false;
@@ -74,14 +75,13 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
     }
 
     aantalClicked(idx: number) {
+        console.log(idx);
         if (idx < 0) {
             return;
         }
         this.activeSection = 1;
         const aantSpl = idx + 1;
-        if (aantSpl == this.annon.config.aantSpelers) {
-            return;
-        }
+        this.txtSpeler = aantSpl == 5 ? 'team' : 'speler';
         this.aantalLijst.selectedIdx = this.aantalLijst.hoveredIdx = idx;
     }
 
@@ -203,6 +203,7 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
         .then(resp => {
             if (resp.gevonden) {
                 this.annon = resp.annon;
+                this.txtSpeler = this.annon.config.aantSpelers == 5 ? 'team' : 'speler';
                 if (this.annon.config.aantSpelers > 0) {
                     this.aantalLijst.selectedIdx = this.aantalLijst.hoveredIdx = this.annon.config.aantSpelers - 1;
                 }
@@ -245,15 +246,27 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
         this.annon.config.aantSpelers = this.aantalLijst.selectedIdx + 1;
         this.annon.config.carsObvMoyenne = this.optieKeuze;
         this.annon.config.vastAantCars = this.inpCars;
-        this.annon.spelers.push(new AnnonSpeler(this.annon.config.cats.length));
-        if (this.annon.config.aantSpelers > 1) {
+        if (this.annon.config.aantSpelers < 5) {
             this.annon.spelers.push(new AnnonSpeler(this.annon.config.cats.length));
+            if (this.annon.config.aantSpelers > 1) {
+                this.annon.spelers.push(new AnnonSpeler(this.annon.config.cats.length));
+            }
+            if (this.annon.config.aantSpelers > 2) {
+                this.annon.spelers.push(new AnnonSpeler(this.annon.config.cats.length));
+            }
+            if (this.annon.config.aantSpelers > 3) {
+                this.annon.spelers.push(new AnnonSpeler(this.annon.config.cats.length));
+            }
         }
-        if (this.annon.config.aantSpelers > 2) {
-            this.annon.spelers.push(new AnnonSpeler(this.annon.config.cats.length));
-        }
-        if (this.annon.config.aantSpelers > 3) {
-            this.annon.spelers.push(new AnnonSpeler(this.annon.config.cats.length));
+        else {
+            this.annon.teams.push(new AnnonTeam(this.annon.config.cats.length));
+            this.annon.teams[0].teamNaam = 'TEAM A';
+            this.annon.teams[0].spelers.push(new AnnonSpeler(this.annon.config.cats.length));
+            this.annon.teams[0].spelers.push(new AnnonSpeler(this.annon.config.cats.length));
+            this.annon.teams.push(new AnnonTeam(this.annon.config.cats.length));
+            this.annon.teams[1].teamNaam = 'TEAM B';
+            this.annon.teams[1].spelers.push(new AnnonSpeler(this.annon.config.cats.length));
+            this.annon.teams[1].spelers.push(new AnnonSpeler(this.annon.config.cats.length));
         }
     }
 
@@ -263,7 +276,7 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
         if (config.isAnnonceer) {
             config.cats.push(new AnnonCat('rood', 'Over rood'));
             config.cats.push(new AnnonCat('dir', 'Direct'));
-            config.cats.push(new AnnonCat('los', 'Losse band', 'Losseband'));
+            config.cats.push(new AnnonCat('los', 'Los band', 'Losband'));
             config.cats.push(new AnnonCat('drie', 'Drieband'));        
         }
         else {
@@ -295,7 +308,8 @@ export class AnnonAantSpelersComponent extends BaseComponent implements OnInit {
             '1 speler',
             '2 spelers',
             '3 spelers',
-            '4 spelers'
+            '4 spelers',
+            '4 (2 x 2) spelers'
         ]);
     }
 }

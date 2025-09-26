@@ -1,0 +1,85 @@
+.bordls { background-color: #606060; transition: transform .5s; }
+.bordls.active { background-color: black; }
+.bordls.smaller {
+    transform: scale(.9);
+    /* transform: scale(.9) translateY(.25em); */
+}
+
+.spelerdata .wit { color: white; }
+
+.spelerdata .biljartbal { font-size: 6em; color: black; }
+.spelerdata .bal { border-radius: 50%; font-size: 6em; }
+.spelerdata .bal.wit { color: white; border: .0625em solid white; }
+.spelerdata .bal.wit.active { background-color: white; color: black; }
+
+.annon-score {background-color: lightgray; padding: .5em 0; }
+.pent .annon-score { padding: .75em 0; }
+.bordls.active .annon-score {background-color: white; }
+
+.annon-score .category {
+    height: 5.75em;
+    padding: 0 1em;
+}
+.pent .annon-score .category {
+    height: 4.5em;
+    padding: 0 1em;
+}
+.annon-score .category .catnaam {
+    width: 16em;
+    color: #606060;
+}
+.active .annon-score .category .catnaam {
+    color: black;
+}
+.annon-score .category .catnaam > span {
+    font-size: 2.5em;
+}
+
+.annon-score .category .vol {
+    text-align: center; 
+    color: #606060;
+}
+.active .annon-score .category .vol {
+    color: black;
+}
+.annon-score .category .vol > span {
+    font-size: 3em;
+}
+.annon-score .cat-bullet.biljartbal {
+    height: 5em;
+}
+.pent .annon-score .cat-bullet.biljartbal {
+    height: 4.25em;
+}
+/* .annon-score .category .cat-bullet-container {
+    width: 5.5em;
+}
+.annon-score .category .cat-bullet-container .cat-bullet {
+    width: 5em;
+} */
+.annon-score .category .cat-bullet-container .cat-bullet.red {
+    background-color: red;
+}
+.annon-score .category .cat-bullet-container .cat-bullet.green {
+    background-color: green;
+}
+
+.annon-beurt {
+    color: lightgray; text-align: center; line-height: 1;
+}
+.active .annon-beurt {
+    color: white;
+}
+
+.annon-punten {
+    width: 8em;
+    line-height: 1;
+    text-align: center;
+    background-color: lightgray;
+    color: #606060;
+    border-radius: .5em;
+}
+.active .annon-punten {
+    background-color: white;
+    color: black;
+}

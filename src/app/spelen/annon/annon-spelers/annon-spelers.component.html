@@ -79,17 +79,35 @@
                 @if (wedstrijd.config.aantSpelers > 0) {
                     <div class="flexbox flexcenter">
                         <div>
-                            <div style="margin-top: .5em;">
-                                @for (spl of wedstrijd.spelers; track $index) {
-                                    <div class="wedspeler" [ngClass]="{'active': idxActiveSpeler == $index}" (click)="maakSpelerActief($index)"
-                                            style="margin-bottom: .5em;">
-                                        <div class="label">Speler {{$index + 1}}</div>
-                                        <div class="naam">
-                                            <span>{{spl.splNaam}}</span>
-                                        </div>
+                            @if (wedstrijd.config.aantSpelers == 5) {
+                                @for (team of wedstrijd.teams; track team; let iTeam = $index) {
+                                    <div class="wedteam">
+                                        <div class="label">{{team.teamNaam}}</div>
+                                        @for (spl of team.spelers; track spl; let iSpl = $index) {
+                                            <div class="wedspeler" [ngClass]="{'active': idxActiveSpeler == iSpl && idxActiveTeam == iTeam}" 
+                                                    (click)="maakSpelerActief(iSpl, iTeam)">
+                                                <div class="label">Speler {{$index + 1}}</div>
+                                                <div class="naam">
+                                                    <span>{{spl.splNaam}}</span>
+                                                </div>
+                                            </div>
+                                        }
                                     </div>
-                                }    
-                            </div>
+                                }
+                            }
+                            @else {
+                                <div style="margin-top: .5em;">
+                                    @for (spl of wedstrijd.spelers; track $index) {
+                                        <div class="wedspeler" [ngClass]="{'active': idxActiveSpeler == $index}" (click)="maakSpelerActief($index)"
+                                                style="margin-bottom: .5em;">
+                                            <div class="label">Speler {{$index + 1}}</div>
+                                            <div class="naam">
+                                                <span>{{spl.splNaam}}</span>
+                                            </div>
+                                        </div>
+                                    }    
+                                </div>
+                            }
                         </div>
                     </div>
                 }

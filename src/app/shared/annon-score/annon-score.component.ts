@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
-import { Annonceer, AnnonSpeler, AnnonSerie } from '../../model/annonceer';
+import { Annonceer, AnnonSpeler, AnnonSerie, AnnonTeam } from '../../model/annonceer';
 import { NgClass } from '@angular/common';
 import { AnnonScoreSpelerLandscapeComponent } from "./annon-score-speler-landscape/annon-score-speler-landscape.component";
 import { AnnonScoreSpelerComponent } from "./annon-score-speler/annon-score-speler.component";
@@ -11,6 +11,7 @@ import { SpelersNamenComponent } from '../spelers-namen/spelers-namen.component'
 import { HelpComponent } from '../help/help.component';
 import { Apparaat } from '../../model/config';
 import { StatusService } from '../../services/status.service';
+import { AnnonScoreTeamComponent } from './annon-score-team/annon-score-team.component';
 
 class ActieToetsen {
     beurtPlus: string[] = [];
@@ -37,7 +38,8 @@ class ActieToetsen {
         SpelersNamenComponent,
         HelpComponent,
         AnnonScoreSpelerLandscapeComponent,
-        AnnonScoreSpelerComponent
+        AnnonScoreSpelerComponent,
+        AnnonScoreTeamComponent
     ],
     templateUrl: './annon-score.component.html',
     styleUrl: './annon-score.component.css'
@@ -51,6 +53,7 @@ export class AnnonScoreComponent implements OnInit {
     @Output() opslaan: EventEmitter<Annonceer> = new EventEmitter<Annonceer>();
     @Output() keyPressed: EventEmitter<string> = new EventEmitter<string>();
 
+    activeTeam: AnnonTeam = new AnnonTeam(0);
     activeSpeler: AnnonSpeler = new AnnonSpeler(0);
     namenDialog: SpelerNamenDialog = new SpelerNamenDialog();
     modals: ModalMessage[] = [];
@@ -98,6 +101,11 @@ export class AnnonScoreComponent implements OnInit {
         this.werkScoreSpelerBij(this.activeSpeler);
         this.activeSpeler.stand.scores.push(this.activeSpeler.stand.serie);
         this.activeSpeler.stand.serie = new AnnonSerie(this.wedstrijd.config.cats.length);
+        if (this.isTeamWedstrijd()) {
+            this.werkScoreTeamBij(this.activeTeam);
+            this.activeTeam.stand.scores.push(this.activeTeam.stand.serie);
+            this.activeTeam.stand.serie = new AnnonSerie(this.wedstrijd.config.cats.length);
+        }
     }
 
     followUpEnter() {
@@ -105,6 +113,11 @@ export class AnnonScoreComponent implements OnInit {
         if (this.isWedstrijdOver()) {
             this.wedstrijd.wedGespeeld = true;
             this.wedstrijd.spelers.forEach(spl => spl.actief = true);
+            this.wedstrijd.teams.forEach(team => {
+                team.actief = true;
+                team.spelers.forEach(spl => spl.actief = true);
+            });
+            this.idxTeam = -1;
             this.idxSpeler = -1;
             const modalMsg = new ModalMessage('success', ['▪ ▪ ▪ ▪ EINDE WEDSTRIJD ▪ ▪ ▪ ▪'], 'Einde wedstrijd', 3);
             this.modals.push(modalMsg);
@@ -113,16 +126,51 @@ export class AnnonScoreComponent implements OnInit {
             return;
         }
         // switch actieve speler
-        this.activeSpeler.actief = false;
-        this.idxSpeler++;
-        if (this.idxSpeler >= this.wedstrijd.config.aantSpelers) {
-            this.idxSpeler = 0;
+        if (this.isTeamWedstrijd()) {
+            this.activeTeam.actief = false;
+            this.activeSpeler.actief = false;
+            if (this.idxTeam == 0) {
+                this.idxTeam = 1;
+            }
+            else {
+                this.idxTeam = 0;
+                this.idxSpeler = this.idxSpeler == 0 ? 1 : 0;
+            }
+            this.activeTeam = this.wedstrijd.teams[this.idxTeam];
+            this.activeSpeler = this.wedstrijd.teams[this.idxTeam].spelers[this.idxSpeler];
+            this.activeTeam.actief = true;
+            this.activeSpeler.actief = true;
         }
-        this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
-        this.activeSpeler.actief = true;
+        else {
+            this.activeSpeler.actief = false;
+            this.idxSpeler++;
+            if (this.idxSpeler >= this.wedstrijd.config.aantSpelers) {
+                this.idxSpeler = 0;
+            }
+            this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
+            this.activeSpeler.actief = true;
+        }
 
         const copyOfWedstrijd: Annonceer = JSON.parse(JSON.stringify(this.wedstrijd));
-        this.activeSpeler.stand.aantBrt++;
+        let msg = '';
+        if (this.isTeamWedstrijd()) {
+            this.activeTeam.stand.aantBrt++;
+            this.activeSpeler.stand.aantBrt++;
+            if (this.idxTeam == 0 && this.activeTeam.stand.aantBrt == 999) {
+                msg = 'Laatste beurt';
+            }
+        }
+        else {
+            this.activeSpeler.stand.aantBrt++;
+            if (this.idxSpeler == 0 && this.activeSpeler.stand.aantBrt == 999) {
+                msg = 'Laatste beurt';
+            }
+        }
+        if (msg.length) {
+            const modalMsg = new ModalMessage('info', [msg], msg, 3);
+            this.modals.push(modalMsg);
+            this.showModal();
+        }
         this.opslaan.emit(copyOfWedstrijd);
     }
 
@@ -150,7 +198,19 @@ export class AnnonScoreComponent implements OnInit {
     }
 
     private findSpelerById(id: string): AnnonSpeler | undefined {
-        return this.wedstrijd.spelers.find(spl => spl.splId == id);
+        let result = undefined;
+        if (this.isTeamWedstrijd()) {
+            this.wedstrijd.teams.forEach(team => {
+                let speler = team.spelers.find(spl => spl.splId == id);
+                if (speler) {
+                    result = speler;
+                }
+            });
+        }
+        else {
+            result = this.wedstrijd.spelers.find(spl => spl.splId == id);
+        }
+        return result;
     }
 
     toggleTestMode() {
@@ -285,6 +345,9 @@ export class AnnonScoreComponent implements OnInit {
         }
         this.setActiveSpeler();
         this.activeSpeler.stand.aantBrt++;
+        if (this.isTeamWedstrijd()) {
+            this.activeTeam.stand.aantBrt++;
+        }
     }
 
     private addToSerie(idxCat: number): boolean {
@@ -297,46 +360,87 @@ export class AnnonScoreComponent implements OnInit {
         let msgType = 'info';
         let msg = this.wedstrijd.config.cats[idxCat].naam;
         let spk = this.wedstrijd.config.cats[idxCat].spkNaam;
+        let aantalWasTeam = 0;
+        let aantalBijTeam = 0;
+        let aantalTotTeam = 0;
         const aantalWas = this.activeSpeler.stand.totaal.cars[idxCat];
         let aantalBij = this.activeSpeler.stand.serie.cars[idxCat];
         let aantalTot = aantalWas + aantalBij;
-        if (aantalTot < this.activeSpeler.splTsCar) {
-            this.activeSpeler.stand.serie.cars[idxCat]++;
-            aantalBij++;
-            aantalTot++;
-            const remaining = this.activeSpeler.splTsCar - aantalTot;
-            if (remaining == 0) {
-                msg += ' is vol';
-                spk += ' is vol';
-            }
-            else if (remaining < 4) {
-                msg += ': ' + aantalBij + ' - nog ' + remaining;
-                spk += ', ' + aantalBij + ', en nog ' + remaining;
+        if (this.isTeamWedstrijd()) {
+            aantalWasTeam = this.activeTeam.stand.totaal.cars[idxCat];
+            aantalBijTeam = this.activeTeam.stand.serie.cars[idxCat];
+            aantalTotTeam = aantalWasTeam + aantalBijTeam;
+        }
+        if (this.isTeamWedstrijd()) {
+            if (aantalTotTeam < this.activeTeam.teamTsCar) {
+                this.activeSpeler.stand.serie.cars[idxCat]++;
+                this.activeTeam.stand.serie.cars[idxCat]++;
+                aantalBijTeam++;
+                aantalTotTeam++;
+                const remaining = this.activeTeam.teamTsCar - aantalTotTeam;
+                if (remaining == 0) {
+                    msg += ' is vol';
+                    spk += ' is vol';
+                }
+                else if (remaining < 4) {
+                    msg += ': ' + aantalBijTeam + ' - nog ' + remaining;
+                    spk += ', ' + aantalBijTeam + ', en nog ' + remaining;
+                }
+                else {
+                    msg += ': ' + aantalBijTeam;
+                    spk += ', ' + aantalBijTeam;
+                }
             }
             else {
-                msg += ': ' + aantalBij;
-                spk += ', ' + aantalBij;
+                msg += ' is al vol';
+                spk += ' is al vol';
             }
         }
         else {
-            msg += ' is al vol';
-            spk += ' is al vol';
+            if (aantalTot < this.activeSpeler.splTsCar) {
+                this.activeSpeler.stand.serie.cars[idxCat]++;
+                aantalBij++;
+                aantalTot++;
+                const remaining = this.activeSpeler.splTsCar - aantalTot;
+                if (remaining == 0) {
+                    msg += ' is vol';
+                    spk += ' is vol';
+                }
+                else if (remaining < 4) {
+                    msg += ': ' + aantalBij + ' - nog ' + remaining;
+                    spk += ', ' + aantalBij + ', en nog ' + remaining;
+                }
+                else {
+                    msg += ': ' + aantalBij;
+                    spk += ', ' + aantalBij;
+                }
+            }
+            else {
+                msg += ' is al vol';
+                spk += ' is al vol';
+            }
         }
 
         const modalMsg = new ModalMessage(msgType, [msg], spk, 3);
         this.modals.push(modalMsg);
         this.showModal();
-        if (this.spelerHeeftAllesVol(this.activeSpeler)) {
-            this.enterPressed();
+        if (this.isTeamWedstrijd()) {
+            if (this.teamHeeftAllesVol(this.activeTeam)) {
+                this.enterPressed();
+                return false;
+            }
         }
         else {
-
-            if (!this.testMode) {
-                this.keysLocked = true;
-                setTimeout(() => {
-                    this.keysLocked = false;
-                }, 3000);
+            if (this.spelerHeeftAllesVol(this.activeSpeler)) {
+                this.enterPressed();
+                return false;
             }
+        }
+        if (!this.testMode) {
+            this.keysLocked = true;
+            setTimeout(() => {
+                this.keysLocked = false;
+            }, 3000);
         }
         return false;
     }
@@ -347,50 +451,91 @@ export class AnnonScoreComponent implements OnInit {
         }
         if (this.activeSpeler.stand.serie.cars[idxCat] > 0) {
             this.activeSpeler.stand.serie.cars[idxCat]--;
+            if (this.isTeamWedstrijd()) {
+                this.activeTeam.stand.serie.cars[idxCat]--;
+            }
         }
         return false;
     }
 
     private undoLaatsteBeurt(): boolean {
-        if (this.wedstrijd.spelers.length == 1) {
-            if (this.wedstrijd.spelers[0].stand.aantBrt === 1) {
+        if (this.isTeamWedstrijd()) {
+            if (this.wedstrijd.teams[1].stand.aantBrt === 0) {
                 return false;
             }
         }
         else {
-            if (this.wedstrijd.spelers[1].stand.aantBrt === 0) {
-                return false;
-            }    
+            if (this.wedstrijd.spelers.length == 1) {
+                if (this.wedstrijd.spelers[0].stand.aantBrt === 1) {
+                    return false;
+                }
+            }
+            else {
+                if (this.wedstrijd.spelers[1].stand.aantBrt === 0) {
+                    return false;
+                }    
+            }
         }
         const wasWedOver = this.wedstrijd.wedGespeeld;
         if (this.wedstrijd.wedGespeeld) {
             this.wedstrijd.wedGespeeld = false;
             // alle spelers zijn actief dus allen inactiveren behalve de laatse; die blijft actief
-            this.wedstrijd.spelers.forEach(spl => {
-                spl.actief = false;
-            });
-            this.idxSpeler = this.wedstrijd.config.aantSpelers - 1;
-            this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
-            this.activeSpeler.actief = true;
+            if (this.isTeamWedstrijd()) {
+                this.wedstrijd.teams.forEach(team => {
+                    team.actief = false;
+                    team.spelers.forEach(spl => spl.actief = false);
+                });
+                this.idxTeam = 1;
+                this.idxSpeler = 1;
+                this.activeTeam = this.wedstrijd.teams[this.idxTeam];
+                this.activeSpeler = this.activeTeam.spelers[this.idxSpeler];
+                this.activeTeam.actief = true;
+                this.activeSpeler.actief = true;
+            }
+            else {
+                this.wedstrijd.spelers.forEach(spl => {
+                    spl.actief = false;
+                });
+                this.idxSpeler = this.wedstrijd.config.aantSpelers - 1;
+                this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
+                this.activeSpeler.actief = true;
+            }
         }
         else {
             // werk beurten en stand huidige speler bij
             this.activeSpeler.stand.aantBrt--;
             this.activeSpeler.stand.serie = new AnnonSerie(this.wedstrijd.config.cats.length);
-            // if (this.wedstrijd.telling.idxOptie == 0) {
-            //     this.activeSpeler.stand.punten = this.getPunten(this.activeSpeler);
-            //     this.oldPunten[this.idxSpeler] = this.activeSpeler.stand.punten;
-            // }
-            // maak vorige speler de huidige speler
-            this.activeSpeler.actief = false;
-            this.idxSpeler--;
-            if (this.idxSpeler < 0) {
-                this.idxSpeler = this.wedstrijd.config.aantSpelers - 1;
+            if (this.isTeamWedstrijd()) {
+                this.activeTeam.stand.aantBrt--;
+                this.activeTeam.stand.serie = new AnnonSerie(this.wedstrijd.config.cats.length);
             }
-            this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
-            this.activeSpeler.actief = true;    
+            // maak vorige speler de huidige speler
+            if (this.isTeamWedstrijd()) {
+                this.activeTeam.actief = false;
+                this.activeSpeler.actief = false;
+                this.idxTeam = this.idxTeam === 1 ? 0 : 1;
+                this.activeTeam = this.wedstrijd.teams[this.idxTeam];
+                this.activeTeam.actief = true;
+                if (this.idxTeam === 1) {
+                    this.idxSpeler = this.idxSpeler === 1 ? 0 : 1;
+                }
+                this.activeSpeler = this.activeTeam.spelers[this.idxSpeler];
+                this.activeSpeler.actief = true;
+            }
+            else {
+                this.activeSpeler.actief = false;
+                this.idxSpeler--;
+                if (this.idxSpeler < 0) {
+                    this.idxSpeler = this.wedstrijd.config.aantSpelers - 1;
+                }
+                this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
+                this.activeSpeler.actief = true;    
+            }
         }
         let laatsteSerie = this.activeSpeler.stand.scores.pop();
+        if (this.isTeamWedstrijd()) {
+            laatsteSerie = this.activeTeam.stand.scores.pop();
+        }
         if (!laatsteSerie) {
             laatsteSerie = new AnnonSerie(this.wedstrijd.config.cats.length);
         }
@@ -399,38 +544,60 @@ export class AnnonScoreComponent implements OnInit {
             this.activeSpeler.stand.totaal.cars[i] -= laatsteSerie.cars[i];
         }
         this.activeSpeler.stand.punten = this.getPunten(this.activeSpeler);
-        // if (this.wedstrijd.telling.idxOptie == 0) {
-        //     this.oldPunten[this.idxSpeler] = this.getOldPunten(this.activeSpeler);
-        // }
-        // indien het gameover was werk punten bij van alle spelers
-        if (wasWedOver) {
-            // this.wedstrijd.spelers.forEach(spl => {
-            //     spl.stand.punten = this.getPunten(spl);
-            // });
+        if (this.isTeamWedstrijd()) {
+            this.activeTeam.stand.serie = laatsteSerie;
+            for (let i = 0; i < this.wedstrijd.config.cats.length; i++) {
+                this.activeTeam.stand.totaal.cars[i] -= laatsteSerie.cars[i];
+            }
+            this.activeTeam.stand.punten = this.getTeamPunten(this.activeTeam);
         }
+
         const copyOfWedstrijd: Annonceer = JSON.parse(JSON.stringify(this.wedstrijd));
-        let actSpl = copyOfWedstrijd.spelers[this.idxSpeler];
-        actSpl.stand.aantBrt--;
+        if (this.isTeamWedstrijd()) {
+            copyOfWedstrijd.teams[this.idxTeam].stand.aantBrt--;
+            copyOfWedstrijd.teams[this.idxTeam].spelers[this.idxSpeler].stand.aantBrt--;
+        }
+        else {
+            copyOfWedstrijd.spelers[this.idxSpeler].stand.aantBrt--;
+        }
         //this.checkForMessages();
         this.opslaan.emit(copyOfWedstrijd);
         return false;
     }
 
     private isWedstrijdOver(): boolean {
-        if (this.idxSpeler < this.wedstrijd.config.aantSpelers - 1) {
-            if (this.wedstrijd.spelers.some(spl => this.spelerHeeftAllesVol(spl))) {
-                const msg = 'Gelijkmakende beurt';
-                const modalMsg = new ModalMessage('info', [msg], msg, 3);
-                this.modals.push(modalMsg);
-                this.showModal();
+        if (this.isTeamWedstrijd()) {
+            if (this.idxTeam == 0) {
+                if (this.teamHeeftAllesVol(this.activeTeam)) {
+                    const msg = 'Gelijkmakende beurt';
+                    const modalMsg = new ModalMessage('info', [msg], msg, 3);
+                    this.modals.push(modalMsg);
+                    this.showModal();
+                }
+                return false;
             }
-            return false;
+            // het actieve team is nu dus het laatste team
+            if (this.activeTeam.stand.aantBrt === 999) {
+                return true;
+            }
+            return this.wedstrijd.teams.some(team => this.teamHeeftAllesVol(team));
         }
-        // de actieve speler is nu dus de laatste speler
-        if (this.activeSpeler.stand.aantBrt === 999) {
-            return true;
+        else {
+            if (this.idxSpeler < this.wedstrijd.config.aantSpelers - 1) {
+                if (this.wedstrijd.spelers.some(spl => this.spelerHeeftAllesVol(spl))) {
+                    const msg = 'Gelijkmakende beurt';
+                    const modalMsg = new ModalMessage('info', [msg], msg, 3);
+                    this.modals.push(modalMsg);
+                    this.showModal();
+                }
+                return false;
+            }
+            // de actieve speler is nu dus de laatste speler
+            if (this.activeSpeler.stand.aantBrt === 999) {
+                return true;
+            }
+            return this.wedstrijd.spelers.some(spl => this.spelerHeeftAllesVol(spl));
         }
-        return this.wedstrijd.spelers.some(spl => this.spelerHeeftAllesVol(spl));
     }
 
     private werkScoreSpelerBij(speler: AnnonSpeler) {
@@ -440,10 +607,30 @@ export class AnnonScoreComponent implements OnInit {
         speler.stand.punten = this.getPunten(speler);
     }
 
+    private werkScoreTeamBij(team: AnnonTeam) {
+        for (let i = 0; i < this.wedstrijd.config.cats.length; i++) {
+           team.stand.totaal.cars[i] += team.stand.serie.cars[i];
+        }
+        team.stand.punten = this.getTeamPunten(team);
+    }
+
     private getPunten(speler: AnnonSpeler): number {
         let result = 0;
         for (let i = 0; i < this.wedstrijd.config.cats.length; i++) {
             if (speler.stand.totaal.cars[i] == speler.splTsCar) {
+                result++;
+            }
+        }
+        if (result == this.wedstrijd.config.cats.length) {
+            result++;
+        }
+        return result;
+    }
+
+    private getTeamPunten(team: AnnonTeam): number {
+        let result = 0;
+        for (let i = 0; i < this.wedstrijd.config.cats.length; i++) {
+            if (team.stand.totaal.cars[i] == team.teamTsCar) {
                 result++;
             }
         }
@@ -467,19 +654,50 @@ export class AnnonScoreComponent implements OnInit {
         });
     }
 
+    private teamHeeftAllesVol(team: AnnonTeam): boolean {
+        return this.wedstrijd.config.cats.every((cat, idx) => {
+            return team.stand.totaal.cars[idx] + team.stand.serie.cars[idx] == team.teamTsCar;
+        });
+    }
+
     private setActiveSpeler() {
-        this.idxSpeler = this.wedstrijd.spelers.findIndex(spl => spl.actief);
-        this.idxSpeler = (this.idxSpeler < 0) ? 0 : this.idxSpeler;
-        this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
-        this.activeSpeler.actief = true;    
+        if (this.isTeamWedstrijd()) {
+            this.idxTeam = this.wedstrijd.teams.findIndex(team => team.actief);
+            this.idxTeam = (this.idxTeam < 0) ? 0 : this.idxTeam;
+            this.activeTeam = this.wedstrijd.teams[this.idxTeam];
+            this.activeTeam.actief = true;
+            this.idxSpeler = this.activeTeam.spelers.findIndex(spl => spl.actief);
+            this.idxSpeler = (this.idxSpeler < 0) ? 0 : this.idxSpeler;
+            this.activeSpeler = this.activeTeam.spelers[this.idxSpeler];
+            this.activeSpeler.actief = true;
+        }
+        else {
+            this.idxSpeler = this.wedstrijd.spelers.findIndex(spl => spl.actief);
+            this.idxSpeler = (this.idxSpeler < 0) ? 0 : this.idxSpeler;
+            this.activeSpeler = this.wedstrijd.spelers[this.idxSpeler];
+            this.activeSpeler.actief = true;    
+        }
     }
 
     private getAnnonSpelers(): SpelerNamen[] {
         let result: SpelerNamen[] = [];
-        this.wedstrijd.spelers.forEach(spl => {
-            result.push(new SpelerNamen(spl));
-        });
+        if (this.isTeamWedstrijd()) {
+            this.wedstrijd.teams.forEach(team => {
+                team.spelers.forEach(spl => {
+                    result.push(new SpelerNamen(spl));
+                });
+            });
+        }
+        else {
+            this.wedstrijd.spelers.forEach(spl => {
+                result.push(new SpelerNamen(spl));
+            });
+        }
         return result;
+    }
+
+    private isTeamWedstrijd(): boolean {
+        return this.wedstrijd.config.aantSpelers == 5;
     }
 
     private setActieToetsen(apparaten: Apparaat[], isAnnon: boolean): boolean {

@@ -754,8 +754,15 @@ export class ScorebordComponent implements OnInit {
         if (!laatsteSerie) {
             laatsteSerie = 0;
         }
+        if (this.isTeamWedstrijd()) {
+            this.actieveTeam.stand.score.pop();
+        }
         this.actieveSpeler.stand.serie = laatsteSerie;
         this.actieveSpeler.stand.aantCar -= laatsteSerie;
+        if (this.isTeamWedstrijd()) {
+            this.actieveTeam.stand.serie = laatsteSerie;
+            this.actieveTeam.stand.aantCar -= laatsteSerie;
+        }
         if (this.wedstrijd.telling.idxOptie == 0) {
             this.oldPunten[this.idxSpeler] = this.getOldPunten(this.actieveSpeler);
         }

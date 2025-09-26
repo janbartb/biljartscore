@@ -10,6 +10,10 @@
                     <div>
                         @if (idxSpl == -1) {
                             <div>
+                                @if (annon.config.aantSpelers == 5) {
+                                    <span>&nbsp;</span>
+                                    <br>
+                                }
                                 <span>Speler</span>
                                 <br>
                                 <span style="font-size: 1em;">&nbsp;</span>
@@ -28,6 +32,10 @@
                         }
                         @else {
                             <div class="label" style="text-align: center; padding-top: .25em;">
+                                @if (annon.config.aantSpelers == 5) {
+                                    <span>{{idxSpl == 0 ? 'TEAM A' : 'TEAM B'}}</span>
+                                    <br>
+                                }
                                 <span>{{annon.spelers[idxSpl].splBordNaam}}</span>
                                 <br>
                                 <span style="font-size: 1em;">{{annon.spelers[idxSpl].splTsMoy  | number:'1.3-3':'nl-NL'}}</span>

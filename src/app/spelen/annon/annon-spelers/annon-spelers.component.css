@@ -1,3 +1,11 @@
+.wedteam {
+    margin-top: .5em;
+    padding: 0 .5em .5em .5em;
+    cursor: pointer;
+    border: .125em solid green;
+    border-radius: .5em;
+    background-color: #dbefdc;
+}
 .wedspeler {
     padding: 0 .5em .5em .5em;
     cursor: pointer;

@@ -73,6 +73,58 @@
             </div>    
         </div>
     }
+    @else if (wedstrijd.config.aantSpelers == 5) {
+        <div class="bss-score-1" [ngClass]="{'gameover': wedstrijd.wedGespeeld}">
+            <div class="flexbox" style="font-size: .5rem;">
+                <div class="flex50perc">
+                    <div class="bss-landscape speler-container wit" [ngClass]="{'active': idxTeam == 0}">
+                        <app-annon-score-team [team]="wedstrijd.teams[0]"
+                                                [cats]="wedstrijd.config.cats"
+                                                [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-team>
+                    </div>
+                    <div class="flexbox">
+                        <div class="flex50perc">
+                            <div class="speler-container wit" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 0}">
+                                <app-annon-score-speler [speler]="wedstrijd.teams[0].spelers[0]"
+                                                        [cats]="wedstrijd.config.cats"
+                                                        [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler>
+                            </div>
+                        </div>
+                        <div class="flex50perc">
+                            <div class="speler-container wit" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 1}">
+                                <app-annon-score-speler [speler]="wedstrijd.teams[0].spelers[1]"
+                                                        [cats]="wedstrijd.config.cats"
+                                                        [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex50perc">
+                    <div class="bss-landscape speler-container wit" [ngClass]="{'active': idxTeam == 1}">
+                        <app-annon-score-team [team]="wedstrijd.teams[1]"
+                                                [cats]="wedstrijd.config.cats"
+                                                [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-team>
+                    </div>
+                    <div class="flexbox">
+                        <div class="flex50perc">
+                            <div class="speler-container wit" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 0}">
+                                <app-annon-score-speler [speler]="wedstrijd.teams[1].spelers[0]"
+                                                        [cats]="wedstrijd.config.cats"
+                                                        [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler>
+                            </div>
+                        </div>
+                        <div class="flex50perc">
+                            <div class="speler-container wit" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 1}">
+                                <app-annon-score-speler [speler]="wedstrijd.teams[1].spelers[1]"
+                                                        [cats]="wedstrijd.config.cats"
+                                                        [wedklaar]="wedstrijd.wedGespeeld"></app-annon-score-speler>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        </div>
+    }
     @if (modalVisible && modals.length) {
         <div class="modal" (click)="hideModal()">
             <div class="modal-container">
