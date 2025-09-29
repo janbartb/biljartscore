@@ -86,8 +86,13 @@
                                         @for (spl of team.spelers; track spl; let iSpl = $index) {
                                             <div class="wedspeler" [ngClass]="{'active': idxActiveSpeler == iSpl && idxActiveTeam == iTeam}" 
                                                     (click)="maakSpelerActief(iSpl, iTeam)">
-                                                <div class="label">Speler {{$index + 1}}</div>
-                                                <div class="naam">
+                                                <div class="label">
+                                                    <span>Speler {{$index + 1}}</span>
+                                                    <span style="padding-left: 2em;">
+                                                        <i class="keyboard fas fa-keyboard" title="Zelf invullen" (click)="zelfInvullenClicked(iSpl, iTeam)"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="naam" [ngClass]="{'nietInBSS': !spl.inBSS}">
                                                     <span>{{spl.splNaam}}</span>
                                                 </div>
                                             </div>
@@ -100,8 +105,13 @@
                                     @for (spl of wedstrijd.spelers; track $index) {
                                         <div class="wedspeler" [ngClass]="{'active': idxActiveSpeler == $index}" (click)="maakSpelerActief($index)"
                                                 style="margin-bottom: .5em;">
-                                            <div class="label">Speler {{$index + 1}}</div>
-                                            <div class="naam">
+                                            <div class="label">
+                                                <span>Speler {{$index + 1}}</span>
+                                                <span style="padding-left: 2em;">
+                                                    <i class="keyboard fas fa-keyboard" title="Zelf invullen" (click)="zelfInvullenClicked($index, -1)"></i>
+                                                </span>
+                                            </div>
+                                            <div class="naam" [ngClass]="{'nietInBSS': !spl.inBSS}">
                                                 <span>{{spl.splNaam}}</span>
                                             </div>
                                         </div>
@@ -119,3 +129,72 @@
         }
     </div>
 </div>
+@if (isDialogOpen) {
+    <div class="dialog-overlay flexbox flexcenter flexmiddle">
+        <div class="dialog">
+            <div class="dialog-header w3-green-d2">
+                <span>Speler zelf invullen </span>
+                <span style="color: lightgreen; font-size: .75em; position: relative; top: -.16em;">{{dialogHeader}}</span>
+            </div>
+            <div class="dialog-body w3-text-green">
+                <div>
+                    @if (eigenSpelerForm) {
+                        <form [formGroup]="eigenSpelerForm">
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label for="brdNaam">Naam op bord<span class="req"> *</span></label>
+                                        </td>
+                                        <td colspan="2">
+                                            <input type="text" id="brdNaam" style="width: 8em;" formControlName="brdNaam" autocomplete="off"
+                                                [ngClass]="{'invalid': brdNaam?.invalid && (brdNaam?.dirty), 'valid': brdNaam?.valid && (brdNaam?.dirty)}"
+                                                (blur)="brdNaamBlurred()">
+                                        </td>
+                                     </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="spkNaam">Gesproken naam<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="spkNaam" style="width: 8em;" formControlName="spkNaam" autocomplete="off"
+                                                [ngClass]="{'invalid': spkNaam?.invalid && (spkNaam?.dirty), 'valid': spkNaam?.valid && (spkNaam?.dirty)}"
+                                                (blur)="spkNaam?.setValue(spkNaam?.value.trim())">
+                                        </td>
+                                        <td style="padding-left: .5em; width: 2.125em;">
+                                            @if (spkNaam?.valid) {
+                                                <i class="fas fa-volume-up iconbtn" (click)="sprekenClicked()"></i>
+                                            }
+                                        </td>
+                                    </tr>
+                                    @if (spkNaam?.valid) {
+                                        <tr>
+                                            <td></td>
+                                            <td class="label" colspan="2" style="font-size: .375em;">
+                                                <span>Ctrl+Spatie = spreek naam uit</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td>
+                                            <label for="moy">Moyenne<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input type="number" id="moy" style="width: 5em;" formControlName="moy" autocomplete="off"
+                                                [ngClass]="{'invalid': moy?.invalid && (moy?.dirty), 'valid': moy?.valid && (moy?.dirty)}">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    }
+                </div>
+            </div>
+            <div class="separator w3-green-d2"></div>
+            <div class="dialog-footer flexbox flexright">
+                <app-button [button]="dialogRejectButton" (buttonClicked)="rejectEigenSpelerClicked()"></app-button>
+                <app-button [button]="dialogAcceptButton" [disabled]="!eigenSpelerForm || !eigenSpelerForm.valid" (buttonClicked)="acceptEigenSpelerClicked()"></app-button>
+            </div>
+        </div>
+    </div>
+}

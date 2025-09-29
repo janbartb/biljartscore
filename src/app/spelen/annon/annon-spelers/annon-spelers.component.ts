@@ -11,6 +11,10 @@ import { SpelerWrapper } from '../../../model/speler';
 import { Annonceer, AnnonGrid, AnnonSpeler, AnnonSpelerStand, AnnonTeam } from '../../../model/annonceer';
 import { Button } from '../../../model/button';
 import { Scrolling } from '../../../model/scrolling';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { greaterZero, notEmpty } from '../../../directives/validators.directive';
+import { SpeechService } from '../../../services/speech.service';
+import { ButtonComponent } from '../../../shared/button-group/button/button.component';
 
 @Component({
     selector: 'app-annon-spelers',
@@ -19,6 +23,8 @@ import { Scrolling } from '../../../model/scrolling';
         PageHeaderComponent,
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
+        ButtonComponent,
+        ReactiveFormsModule,
         NgClass
     ],
     templateUrl: './annon-spelers.component.html',
@@ -26,6 +32,8 @@ import { Scrolling } from '../../../model/scrolling';
 })
 export class AnnonSpelersComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
+    fb = inject(FormBuilder);
+    spraak = inject(SpeechService);
 
     subtitle: string = 'Pentathlon';
     activeSection: number = 0;
@@ -34,6 +42,10 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
     verenigingFilter: string = this.appData.getConfig()?.vereniging || '';
     wedOrig: Annonceer = new Annonceer();
     wedstrijd: Annonceer = new Annonceer();
+
+    dialogHeader: string = '';
+    dialogAcceptButton: Button = new Button('Enter', 'OK', true);
+    dialogRejectButton: Button = new Button('Esc', 'Annuleer', true);
 
     idxActiveTeam: number = -1;
     idxActiveSpeler: number = -1;
@@ -51,6 +63,8 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         '3 spelers',
         '4 spelers'
     ];
+
+    eigenSpelerForm!: FormGroup;
 
     scrollElmVer!: HTMLDivElement;
     verScrolling!: Scrolling;
@@ -146,6 +160,44 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         this.setEscapeCount();
     }
 
+    zelfInvullenClicked(idxSpl: number, idxTeam: number) {
+        console.log('ZELF INVULLEN CLICKED ' + idxSpl + ' - ' + idxTeam);
+        this.createEigenSpelerForm();
+        if (idxTeam >= 0) {
+            this.dialogHeader = '(team ' + (idxTeam == 0 ? 'A - speler ' : 'B - speler ') + (idxSpl + 1) + ')';
+        }
+        else {
+            this.dialogHeader = '(speler ' + (idxSpl + 1) + ')';
+        }
+        this.isDialogOpen = true;
+    }
+
+    brdNaamBlurred() {
+        this.brdNaam?.setValue(this.brdNaam?.value.trim());
+        if (this.brdNaam?.value.length && !this.spkNaam?.value.length) {
+            this.spkNaam?.setValue(this.brdNaam.value);
+        } 
+    }
+
+    acceptEigenSpelerClicked() {
+        if (!this.eigenSpelerForm || !this.eigenSpelerForm.valid) {
+            return;
+        }
+        let speler: AnnonSpeler = this.getWedstrijdSpeler(this.idxActiveSpeler, this.idxActiveTeam);
+        speler.splBordNaam = this.brdNaam?.value;
+        speler.splSpreekNaam = this.spkNaam?.value;
+        speler.splTsMoy = this.moy?.value;
+        speler.splId = speler.splBordNaam;
+        speler.splNaam = speler.splBordNaam;
+        speler.inBSS = false;
+        this.isDialogOpen = false;
+        this.aanvullenSpelerData(speler);
+    }
+
+    rejectEigenSpelerClicked() {
+        this.isDialogOpen = false;
+    }
+
     resetClicked() {
         this.verenigingFilter = this.appData.getConfig()?.vereniging || '';
         this.verenigingLijst.selectedIdx = this.verenigingLijst.filtered.findIndex(v => v.verId == this.verenigingFilter);
@@ -211,8 +263,18 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         this.setEscapeCount();
     }
 
+    sprekenClicked() {
+        const naam = (this.spkNaam?.value.trim().length) ? this.spkNaam?.value.trim() : '';
+        if (naam != '') {
+            this.spraak.speak(naam);
+        }
+    }
+
     @HostListener('document:keydown', ['$event'])
     handleKeydownEvent(event: KeyboardEvent): boolean {
+        if (this.isDialogOpen) {
+            return true;
+        }
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             event.preventDefault();
             return false;
@@ -224,6 +286,21 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         //console.log(event);
         console.log(event.code + ' : ' + event.key);
+        if (this.isDialogOpen) {
+            if (event.key === 'Escape') {
+                this.rejectEigenSpelerClicked();
+                return false;
+            }
+            if (event.key === 'Enter') {
+                this.acceptEigenSpelerClicked();
+                return false;
+            }
+            if (event.code === 'Space' && event.ctrlKey) {
+                this.sprekenClicked();
+                return false;
+            }
+            return true;
+        }
         if (event.key ==='ArrowLeft' || event.key ==='ArrowRight') {
             this.veranderActieveSectie(event.key ==='ArrowLeft' ? -1 : 1)
             return false;
@@ -284,6 +361,11 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
             this.homePressed();
             return false;
         }
+        if (event.code === 'KeyZ' && this.idxActiveSpeler >= 0) {
+            const idxTeam = this.wedstrijd.config.aantSpelers < 5 ? -1 : this.idxActiveTeam;
+            this.zelfInvullenClicked(this.idxActiveSpeler, idxTeam);
+            return false;
+         }
         return true;
     }
 
@@ -381,6 +463,11 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         speler.splBordNaam = spelerToAdd.speler.bordnaam && spelerToAdd.speler.bordnaam.length ? spelerToAdd.speler.bordnaam : spelerToAdd.speler.vnaam;
         speler.splSpreekNaam = (spelerToAdd.speler.spreeknaam != '') ? spelerToAdd.speler.spreeknaam : speler.splBordNaam;
         speler.splTsMoy = spelerToAdd.getGemiddeldeVanSpel();
+        speler.inBSS = true;
+        this.aanvullenSpelerData(speler);
+    }
+
+    private aanvullenSpelerData(speler: AnnonSpeler) {
         speler.splTsCar = this.wedstrijd.config.vastAantCars;
         if (this.wedstrijd.config.carsObvMoyenne) {
             let cars = Math.round(10 * speler.splTsMoy);
@@ -602,6 +689,14 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         }
     }
 
+    private createEigenSpelerForm() {
+        this.eigenSpelerForm = this.fb.nonNullable.group({
+            brdNaam: ['', [Validators.required, notEmpty()]],
+            spkNaam: ['', [Validators.required, notEmpty()]],
+            moy: [0, [Validators.required, greaterZero()]]
+        });
+    }
+
     private copyWedstrijd(): Annonceer {
         return JSON.parse(JSON.stringify(this.wedOrig));
     }
@@ -626,5 +721,14 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         }
     }
 
+    get brdNaam() {
+        return this.eigenSpelerForm?.get('brdNaam');
+    }
+    get spkNaam() {
+        return this.eigenSpelerForm?.get('spkNaam');
+    }
+    get moy() {
+        return this.eigenSpelerForm?.get('moy');
+    }
 
 }

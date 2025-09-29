@@ -25,3 +25,14 @@
     border-radius: .25em;
     background-color: white;
 }
+.wedspeler .naam.nietInBSS {
+    background-color: lightgray;
+}
+.keyboard {
+    color: #606060;
+    cursor: pointer;
+}
+.keyboard:hover {
+    color: black;
+    scale: 1.3;
+}

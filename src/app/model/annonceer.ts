@@ -40,6 +40,7 @@ export class AnnonSpeler {
     splTsCar: number = 0;
     splTsCarArr: number[] = [];
     splTsMoy: number = 0;
+    inBSS: boolean = true;
     grid: AnnonGrid = new AnnonGrid();
     stand!: AnnonSpelerStand;
 

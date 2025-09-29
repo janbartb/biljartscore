@@ -39,6 +39,7 @@ export class OefWedSpeler {
     splSpreekNaam: string = '';
     metWit: boolean = true;
     active: boolean = false;
+    inBSS: boolean = true;
     splTsGem: number = 0;
     splTsCar: number = 0;
     splTsBrt: number = 0;

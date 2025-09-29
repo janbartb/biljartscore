@@ -11,6 +11,19 @@ import { HelperService } from '../../../services/helper.service';
 import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 import { Scrolling } from '../../../model/scrolling';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { greaterZero, notEmpty } from '../../../directives/validators.directive';
+import { ButtonComponent } from '../../../shared/button-group/button/button.component';
+import { SpeechService } from '../../../services/speech.service';
+
+class SpelerZelfDialog {
+    brdNaam: string = '';
+    spkNaam: string = '';
+    moy: number = 0;
+    hdrTekst: string = '';
+    rejectButton: Button = new Button('Esc', 'Annuleer', true);
+    acceptButton: Button = new Button('Enter', 'OK', true);
+}
 
 @Component({
     selector: 'app-wed-spelers',
@@ -19,6 +32,8 @@ import { Scrolling } from '../../../model/scrolling';
         PageHeaderComponent,
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
+        ButtonComponent,
+        ReactiveFormsModule,
         NgClass
     ],
     templateUrl: './wed-spelers.component.html',
@@ -26,6 +41,8 @@ import { Scrolling } from '../../../model/scrolling';
 })
 export class WedSpelersComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
+    fb = inject(FormBuilder);
+    spraak = inject(SpeechService);
 
     subtitle: string = 'Oefen wedstrijd';
     activeSection: number = 0;
@@ -34,6 +51,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     verenigingFilter: string = this.appData.getConfig()?.vereniging || '';
     wedOrig: OefWedstrijd = new OefWedstrijd();
     wedstrijd: OefWedstrijd = new OefWedstrijd();
+    spelerZelfDialog: SpelerZelfDialog = new SpelerZelfDialog();
 
     idxActiveTeam: number = -1;
     idxActiveSpeler: number = -1;
@@ -42,8 +60,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     wedstrijdChanged: boolean = false;
 
     pageButtons: Button[] = [
-        new Button('Enter', 'Ga verder', true),
-        new Button('S', 'Spelers zelf invullen', true)
+        new Button('Enter', 'Ga verder', true)
     ];
     sectionButtons: Button[] = [new Button('Enter', 'Selecteer', true)];
 
@@ -55,6 +72,8 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         '4 spelers',
         '4 (2 x 2) spelers'
     ];
+
+    spelerZelfForm!: FormGroup;
 
     scrollElmVer!: HTMLDivElement;
     verScrolling!: Scrolling;
@@ -150,6 +169,47 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         this.setEscapeCount();
     }
 
+    zelfInvullenClicked(idxSpl: number, idxTeam: number) {
+        this.spelerZelfDialog = new SpelerZelfDialog();
+        this.createSpelerZelfForm();
+        if (idxTeam >= 0) {
+            this.spelerZelfDialog.hdrTekst = '(team ' + (idxTeam == 0 ? 'A - speler ' : 'B - speler ') + (idxSpl + 1) + ')';
+        }
+        else {
+            this.spelerZelfDialog.hdrTekst = '(speler ' + (idxSpl + 1) + ')';
+        }
+        this.isDialogOpen = true;
+    }
+
+    brdNaamBlurred() {
+        this.brdNaam?.setValue(this.brdNaam?.value.trim());
+        if (this.brdNaam?.value.length && !this.spkNaam?.value.length) {
+            this.spkNaam?.setValue(this.brdNaam.value);
+        } 
+    }
+
+    acceptSpelerZelfClicked() {
+        if (!this.spelerZelfForm || !this.spelerZelfForm.valid) {
+            return;
+        }
+        let speler: OefWedSpeler = this.getWedstrijdSpeler(this.idxActiveSpeler, this.idxActiveTeam);
+        speler.splBordNaam = this.brdNaam?.value;
+        speler.splSpreekNaam = this.spkNaam?.value;
+        speler.splTsGem = this.moy?.value;
+        speler.splId = speler.splBordNaam;
+        speler.splNaam = speler.splBordNaam;
+        speler.stand = new OefWedSpelerStand();
+        speler.inBSS = false;
+        this.isDialogOpen = false;
+        this.setWedstrijdChanged();
+        this.maakVolgendeSpelerActief();
+        this.setSpelersFilled();
+    }
+
+    rejectSpelerZelfClicked() {
+        this.isDialogOpen = false;
+    }
+
     resetClicked() {
         this.verenigingFilter = this.appData.getConfig()?.vereniging || '';
         this.verenigingLijst.selectedIdx = this.verenigingLijst.filtered.findIndex(v => v.verId == this.verenigingFilter);
@@ -205,8 +265,18 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         this.setEscapeCount();
     }
 
+    sprekenClicked() {
+        const naam = (this.spkNaam?.value.trim().length) ? this.spkNaam?.value.trim() : '';
+        if (naam != '') {
+            this.spraak.speak(naam);
+        }
+    }
+
     @HostListener('document:keydown', ['$event'])
     handleKeydownEvent(event: KeyboardEvent): boolean {
+        if (this.isDialogOpen) {
+            return true;
+        }
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             event.preventDefault();
             return false;
@@ -218,6 +288,25 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         //console.log(event);
         console.log(event.code + ' : ' + event.key);
+        if (this.isDialogOpen) {
+            if (event.key === 'Escape') {
+                this.rejectSpelerZelfClicked();
+                return false;
+            }
+            if (event.key === 'Enter') {
+                this.acceptSpelerZelfClicked();
+                return false;
+            }
+            if (event.code === 'Space' && event.ctrlKey) {
+                this.sprekenClicked();
+                return false;
+            }
+            return true;
+        }
+        if (event.key === 'Escape') {
+            this.escapePressed();
+            return false;
+        }
         if (event.key ==='ArrowLeft' || event.key ==='ArrowRight') {
             this.veranderActieveSectie(event.key ==='ArrowLeft' ? -1 : 1)
             return false;
@@ -270,14 +359,15 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
             }
             return true;
         }
-        if (event.key === 'Escape') {
-            this.escapePressed();
-            return false;
-        }
         if (event.key === 'Home') {
             this.homePressed();
             return false;
         }
+        if (event.code === 'KeyZ' && this.idxActiveSpeler >= 0) {
+            const idxTeam = this.wedstrijd.aantSpelers < 5 ? -1 : this.idxActiveTeam;
+            this.zelfInvullenClicked(this.idxActiveSpeler, idxTeam);
+            return false;
+         }
         return true;
     }
 
@@ -373,6 +463,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         speler.splSpreekNaam = (spelerToAdd.speler.spreeknaam != '') ? spelerToAdd.speler.spreeknaam : speler.splBordNaam;
         speler.splTsGem = spelerToAdd.getGemiddeldeVanSpel();
         speler.stand = new OefWedSpelerStand();
+        speler.inBSS = true;
         this.setWedstrijdChanged();
         this.maakVolgendeSpelerActief();
         this.setSpelersFilled();
@@ -497,6 +588,14 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         }
     }
 
+    private createSpelerZelfForm() {
+        this.spelerZelfForm = this.fb.nonNullable.group({
+            brdNaam: [this.spelerZelfDialog.brdNaam, [Validators.required, notEmpty()]],
+            spkNaam: [this.spelerZelfDialog.spkNaam, [Validators.required, notEmpty()]],
+            moy: [this.spelerZelfDialog.moy, [Validators.required, greaterZero()]]
+        });
+    }
+
     private copyWedstrijd(): OefWedstrijd {
         return JSON.parse(JSON.stringify(this.wedOrig));
     }
@@ -519,6 +618,16 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         if (this.verenigingLijst.hoveredIdx != this.verenigingLijst.selectedIdx || this.spelerLijst.hoveredIdx >= 0) {
             this.escapeCount++;
         }
+    }
+
+    get brdNaam() {
+        return this.spelerZelfForm?.get('brdNaam');
+    }
+    get spkNaam() {
+        return this.spelerZelfForm?.get('spkNaam');
+    }
+    get moy() {
+        return this.spelerZelfForm?.get('moy');
     }
 
 }
