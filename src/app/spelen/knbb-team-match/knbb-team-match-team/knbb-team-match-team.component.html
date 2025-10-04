@@ -20,44 +20,39 @@
                 <span style="font-size: 1.25em;">{{totalen.tsCar}}</span>
             </div>
         </div>
-        <div class="flexbox">
-            <div style="width: 6.5em;">
-                <div class="data-container flexbox">
-                    <div class="data-label">
-                        <div><span>car.</span></div>
-                        <div><span>brt.</span></div>
+        <div class="flexbox flexstretch arial">
+            <div class="flexgrow1">
+                <div class="flexbox">
+                    <div class="flex65perc">
+                        <div class="data-line flexbox">
+                            <div class="data-label data-pad-l"><span>car.</span></div>
+                            <div class="data-num" style="width: 2.25em;"><span>{{totalen.aantCar}}</span></div>
+                            <div class="data-label data-pad-l"><span>(</span></div>
+                            <div class="data-num comment" style="width: 3.25em;">
+                                <span>{{totalen.percentage | number:'1.2-2':'nl-NL'}}</span>
+                            </div>
+                            <div class="data-label"><span>%)&nbsp;&nbsp;in</span></div>
+                            <div class="data-num" style="width: 2.25em;"><span>{{totalen.aantBrt}}</span></div>
+                            <div class="data-label data-pad-l"><span>brt.</span></div>
+                        </div>
+                        <div class="data-line flexbox">
+                            <div class="data-label data-pad-l"><span>moy.</span></div>
+                            <div class="data-num" style="width: 3.75em;"><span>{{totalen.gemiddelde | number:'1.3-3':'nl-NL'}}</span></div>
+                        </div>
                     </div>
-                    <div class="data-num">
-                        <div><span>{{totalen.aantCar}}</span></div>
-                        <div><span>{{totalen.aantBrt}}</span></div>
-                    </div>
-                </div>
-            </div>
-            <div class="flexbox" style="width: 10em;">
-                <div class="data-container flexbox">
-                    <div class="data-label">
-                        <div><span>gem.</span></div>
-                        <div><span>perc.</span></div>
-                    </div>
-                    <div class="data-num">
-                        <div><span>{{totalen.gemiddelde | number:'1.3-3':'nl-NL'}}</span></div>
-                        <div><span>{{totalen.percentage | number:'1.2-2':'nl-NL'}}</span></div>
-                    </div>
-                </div>
-            </div>
-            <div class="flexbox" style="width: 6.5em;">
-                <div class="data-container flexbox">
-                    <div class="data-label">
-                        <div><span>serie</span></div>
-                        <div><span>punt.</span></div>
-                    </div>
-                    <div class="data-num">
-                        <div><span>{{totalen.hoogSer}}</span></div>
-                        <div><span>{{totalen.teamPunten}}</span></div>
+                    <div class="flexgrow1">
+                        <div class="data-line flexbox">
+                            <div class="data-label" style="width: 4em; text-align: right;"><span>serie</span></div>
+                            <div class="data-num" style="width: 1.5em;"><span>{{totalen.hoogSer}}</span></div>
+                        </div>
+                        <div class="data-line flexbox">
+                            <div class="data-label" style="width: 4em; text-align: right;"><span>punten</span></div>
+                            <div class="data-num" style="width: 1.5em;"><span>{{totalen.teamPunten}}</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="flexgrow1" style="padding-right: .5em;">
+            <div style="width: 5em; padding-right: .5em;">
                 <div class="flexbox flexright">
                     <div style="width: 4em; height: 3em; padding: .125em;">
                         <div class="flexbox flexcenter flexmiddle" style="border: .125em solid green; border-radius: .5em; background-color: white;">

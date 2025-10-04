@@ -1,11 +1,15 @@
 .spl-container {
     height: 2em;
-    line-height: 2em;
+    line-height: 1.75em;
     padding: 0 .5em;
-    background-color: green;
+    color: #404040;
+    border-top: .125em solid black;
+    border-bottom: .0625em solid grey;
+    background-color: lightgray;
 }
 
 .data-container {
+    font-family: Arial, Helvetica, sans-serif;
     line-height: 1.4em;
     padding: 0 .5em;
 }
@@ -26,4 +30,30 @@
 .data-container .data-num {
     color: black;
     text-align: right;
+}
+.data-line {
+    height: 1.5em;
+    line-height: 1.5em;
+}
+.data-line div.data-label {
+    color: gray;
+}
+.data-line div.data-label.data-pad {
+    padding: 0 .5em;
+}
+.data-line div.data-label.data-pad-l {
+    padding-left: .5em;
+}
+.data-line div.data-label.data-pad-r {
+    padding-right: .5em;
+}
+.data-line div.data-num {
+    text-align: right;
+    color: black;
+}
+.data-line div.data-num.comment {
+    color: grey;
+}
+.data-line div.data-num span {
+    font-size: 1.25em;
 }

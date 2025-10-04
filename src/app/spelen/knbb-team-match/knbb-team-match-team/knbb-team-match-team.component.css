@@ -1,8 +1,10 @@
 .team-container {
     height: 3.5em;
-    background-color: black; 
+    padding: 0 .5em;
+    background-color: #505050; 
     line-height: 3.5em;
     text-align: center;
+    white-space: nowrap;
     overflow: hidden;
 }
 
@@ -12,9 +14,11 @@
 
 .tot-container {
     height: 2em;
-    line-height: 2em;
+    line-height: 1.75em;
     padding: 0 .5em;
-    background-color: black;
+    background-color: #505050;
+    border-top: .125em solid black;
+    border-bottom: .0625em solid grey;
 }
 
 .spl-container {
@@ -46,3 +50,31 @@
     color: black;
     text-align: right;
 }
+
+.data-line {
+    height: 1.5em;
+    line-height: 1.5em;
+}
+.data-line div.data-label {
+    color: gray;
+}
+.data-line div.data-label.data-pad {
+    padding: 0 .5em;
+}
+.data-line div.data-label.data-pad-l {
+    padding-left: .5em;
+}
+.data-line div.data-label.data-pad-r {
+    padding-right: .5em;
+}
+.data-line div.data-num {
+    text-align: right;
+    color: black;
+}
+.data-line div.data-num.comment {
+    color: grey;
+}
+.data-line div.data-num span {
+    font-size: 1.25em;
+}
+
