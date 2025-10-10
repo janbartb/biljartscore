@@ -32,7 +32,7 @@
                 <div class="flexbox flexmiddle arial" style="height: 17em; background-color: black;">
                     <div class="flexbox flexcenter" style="width: 25.5em;">
                         <div style="font-size: 14em;">
-                            <app-getal [getal]="speler.stand.aantCar" [maxCijfers]="maxCijfersCar"></app-getal>
+                            <app-getal [naam]="'car'" [getal]="'' + speler.stand.aantCar" [format]="formatCar"></app-getal>
                         </div>
                     </div>
                     <div style="width: 16em;">
@@ -43,7 +43,7 @@
                                         <span style="font-size: 3.5em;">in</span>
                                     </div>
                                     <div style="font-size: 7em;">
-                                        <app-getal [getal]="speler.stand.aantBrt" [maxCijfers]="maxCijfersBrt"></app-getal>
+                                        <app-getal [naam]="'brt'" [getal]="'' + speler.stand.aantBrt" [format]="formatBrt"></app-getal>
                                     </div>
                                 </div>
                                 <div class="flexbox flexright flexend" style="height: 7em;">
@@ -51,21 +51,14 @@
                                         <span style="font-size: 5em; line-height: 1.2;">+</span>
                                     </div>
                                     <div style="color: rgb(0, 153, 255); font-size: 7em;">
-                                        <app-getal [getal]="speler.stand.serie" [maxCijfers]="maxCijfersSer" [isSerie]="true"></app-getal>
+                                        <app-getal [naam]="'ser'" [getal]="'' + speler.stand.serie" [format]="formatSer" [isSerie]="true"></app-getal>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="flexbox flexright flexstart" style="height: 7em;">
-                            <div style="padding-top: .25em;">
-                                @if (speler.stand.gemiddelde < 100) {
-                                    <app-getal-heel style="font-size: 5.5em;" [getal]="(speler.stand.gemiddelde | number:'1.3-3':'nl-NL') || '0,000'"
-                                                    [komma]="true" [maxCijfers]="5" [border]="false"></app-getal-heel>
-                                }
-                                @else {
-                                    <app-getal-heel style="font-size: 5.5em;" [getal]="(speler.stand.gemiddelde | number:'1.2-2':'nl-NL') || '0,00'"
-                                                    [komma]="true" [maxCijfers]="5" [border]="false"></app-getal-heel>
-                                }
+                            <div style="padding-top: .75em;">
+                                <app-getal style="font-size: 5.5em;" [naam]="'moy'" [getal]="speler.stand.moyView" [format]="'09,999'"></app-getal>
                             </div>
                         </div>
                     </div>
@@ -111,23 +104,13 @@
                     </div>
                 }
             </div>
-            <div class="arial" style="padding: .5em 0; text-align: center;">
-                <span style="font-size: 5em; line-height: 1;">
-                    @if (speler.stand.serie > speler.stand.hoogSer) {
-                        <span style="color: blue">{{speler.stand.serie}}</span>
-                    }
-                    @else {
-                        <span>{{speler.stand.hoogSer}}</span>
-                    }
-                </span>
+            <div class="arial flexbox flexcenter" style="padding-top: 1em;">
+                <app-getal-var style="font-size: 4em;" [style.color]="speler.stand.serie > speler.stand.hoogSer ? 'blue' : ''" 
+                    [getal]="(speler.stand.serie > speler.stand.hoogSer) ? '' + speler.stand.serie : '' + speler.stand.hoogSer"
+                    [naam]="'hoogser'" [format]="'09'"></app-getal-var>
             </div>
-            <div class="arial" style="text-align: center;">
-                @if ((speler.stand.gemiddelde / speler.splTsMoy) < 10) {
-                    <span style="font-size: 5em; line-height: .6;">{{100 * speler.stand.gemiddelde / speler.splTsMoy | number:'1.2-2':'nl-NL'}}</span>
-                }
-                @else {
-                    <span style="font-size: 4.5em; line-height: .6;">{{100 * speler.stand.gemiddelde / speler.splTsMoy | number:'1.1-1':'nl-NL'}}</span>
-                }
+            <div class="arial flexbox flexcenter">
+                <app-getal-var style="font-size: 4em;" [naam]="'prc'" [getal]="speler.stand.percView" [format]="'0009,99'"></app-getal-var>
             </div>
             <div class="flexgrow1" style="width: 100%; padding: 1em 2em 0 2.5em;">
                 <div class="flexbox flexcenter flexmiddle" style="height: 100%; background-color: black; border-radius: 1em;">

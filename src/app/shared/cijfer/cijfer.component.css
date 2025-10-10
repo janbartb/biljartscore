@@ -9,6 +9,9 @@
     top: 0;
     transition: top 2s ease;
 }
+.cijfers.notrans {
+    transition: none;
+}
 .cijfers.plus0 {
     top: 0;
 }
@@ -39,13 +42,40 @@
 .cijfers.plus9 {
     top: calc(-9 * .8125em);
 }
+.cijfers.min9 {
+    top: 0;
+}
+.cijfers.min8 {
+    top: -.8125em;
+}
+.cijfers.min7 {
+    top: calc(-2 * .8125em);
+}
+.cijfers.min6 {
+    top: calc(-3 * .8125em);
+}
+.cijfers.min5 {
+    top: calc(-4 * .8125em);
+}
+.cijfers.min4 {
+    top: calc(-5 * .8125em);
+}
+.cijfers.min3 {
+    top: calc(-6 * .8125em);
+}
+.cijfers.min2 {
+    top: calc(-7 * .8125em);
+}
+.cijfers.min1 {
+    top: calc(-8 * .8125em);
+}
+.cijfers.min0 {
+    top: calc(-9 * .8125em);
+}
 .cijfer {
     height: .8125em;
     line-height: .8125em; 
     letter-spacing: -.025em;
-}
-.cijfers.notrans {
-    transition: none;
 }
 .cijfer.cijferUp {
     translate: 0 -.8125em;

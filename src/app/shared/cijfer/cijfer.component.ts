@@ -16,39 +16,54 @@ export class CijferComponent {
     @Input() useZero: boolean = true;
     @Input() moveUp: boolean = true;
     //top: number = 0;
-    digits: string[] = [' ', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    cijferRol: string[] = [' ', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     oldCijfer: string = ' ';
-    cijfersCss: string[] = ['cijders', 'plus0', ''];
+    cijfersCss: string[] = ['cijfers', 'plus0', ''];
     //firstTime: boolean = true;
 
     constructor() {
         effect(() => {
             const d = this.cijfer();
-            if (!this.moveUp) {
-                this.digits = this.getDigits(d);
-                this.cijfersCss[1] = 'plus0';
-                this.oldCijfer = d;
-                return;
+            if (this.moveUp) {
+                this.moveDigitUp(d);
             }
-            if (this.isSerie && (this.oldCijfer == '0' || this.oldCijfer == ' ')) {
-                this.digits = this.getDigits(d);
-                this.oldCijfer = d;
-                return;
+            else {
+                this.moveDigitDown(d);
             }
-            this.cijfersCss[2] = '';
-            this.digits = this.getDigits(this.oldCijfer);
-            const idx = this.digits.findIndex(dig => dig == d);
-            this.cijfersCss[1] = 'plus' + idx;
-            setTimeout(() => {
-                this.cijfersCss[2] = 'notrans';
-                this.digits = this.getDigits(d);
-                this.cijfersCss[1] = 'plus0';
-                this.oldCijfer = d;
-            }, 2000);
         });
     }
 
-    getDigits(start: string): string[] {
+    private moveDigitUp(digit: string) {
+        this.cijfersCss[2] = '';
+        this.cijferRol = this.getUpCijferRol(this.oldCijfer);
+        const idx = this.cijferRol.findIndex(dig => dig == digit);
+        this.cijfersCss[1] = 'plus' + idx;
+        setTimeout(() => {
+            this.cijfersCss[2] = 'notrans';
+            this.cijferRol = this.getUpCijferRol(digit);
+            this.cijfersCss[1] = 'plus0';
+            this.oldCijfer = digit;
+        }, 2000);
+    }
+
+    private moveDigitDown(digit: string) {
+        this.cijfersCss[2] = 'notrans';
+        this.cijferRol = this.getDownCijferRol(this.oldCijfer);
+        this.cijfersCss[1] = 'min0';
+        setTimeout(() => {
+            this.cijfersCss[2] = '';
+            const idx = this.cijferRol.findIndex(dig => dig == digit);
+            this.cijfersCss[1] = 'min' + (9 - idx);
+            setTimeout(() => {
+                this.cijfersCss[2] = 'notrans';
+                this.cijferRol = this.getUpCijferRol(digit);
+                this.cijfersCss[1] = 'plus0';
+                this.oldCijfer = digit;
+            }, 2000);
+        }, 250);
+    }
+
+    private getUpCijferRol(start: string): string[] {
         let result: string[] = [];
         const startDigit = (start == ' ') ? 0 : parseInt(start);
         for (let i = 0; i < 10; i++) {
@@ -63,6 +78,25 @@ export class CijferComponent {
                 result.push(' ');
             }
         }
+        return result;
+    }
+
+    private getDownCijferRol(start: string): string[] {
+        let result: string[] = [];
+        const startDigit = (start == ' ') ? 0 : parseInt(start);
+        for (let i = 1; i < 11; i++) {
+            let dig = startDigit + i;
+            if (dig > 9) {
+                dig = dig - 10;
+            }
+            if (dig > 0 || this.useZero) {
+                result.push('' + dig);
+            }
+            else {
+                result.push(' ');
+            }
+        }
+        console.log(result);
         return result;
     }
 

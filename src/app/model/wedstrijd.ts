@@ -77,6 +77,8 @@ export class WedSpelerStand {
     serie: number = 0;
     score: number[] = [];
     laatste5brt: number[] = [];
+    moyView: string = '0,000';
+    percView: string = '0,00';
 }
 
 export class WedstrijdLeesResultaat {

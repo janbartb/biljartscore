@@ -2,14 +2,14 @@ import { Component, Input, OnInit } from '@angular/core';
 import { WedTeam } from '../../../model/wedstrijd';
 import { GetalComponent } from '../../getal/getal.component';
 import { DecimalPipe, NgClass } from '@angular/common';
-import { GetalHeelComponent } from '../../getal-heel/getal-heel.component';
+import { GetalVarComponent } from '../../getal-var/getal-var.component';
 
 @Component({
     selector: 'app-scorebord-team',
     standalone: true,
     imports: [
         GetalComponent,
-        GetalHeelComponent,
+        GetalVarComponent,
         DecimalPipe,
         NgClass
     ],
@@ -24,16 +24,20 @@ export class ScorebordTeamComponent implements OnInit {
     @Input() wedOver: boolean = false;
     @Input() border: string = 'bss-border';
 
-    maxCijfersCar: number = 3;
-    maxCijfersBrt: number = 3;
-    maxCijfersSer: number = 3;
+    formatCar: string = '009';
+    formatBrt: string = '009';
+    formatSer: string = '009';
 
     ngOnInit(): void {
         if (this.team.teamTsCar > 0) {
-            this.maxCijfersCar = this.maxCijfersSer = ('' + this.team.teamTsCar).length;
+            if (this.team.teamTsCar < 100) {
+                this.formatCar = this.formatSer = '09';
+            }
         }
         if (this.maxBrt > 0) {
-            this.maxCijfersBrt = ('' + this.maxBrt).length;
+            if (this.maxBrt < 100) {
+                this.formatBrt = '09';
+            }
         }
     }
 }

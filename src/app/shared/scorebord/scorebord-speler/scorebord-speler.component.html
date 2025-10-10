@@ -51,8 +51,8 @@
         <!-- SCORE -->
         <div class="flexbox flexstretch arial" style="height: 12em;">
             <div class="flexbox flexcenter flexmiddle" style="width: 17.5em;">
-                <div [style.font-size]="maxCijfersCar < 3 ? '11em' : '10.5em'">
-                    <app-getal [getal]="speler.stand.aantCar" [maxCijfers]="maxCijfersCar"></app-getal>
+                <div [style.font-size]="formatCar.length < 3 ? '11em' : '10.5em'">
+                    <app-getal [naam]="'car'" [getal]="'' + speler.stand.aantCar" [format]="formatCar"></app-getal>
                 </div>
             </div>
             <div class="flexgrow1" style="padding-right: .5em;">
@@ -62,30 +62,23 @@
                             <div style="padding-right: 1em; color: gray;">
                                 <span style="font-size: 3em;">in</span>
                             </div>
-                            <div [style.font-size]="maxCijfersBrt < 3 ? '5.5em' : '5em'">
-                                <app-getal [getal]="speler.stand.aantBrt" [maxCijfers]="maxCijfersBrt"></app-getal>
+                            <div [style.font-size]="formatBrt.length < 3 ? '5.5em' : '5em'">
+                                <app-getal [naam]="'brt'" [getal]="'' + speler.stand.aantBrt" [format]="formatBrt"></app-getal>
                             </div>
                         </div>
                         <div class="flexbox flexright flexend" style="height: 6em;">
                             <div style="padding-right: 1em; color: blue;">
                                 <span style="font-size: 3.5em; line-height: 1.2;">+</span>
                             </div>
-                            <div style="color: blue" [style.font-size]="maxCijfersSer < 3 ? '5.5em' : '5em'">
-                                <app-getal [getal]="speler.stand.serie" [maxCijfers]="maxCijfersSer" [isSerie]="true"></app-getal>
+                            <div style="color: blue" [style.font-size]="formatSer.length < 3 ? '5.5em' : '5em'">
+                                <app-getal [naam]="'ser'" [getal]="'' + speler.stand.serie" [format]="formatSer" [isSerie]="true"></app-getal>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="flexbox flexright flexstart" style="height: 6em;">
-                    <div style="padding-top: .25em;">
-                        @if (speler.stand.gemiddelde < 100) {
-                            <app-getal-heel style="font-size: 4em;" [getal]="(speler.stand.gemiddelde | number:'1.3-3':'nl-NL') || '0,000'"
-                                            [komma]="true" [maxCijfers]="5" [border]="false"></app-getal-heel>
-                        }
-                        @else {
-                            <app-getal-heel style="font-size: 4em;" [getal]="(speler.stand.gemiddelde | number:'1.2-2':'nl-NL') || '0,00'"
-                                            [komma]="true" [maxCijfers]="5" [border]="false"></app-getal-heel>
-                        }
+                    <div style="padding-top: .75em;">
+                        <app-getal style="font-size: 4em;" [naam]="'moy'" [getal]="speler.stand.moyView" [format]="'09,999'"></app-getal>
                     </div>
                 </div>
             </div>
@@ -116,30 +109,27 @@
                     <div style="height: 2em; color: gray; overflow: hidden; text-align: center;">
                         <span style="font-size: 2em; line-height: 1;">PERC</span>
                     </div>
-                    <div style="height: 4em;">
-                        <span style="font-size: 3.5em; line-height: 1;">{{100 * speler.stand.gemiddelde / speler.splTsMoy | number:'1.2-2':'nl-NL'}} </span>
+                    <div class="flexbox flexcenter flexstretch" style="height: 4em; padding-top: .25em;">
+                        <app-getal-var style="font-size: 3.5em;" [naam]="'prc'" [getal]="speler.stand.percView" [format]="'0009,99'"></app-getal-var>
+                        <!-- <span style="font-size: 3.5em; line-height: 1;">{{100 * speler.stand.gemiddelde / speler.splTsMoy | number:'1.2-2':'nl-NL'}} </span> -->
                     </div>
                 </div>
                 <div style="padding: 0 .5em;">
-                    <div style="height: 2em; color: gray; overflow: hidden; text-align: center;">
+                    <div style="height: 2em; color: gray; overflow: hidden; text-align: right; padding-right: .125em;">
                         <span style="font-size: 2em; line-height: 1;">SER</span>
                     </div>
-                    <div style="height: 4em; text-align: center;">
-                        <span style="font-size: 3.5em; line-height: 1;">
-                            @if (speler.stand.serie > speler.stand.hoogSer) {
-                                <span style="color: blue">{{speler.stand.serie}}</span>
-                            }
-                            @else {
-                                <span>{{speler.stand.hoogSer}}</span>
-                            }
-                        </span>
+                    <div class="flexbox flexcenter" style="height: 4em; padding-top: .25em;">
+                        <app-getal-var style="font-size: 3.5em;" [style.color]="speler.stand.serie > speler.stand.hoogSer ? 'blue' : ''" 
+                            [getal]="(speler.stand.serie > speler.stand.hoogSer) ? '' + speler.stand.serie : '' + speler.stand.hoogSer"
+                            [naam]="'hoogser'" [format]="'09'"></app-getal-var>
                     </div>
                 </div>
-                <div style="padding: 0 .5em; min-width: 8em;">
-                    <div class="flexbox flexcenter flexmiddle" style="height: 5.25em; border-radius: .5em; background-color: black;" [style.color]="speler.metWit ? '#f3f3f3' : 'gold'">
-                        <div>
-                            <span [ngClass]="{'gewijzigd': showPunten && speler.stand.punten != oldPunten}" 
-                                    style="font-size: 5em; line-height: 1;">{{speler.stand.punten}}</span>
+                <div style="padding: 0 .5em; width: 8em; min-width: 8em;">
+                    <div class="flexbox flexcenter flexmiddle" 
+                            style="height: 5.25em; border-radius: .5em; background-color: black; padding-top: 1.25em;" 
+                            [style.color]="speler.metWit ? '#f3f3f3' : 'gold'">
+                        <div class="flexbox flexmiddle" [ngClass]="{'gewijzigd': showPunten && speler.stand.punten != oldPunten}" style="font-size: 5em;">
+                            <app-getal-var [naam]="'pnt'" [getal]="'' + speler.stand.punten" [format]="'09'"></app-getal-var>
                         </div>
                     </div>
                 </div>

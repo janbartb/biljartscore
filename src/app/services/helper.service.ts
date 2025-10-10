@@ -5,12 +5,14 @@ import { AlertService } from './alert.service';
 import { KnbbCompetitie } from '../model/knbb-competitie';
 import { Team, Vereniging } from '../model/vereniging';
 import { CompetitieMatch } from '../model/competitie';
+import { DecimalPipe } from '@angular/common';
 
 @Injectable({
     providedIn: 'root'
 })
 export class HelperService {
     alert = inject(AlertService);
+    decPipe = inject(DecimalPipe);
 
     constructor() { }
 
@@ -54,6 +56,14 @@ export class HelperService {
                 elm.focus();                    
             }, 200);    
         }
+    }
+
+    formatNumber(num: number, format: string): string {
+        if (!format || format == '') {
+            return '';
+        }
+        const result = this.decPipe.transform(num, format, 'nl-NL');
+        return !result ? '' : result;
     }
 
     areWedstrijdSpelersFilled(wedstrijd: OefWedstrijd): boolean {

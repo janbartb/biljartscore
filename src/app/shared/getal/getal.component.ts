@@ -11,10 +11,12 @@ import { CijferComponent } from '../cijfer/cijfer.component';
     styleUrl: './getal.component.css'
 })
 export class GetalComponent {
-    getal = input(0);
+    getal = input('0');
     @Input() isSerie: boolean = false;
-    @Input() maxCijfers: number = 1;
+    @Input() format: string = '9';
+    @Input() naam: string = 'getal';
 
+    getalNum: number = 0;
     getalOld: number = 0;
     cijfers: string[] = [];
     useZeroes: boolean[] = [];
@@ -25,37 +27,58 @@ export class GetalComponent {
         // this.useZeroes = this.getUseZeroes();
         // this.cijfers = this.getCijfers();
         effect(() => {
-            const g = this.getal();
-            this.moveUp = this.getal() >= this.getalOld;
-            this.useZeroes = this.getUseZeroes();
-            this.cijfers = this.getCijfers();
-            this.getalOld = this.getal();
+            const g = this.getal().replaceAll('.', '');
+            console.log(`GETAL (${this.naam}) : ${g}`);
+            const gNum = g.replaceAll(',', '.');
+            this.getalNum = Number(gNum);
+            this.moveUp = this.getalNum >= this.getalOld;
+            const formatArr = this.format.length ? this.format.split('') : [];
+            this.useZeroes = this.getUseZeroes(g, formatArr);
+            this.cijfers = this.getCijfers(g, formatArr);
+            this.getalOld = this.getalNum;
         });
     }
 
-    private getUseZeroes(): boolean[] {
+    private getUseZeroes(g: string, fmtArr: string[]): boolean[] {
         let result: boolean[] = [];
-        for (let i = this.maxCijfers; i > 0; i--) {
-            if (i == this.maxCijfers) {
-                result.unshift(true);
+        if (!fmtArr.length) {
+            for (let i = 0; i < g.length; i++) {
+                result[i] = true;
             }
-            else {
-                const diff = this.maxCijfers - i;
-                result.unshift(this.getal() >= Math.pow(10, diff + 1));
+        }
+        else {
+            fmtArr.forEach(d => {
+                result.push((d == '0' || d == ',') ? false : true);
+            });
+            const diff = fmtArr.length - g.length;
+            for (let i = 0; i < fmtArr.length; i++) {
+                if (i > diff) {
+                    result[i] = true;
+                }
+                else {
+                    result[i] = (fmtArr[i] == '9') ? true : false;
+                }
             }
         }
         return result;
     }
 
-    private getCijfers(): string[] {
-        let txt: string = '' + this.getal();
-        let diff = this.maxCijfers - txt.length;
-        if (diff < 0) {
-            this.maxCijfers = txt.length;
+    private getCijfers(g: string, fmtArr: string[]): string[] {
+        let result = g.split('');
+        if (fmtArr.length) {
+            const diff = fmtArr.length - result.length;
+            if (diff < 0) {
+                const diff2 = Math.abs(diff);
+                for (let i = 0; i < diff2; i++) {
+                    result.shift(); // remove first element of array
+                }
+            }
+            else {
+                for (let i = 0; i < diff; i++) {
+                    result.unshift((fmtArr[i] == '9' ? '0' : ' '));
+                }
+            }
         }
-        for (let i = 0; i < diff; i++) {
-            txt = ' ' + txt;
-        }
-        return txt.split('');
+        return result;
     }
 }

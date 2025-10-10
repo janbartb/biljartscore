@@ -193,9 +193,9 @@
             </div>    
         </div>
     }
-    @if (wedstrijd.aantSpelers > 2 && wedstrijd.aantSpelers < 5 && idxSpeler > 1) {
-        <div class="notification-top">
-            <div class="notification-top-content flexbox flexcenter flexmiddle arial" [ngClass]="{ 'visible': modalVisible }">
+    @if (wedstrijd.aantSpelers == 5 || (wedstrijd.aantSpelers > 2 && idxSpeler < 2)) {
+        <div class="notification">
+            <div class="notification-content flexbox flexcenter flexmiddle arial" [ngClass]="{ 'visible': modalVisible }">
                 <div>
                     @if (modals.length && modals[0].texts.length) {
                         @if (modals[0].type == 'serie') {
@@ -210,8 +210,8 @@
         </div>
     }
     @else {
-        <div class="notification">
-            <div class="notification-content flexbox flexcenter flexmiddle arial" [ngClass]="{ 'visible': modalVisible }">
+        <div class="notification-top">
+            <div class="notification-top-content flexbox flexcenter flexmiddle arial" [ngClass]="{ 'visible': modalVisible }">
                 <div>
                     @if (modals.length && modals[0].texts.length) {
                         @if (modals[0].type == 'serie') {

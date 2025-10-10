@@ -194,7 +194,8 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
             else {
                 this.subtitle = 'Tussenresultaat';
             }
-            console.log(this.match);
+            const fnum = this.helper.formatNumber(0, '1.3-3');
+            console.log(fnum);
             this.matchRead = true;
             this.buttonGroup.addButton(new Button('1', 'Wedstrijd 1', true, true));
             this.buttonGroup.addButton(new Button('2', 'Wedstrijd 2', true, true));

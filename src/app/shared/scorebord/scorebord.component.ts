@@ -13,6 +13,7 @@ import { SpelersNamenComponent } from '../spelers-namen/spelers-namen.component'
 import { HelpScoreComponent } from '../help-score/help-score.component';
 import { Apparaat, Config } from '../../model/config';
 import { StatusService } from '../../services/status.service';
+import { HelperService } from '../../services/helper.service';
 
 class ActieToetsen {
     beurtPlus: string[] = [];
@@ -39,6 +40,7 @@ export class ScorebordComponent implements OnInit {
     spraak = inject(SpeechService);
     alert = inject(AlertService);
     appData = inject(StatusService);
+    helper = inject(HelperService);
 
     @Input() wedstrijd: Wedstrijd = new Wedstrijd();
     @Output() opslaan: EventEmitter<Wedstrijd> = new EventEmitter<Wedstrijd>();
@@ -413,9 +415,9 @@ export class ScorebordComponent implements OnInit {
         // }
         setTimeout(() => {
             this.actieveSpeler.message.show();
-            this.actieveSpeler.stand.gemiddelde = this.getGemiddelde(this.actieveSpeler);
+            this.setGemiddeldes(this.actieveSpeler);
             if (this.isTeamWedstrijd()) {
-                this.actieveTeam.stand.gemiddelde = this.getTeamGemiddelde(this.actieveTeam);
+                this.setTeamGemiddeldes(this.actieveTeam);
                 if (this.wedstrijd.telling.idxOptie == 0) {
                     this.actieveTeam.stand.punten = this.getTeamPunten(this.actieveTeam);
                 }
@@ -631,9 +633,9 @@ export class ScorebordComponent implements OnInit {
             team.stand.aantBrt++;
         }
         setTimeout(() => {
-            spl.stand.gemiddelde = this.getGemiddelde(spl);
+            this.setGemiddeldes(spl);
             if (team) {
-                team.stand.gemiddelde = this.getTeamGemiddelde(team);
+                this.setTeamGemiddeldes(team);
                 if (this.wedstrijd.telling.idxOptie == 0) {
                     team.stand.punten = this.getTeamPunten(team);
                 }
@@ -649,11 +651,11 @@ export class ScorebordComponent implements OnInit {
     private verminderBeurtenEnBerekenData(spl: WedSpeler, team?: WedTeam): void {
         spl.stand.aantBrt--;
         spl.stand.serie = 0;
-        spl.stand.gemiddelde = this.getGemiddelde(spl);
+        this.setGemiddeldes(spl);
         if (team) {
             team.stand.aantBrt--;
             team.stand.serie = 0;
-            team.stand.gemiddelde = this.getTeamGemiddelde(team);
+            this.setTeamGemiddeldes(team);
             if (this.wedstrijd.telling.idxOptie == 0) {
                 team.stand.punten = this.getTeamPunten(team);
             }
@@ -707,11 +709,11 @@ export class ScorebordComponent implements OnInit {
             // werk beurten en stand huidige speler bij
             this.actieveSpeler.stand.aantBrt--;
             this.actieveSpeler.stand.serie = 0;
-            this.actieveSpeler.stand.gemiddelde = this.getGemiddelde(this.actieveSpeler);
+            this.setGemiddeldes(this.actieveSpeler);
             if (this.isTeamWedstrijd()) {
                 this.actieveTeam.stand.aantBrt--;
                 this.actieveTeam.stand.serie = 0;
-                this.actieveTeam.stand.gemiddelde = this.getTeamGemiddelde(this.actieveTeam);
+                this.setTeamGemiddeldes(this.actieveTeam);
                 if (this.wedstrijd.telling.idxOptie == 0) {
                     this.actieveTeam.stand.punten = this.getTeamPunten(this.actieveTeam);
                     this.oldPunten[this.idxTeam] = this.actieveTeam.stand.punten;
@@ -854,18 +856,28 @@ export class ScorebordComponent implements OnInit {
         return false;
     }
 
-    private getGemiddelde(spl: WedSpeler): number {
+    private setGemiddeldes(spl: WedSpeler): void {
         if (spl.stand.aantBrt === 0) {
-            return 0;
+            spl.stand.gemiddelde = 0;
         }
-        return (spl.stand.aantCar + spl.stand.serie) / spl.stand.aantBrt;
+        else {
+            spl.stand.gemiddelde = (spl.stand.aantCar + spl.stand.serie) / spl.stand.aantBrt;
+        }
+        spl.stand.moyView = this.helper.formatNumber(spl.stand.gemiddelde, '1.3-3');
+        const perc = 100 * spl.stand.gemiddelde / spl.splTsMoy;
+        spl.stand.percView = this.helper.formatNumber(perc, '1.2-2');
     }
 
-    private getTeamGemiddelde(team: WedTeam): number {
+    private setTeamGemiddeldes(team: WedTeam): void {
         if (team.stand.aantBrt === 0) {
-            return 0;
+            team.stand.gemiddelde = 0;
         }
-        return (team.stand.aantCar + team.stand.serie) / team.stand.aantBrt;
+        else {
+            team.stand.gemiddelde = (team.stand.aantCar + team.stand.serie) / team.stand.aantBrt;
+        }
+        team.stand.moyView = this.helper.formatNumber(team.stand.gemiddelde, '1.3-3');
+        const perc = 100 * team.stand.gemiddelde / team.teamTsMoy;
+        team.stand.percView = this.helper.formatNumber(perc, '1.2-2');
     }
 
     private getHoogsteSerie(spl: WedSpeler | WedTeam): number {

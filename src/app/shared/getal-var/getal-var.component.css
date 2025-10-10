@@ -1,3 +1,9 @@
+.getal-container {
+    padding-bottom: .25em;
+    overflow: hidden;
+    transition: width 1s ease;
+}
+
 .komma {
     width: .15em;
     height: .8125em;

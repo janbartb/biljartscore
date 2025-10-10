@@ -2,16 +2,16 @@ import { Component, Input, OnInit } from '@angular/core';
 import { WedSpeler } from '../../../model/wedstrijd';
 import { DecimalPipe, NgClass } from '@angular/common';
 import { GetalComponent } from '../../getal/getal.component';
-import { GetalHeelComponent } from "../../getal-heel/getal-heel.component";
+import { GetalVarComponent } from '../../getal-var/getal-var.component';
 
 @Component({
     selector: 'app-scorebord-speler',
     standalone: true,
     imports: [
         GetalComponent,
+        GetalVarComponent,
         DecimalPipe,
-        NgClass,
-        GetalHeelComponent
+        NgClass
 ],
     templateUrl: './scorebord-speler.component.html',
     styleUrl: './scorebord-speler.component.css'
@@ -25,17 +25,21 @@ export class ScorebordSpelerComponent implements OnInit {
     @Input() wedOver: boolean = false;
     @Input() border: string = 'bss-border';
 
-    maxCijfersCar: number = 3;
-    maxCijfersBrt: number = 3;
-    maxCijfersSer: number = 3;
+    formatCar: string = '009';
+    formatBrt: string = '009';
+    formatSer: string = '009';
 
     ngOnInit(): void {
         if (this.speler.splTsCar > 0 || this.teamCar > 0) {
             const tsCar = (this.teamCar > 0) ? this.teamCar : this.speler.splTsCar;
-            this.maxCijfersCar = this.maxCijfersSer = ('' + tsCar).length;
+            if (tsCar < 100) {
+                this.formatCar = this.formatSer = '09';
+            }
         }
         if (this.maxBrt > 0) {
-            this.maxCijfersBrt = ('' + this.maxBrt).length;
+            if (this.maxBrt < 100) {
+                this.formatBrt = '09';
+            }
         }
     }
 }
