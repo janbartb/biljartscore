@@ -1,5 +1,5 @@
 .getal-container {
-    padding-bottom: .25em;
+    padding-bottom: .25rem;
     overflow: hidden;
     transition: width 1s ease;
 }

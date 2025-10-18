@@ -1,9 +1,43 @@
-.triangle {
-   width: 0px;
-   height: 0px;
-   border-style: solid;
-   border-width: 3em 4.5em 0 4.5em;
-   border-color: #FF0000 transparent transparent transparent;
+.bord-speler-ls {
+    height: 33.75em;
+    width: 60em;
+    background-color: #2e6830;
+    color: #93cf95;
+}
+.bord-speler-ls.actief {
+    color: white;
+}
+.bord-speler-ls.actief.geel {
+    color: gold;
+}
+
+.car-ls-container {
+    width: 25.5em;
+    height: 16em;
+    background-color: #163317;
+}
+.bord-speler-ls.actief .car-ls-container {
+    background-color: white;
+    color: #1e461f;
+}
+.bord-speler-ls.actief.geel .car-ls-container {
+    background-color: gold;
+    color: #1e461f;
+}
+
+.pnt-ls-container {
+    height: 100%; 
+    background-color: #1e461f;
+    color: #93cf95;
+    border-radius: 1em;
+}
+.bord-speler-ls.actief .pnt-ls-container {
+    background-color: #163317;
+    color: white;
+}
+.bord-speler-ls.actief.geel .pnt-ls-container {
+    background-color: #163317;
+    color: gold;
 }
 
 .brt-ser-container {
@@ -20,4 +54,27 @@
 }
 .brt-ser.notrans {
     transition: none;
+}
+
+.voortgang {
+    background-color: #b7dfb8;
+    transition: width 2s ease;
+}
+.bord-speler-ls.actief .voortgang {
+    background-color: #f3f3f3;
+}
+.bord-speler-ls.actief.geel .voortgang {
+    background-color: gold;
+}
+
+.voortgang-perc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 43.5em;
+    height: 4em;
+    text-align: center;
+    line-height: 4em;
+    color: #163317;
+    z-index: 15;
 }

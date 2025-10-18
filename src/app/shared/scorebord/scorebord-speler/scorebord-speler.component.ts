@@ -12,7 +12,7 @@ import { GetalVarComponent } from '../../getal-var/getal-var.component';
         GetalVarComponent,
         DecimalPipe,
         NgClass
-],
+    ],
     templateUrl: './scorebord-speler.component.html',
     styleUrl: './scorebord-speler.component.css'
 })
@@ -23,7 +23,7 @@ export class ScorebordSpelerComponent implements OnInit {
     @Input() showPunten: boolean = false;
     @Input() oldPunten: number = 0;
     @Input() wedOver: boolean = false;
-    @Input() border: string = 'bss-border';
+    @Input() border: string = 'bss-border2';
 
     formatCar: string = '009';
     formatBrt: string = '009';

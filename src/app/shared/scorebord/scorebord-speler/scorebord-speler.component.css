@@ -1,9 +1,34 @@
-.triangle {
-   width: 0px;
-   height: 0px;
-   border-style: solid;
-   border-width: 1.75em 2.5em 0 2.5em;
-   border-color: #FF0000 transparent transparent transparent;
+.bord-speler {
+    height: 33.75em;
+    max-width: 30em;
+    background-color: #2e6830;
+    color: #93cf95;
+}
+.bord-speler.actief {
+    color: white;
+}
+.bord-speler.actief.geel {
+    color: gold;
+}
+
+.car-container {
+    width: 17.5em;
+    background-color: #163317;
+}
+.bord-speler.actief .car-container {
+    background-color: white;
+    color: #1e461f;
+}
+.bord-speler.actief.geel .car-container {
+    background-color: gold;
+    color: #1e461f;
+}
+
+.pnt-container {
+    height: 5.25em; 
+    border-radius: .5em; 
+    background-color: #102511; 
+    padding-top: 1.25em;
 }
 
 .brt-ser-container {
@@ -20,4 +45,27 @@
 }
 .brt-ser.notrans {
     transition: none;
+}
+
+.voortgang {
+    background-color: #b7dfb8;
+    transition: width 2s ease;
+}
+.voortgang.actief {
+    background-color: #f3f3f3;
+}
+.voortgang.actief.geel {
+    background-color: gold;
+}
+
+.voortgang-perc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 28.25em;
+    height: 2.5em;
+    text-align: center;
+    line-height: 2.5em;
+    color: #163317;
+    z-index: 15;
 }

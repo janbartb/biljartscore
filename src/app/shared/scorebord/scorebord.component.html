@@ -6,12 +6,6 @@
             </div>
         </div>
     }
-    @else if (wedstrijd.message.visible) {
-        <div class="wed-message flexbox flexcenter flexmiddle" 
-                [ngClass]="[wedstrijd.message.type]">
-            <div style="font-size: 1.75em; line-height: 1;">{{wedstrijd.message.text}}</div>
-        </div>
-    }
     @if (wedstrijd.aantSpelers == 1) {
         <div class="bss-score-2 fullheight" [ngClass]="{'gameover': wedstrijd.wedGespeeld}">
             <div class="fullheight active" [ngClass]="{'wit': wedstrijd.spelers[0].metWit, 'geel': !wedstrijd.spelers[0].metWit}">
@@ -44,7 +38,7 @@
         </div>
     }
     @else if (wedstrijd.aantSpelers == 3) {
-        <div class="bss-score-1" [ngClass]="{'gameover': wedstrijd.wedGespeeld}">
+        <div class="bss-score-1" [ngClass]="{'gameover': wedstrijd.wedGespeeld}" style="background-color: #dbefdc;">
             <div style="height: 16.875em;">
                 <div class="flexbox flexstretch" style="font-size: .5rem;">
                     <div class="flex50perc">
@@ -55,7 +49,7 @@
                                             [oldPunten]="oldPunten[0]"
                                             [wedOver]="wedstrijd.wedGespeeld"
                                             [balWissel]="true"
-                                            [border]="'bss-border for-left'"></app-scorebord-speler-landscape>
+                                            [border]="'bss-border for-top-left'"></app-scorebord-speler-landscape>
                         </div>
                     </div>
                     <div class="flex50perc">
@@ -66,7 +60,7 @@
                                             [oldPunten]="oldPunten[1]"
                                             [wedOver]="wedstrijd.wedGespeeld"
                                             [balWissel]="true"
-                                            [border]="'bss-border for-right'"></app-scorebord-speler-landscape>
+                                            [border]="'bss-border for-top-right'"></app-scorebord-speler-landscape>
                         </div>
                     </div>
                 </div>
@@ -79,7 +73,8 @@
                                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                                         [oldPunten]="oldPunten[2]"
                                         [balWissel]="true"
-                                        [wedOver]="wedstrijd.wedGespeeld"></app-scorebord-speler-landscape>
+                                        [wedOver]="wedstrijd.wedGespeeld"
+                                        [border]="'bss-border for-bottom'"></app-scorebord-speler-landscape>
                     </div>
                 </div>
             </div>
@@ -95,7 +90,7 @@
                                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                                         [oldPunten]="oldPunten[0]"
                                         [wedOver]="wedstrijd.wedGespeeld"
-                                        [border]="'bss-border for-left'"></app-scorebord-speler-landscape>
+                                        [border]="'bss-border for-top-left'"></app-scorebord-speler-landscape>
                     </div>
                     <div class="bss-landscape" [ngClass]="{'active': idxSpeler == 2}">
                         <app-scorebord-speler-landscape [speler]="wedstrijd.spelers[2]"
@@ -103,7 +98,7 @@
                                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                                         [oldPunten]="oldPunten[2]"
                                         [wedOver]="wedstrijd.wedGespeeld"
-                                        [border]="'bss-border for-left'"></app-scorebord-speler-landscape>
+                                        [border]="'bss-border for-bottom-left'"></app-scorebord-speler-landscape>
                     </div>
                 </div>
                 <div class="flex50perc">
@@ -113,7 +108,7 @@
                                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                                         [oldPunten]="oldPunten[1]"
                                         [wedOver]="wedstrijd.wedGespeeld"
-                                        [border]="'bss-border for-right'"></app-scorebord-speler-landscape>
+                                        [border]="'bss-border for-top-right'"></app-scorebord-speler-landscape>
                     </div>
                     <div class="bss-landscape" [ngClass]="{'active': idxSpeler == 3}">
                         <app-scorebord-speler-landscape [speler]="wedstrijd.spelers[3]"
@@ -121,7 +116,7 @@
                                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                                         [oldPunten]="oldPunten[3]"
                                         [wedOver]="wedstrijd.wedGespeeld"
-                                        [border]="'bss-border for-right'"></app-scorebord-speler-landscape>
+                                        [border]="'bss-border for-bottom-right'"></app-scorebord-speler-landscape>
                     </div>
                 </div>
             </div>    
@@ -137,7 +132,7 @@
                                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                                         [oldPunten]="oldPunten[0]"
                                         [wedOver]="wedstrijd.wedGespeeld"
-                                        [border]="'bss-border for-left'"></app-scorebord-team>
+                                        [border]="'bss-border for-top-left'"></app-scorebord-team>
                     </div>
                     <div class="flexbox">
                         <div class="flex50perc">
@@ -146,7 +141,7 @@
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
                                                     [teamCar]="wedstrijd.teams[0].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
-                                                    [border]="'bss-border for-left'"></app-scorebord-speler>
+                                                    [border]="'bss-border for-bottom-left'"></app-scorebord-speler>
                             </div>
                         </div>        
                         <div class="flex50perc">
@@ -155,7 +150,7 @@
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
                                                     [teamCar]="wedstrijd.teams[0].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
-                                                    [border]="'bss-border for-middle'"></app-scorebord-speler>
+                                                    [border]="'bss-border for-bottom'"></app-scorebord-speler>
                             </div>
                         </div>        
                     </div>
@@ -167,7 +162,7 @@
                                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                                         [oldPunten]="oldPunten[1]"
                                         [wedOver]="wedstrijd.wedGespeeld"
-                                        [border]="'bss-border for-right'"></app-scorebord-team>
+                                        [border]="'bss-border for-top-right'"></app-scorebord-team>
                     </div>
                     <div class="flexbox">
                         <div class="flex50perc">
@@ -176,7 +171,7 @@
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
                                                     [teamCar]="wedstrijd.teams[1].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
-                                                    [border]="'bss-border for-middle'"></app-scorebord-speler>
+                                                    [border]="'bss-border for-bottom'"></app-scorebord-speler>
                             </div>
                         </div>        
                         <div class="flex50perc">
@@ -185,7 +180,7 @@
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
                                                     [teamCar]="wedstrijd.teams[1].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
-                                                    [border]="'bss-border for-right'"></app-scorebord-speler>
+                                                    [border]="'bss-border for-bottom-right'"></app-scorebord-speler>
                             </div>
                         </div>        
                     </div>
@@ -193,35 +188,46 @@
             </div>    
         </div>
     }
-    @if (wedstrijd.aantSpelers == 5 || (wedstrijd.aantSpelers > 2 && idxSpeler < 2)) {
-        <div class="notification">
-            <div class="notification-content flexbox flexcenter flexmiddle arial" [ngClass]="{ 'visible': modalVisible }">
-                <div>
-                    @if (modals.length && modals[0].texts.length) {
-                        @if (modals[0].type == 'serie') {
-                            <span style="font-size: 5em;">{{modals[0].texts[0]}}</span>
-                        }
-                        @else {
-                            <span style="font-size: 4em;">{{modals[0].texts[0]}}</span>
-                        }
-                    }
-                </div>
+    @if (wedstrijd.wedGespeeld) {
+        <div class="notification notification-full">
+            <div class="notification-full-content arial" [ngClass]="{ 'visible': modalVisible }">
+                @if (modals.length && modals[0].texts.length) {
+                    <app-notification [type]="'full'" [modal]="modals[0]"></app-notification>
+                }
+            </div>
+        </div>
+    }
+    @else if ((wedstrijd.aantSpelers == 2 && idxSpeler == 1) || (wedstrijd.aantSpelers == 5 && idxTeam == 1) ||
+                (wedstrijd.aantSpelers == 4 && (idxSpeler == 1 || idxSpeler == 3))) {
+        <div class="notification notification-left">
+            <div class="notification-left-content arial" [ngClass]="{ 'visible': modalVisible }">
+                @if (modals.length && modals[0].texts.length) {
+                    <app-notification [type]="'vertical'" [modal]="modals[0]"></app-notification>
+                }
+            </div>
+        </div>
+    }
+    @else if ((wedstrijd.aantSpelers == 2 && idxSpeler == 0) || (wedstrijd.aantSpelers == 5 && idxTeam == 0) ||
+                (wedstrijd.aantSpelers == 4 && (idxSpeler == 0 || idxSpeler == 2))) {
+         <div class="notification notification-right">
+            <div class="notification-right-content arial" [ngClass]="{ 'visible': modalVisible }">
+                @if (modals.length && modals[0].texts.length) {
+                    <app-notification [type]="'vertical'" [modal]="modals[0]"></app-notification>
+                }
+            </div>
+        </div>
+    }
+    @else if (idxSpeler >= 2) {
+        <div class="notification notification-top" [ngClass]="{'smaller': wedstrijd.aantSpelers == 1}">
+            <div class="notification-top-content arial" [ngClass]="{ 'visible': modalVisible, 'geel': !wedstrijd.spelers[idxSpeler].metWit }">
+                <app-notification [type]="'horizontal'" [modal]="modals[0]"></app-notification>
             </div>
         </div>
     }
     @else {
-        <div class="notification-top">
-            <div class="notification-top-content flexbox flexcenter flexmiddle arial" [ngClass]="{ 'visible': modalVisible }">
-                <div>
-                    @if (modals.length && modals[0].texts.length) {
-                        @if (modals[0].type == 'serie') {
-                            <span style="font-size: 5em;">{{modals[0].texts[0]}}</span>
-                        }
-                        @else {
-                            <span style="font-size: 4em;">{{modals[0].texts[0]}}</span>
-                        }
-                    }
-                </div>
+        <div class="notification notification-bottom">
+            <div class="notification-bottom-content arial" [ngClass]="{ 'visible': modalVisible, 'geel': !wedstrijd.spelers[idxSpeler].metWit }">
+                <app-notification [type]="'horizontal'" [modal]="modals[0]"></app-notification>
             </div>
         </div>
     }

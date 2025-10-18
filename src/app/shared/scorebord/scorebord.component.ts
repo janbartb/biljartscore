@@ -14,6 +14,7 @@ import { HelpScoreComponent } from '../help-score/help-score.component';
 import { Apparaat, Config } from '../../model/config';
 import { StatusService } from '../../services/status.service';
 import { HelperService } from '../../services/helper.service';
+import { NotificationComponent } from '../notification/notification.component';
 
 class ActieToetsen {
     beurtPlus: string[] = [];
@@ -30,6 +31,7 @@ class ActieToetsen {
         ScorebordSpelerComponent,
         ScorebordSpelerLandscapeComponent,
         ScorebordTeamComponent,
+        NotificationComponent,
         SpelersNamenComponent,
         HelpScoreComponent
     ],
@@ -83,9 +85,9 @@ export class ScorebordComponent implements OnInit {
 
     processEnter() {
         // werk score bij
-        const notif = this.actieveSpeler.splBordNaam + ' : ' + this.actieveSpeler.stand.serie;
+        const notif = [this.actieveSpeler.splBordNaam, '' + this.actieveSpeler.stand.serie];
         const msgToSpeak = 'Genoteerd, ' + this.actieveSpeler.splSpreekNaam + ', ' + this.actieveSpeler.stand.serie;
-        const modalMsg = new ModalMessage('enter', [notif], msgToSpeak, 4 );
+        const modalMsg = new ModalMessage('noteer', notif, msgToSpeak, 4);
         this.modals.push(modalMsg);
         this.showModal();
         this.actieveSpeler.stand.aantCar += this.actieveSpeler.stand.serie;
@@ -144,10 +146,11 @@ export class ScorebordComponent implements OnInit {
             }
             this.idxTeam = -1;
             this.idxSpeler = -1;
-            this.wedstrijd.message = new Message('success', 'EINDE WEDSTRIJD');
-            this.textsToSpeak.push('Einde wedstrijd');
-            this.speakTexts();
-            this.wedstrijd.message.show();
+            setTimeout(() => {
+                const modalMsg = new ModalMessage('klaar', ['Einde wedstrijd'], 'Einde wedstrijd', 3);
+                this.modals.push(modalMsg);
+                this.showModal();
+            }, 1000);
             this.opslaan.emit(this.wedstrijd);
             return;
         }
@@ -190,7 +193,9 @@ export class ScorebordComponent implements OnInit {
         if (this.wedstrijd.telling.idxOptie == 0) {
             this.oldPunten[this.idxSpeler] = this.actieveSpeler.stand.punten;
         }
-        this.checkForEnterMessages();
+        setTimeout(() => {
+            this.checkForEnterMessages();
+        }, 500);
         this.opslaan.emit(copyOfWedstrijd);
     }
 
@@ -345,8 +350,13 @@ export class ScorebordComponent implements OnInit {
                     });
                 }
             }
-            this.wedstrijd.message = new Message('success', 'EINDE WEDSTRIJD');
-            this.wedstrijd.message.show();
+            // this.wedstrijd.message = new Message('success', 'EINDE WEDSTRIJD');
+            // this.wedstrijd.message.show();
+            setTimeout(() => {
+                const modalMsg = new ModalMessage('klaar', ['Einde wedstrijd'], '', 2);
+                this.modals.push(modalMsg);
+                this.showModal();
+            }, 2000);
             return;
         }
         this.setMaxBeurten();
@@ -404,6 +414,13 @@ export class ScorebordComponent implements OnInit {
         if (this.isTeamWedstrijd()) {
             this.actieveTeam.stand.serie += nr;
         }
+        if (this.wedstrijd.regels.idxOptie != 1) {
+            this.actieveSpeler.stand.voortgang = Math.floor(100 * (this.actieveSpeler.stand.aantCar + this.actieveSpeler.stand.serie) / this.actieveSpeler.splTsCar);
+            if (this.isTeamWedstrijd()) {
+                this.actieveSpeler.stand.voortgang = Math.floor(100 * (this.actieveSpeler.stand.aantCar + this.actieveSpeler.stand.serie) / this.actieveTeam.teamTsCar);
+                this.actieveTeam.stand.voortgang = Math.floor(100 * (this.actieveTeam.stand.aantCar + this.actieveTeam.stand.serie) / this.actieveTeam.teamTsCar);
+            }
+        }
         this.aantBereikt = this.checkForSerieMessages();
         // if (nr > 0) {
         //     if (!aantBereikt && !this.testMode) {
@@ -441,7 +458,7 @@ export class ScorebordComponent implements OnInit {
         }
         let msgs: string[] = [];
         let spk = '';
-        let msgType = 'info';
+        let msgType = 'serie';
         if (this.actieveSpeler.stand.serie == 0) {
             return false;
         }
@@ -454,15 +471,15 @@ export class ScorebordComponent implements OnInit {
         }
         if (remainingCar < 4) {
             this.actieveSpeler.message.textCar = `nog ${remainingCar}`;
-            msgs.push(`${this.actieveSpeler.stand.serie}, en nog ${remainingCar} ...`);
+            msgs.push(`${this.actieveSpeler.stand.serie}`);
+            msgs.push(`en nog ${remainingCar}`);
             spk = `${this.actieveSpeler.stand.serie}, en nog ${remainingCar}.`;
-            msgType = 'serie';
         }
         else {
             this.actieveSpeler.message.textCar = '';
             msgs.push(`${this.actieveSpeler.stand.serie}`);
+            msgs.push('');
             spk = `${this.actieveSpeler.stand.serie}`;
-            msgType = 'serie';
         }
         if (this.actieveSpeler.stand.serie > 0) {
             if (msgs.length > 0) {
@@ -482,7 +499,7 @@ export class ScorebordComponent implements OnInit {
     private checkForTeamSerieMessages(): boolean {
         let msgs: string[] = [];
         let spk = '';
-        let msgType = 'info';
+        let msgType = 'serie';
         if (this.actieveTeam.stand.serie == 0) {
             return false;
         }
@@ -495,15 +512,15 @@ export class ScorebordComponent implements OnInit {
         }
         if (remainingCar < 4) {
             this.actieveTeam.message.textCar = `nog ${remainingCar}`;
-            msgs.push(`${this.actieveTeam.stand.serie}, en nog ${remainingCar} ...`);
+            msgs.push(`${this.actieveTeam.stand.serie}`);
+            msgs.push(`en nog ${remainingCar}`);
             spk = `${this.actieveTeam.stand.serie}, en nog ${remainingCar}.`;
-            msgType = 'serie';
         }
         else {
             this.actieveTeam.message.textCar = '';
             msgs.push(`${this.actieveTeam.stand.serie}`);
+            msgs.push('');
             spk = `${this.actieveTeam.stand.serie}`;
-            msgType = 'serie';
         }
         if (this.actieveTeam.stand.serie > 0) {
             if (msgs.length > 0) {
@@ -527,12 +544,12 @@ export class ScorebordComponent implements OnInit {
         }
         let msgs: string[] = [];
         let spk = '';
-        let msgType = 'info';
+        let msgType = 'beurt';
         // gelijkmakende beurt
         if (this.idxSpeler > 0 && this.wedstrijd.regels.idxOptie != 1) {
             let idx = this.findIndexEersteSpelerDieCarsHeeftBereikt();
             if (idx >= 0 && this.idxSpeler > idx) {
-                msgs.push('Laatste beurt');
+                msgs = ['Laatste', 'beurt'];
                 spk = 'Laatste beurt';
             }
         }
@@ -540,11 +557,11 @@ export class ScorebordComponent implements OnInit {
         if (!spk.length) { // dus niet gelijkmakende beurt
             const remainingBrt = this.wedstrijd.regels.maxBeurten - this.actieveSpeler.stand.aantBrt;
             if (remainingBrt === 1) {
-                msgs.push('Voorlaatste beurt');
+                msgs = ['Voorlaatste', 'beurt'];
                 spk = 'Voorlaatste beurt';
             }
             if (remainingBrt === 0) {
-                msgs.push('Laatste beurt');
+                msgs = ['Laatste', 'beurt'];
                 spk = 'Laatste beurt';
             }
         }
@@ -553,19 +570,20 @@ export class ScorebordComponent implements OnInit {
         this.actieveSpeler.message.textCar = '';
         const remainingCar = this.actieveSpeler.splTsCar - this.actieveSpeler.stand.aantCar - this.actieveSpeler.stand.serie;
         if (remainingCar > 0 && remainingCar < 4) {
-            if (msgs.length) {
-                msgs[0] = msgs[0] + `. ${this.actieveSpeler.splBordNaam} - nog ${remainingCar}`;
+            msgs.push(this.actieveSpeler.splBordNaam);
+            msgs.push(`nog ${remainingCar}`);
+            msgType = 'remaining';
+            if (spk.length) {
                 spk = spk + `. ${this.actieveSpeler.splBordNaam}, nog ${remainingCar}.`;    
             }
             else {
-                msgs.push(`${this.actieveSpeler.splBordNaam} - nog ${remainingCar}`);
                 spk = `${this.actieveSpeler.splSpreekNaam}. Nog ${remainingCar}.`;    
             }
             this.actieveSpeler.message.textCar = `nog ${remainingCar}`;
         }
         this.actieveSpeler.message.show();
         if (msgs.length > 0) {
-            const modalMsg = new ModalMessage(msgType, msgs, spk, 3);
+            const modalMsg = new ModalMessage(msgType, msgs, spk, 4);
             this.modals.push(modalMsg);
             this.showModal();
             return;
@@ -579,23 +597,23 @@ export class ScorebordComponent implements OnInit {
     private checkForTeamEnterMessages() {
         let msgs: string[] = [];
         let spk = '';
-        let msgType = 'info';
+        let msgType = 'beurt';
         // gelijkmakende beurt
         if (this.wedstrijd.regels.idxOptie != 1) {
             if (this.idxTeam == 1 && this.wedstrijd.teams[0].stand.aantCar == this.wedstrijd.teams[0].teamTsCar) {
-                msgs.push('Laatste beurt');
+                msgs = ['Laatste', 'beurt'];
                 spk = 'Laatste beurt';
             }
         }
         // (voor)laatste beurt
         if (!spk.length) { // dus niet gelijkmakende beurt
-            const remainingBrt = this.wedstrijd.regels.maxBeurten - this.actieveTeam.stand.aantBrt;
+            const remainingBrt = this.wedstrijd.regels.maxBeurten - this.actieveSpeler.stand.aantBrt;
             if (remainingBrt === 1) {
-                msgs.push('Voorlaatste beurt');
+                msgs = ['Voorlaatste', 'beurt'];
                 spk = 'Voorlaatste beurt';
             }
             if (remainingBrt === 0) {
-                msgs.push('Laatste beurt');
+                msgs = ['Laatste', 'beurt'];
                 spk = 'Laatste beurt';
             }
         }
@@ -604,19 +622,20 @@ export class ScorebordComponent implements OnInit {
         this.actieveTeam.message.textCar = '';
         const remainingCar = this.actieveTeam.teamTsCar - this.actieveTeam.stand.aantCar - this.actieveTeam.stand.serie;
         if (remainingCar > 0 && remainingCar < 4) {
-            if (msgs.length) {
-                msgs[0] = msgs[0] + `. ${this.actieveTeam.teamNaam} - nog ${remainingCar}`;
+            msgs.push(this.actieveTeam.teamNaam);
+            msgs.push(`nog ${remainingCar}`);
+            msgType = 'remaining';
+            if (spk.length) {
                 spk = spk + `. ${this.actieveTeam.teamNaam}, nog ${remainingCar}.`;    
             }
             else {
-                msgs.push(`${this.actieveTeam.teamNaam} - nog ${remainingCar}`);
                 spk = `${this.actieveTeam.teamNaam}. Nog ${remainingCar}.`;    
             }
             this.actieveTeam.message.textCar = `nog ${remainingCar}`;
         }
         this.actieveTeam.message.show();
         if (msgs.length > 0) {
-            const modalMsg = new ModalMessage(msgType, msgs, spk, 3);
+            const modalMsg = new ModalMessage(msgType, msgs, spk, 4);
             this.modals.push(modalMsg);
             this.showModal();
             return;
@@ -631,6 +650,12 @@ export class ScorebordComponent implements OnInit {
         spl.stand.aantBrt++;
         if (team) {
             team.stand.aantBrt++;
+        }
+        if (this.wedstrijd.regels.idxOptie == 1) {
+            spl.stand.voortgang = Math.floor(100 * spl.stand.aantBrt / this.wedstrijd.regels.maxBeurten);
+            if (team) {
+                team.stand.voortgang = Math.floor(50 * team.stand.aantBrt / this.wedstrijd.regels.maxBeurten);
+            }
         }
         setTimeout(() => {
             this.setGemiddeldes(spl);
@@ -650,10 +675,16 @@ export class ScorebordComponent implements OnInit {
 
     private verminderBeurtenEnBerekenData(spl: WedSpeler, team?: WedTeam): void {
         spl.stand.aantBrt--;
+        if (this.wedstrijd.regels.idxOptie == 1) {
+            spl.stand.voortgang = Math.floor(100 * spl.stand.aantBrt / this.wedstrijd.regels.maxBeurten);
+        }
         spl.stand.serie = 0;
         this.setGemiddeldes(spl);
         if (team) {
             team.stand.aantBrt--;
+            if (this.wedstrijd.regels.idxOptie == 1) {
+                team.stand.voortgang = Math.floor(50 * team.stand.aantBrt / this.wedstrijd.regels.maxBeurten);
+            }
             team.stand.serie = 0;
             this.setTeamGemiddeldes(team);
             if (this.wedstrijd.telling.idxOptie == 0) {
@@ -708,10 +739,16 @@ export class ScorebordComponent implements OnInit {
         else {
             // werk beurten en stand huidige speler bij
             this.actieveSpeler.stand.aantBrt--;
+            if (this.wedstrijd.regels.idxOptie == 1) {
+                this.actieveSpeler.stand.voortgang = Math.floor(100 * this.actieveSpeler.stand.aantBrt / this.wedstrijd.regels.maxBeurten);
+            }
             this.actieveSpeler.stand.serie = 0;
             this.setGemiddeldes(this.actieveSpeler);
             if (this.isTeamWedstrijd()) {
                 this.actieveTeam.stand.aantBrt--;
+                if (this.wedstrijd.regels.idxOptie == 1) {
+                    this.actieveTeam.stand.voortgang = Math.floor(50 * this.actieveTeam.stand.aantBrt / this.wedstrijd.regels.maxBeurten);
+                }
                 this.actieveTeam.stand.serie = 0;
                 this.setTeamGemiddeldes(this.actieveTeam);
                 if (this.wedstrijd.telling.idxOptie == 0) {
@@ -780,14 +817,6 @@ export class ScorebordComponent implements OnInit {
                     spl.stand.punten = this.getPunten(spl);
                 });
             }
-        }
-        if (this.isTeamWedstrijd()) {
-            let laatsteSerie = this.actieveTeam.stand.score.pop();
-            if (!laatsteSerie) {
-                laatsteSerie = 0;
-            }
-            this.actieveTeam.stand.serie = laatsteSerie;
-            this.actieveTeam.stand.aantCar -= laatsteSerie;
         }
         // werk hoogste serie bij
         if (laatsteSerie === this.actieveSpeler.stand.hoogSer && laatsteSerie > 0) {
@@ -1139,8 +1168,10 @@ export class ScorebordComponent implements OnInit {
                 this.spraak.speak(this.modals[0].textToSpeak);
             }
             setTimeout(() => {
-                if (this.modals[0].type == 'enter') {
-                    this.followUpEnter();
+                if (this.modals[0].type == 'noteer') {
+                    setTimeout(() => {
+                        this.followUpEnter();
+                    }, 500);
                 }
                 this.hideModal();
             }, this.modals[0].duration);
