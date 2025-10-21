@@ -5,7 +5,9 @@
     --_color-pink: hsl(325 100% 50%);
     --_color-purple: hsl(300 100% 25%);
     --_color-orange: hsl(25 100% 50%);
+    --_color-lgreen: #6ec071;
     --_color-green: hsl(125 100% 25%);
+    --_color-dgreen: #1e461f;
     --_color-brown: hsl(10 100% 25%);
     --_color-black: hsl(0 0% 5%);
     --_color-white: hsl(0, 0%, 95%);
@@ -39,11 +41,23 @@
 .biljartbal[data-kleur="yellow"] {
     --_color: var(--_color-yellow);
 }
+.biljartbal.lichtgroen {
+    --_color: var(--_color-lgreen);
+}
+.biljartbal[data-kleur="lgreen"] {
+    --_color: var(--_color-lgreen);
+}
 .biljartbal.groen {
     --_color: var(--_color-green);
 }
 .biljartbal[data-kleur="green"] {
     --_color: var(--_color-green);
+}
+.biljartbal.donkergroen {
+    --_color: var(--_color-dgreen);
+}
+.biljartbal[data-kleur="dgreen"] {
+    --_color: var(--_color-dgreen);
 }
 .biljartbal[data-kleur="brown"] {
     --_color: var(--_color-brown);

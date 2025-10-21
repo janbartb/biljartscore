@@ -147,7 +147,7 @@ export class ScorebordComponent implements OnInit {
             this.idxTeam = -1;
             this.idxSpeler = -1;
             setTimeout(() => {
-                const modalMsg = new ModalMessage('klaar', ['Einde wedstrijd'], 'Einde wedstrijd', 3);
+                const modalMsg = new ModalMessage('klaar', ['Einde wedstrijd'], 'Einde wedstrijd', 2.5);
                 this.modals.push(modalMsg);
                 this.showModal();
             }, 1000);
@@ -422,14 +422,6 @@ export class ScorebordComponent implements OnInit {
             }
         }
         this.aantBereikt = this.checkForSerieMessages();
-        // if (nr > 0) {
-        //     if (!aantBereikt && !this.testMode) {
-        //         this.keysLocked = true;
-        //         setTimeout(() => {
-        //             this.keysLocked = false;
-        //         }, 3000);
-        //     }
-        // }
         setTimeout(() => {
             this.actieveSpeler.message.show();
             this.setGemiddeldes(this.actieveSpeler);

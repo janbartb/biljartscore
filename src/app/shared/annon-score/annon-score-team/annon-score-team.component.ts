@@ -16,5 +16,6 @@ export class AnnonScoreTeamComponent {
     @Input() team: AnnonTeam = new AnnonTeam(0);
     @Input() cats: AnnonCat[] = [];
     @Input() wedklaar: boolean = false;
+    @Input() border: string = 'bss-border';
     grijs: boolean = true;
 }

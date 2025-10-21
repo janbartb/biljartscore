@@ -1,12 +1,11 @@
-<div class="bordls fullheight flexbox flexstretch" [ngClass]="{'active': team.actief, 'smaller': !team.actief, 'pent': !team.grid.isAnnon}">
+<div class="bordls fullheight flexbox flexstretch" [class]="border" [ngClass]="{'active': team.actief, 'pent': !team.grid.isAnnon}">
     <div class="flexgrow1 flexbox flexcolumn">
         <div class="flexbox flexmiddle spelerdata active" style="height: 8em;">
             <div class="flexbox flexbase" style="width: 48em;">
                 <div class="flexgrow1" style="padding: 0 1em; white-space: nowrap; overflow: hidden;">
                     <span class="wit" style="font-size: 5em; line-height: 1.25;">{{team.teamNaam}}</span>
                 </div>
-                <div class="arial" style="padding: 0 1em; min-width: 16.5em;">
-                    <span style="font-size: 2.5em; color: lightgray;">moy: </span>
+                <div class="arial" style="padding: 0 1em; min-width: 10em;">
                     <span class="wit" style="font-size: 4em;">{{team.teamTsMoy | number:'1.3-3':'nl-NL'}}</span>
                 </div>
             </div>
@@ -27,9 +26,10 @@
                             @for (nr of team.teamTsCarArr; track $index) {
                                 <div class="cat-bullet-container flexbox flexcenter" [style.width]="team.grid.balContainerWidth + 'em'">
                                     <div data-kleur="" class="cat-bullet biljartbal" [style.width]="team.grid.balWidth + 'em'" 
-                                        [ngClass]="{'zwart': nr <= team.stand.totaal.cars[idx], 
+                                        [ngClass]="{'lichtgroen': !team.actief && nr <= team.stand.totaal.cars[idx], 
+                                                    'wit': team.actief && nr <= team.stand.totaal.cars[idx],
                                                     'rood': nr > team.stand.totaal.cars[idx] && nr <= (team.stand.totaal.cars[idx] + team.stand.serie.cars[idx]), 
-                                                    'wit': nr > (team.stand.totaal.cars[idx] + team.stand.serie.cars[idx])}">
+                                                    'donkergroen': nr > (team.stand.totaal.cars[idx] + team.stand.serie.cars[idx])}">
                                     </div>
                                 </div>
                             }
@@ -45,18 +45,18 @@
                     [ngClass]="{'active biljartbal': team.actief}">
             </div>
         </div>
-        <div class="flexgrow1 arial" style="width: 11em; color: lightgray;">
+        <div class="flexgrow1 arial" style="width: 11em; color: #6ec071;">
             <div style="height: 11em; padding-top: 1em;">
-                <div style="color: lightgray; text-align: center;">
-                    <span style="font-size: 2em;">Beurt</span>
+                <div style="color: #6ec071; text-align: center;">
+                    <span style="font-size: 2.5em;">Beurt</span>
                 </div>
                 <div class="annon-beurt">
                     <span style="font-size: 6em;">{{team.stand.aantBrt}}</span>
                 </div>
             </div>
-            <div style="height: 11em; padding-top: 1em;">
-                <div style="color: lightgray; text-align: center;">
-                    <span style="font-size: 2em;">Punt</span>
+            <div style="height: 11em; padding-top: .25em;">
+                <div style="color: #6ec071; text-align: center;">
+                    <span style="font-size: 2.5em;">Punt</span>
                 </div>
                 <div class="flexbox flexcenter">
                     <div class="annon-punten">

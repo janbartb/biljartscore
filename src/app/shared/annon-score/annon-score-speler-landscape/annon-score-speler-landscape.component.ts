@@ -16,5 +16,6 @@ export class AnnonScoreSpelerLandscapeComponent {
     @Input() speler: AnnonSpeler = new AnnonSpeler(0);
     @Input() cats: AnnonCat[] = [];
     @Input() wedklaar: boolean = false;
+    @Input() border = 'bss-border'; 
     grijs: boolean = true;
 }

@@ -1,6 +1,7 @@
 .annon-score {
     height: 18em;
     padding: 1em 0;
+    background-color: #102511;
 }
 .annon-score .category {
     height: 4em;
@@ -17,10 +18,11 @@
 
 .annon-score .category .catnaam {
     width: 9em;
-    color: #606060;
+    color: #6ec071;
 }
 .active .annon-score .category .catnaam {
-    color: black;
+    width: 9em;
+    color: #dbefdc;
 }
 .annon-score .category .catnaam > span {
     font-size: 1.5em;
@@ -28,25 +30,22 @@
 
 .annon-score .category .vol {
     text-align: center; 
-    color: #606060;
+    color: #6ec071;
 }
 .active .annon-score .category .vol {
-    color: black;
+    color: #dbefdc;
 }
 .annon-score .category .vol > span {
     font-size: 2.5em;
 }
-/* .annon-score .category .cat-bullet-container {
-    width: 3.7em;
-}
-.annon-score .category .cat-bullet-container .cat-bullet {
-    width: 3em;
-} */
-.annon-score .category .cat-bullet-container .cat-bullet.red {
-    background-color: red;
+.annon-score .category .cat-bullet-container .cat-bullet.hide {
+    visibility: hidden;
 }
 .annon-score .category .cat-bullet-container .cat-bullet.green {
     background-color: green;
+}
+.active .annon-extra .beurten {
+    color: #dbefdc;
 }
 
 .annon-extra {
@@ -56,11 +55,11 @@
 .annon-punten {
     height: 4.75em;
     width: 6em;
-    background-color: lightgray;
-    color: #606060;
+    background-color: #163317;
+    color: #6ec071;
     border-radius: .5em;
 }
 .active .annon-punten {
-    background-color: white;
-    color: black;
+    background-color: #dbefdc;
+    color: #163317;
 }

@@ -12,6 +12,7 @@ import { HelpComponent } from '../help/help.component';
 import { Apparaat } from '../../model/config';
 import { StatusService } from '../../services/status.service';
 import { AnnonScoreTeamComponent } from './annon-score-team/annon-score-team.component';
+import { NotificationComponent } from '../notification/notification.component';
 
 class ActieToetsen {
     beurtPlus: string[] = [];
@@ -37,6 +38,7 @@ class ActieToetsen {
         NgClass,
         SpelersNamenComponent,
         HelpComponent,
+        NotificationComponent,
         AnnonScoreSpelerLandscapeComponent,
         AnnonScoreSpelerComponent,
         AnnonScoreTeamComponent
@@ -88,13 +90,13 @@ export class AnnonScoreComponent implements OnInit {
         const ser = this.getSpelerSerieTotaal(this.activeSpeler);
         if (ser > 0) {
             const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.splSpreekNaam + ', ' + ser;
-            const modalMsg = new ModalMessage('serie', [this.activeSpeler.splBordNaam], msgToSpeak, 4, '' + ser);
+            const modalMsg = new ModalMessage('noteer', [this.activeSpeler.splBordNaam, '' + ser], msgToSpeak, 4);
             this.modals.push(modalMsg);
             this.showModal();
         }
         else {
             const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.splSpreekNaam + ', 0';
-            const modalMsg = new ModalMessage('serie', [this.activeSpeler.splBordNaam], msgToSpeak, 4, '0');
+            const modalMsg = new ModalMessage('noteer', [this.activeSpeler.splBordNaam, '0'], msgToSpeak, 4);
             this.modals.push(modalMsg);
             this.showModal();
         }
@@ -119,9 +121,11 @@ export class AnnonScoreComponent implements OnInit {
             });
             this.idxTeam = -1;
             this.idxSpeler = -1;
-            const modalMsg = new ModalMessage('success', ['▪ ▪ ▪ ▪ EINDE WEDSTRIJD ▪ ▪ ▪ ▪'], 'Einde wedstrijd', 3);
-            this.modals.push(modalMsg);
-            this.showModal();
+            setTimeout(() => {
+                const modalMsg = new ModalMessage('klaar', ['Einde wedstrijd'], 'Einde wedstrijd', 2.5);
+                this.modals.push(modalMsg);
+                this.showModal();
+            }, 1000);
             this.opslaan.emit(this.wedstrijd);
             return;
         }
@@ -152,22 +156,24 @@ export class AnnonScoreComponent implements OnInit {
         }
 
         const copyOfWedstrijd: Annonceer = JSON.parse(JSON.stringify(this.wedstrijd));
-        let msg = '';
+        let msgs = [];
         if (this.isTeamWedstrijd()) {
             this.activeTeam.stand.aantBrt++;
             this.activeSpeler.stand.aantBrt++;
             if (this.idxTeam == 0 && this.activeTeam.stand.aantBrt == 999) {
-                msg = 'Laatste beurt';
+                msgs.push('Laatste');
+                msgs.push('beurt');
             }
         }
         else {
             this.activeSpeler.stand.aantBrt++;
             if (this.idxSpeler == 0 && this.activeSpeler.stand.aantBrt == 999) {
-                msg = 'Laatste beurt';
+                msgs.push('Laatste');
+                msgs.push('beurt');
             }
         }
-        if (msg.length) {
-            const modalMsg = new ModalMessage('info', [msg], msg, 3);
+        if (msgs.length) {
+            const modalMsg = new ModalMessage('beurt', msgs, `${msgs[0]} ${msgs[1]}`, 3);
             this.modals.push(modalMsg);
             this.showModal();
         }
@@ -338,9 +344,11 @@ export class AnnonScoreComponent implements OnInit {
             this.setDefaultActieToetsen(this.wedstrijd.config.isAnnonceer);
         }
         if (this.wedstrijd.wedGespeeld) {
-            const modalMsg = new ModalMessage('success', ['▪ ▪ ▪ ▪ EINDE WEDSTRIJD ▪ ▪ ▪ ▪'], '', 3);
-            this.modals.push(modalMsg);
-            this.showModal();
+            setTimeout(() => {
+                const modalMsg = new ModalMessage('klaar', ['Einde wedstrijd'], '', 2);
+                this.modals.push(modalMsg);
+                this.showModal();
+            }, 2000);
             return;
         }
         this.setActiveSpeler();
@@ -357,8 +365,9 @@ export class AnnonScoreComponent implements OnInit {
         if (idxCat == -1) {
             return false;
         }
-        let msgType = 'info';
-        let msg = this.wedstrijd.config.cats[idxCat].naam;
+        let msgs: string[] = [];
+        let msgType = 'serie';
+        msgs.push(this.wedstrijd.config.cats[idxCat].naam);
         let spk = this.wedstrijd.config.cats[idxCat].spkNaam;
         let aantalWasTeam = 0;
         let aantalBijTeam = 0;
@@ -379,20 +388,24 @@ export class AnnonScoreComponent implements OnInit {
                 aantalTotTeam++;
                 const remaining = this.activeTeam.teamTsCar - aantalTotTeam;
                 if (remaining == 0) {
-                    msg += ' is vol';
+                    msgs.push('');
+                    msgs.push('is vol');
                     spk += ' is vol';
                 }
                 else if (remaining < 4) {
-                    msg += ': ' + aantalBijTeam + ' - nog ' + remaining;
+                    msgs.push('' + aantalBijTeam);
+                    msgs.push(`en nog ${remaining}`);
                     spk += ', ' + aantalBijTeam + ', en nog ' + remaining;
                 }
                 else {
-                    msg += ': ' + aantalBijTeam;
+                    msgs.push('' + aantalBijTeam);
+                    msgs.push('');
                     spk += ', ' + aantalBijTeam;
                 }
             }
             else {
-                msg += ' is al vol';
+                msgs.push('');
+                msgs.push('is al vol');
                 spk += ' is al vol';
             }
         }
@@ -403,25 +416,29 @@ export class AnnonScoreComponent implements OnInit {
                 aantalTot++;
                 const remaining = this.activeSpeler.splTsCar - aantalTot;
                 if (remaining == 0) {
-                    msg += ' is vol';
+                    msgs.push('');
+                    msgs.push('is vol');
                     spk += ' is vol';
                 }
                 else if (remaining < 4) {
-                    msg += ': ' + aantalBij + ' - nog ' + remaining;
+                    msgs.push('' + aantalBij);
+                    msgs.push(`en nog ${remaining}`);
                     spk += ', ' + aantalBij + ', en nog ' + remaining;
                 }
                 else {
-                    msg += ': ' + aantalBij;
+                    msgs.push('' + aantalBij);
+                    msgs.push('');
                     spk += ', ' + aantalBij;
                 }
             }
             else {
-                msg += ' is al vol';
+                msgs.push('');
+                msgs.push('is al vol');
                 spk += ' is al vol';
             }
         }
 
-        const modalMsg = new ModalMessage(msgType, [msg], spk, 3);
+        const modalMsg = new ModalMessage(msgType, msgs, spk, 3);
         this.modals.push(modalMsg);
         this.showModal();
         if (this.isTeamWedstrijd()) {
@@ -788,8 +805,10 @@ export class AnnonScoreComponent implements OnInit {
                 this.spraak.speak(this.modals[0].textToSpeak);
             }
             setTimeout(() => {
-                if (this.modals[0].type == 'serie') {
-                    this.followUpEnter();
+                if (this.modals[0].type == 'noteer') {
+                    setTimeout(() => {
+                        this.followUpEnter();
+                    }, 500);
                 }
                 this.hideModal();
             }, this.modals[0].duration);

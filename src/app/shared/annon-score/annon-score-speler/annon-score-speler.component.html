@@ -1,4 +1,4 @@
-<div class="bord wit" [ngClass]="{'active': speler.actief, 'smaller': !speler.actief, 'pent': !speler.grid.isAnnon, 'grijs': grijs}">
+<div class="bord" [class]="border" [ngClass]="{'active': speler.actief, 'pent': !speler.grid.isAnnon}">
     <div class="speler-data flexbox flexstretch">
         <!-- naam en te spelen moyenne -->
         <div style="width: 20em;">
@@ -7,7 +7,6 @@
             </div>
             <div class="speler-tsmoy">
                 <div style="position: relative; top: -.5em; line-height: 2.5em;">
-                    <span style="font-size: 2em; color: lightgray;">moy: </span>
                     <span style="font-size: 2.5em; padding-right: .5em;">{{speler.splTsMoy | number:'1.3-3':'nl-NL'}}</span>
                 </div>
             </div>
@@ -35,9 +34,11 @@
                     @for (nr of speler.splTsCarArr; track $index) {
                         <div class="cat-bullet-container flexbox flexcenter" [style.width]="speler.grid.balContainerWidth + 'em'">
                             <div data-kleur="" class="cat-bullet biljartbal" style="height: 3em;" [style.width]="speler.grid.balWidth + 'em'" 
-                                [ngClass]="{'zwart': nr <= speler.stand.totaal.cars[idx], 
-                                            'rood': nr > speler.stand.totaal.cars[idx] && nr <= (speler.stand.totaal.cars[idx] + speler.stand.serie.cars[idx]), 
-                                            'wit': nr > (speler.stand.totaal.cars[idx] + speler.stand.serie.cars[idx])}">
+                                [ngClass]="{'lichtgroen': !speler.actief && nr <= speler.stand.totaal.cars[idx], 
+                                            'wit': speler.actief && nr <= speler.stand.totaal.cars[idx],
+                                            'rood': nr > speler.stand.totaal.cars[idx] && nr <= (speler.stand.totaal.cars[idx] + speler.stand.serie.cars[idx]),
+                                            'donkergroen': nr > (speler.stand.totaal.cars[idx] + speler.stand.serie.cars[idx]),
+                                            'hide': isTeamWed && nr > (speler.stand.totaal.cars[idx] + speler.stand.serie.cars[idx])}">
                             </div>
                         </div>
                     }
@@ -46,14 +47,14 @@
         }
     </div>
     <div class="annon-extra speler-data arial flexbox flexmiddle">
-        <div style="width: 5.75em; color: lightgray;">
+        <div style="width: 5.75em;">
             <span style="font-size: 2em;">Beurt</span>
         </div>
-        <div style="width: 7em; padding-right: .5em; line-height: 1;">
+        <div class="beurten" style="width: 7em; padding-right: .5em; line-height: 1;">
             <span style="font-size: 4em;">{{speler.stand.aantBrt}}</span>
         </div>
         <div class="flexgrow1"></div>
-        <div style="width: 5em; color: lightgray; padding-right: 1em;">
+        <div style="width: 5em; padding-right: 1em;">
             <span style="font-size: 2em;">Punt</span>
         </div>
         <div class="annon-punten flexbox flexcenter flexmiddle">

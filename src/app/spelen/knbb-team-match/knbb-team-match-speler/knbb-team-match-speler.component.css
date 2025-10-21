@@ -2,10 +2,7 @@
     height: 2em;
     line-height: 1.75em;
     padding: 0 .5em;
-    color: #404040;
-    border-top: .125em solid black;
-    border-bottom: .0625em solid grey;
-    background-color: lightgray;
+    background-color: #357a38;
 }
 
 .data-container {
@@ -36,7 +33,7 @@
     line-height: 1.5em;
 }
 .data-line div.data-label {
-    color: gray;
+    color: #b7dfb8;
 }
 .data-line div.data-label.data-pad {
     padding: 0 .5em;
@@ -49,10 +46,14 @@
 }
 .data-line div.data-num {
     text-align: right;
-    color: black;
+    color: white;
 }
-.data-line div.data-num.comment {
-    color: grey;
+.geel .data-line div.data-num {
+    text-align: right;
+    color: gold;
+}
+.data-line div.data-num.comment, .geel .data-line div.data-num.comment {
+    color: #b7dfb8;
 }
 .data-line div.data-num span {
     font-size: 1.25em;

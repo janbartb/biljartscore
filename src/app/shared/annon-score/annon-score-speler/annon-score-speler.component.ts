@@ -15,6 +15,8 @@ import { DecimalPipe, NgClass } from '@angular/common';
 export class AnnonScoreSpelerComponent {
     @Input() speler: AnnonSpeler = new AnnonSpeler(0);
     @Input() cats: AnnonCat[] = [];
-    @Input() wedklaar: boolean = false; 
+    @Input() isTeamWed: boolean = false;
+    @Input() wedklaar: boolean = false;
+    @Input() border = 'bss-border'; 
     grijs: boolean = true;
 }

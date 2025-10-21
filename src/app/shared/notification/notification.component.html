@@ -5,9 +5,20 @@
             <div style="height: 2em;"></div>
             <div class="flexgrow1 flexbox flexcenter flexmiddle">
                 <div>
-                    <div style="font-size: 10em; line-height: 1; text-align: center;">{{modal.texts[0]}}</div>
-                    @if (modal.texts[1].length) {
-                        <div style="font-size: 6em; line-height: 1.25; text-align: center; color: #b7dfb8;">{{modal.texts[1]}}</div>
+                    @if (spel == 'annon') {
+                        <div style="font-size: 6em; line-height: 1.2; text-align: center; color: #b7dfb8;">{{modal.texts[0]}}</div>
+                        @if (modal.texts[1].length) {
+                            <div style="font-size: 10em; line-height: 1; text-align: center; color: white;">{{modal.texts[1]}}</div>
+                        }
+                        @if (modal.texts[2].length) {
+                            <div style="font-size: 6em; line-height: 1.2; text-align: center; color: #b7dfb8;">{{modal.texts[2]}}</div>
+                        }
+                    }
+                    @else {
+                        <div style="font-size: 10em; line-height: 1; text-align: center;">{{modal.texts[0]}}</div>
+                        @if (modal.texts[1].length) {
+                            <div style="font-size: 6em; line-height: 1.25; text-align: center; color: #b7dfb8;">{{modal.texts[1]}}</div>
+                        }
                     }
                 </div>
             </div>
@@ -17,11 +28,11 @@
         <div style="font-weight: normal; text-align: center; color: #b7dfb8; padding: 5em 0 2em 0;">
             <i class="fas fa-file-alt" style="font-size: 6em;"></i>
         </div>
-        <div style="text-align: center; height: 7em; line-height: 7em; white-space: nowrap; 
+        <div [ngClass]="{'noteer-annon': spel == 'annon'}" style="text-align: center; height: 7em; line-height: 7em; white-space: nowrap; 
                     overflow: hidden; text-overflow: ellipsis; padding: 0 1em;">
             <span style="font-size: 5em;">{{modal.texts[0]}}</span>
         </div>
-        <div style="text-align: center; height: 10em; line-height: 10em;">
+        <div [ngClass]="{'noteer-annon': spel == 'annon'}" style="text-align: center; height: 10em; line-height: 10em;">
             <span style="font-size: 10em;">{{modal.texts[1]}}</span>
         </div>
     }
@@ -83,16 +94,33 @@
 @else if (type == 'horizontal') {
     <!-- horizontal notification panel -->
     @if (modal.type == 'serie') {
-        <div class="fullheight flexbox flexcenter flexmiddle">
-            <div>
-                <span style="font-size: 8em;">{{modal.texts[0]}}</span>
+        @if (spel == 'annon') {
+            <div class="fullheight flexbox flexcenter flexmiddle">
+                <div style="font-size: 5em; line-height: 1.2; color: #b7dfb8;">{{modal.texts[0]}}</div>
+                @if (modal.texts[1].length) {
+                    <div style="padding-left: 4em; line-height: 1; color: white;">
+                        <span style="font-size: 8em;">{{modal.texts[1]}}</span>
+                    </div>
+                }
+                @if (modal.texts[2].length) {
+                    <div style="padding-left: 4em; line-height: 1.2; color: #b7dfb8;">
+                        <span style="font-size: 5em;">{{modal.texts[2]}}</span>
+                    </div>
+                }
             </div>
-            @if (modal.texts[1].length) {
-                <div style="padding-left: 4em;">
-                    <span style="font-size: 6em; color: #b7dfb8;;">{{modal.texts[1]}}</span>
+        }
+        @else {
+            <div class="fullheight flexbox flexcenter flexmiddle">
+                <div>
+                    <span style="font-size: 8em;">{{modal.texts[0]}}</span>
                 </div>
-            }
-        </div>
+                @if (modal.texts[1].length) {
+                    <div style="padding-left: 4em;">
+                        <span style="font-size: 6em; color: #b7dfb8;;">{{modal.texts[1]}}</span>
+                    </div>
+                }
+            </div>
+        }
     }
     @else if (modal.type == 'noteer') {
         <div class="fullheight flexbox flexcenter flexmiddle">

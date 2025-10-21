@@ -11,8 +11,8 @@
     <div class="speler-container">
         <app-knbb-team-match-speler [spl]="team.spelers[2]" [teg]="teg.spelers[2]" [status]="status[2]"></app-knbb-team-match-speler>
     </div>
-    <div class="speler-container">
-        <div class="tot-container flexbox" style="color: white;">
+    <div class="speler-container" style="background-color: #1e461f;">
+        <div class="tot-container flexbox">
             <div class="flexgrow1">
                 <span style="font-size: 1.5em;">TEAM</span>
             </div>
@@ -20,7 +20,7 @@
                 <span style="font-size: 1.25em;">{{totalen.tsCar}}</span>
             </div>
         </div>
-        <div class="flexbox flexstretch arial">
+        <div class="flexbox flexstretch arial" [ngClass]="{'geel': idx == 1}">
             <div class="flexgrow1">
                 <div class="flexbox">
                     <div class="flex65perc">
@@ -55,7 +55,8 @@
             <div style="width: 5em; padding-right: .5em;">
                 <div class="flexbox flexright">
                     <div style="width: 4em; height: 3em; padding: .125em;">
-                        <div class="flexbox flexcenter flexmiddle" style="border: .125em solid green; border-radius: .5em; background-color: white;">
+                        <div class="flexbox flexcenter flexmiddle" style="border: .125em solid green; border-radius: .5em;"
+                                    [style.background-color]="idx == 0 ? 'white' : 'gold'">
                             <div style="font-size: 2em; line-height: 1.25em; color: black;">
                                 <span [ngClass]="{'clr-red': status[3] == 2 && totalen.punten >= tegPunten}">
                                     {{totalen.punten}}

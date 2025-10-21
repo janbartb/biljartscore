@@ -477,7 +477,7 @@ export class AnnonSpelersComponent extends BaseComponent implements OnInit {
         }
         speler.splTsCarArr = this.getAantalBallenArr(speler.splTsCar);
         speler.grid.isAnnon = this.wedstrijd.config.isAnnonceer;
-        if (this.wedstrijd.config.aantSpelers == 2 || this.wedstrijd.config.aantSpelers == 3 || this.wedstrijd.config.aantSpelers == 5) {
+        if (this.wedstrijd.config.aantSpelers == 2 || this.wedstrijd.config.aantSpelers == 5) {
             this.setSpelerGrid(speler, true);
         }
         else {

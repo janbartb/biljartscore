@@ -1,20 +1,14 @@
-.bordls { background-color: #606060; transition: transform .5s; }
-.bordls.active { background-color: black; }
-.bordls.smaller {
-    transform: scale(.9);
-    /* transform: scale(.9) translateY(.25em); */
-}
-
-.spelerdata .wit { color: white; }
+.bordls { background-color: #265728; color: #93cf95; }
+.bordls.active { color: white; }
 
 .spelerdata .biljartbal { font-size: 6em; color: black; }
 .spelerdata .bal { border-radius: 50%; font-size: 6em; }
 .spelerdata .bal.wit { color: white; border: .0625em solid white; }
 .spelerdata .bal.wit.active { background-color: white; color: black; }
 
-.annon-score {background-color: lightgray; padding: .5em 0; }
+.annon-score {background-color: #102511; padding: .5em 0; }
 .pent .annon-score { padding: .75em 0; }
-.bordls.active .annon-score {background-color: white; }
+/* .bordls.active .annon-score {background-color: #1e461f; } */
 
 .annon-score .category {
     height: 5.75em;
@@ -26,10 +20,10 @@
 }
 .annon-score .category .catnaam {
     width: 16em;
-    color: #606060;
+    color: #93cf95;
 }
 .active .annon-score .category .catnaam {
-    color: black;
+    color: white;
 }
 .annon-score .category .catnaam > span {
     font-size: 2.5em;
@@ -37,10 +31,10 @@
 
 .annon-score .category .vol {
     text-align: center; 
-    color: #606060;
+    color: #6ec071;
 }
 .active .annon-score .category .vol {
-    color: black;
+    color: #dbefdc;
 }
 .annon-score .category .vol > span {
     font-size: 3em;
@@ -51,12 +45,6 @@
 .pent .annon-score .cat-bullet.biljartbal {
     height: 4.25em;
 }
-/* .annon-score .category .cat-bullet-container {
-    width: 5.5em;
-}
-.annon-score .category .cat-bullet-container .cat-bullet {
-    width: 5em;
-} */
 .annon-score .category .cat-bullet-container .cat-bullet.red {
     background-color: red;
 }
@@ -65,21 +53,21 @@
 }
 
 .annon-beurt {
-    color: lightgray; text-align: center; line-height: 1;
+    color: #6ec071; text-align: center; line-height: 1;
 }
 .active .annon-beurt {
-    color: white;
+    color: #dbefdc;
 }
 
 .annon-punten {
     width: 8em;
     line-height: 1;
     text-align: center;
-    background-color: lightgray;
-    color: #606060;
+    background-color: #163317;
+    color: #6ec071;
     border-radius: .5em;
 }
 .active .annon-punten {
-    background-color: white;
-    color: black;
+    background-color: #dbefdc;
+    color: #163317;
 }

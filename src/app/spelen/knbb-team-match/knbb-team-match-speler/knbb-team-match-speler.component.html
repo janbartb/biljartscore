@@ -1,4 +1,4 @@
-<div>
+<div style="background-color: #1e461f;">
     <div class="spl-container flexbox">
         <div class="flexgrow1">
             <div style="max-width: 20em; white-space: nowrap; overflow: hidden;">
@@ -12,7 +12,7 @@
             <span style="font-size: 1.25em;">{{spl.splTsCar}}</span>
         </div>
     </div>
-    <div class="flexbox flexstretch arial" style="height: 3.5em;">
+    <div class="flexbox flexstretch arial" [ngClass]="{'geel': !spl.metWit}" style="height: 3.5em;">
         <div class="flexgrow1">
             <div class="flexbox">
                 <div class="flex65perc">
@@ -23,7 +23,8 @@
                         <div class="data-num comment" style="width: 2em;">
                             <span>{{perc}}</span>
                         </div>
-                        <div class="data-label"><span>%)&nbsp;&nbsp;in</span></div>
+                        <div class="data-label"><span>%)</span></div>
+                        <div class="data-label" style="padding-left: 1.5em;"><span>in</span></div>
                         <div class="data-num" style="width: 2.25em;"><span>{{spl.stand.aantBrt}}</span></div>
                         <div class="data-label data-pad-l"><span>brt.</span></div>
                     </div>
@@ -46,7 +47,8 @@
         <div style="width: 5em; padding-right: .5em;">
             <div class="flexbox flexright">
                 <div style="width: 4em; height: 3em; padding: .125em;">
-                    <div class="flexbox flexcenter flexmiddle" style="border: .125em solid green; border-radius: .5em; background-color: white;">
+                    <div class="flexbox flexcenter flexmiddle" style="border: .125em solid green; border-radius: .5em;"
+                                [style.background-color]="spl.metWit ? 'white' : 'gold'">
                         <div style="font-size: 2em; line-height: 1.25em; color: black;">
                             <span [ngClass]="{'clr-red': status == 2 && spl.stand.punten >= teg.stand.punten}">{{spl.stand.punten}}</span>
                         </div>
