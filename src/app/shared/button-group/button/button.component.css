@@ -3,8 +3,8 @@
     padding: .125em;
 }
 .cmp-button {
-    color: gray;
-    background-color: #d4ffd4;
+    color: #265728;
+    background-color: #6ec071;
     line-height: 1.5em;
     border: .0625em solid green;
     border-radius: .5em;
@@ -16,13 +16,14 @@
     cursor: not-allowed;
 }
 .cmp-button:not(.disabled):hover, .cmp-button:not(.disabled).selected {
-    color: black;
+    color: #dbefdc;
     border-color: black;
-    background-color: #84ff84;
+    background-color: #1e461f;
 }
 .cmp-button:not(.disabled):hover .cmp-button-key, .cmp-button:not(.disabled).selected .cmp-button-key {
     color: black;
     border-color: black;
+    background-color: gray;
 }
 .cmp-button-key {
     min-width: 1.4em;
@@ -30,14 +31,15 @@
     padding: 0 .25em;
     margin-left: .25em;
     line-height: 1.2;
-    border: .0625em solid gray;
+    border: .0625em solid #265728;
     border-radius: .25em;
-    color: gray;
+    color: #265728;
     background-color: lightgray;
     cursor: pointer;
 }
 .cmp-button-key.selected, .cmp-button-key:hover {
     color: black;
+    background-color: gray;
     border-color: black;
 }
 
