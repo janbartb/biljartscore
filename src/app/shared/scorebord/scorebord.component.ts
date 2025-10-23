@@ -275,6 +275,10 @@ export class ScorebordComponent implements OnInit {
             return false;
         }        
         if (event.key === 'Escape') {
+            if (this.actieveSpeler.stand.serie > 0) {
+                this.addNumberToSerie('-1');
+                return false;
+            }
             this.keyPressed.emit('Escape');
             return false;
         }

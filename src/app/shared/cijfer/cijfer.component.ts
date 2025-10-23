@@ -96,7 +96,6 @@ export class CijferComponent {
                 result.push(' ');
             }
         }
-        console.log(result);
         return result;
     }
 

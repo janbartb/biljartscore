@@ -11,7 +11,7 @@
                         <app-knbb-team-match-team [match]="match" [idx]="0" [status]="wedStatus" style="color: white;"></app-knbb-team-match-team>
                     </div>
                     <div style="flex: 0 0 2em; height: 25.5em;">
-                        <div style="height: 3.5em; background-color: white;"></div>
+                        <div style="height: 3.5em; background-color: #b7dfb8;"></div>
                         <div style="height: 5.5em; padding: .25em .5em;">
                             @switch (wedStatus[0]) {
                                 @case (0) {
@@ -94,3 +94,6 @@
         </div>
     }
 </div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}

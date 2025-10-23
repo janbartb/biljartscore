@@ -33,7 +33,6 @@ export class GetalVarComponent {
         // this.cijfers = this.getCijfers();
         effect(() => {
             const g = this.getal().replaceAll('.', '');
-            console.log(`GETAL VAR (${this.naam}) : ${g}`);
             const gNum = g.replaceAll(',', '.');
             this.getalNum = Number(gNum);
             this.moveUp = this.getalNum >= this.getalOldNum;

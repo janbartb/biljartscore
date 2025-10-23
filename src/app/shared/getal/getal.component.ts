@@ -28,7 +28,6 @@ export class GetalComponent {
         // this.cijfers = this.getCijfers();
         effect(() => {
             const g = this.getal().replaceAll('.', '');
-            console.log(`GETAL (${this.naam}) : ${g}`);
             const gNum = g.replaceAll(',', '.');
             this.getalNum = Number(gNum);
             this.moveUp = this.getalNum >= this.getalOld;

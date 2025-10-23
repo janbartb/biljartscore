@@ -8,6 +8,8 @@ import { ButtonComponent } from '../../shared/button-group/button/button.compone
 import { ModalMessage } from '../../model/modal-message';
 import { ActivatedRoute } from '@angular/router';
 import { HelperService } from '../../services/helper.service';
+import { Alinea, ConfirmDialog } from '../../model/dialogs';
+import { ConfirmComponent } from "../../shared/confirm/confirm.component";
 
 @Component({
     selector: 'app-knbb-team-match',
@@ -15,7 +17,8 @@ import { HelperService } from '../../services/helper.service';
     imports: [
         PageHeaderComponent,
         KnbbTeamMatchTeamComponent,
-        ButtonComponent
+        ButtonComponent,
+        ConfirmComponent
     ],
     templateUrl: './knbb-team-match.component.html',
     styleUrl: './knbb-team-match.component.css'
@@ -31,6 +34,7 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
     wedStatus: number[] = [0, 0, 0, 0];
     voortgang: string[] = ['0%', '0%', '0%', '0%'];
     buttonGroup: ButtonGroup = new ButtonGroup();
+    confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
     modals: ModalMessage[] = [];
     modalVisible: boolean = false;
 
@@ -103,13 +107,33 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
     }
 
     nieuwClicked(): void {
-        this.match = new TeamMatch();
-        this.saveMatchAndContinue();
+        this.confirmNieuweMatch();
+    }
+
+    private confirmNieuweMatch() {
+        let inhoud: Alinea[] = [];
+        inhoud.push(new Alinea([`Nieuwe team match aanmaken.`, 'De huidige uitslag gaat verloren.']));
+        inhoud.push(new Alinea([`Weet u het zeker?`]));
+        this.confirmDialog = new ConfirmDialog('nieuwe match', inhoud);
+        this.isDialogOpen = true;
+    }
+
+    confirmReplied(confirmed: boolean) {
+        if (confirmed) {
+            this.match = new TeamMatch();
+            this.isDialogOpen = false;
+            this.saveMatchAndContinue();
+            return;
+        }
+        this.isDialogOpen = false;
     }
 
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
+        if (this.isDialogOpen) {
+            return true;
+        }
         if (event.key === 'Enter') {
             this.buttonPressed(3);
             return false;
