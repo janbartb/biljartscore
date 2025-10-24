@@ -28,10 +28,10 @@
                                 </div>
                             </div>
                             <div class="flexbox flexright flexend" style="height: 7em;">
-                                <div style="padding-right: 1em; color: rgb(0, 153, 255);">
+                                <div style="padding-right: 1em; color: #00ccff;">
                                     <span style="font-size: 5em; line-height: 1.2;">+</span>
                                 </div>
-                                <div style="color: rgb(0, 153, 255); font-size: 7em;">
+                                <div style="color: #00ccff; font-size: 7em;">
                                     <app-getal [naam]="'ser'" [getal]="'' + team.stand.serie" [format]="formatSer" [isSerie]="true"></app-getal>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@
                 </div>
             </div>
             <div class="arial flexbox flexcenter" style="height: 7em; padding-top: 2em;">
-                <app-getal-var style="font-size: 5em;" [style.color]="team.stand.serie > team.stand.hoogSer ? 'blue' : ''" 
+                <app-getal-var style="font-size: 5em;" [style.color]="team.stand.serie > team.stand.hoogSer ? '#00ccff' : ''" 
                     [getal]="(team.stand.serie > team.stand.hoogSer) ? '' + team.stand.serie : '' + team.stand.hoogSer"
                     [naam]="'hoogser'" [format]="'09'"></app-getal-var>
             </div>

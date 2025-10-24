@@ -50,10 +50,10 @@
                         </div>
                     </div>
                     <div class="flexbox flexright flexend" style="height: 6em;">
-                        <div style="padding-right: 1em; color: #0097bd;">
+                        <div style="padding-right: 1em; color: #00ccff;">
                             <span style="font-size: 3.5em; line-height: 1.2;">+</span>
                         </div>
-                        <div style="color: #0097bd" [style.font-size]="formatSer.length < 3 ? '5.5em' : '5em'">
+                        <div style="color: #00ccff;" [style.font-size]="formatSer.length < 3 ? '5.5em' : '5em'">
                             <app-getal [naam]="'ser'" [getal]="'' + speler.stand.serie" [format]="formatSer" [isSerie]="true"></app-getal>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                     <span style="font-size: 2em; line-height: 1;">SER</span>
                 </div>
                 <div class="flexbox flexcenter" style="height: 4em; padding-top: .25em;">
-                    <app-getal-var style="font-size: 3.5em;" [style.color]="speler.stand.serie > speler.stand.hoogSer ? '#0097bd' : ''" 
+                    <app-getal-var style="font-size: 3.5em;" [style.color]="speler.stand.serie > speler.stand.hoogSer ? '#00ccff' : ''" 
                         [getal]="(speler.stand.serie > speler.stand.hoogSer) ? '' + speler.stand.serie : '' + speler.stand.hoogSer"
                         [naam]="'hoogser'" [format]="'09'"></app-getal-var>
                 </div>
