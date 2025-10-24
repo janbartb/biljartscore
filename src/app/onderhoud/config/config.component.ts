@@ -75,16 +75,40 @@ export class ConfigComponent extends BaseComponent implements OnInit {
         this.appData.gotoPage(this.router.url, this.router.url + '/rand');
     }
 
+    toggleRepeatRemaining() {
+        if (this.speech?.value) {
+            this.repeatRemaining?.setValue(!this.repeatRemaining.value);
+        }
+    }
+
+    toggleSayGenoteerd() {
+        if (this.speech?.value) {
+            this.sayGenoteerd?.setValue(!this.sayGenoteerd.value);
+        }
+    }
+
     toggleSpeech() {
         this.speech?.setValue(!this.speech.value);
         if (this.speech?.value) {
-            this.stem?.enable();
-            this.speechTest?.enable();
+            this.enableSpeechFields();
         }
         else {
-            this.stem?.disable();
-            this.speechTest?.disable();
+            this.disableSpeechFields();
         }
+    }
+
+    private enableSpeechFields() {
+        this.stem?.enable();
+        this.speechTest?.enable();
+        this.repeatRemaining?.enable();
+        this.sayGenoteerd?.enable();
+    }
+
+    private disableSpeechFields() {
+        this.stem?.disable();
+        this.speechTest?.disable();
+        this.repeatRemaining?.disable();
+        this.sayGenoteerd?.disable();
     }
 
     spreekTest() {
@@ -140,7 +164,10 @@ export class ConfigComponent extends BaseComponent implements OnInit {
             .then((data => {
                 this.voices = data;
                 console.log(this.voices);
-                this.createForm();                    
+                this.createForm();
+                if (!this.speech?.value) {
+                    this.disableSpeechFields();
+                }
             }));
         })
         .catch((err) => {
@@ -159,6 +186,8 @@ export class ConfigComponent extends BaseComponent implements OnInit {
         this.config.vereniging = this.vereniging?.value;
         this.config.speech = this.speech?.value;
         this.config.stem = this.stem?.value;
+        this.config.repeatRemaining = this.repeatRemaining?.value;
+        this.config.sayGenoteerd = this.sayGenoteerd?.value;
         this.bssApi.saveConfig(this.config)
         .then(resp => {
             this.alert.showAlert(resp.message, 'success');
@@ -184,10 +213,11 @@ export class ConfigComponent extends BaseComponent implements OnInit {
             vereniging: [this.config.vereniging],
             speech: [this.config.speech],
             stem: [this.config.stem],
-            speechTest: [this.spraakTest]
+            speechTest: [this.spraakTest],
+            repeatRemaining: [this.config.repeatRemaining],
+            sayGenoteerd: [this.config.sayGenoteerd]
         });
         this.formCreated = true;
-        console.log(this.configForm);
     }
 
     get spelsoort() {
@@ -213,5 +243,11 @@ export class ConfigComponent extends BaseComponent implements OnInit {
     }
     get speechTest() {
         return this.configForm.get('speechTest');
+    }
+    get repeatRemaining() {
+        return this.configForm.get('repeatRemaining');
+    }
+    get sayGenoteerd() {
+        return this.configForm.get('sayGenoteerd');
     }
 }

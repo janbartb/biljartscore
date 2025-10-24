@@ -88,6 +88,22 @@
                             </div>
                         </div>
                         <div class="row flexbox">
+                            <div class="label"></div>
+                            <div>
+                                <div><i [style.color]="speech?.value ? 'black' : 'gray'" [ngClass]="repeatRemaining?.value ? 'fas fa-check-square' : 'far fa-square'" 
+                                            (click)="toggleRepeatRemaining()"></i></div>
+                            </div>
+                            <div style="padding-left: 1em; color: green;">Herhaal de 'en nog ...' meldingen bij hetzelfde aantal</div>
+                        </div>
+                        <div class="row flexbox">
+                            <div class="label"></div>
+                            <div>
+                                <div><i [style.color]="speech?.value ? 'black' : 'gray'" [ngClass]="sayGenoteerd?.value ? 'fas fa-check-square' : 'far fa-square'" 
+                                            (click)="toggleSayGenoteerd()"></i></div>
+                            </div>
+                            <div style="padding-left: 1em; color: green;">Spreek het woord 'genoteerd' uit bij beurtwisseling</div>
+                        </div>
+                        <div class="row flexbox">
                             <div class="label">Spraak test</div>
                             <div class="flexbox flexmiddle">
                                 <div>

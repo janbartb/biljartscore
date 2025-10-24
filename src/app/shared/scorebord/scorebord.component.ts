@@ -65,6 +65,8 @@ export class ScorebordComponent implements OnInit {
     testMode: boolean = false;
     testModeToggled: boolean = false;
     speechToggled: boolean = false;
+    repeatRemaining: boolean = false;
+    sayGenoteerd: boolean = false;
 
     enterPressed() {
         if (this.wedstrijd.wedGespeeld) {
@@ -86,7 +88,7 @@ export class ScorebordComponent implements OnInit {
     processEnter() {
         // werk score bij
         const notif = [this.actieveSpeler.splBordNaam, '' + this.actieveSpeler.stand.serie];
-        const msgToSpeak = 'Genoteerd, ' + this.actieveSpeler.splSpreekNaam + ', ' + this.actieveSpeler.stand.serie;
+        const msgToSpeak = (this.sayGenoteerd ? 'Genoteerd, ' : '') + this.actieveSpeler.splSpreekNaam + ', ' + this.actieveSpeler.stand.serie;
         const modalMsg = new ModalMessage('noteer', notif, msgToSpeak, 4);
         this.modals.push(modalMsg);
         this.showModal();
@@ -342,6 +344,8 @@ export class ScorebordComponent implements OnInit {
             this.alert.showAlert('Apparaten configuratie niet gevonden. Default toetsen worden gebruikt.', 'warning', 5);
             this.setDefaultActieToetsen();
         }
+        this.repeatRemaining = this.appData.getConfig()?.repeatRemaining || false;
+        this.sayGenoteerd = this.appData.getConfig()?.sayGenoteerd || false;
         if (this.wedstrijd.wedGespeeld) {
             if (this.wedstrijd.telling.idxOptie == 0) {
                 if (this.isTeamWedstrijd()) {
@@ -563,19 +567,21 @@ export class ScorebordComponent implements OnInit {
         }
         this.actieveSpeler.message.textBrt = spk.length ? spk : '';
         // herhaal 'en nog ...' melding
-        this.actieveSpeler.message.textCar = '';
-        const remainingCar = this.actieveSpeler.splTsCar - this.actieveSpeler.stand.aantCar - this.actieveSpeler.stand.serie;
-        if (remainingCar > 0 && remainingCar < 4) {
-            msgs.push(this.actieveSpeler.splBordNaam);
-            msgs.push(`nog ${remainingCar}`);
-            msgType = 'remaining';
-            if (spk.length) {
-                spk = spk + `. ${this.actieveSpeler.splBordNaam}, nog ${remainingCar}.`;    
+        if (this.repeatRemaining) {
+            this.actieveSpeler.message.textCar = '';
+            const remainingCar = this.actieveSpeler.splTsCar - this.actieveSpeler.stand.aantCar - this.actieveSpeler.stand.serie;
+            if (remainingCar > 0 && remainingCar < 4) {
+                msgs.push(this.actieveSpeler.splBordNaam);
+                msgs.push(`nog ${remainingCar}`);
+                msgType = 'remaining';
+                if (spk.length) {
+                    spk = spk + `. ${this.actieveSpeler.splBordNaam}, nog ${remainingCar}.`;    
+                }
+                else {
+                    spk = `${this.actieveSpeler.splSpreekNaam}. Nog ${remainingCar}.`;    
+                }
+                this.actieveSpeler.message.textCar = `nog ${remainingCar}`;
             }
-            else {
-                spk = `${this.actieveSpeler.splSpreekNaam}. Nog ${remainingCar}.`;    
-            }
-            this.actieveSpeler.message.textCar = `nog ${remainingCar}`;
         }
         this.actieveSpeler.message.show();
         if (msgs.length > 0) {
@@ -615,19 +621,21 @@ export class ScorebordComponent implements OnInit {
         }
         this.actieveTeam.message.textBrt = spk.length ? spk : '';
         // herhaal 'en nog ...' melding
-        this.actieveTeam.message.textCar = '';
-        const remainingCar = this.actieveTeam.teamTsCar - this.actieveTeam.stand.aantCar - this.actieveTeam.stand.serie;
-        if (remainingCar > 0 && remainingCar < 4) {
-            msgs.push(this.actieveTeam.teamNaam);
-            msgs.push(`nog ${remainingCar}`);
-            msgType = 'remaining';
-            if (spk.length) {
-                spk = spk + `. ${this.actieveTeam.teamNaam}, nog ${remainingCar}.`;    
+        if (this.repeatRemaining) {
+            this.actieveTeam.message.textCar = '';
+            const remainingCar = this.actieveTeam.teamTsCar - this.actieveTeam.stand.aantCar - this.actieveTeam.stand.serie;
+            if (remainingCar > 0 && remainingCar < 4) {
+                msgs.push(this.actieveTeam.teamNaam);
+                msgs.push(`nog ${remainingCar}`);
+                msgType = 'remaining';
+                if (spk.length) {
+                    spk = spk + `. ${this.actieveTeam.teamNaam}, nog ${remainingCar}.`;    
+                }
+                else {
+                    spk = `${this.actieveTeam.teamNaam}. Nog ${remainingCar}.`;    
+                }
+                this.actieveTeam.message.textCar = `nog ${remainingCar}`;
             }
-            else {
-                spk = `${this.actieveTeam.teamNaam}. Nog ${remainingCar}.`;    
-            }
-            this.actieveTeam.message.textCar = `nog ${remainingCar}`;
         }
         this.actieveTeam.message.show();
         if (msgs.length > 0) {

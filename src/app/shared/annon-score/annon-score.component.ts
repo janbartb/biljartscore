@@ -67,6 +67,7 @@ export class AnnonScoreComponent implements OnInit {
     testMode: boolean = false;
     testModeToggled: boolean = false;
     speechToggled: boolean = false;
+    sayGenoteerd: boolean = false;
     isDialogOpen: boolean = false;
 
     enterPressed(): void {
@@ -89,13 +90,13 @@ export class AnnonScoreComponent implements OnInit {
     processEnter() {
         const ser = this.getSpelerSerieTotaal(this.activeSpeler);
         if (ser > 0) {
-            const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.splSpreekNaam + ', ' + ser;
+            const msgToSpeak = (this.sayGenoteerd ? 'Genoteerd, ' : '') + this.activeSpeler.splSpreekNaam + ', ' + ser;
             const modalMsg = new ModalMessage('noteer', [this.activeSpeler.splBordNaam, '' + ser], msgToSpeak, 4);
             this.modals.push(modalMsg);
             this.showModal();
         }
         else {
-            const msgToSpeak = 'Genoteerd, ' + this.activeSpeler.splSpreekNaam + ', 0';
+            const msgToSpeak = (this.sayGenoteerd ? 'Genoteerd, ' : '') + this.activeSpeler.splSpreekNaam + ', 0';
             const modalMsg = new ModalMessage('noteer', [this.activeSpeler.splBordNaam, '0'], msgToSpeak, 4);
             this.modals.push(modalMsg);
             this.showModal();
@@ -343,6 +344,7 @@ export class AnnonScoreComponent implements OnInit {
             this.alert.showAlert('Apparaten configuratie niet gevonden. Default toetsen worden gebruikt.', 'warning', 5);
             this.setDefaultActieToetsen(this.wedstrijd.config.isAnnonceer);
         }
+        this.sayGenoteerd = this.appData.getConfig()?.sayGenoteerd || false;
         if (this.wedstrijd.wedGespeeld) {
             setTimeout(() => {
                 const modalMsg = new ModalMessage('klaar', ['Einde wedstrijd'], '', 2);

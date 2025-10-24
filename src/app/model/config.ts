@@ -9,6 +9,8 @@ export class Config {
     klasse: string = '';
     speech: boolean = true;
     stem: string = '';
+    repeatRemaining: boolean = true;
+    sayGenoteerd: boolean = true;
     notify: boolean = false;
     version: string = '1.0.0';
     apparaten: Apparaat[] = [];
