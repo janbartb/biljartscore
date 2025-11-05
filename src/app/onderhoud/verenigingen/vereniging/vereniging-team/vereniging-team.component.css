@@ -1,6 +1,9 @@
-.multselect.selected {
+.lijst-row:not(.multselect) {
+    opacity: .6;
+}
+.lijst-row:not(.multselect).hovered, .lijst-row:not(.multselect):hover {
     opacity: 1;
 }
-.multselect.selected:hover, .multselect.selected.hovered {
-    opacity: .5;
+.lijst-row.multselect:hover, .lijst-row.multselect.hovered {
+    opacity: .6;
 }

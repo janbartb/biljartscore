@@ -2,8 +2,8 @@
     <div class="fullheight flexbox flexcolumn">
         <div>
             <app-page-header [title]="'KNBB team match'" [subtitle]="'Controle selectie spelers'" [spel]="appData.getSpelNaam()"
-                    [escCount]="escapeCount" (escClicked)="escapePressed()" (prevClicked)="previousClicked()"
-                    (hdrClicked)="headerClicked($event)"></app-page-header>
+                    [escCount]="escapeCount" [help]="true" (escClicked)="escapePressed()" (prevClicked)="previousClicked()"
+                    (hdrClicked)="headerClicked($event)" (hlpClicked)="helpClicked()"></app-page-header>
         </div>
         @if (dataReady) {
             <div class="flexgrow1 flexbox flexstretch">
@@ -131,3 +131,33 @@
         }
     </div>
 </div>
+<app-help [title]="'Team match - controle selectie spelers'">
+    <div>
+        Op dit scherm kunnen er nog een aantal gegevens van de spelers worden gewijzigd.<br>
+        Let op! Deze wijzigingen hebben alleen betrekking op deze match. Ga naar 'Onderhoud gegevens / Spelers' om spelergegevens definitief te wijzigen.
+    </div>
+    <div class="help-card-header">Speler selecteren</div>
+    <div>Klik op een speler of gebruik de pijltjes-toetsen om een speler te selecteren. Een rood kader geeft de geselecteerde speler aan.</div>
+    <div class="help-card-header">Spelers wisselen</div>
+    <div>
+        Wanneer 2 spelers binnen een team hetzelfde aantal caramboles hebben dan mogen deze spelers worden gewisseld. <br>
+        Selecteer een speler die daarvoor in aanmerking komt en onderin zal een button verschijnen met 'Omhoog' of 'Omlaag', al naar gelang de situatie.
+        Klik op de button (of gebruik de aangegeven toetsen) om de geselecteerde speler te verplaatsen.
+    </div>
+    <div class="help-card-header">Gegevens wijzigen</div>
+    <div>
+        Van een geselecteerde speler kan de naam, het moyenne en/of het aantal caramboles worden gewijzigd. Na wijzigingen kan altijd worden teruggegaan
+        naar de oorspronkelijke situatie door onderin op de 'Reset' button te klikken.
+    </div>
+    <div class="help-card-alinea">
+        Bij wijziging van het moyenne wordt automatisch het aantal caramboles aangepast.
+    </div>
+    <div class="help-card-alinea">
+        De spelers moeten altijd op volgorde van aantal caramboles staan.<br>
+        Wanneer dit door het wijzigen van het aantal caramboles niet meer het geval is dan kan dat gecorrigeerd worden door op de button 'Omhoog' of
+        'Omlaag' te klikken tot de volgorde weer correct is.
+    </div>
+    <div class="help-card-alinea">
+        Pas als alle gegevens en de volgorde correct zijn verschijnt onderin de button 'Naar match' om verder te gaan.
+    </div>
+</app-help>

@@ -1,0 +1,116 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Biljartpoint'" [subtitle]="'Oude seizoenen verwijderen'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                        (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        @if (!seizoenen.length) {
+            <div class="flexgrow1 flexbox flexcenter flexmiddle">
+                <div class="label" style="font-size: 1.25em;">Er zijn geen te verwijderen seizoenen.</div>
+            </div>
+        }
+        @else {
+            <div class="flexbox flexcenter flexmiddle" style="padding: .5em;">
+                <div class="label" style="padding-right: .5em;">Selecteer seizoen</div>
+                <div>
+                    <select [(ngModel)]="seizoen" (change)="seizoenSelected()">
+                        @for (item of seizoenen; track $index) {
+                            <option [value]="item">{{item}}</option>
+                        }
+                    </select>
+                </div>
+                @if (seizoen == huidigSeizoen) {
+                    <div style="color: red; text-align: center; padding-left: 1em;">
+                        <span>Let op! Dit is het huidige seizoen.</span>
+                    </div>
+                }
+            </div>
+            @if (compsToDelete.length) {
+                <div class="label" style="padding-bottom: .5em; text-align: center;">
+                    Alle onderstaande KNBB competities en teams zullen worden verwijderd.
+                </div>
+            }
+            <div class="flexgrow1 scroll-container" style="border-top: .125em solid green;">
+                <div #complijst class="scroll-content">
+                    <div class="flexbox flexcenter">
+                        <div>
+                            <table class="tbl-normal tbl-list">
+                                <tbody>
+                                    @for (comptd of compsToDelete; track $index) {
+                                        <tr class="w3-green-col-d7">
+                                            <td>{{comptd.comp.seizoen}}</td>
+                                            <td>{{comptd.comp.knbbId}}</td>
+                                            <td>{{comptd.comp.klasse}}</td>
+                                            <td colspan="2" style="width: 25em;">{{comptd.comp.naam}}</td>
+                                            <td>
+                                                @if (comptd.verwijderd) {
+                                                    <i class="fas fa-check"></i>
+                                                }
+                                                @else {
+                                                    <i class="fas fa-minus"></i>
+                                                }
+                                            </td>
+                                        </tr>
+                                        @for (teamtd of comptd.teams; track $index) {
+                                            <tr class="w3-green-col-d3">
+                                                <td colspan="3"></td>
+                                                <td style="width: 5em;">{{teamtd.team.knbbId}}</td>
+                                                <td>{{teamtd.team.naam}}</td>
+                                                <td>
+                                                    @if (teamtd.verwijderd) {
+                                                        <i class="fas fa-check"></i>
+                                                    }
+                                                    @else {
+                                                        <i class="fas fa-minus"></i>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (compsToDelete.length) {
+                <app-section-footer-btns [buttons]="buttons" (clickedButton)="confirmVerwijderen()" 
+                            [cssFooter]="'w3-green-bdr-d3'" [cssButtons]="'font125'"></app-section-footer-btns>
+
+            }
+        }
+    </div>
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}
+<app-help [title]="'Team match - resultaat overzicht'">
+    <div>
+        Dit scherm toont het resultaat overzicht van de team match.<br>
+        Je kan naar een wedstrijd (scorebord) gaan, de wedstrijdlijsten opvragen of een nieuwe team match aanmaken.
+    </div>
+    <div class="help-card-header">Naar wedstrijd (scorebord)</div>
+    <div>
+        Klik op de '1', '2' of '3' button (of toets 1, 2 of 3) om naar de betreffende wedstrijd te gaan. Via deze buttons kun je dus zelf
+        de volgorde van de te spelen wedstrijden bepalen. <br>
+    </div>
+    <div class="help-card-alinea">
+        Wanneer je op de 'Naar wedstrijd' button klikt zal het systeem (op volgorde) naar de eerste wedstrijd gaan die nog niet compleet gespeeld is.
+    </div>
+    <div class="help-card-alinea">
+        Op het scorebord kun je via de 'Esc' toets weer teruggaan naar dit scherm.
+    </div>
+    <div class="help-card-header">Naar wedstrijdlijsten</div>
+    <div>
+        Klik op de 'Lijsten' button (of druk op de 'L' toets) om naar de wedstrijdlijsten pagina te gaan. Druk vanaf daar op 'Esc' om weer terug
+        te keren naar dit scherm.
+    </div>
+    <div class="help-card-header">Nieuwe match aanmaken</div>
+    <div>
+        Klik op de 'Nieuwe match' button (of druk op de 'N' toets) om een nieuwe team match aan te maken. <br>
+        Er volgt dan eerst een bevestigings-scherm waarop je deze actie kan bevestigen of annuleren.
+    </div>
+    <div class="help-card-alinea">
+        Let op! Wanneer je deze actie bevestigt dan gaat alle data van de huidige match verloren.
+    </div>
+</app-help>

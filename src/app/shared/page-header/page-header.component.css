@@ -12,6 +12,15 @@
     padding-right: 1rem;
 }
 
+.header-help {
+    font-size: 1.25rem;
+    padding-right: 1rem;
+}
+.header-help:hover {
+    cursor: pointer;
+    color: yellow;
+}
+
 .header-subtitle {
     height: 2rem;
     font-size: 1.25rem;

@@ -3,7 +3,7 @@ import { PageHeaderComponent } from '../../../shared/page-header/page-header.com
 import { NgClass } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { BaseComponent } from '../../../base/base.component';
-import { KnbbCompetitie, KnbbCompTeam, KnbbCompTeamSpeler } from '../../../model/knbb-competitie';
+import { KnbbCompetitie, KnbbCompTeam } from '../../../model/knbb-competitie';
 import { List } from '../../../model/list';
 import { Team } from '../../../model/vereniging';
 import { Button } from '../../../model/button';

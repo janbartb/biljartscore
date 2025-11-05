@@ -10,4 +10,6 @@ import { AlertService } from '../../services/alert.service';
 })
 export class HelpComponent {
     alertService = inject(AlertService);
+
+    @Input() title = 'BSS Help';
 }

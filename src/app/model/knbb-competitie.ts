@@ -24,34 +24,6 @@ export class KnbbCompTeam {
     }
 }
 
-export class KnbbCompTeamOld {
-    compTeamId: string = '';
-    verId: string = '';
-    teamId: string = '';
-    klasse: string = '';
-    volgNr: number = 0;
-    naam: string = '';
-    spelers: KnbbCompTeamSpeler[] = [];
-    matches: KnbbCompMatchResultaat[] = [];
-
-    constructor(team: Team) {
-        this.verId = team.verId;
-        this.teamId = team.teamId;
-        this.klasse = team.klasse;
-        this.volgNr = team.volgNr;
-        this.compTeamId = this.verId + '|' + this.teamId;
-        this.naam = team.naam;
-    }
-}
-
-export class KnbbCompTeamSpeler {
-    splId: string = '';
-
-    constructor(id: string) {
-        this.splId = id;
-    }
-}
-
 export class KnbbCompMatchResultaat {
     tegTeamId: string = '';
     datum: string = '';

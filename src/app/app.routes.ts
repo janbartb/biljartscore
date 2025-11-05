@@ -70,6 +70,7 @@ import { EigenCompetitieWedsComponent } from './spelen/eigen/eigen-competitie/ei
 import { BpTeamComponent } from './biljartpoint/bp-competitie-team/bp-team/bp-team.component';
 import { TryoutComponent } from './tryout/tryout.component';
 import { RandApparatuurComponent } from './onderhoud/config/rand-apparatuur/rand-apparatuur.component';
+import { BpDelSeizoenComponent } from './biljartpoint/bp-del-seizoen/bp-del-seizoen.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -153,6 +154,7 @@ export const routes: Routes = [
     { path: 'bpoint/team', component: BpTeamComponent },
     { path: 'bpoint/spelers', component: BpSpelersComponent },
     { path: 'bpoint/moyennes', component: BpMoyennesComponent },
+    { path: 'bpoint/opschonen', component: BpDelSeizoenComponent },
     { path: 'error/:condition', component: ErrorPageComponent },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', redirectTo: 'home', pathMatch: 'full' }

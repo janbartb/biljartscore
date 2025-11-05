@@ -115,8 +115,6 @@ export class OnderhoudComponent extends BaseComponent implements OnInit {
         this.menu.addItem(new MenuItem('5', 'KNBB klassen en moyennes', 'moyennes'));
         this.menu.addItem(new MenuItem('6', 'KNBB competities', 'knbbcompetities'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('7', 'Spelsoorten', 'spelsoorten'));
-        this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('8', 'Eigen competities', 'eigencomps'));
+        this.menu.addItem(new MenuItem('7', 'Eigen competities', 'eigencomps'));
     }
 }

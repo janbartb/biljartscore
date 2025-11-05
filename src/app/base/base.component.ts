@@ -48,6 +48,10 @@ export class BaseComponent {
         }
     }
 
+    helpClicked(arg?: boolean) {
+        this.alert.helpVisible = !this.alert.helpVisible;
+    }
+
     isRequired(form: FormGroup, field: string): boolean {
         if (!form) return false;
         return form.controls[field]?.hasValidator(Validators.required);

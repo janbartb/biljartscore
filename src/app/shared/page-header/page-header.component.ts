@@ -18,8 +18,10 @@ export class PageHeaderComponent implements OnInit, OnChanges {
     @Input() escCount: number = 0;
     @Input() spel: string = this.appData.getSpelNaam();
     @Input() district: string = '';
+    @Input() help: boolean = false;
     @Output() prevClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() escClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() hlpClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() hdrClicked: EventEmitter<string> = new EventEmitter<string>();
 
     escapes: number[] = [];
@@ -38,6 +40,12 @@ export class PageHeaderComponent implements OnInit, OnChanges {
 
     previousClicked() {
         this.prevClicked.emit(true);
+    }
+
+    helpClicked() {
+        if (this.help) {
+            this.hlpClicked.emit(true);
+        }
     }
 
     private setEscapeButtons() {

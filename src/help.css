@@ -1,3 +1,13 @@
+.help-card-header {
+    font-size: 1rem;
+    line-height: 2;
+    font-weight: bold;
+    color: #2e6830;
+}
+.help-card-alinea {
+    padding-top: .375rem;
+}
+
 .helptext {
     height: 1em;
     line-height: .75em;

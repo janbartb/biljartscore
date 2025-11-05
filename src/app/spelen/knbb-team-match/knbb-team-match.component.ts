@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HelperService } from '../../services/helper.service';
 import { Alinea, ConfirmDialog } from '../../model/dialogs';
 import { ConfirmComponent } from "../../shared/confirm/confirm.component";
+import { HelpComponent } from '../../shared/help/help.component';
 
 @Component({
     selector: 'app-knbb-team-match',
@@ -17,6 +18,7 @@ import { ConfirmComponent } from "../../shared/confirm/confirm.component";
     imports: [
         PageHeaderComponent,
         KnbbTeamMatchTeamComponent,
+        HelpComponent,
         ButtonComponent,
         ConfirmComponent
     ],
@@ -82,6 +84,9 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
         else if (idx == 3) {
             this.wedstrijdClicked(-1);
         }
+        else if (idx == 4) {
+            this.lijstenClicked();
+        }
         else {
             this.nieuwClicked();
         }
@@ -106,7 +111,15 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
         this.router.navigate(['teammatch/score/' + (index + 1)]);
     }
 
-    nieuwClicked(): void {
+    lijstenClicked() {
+        this.appData.gotoPage(this.router.url, 'teammatch/lijst');
+    }
+
+    nieuwClicked(noConfirm?: boolean): void {
+        if (noConfirm) {
+            this.confirmReplied(true);
+            return;
+        }
         this.confirmNieuweMatch();
     }
 
@@ -131,6 +144,10 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
+        if (this.alert.helpVisible) {
+            this.alert.hideHelp();
+            return false;
+        }        
         if (this.isDialogOpen) {
             return true;
         }
@@ -164,11 +181,15 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.code === 'KeyN') {
-            this.buttonPressed(4);
+            this.buttonPressed(5);
             return false;
         }
         if (event.code === 'KeyL' || event.key === '*') {
-            this.appData.gotoPage(this.router.url, 'teammatch/lijst');
+            this.buttonPressed(4);
+            return false;
+        }
+        if (event.code === 'KeyH' || event.code === 'Slash') {
+            super.helpClicked();
             return false;
         }
         return true;
@@ -188,11 +209,11 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
                 this.match = resp.match;
             }
             else {
-                this.nieuwClicked();
+                this.nieuwClicked(true);
                 return;
             }
             if (this.match.compId == '') {
-                this.nieuwClicked();
+                this.nieuwClicked(true);
                 return;
             }
             if (this.match.teams.length < 2) {
@@ -225,6 +246,7 @@ export class KnbbTeamMatchComponent extends BaseComponent implements OnInit {
             this.buttonGroup.addButton(new Button('2', 'Wedstrijd 2', true, true));
             this.buttonGroup.addButton(new Button('3', 'Wedstrijd 3', true, true));
             this.buttonGroup.addButton(new Button('W', 'Naar wedstrijd'));
+            this.buttonGroup.addButton(new Button('L', 'Lijsten', true));
             this.buttonGroup.addButton(new Button('N', 'Nieuwe match', true));
         })
         .catch(err => {

@@ -70,7 +70,7 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     constructor() {
         super();
         effect(() => {
-            this.htmlInputKnbbId()?.nativeElement.focus();
+            // this.htmlInputKnbbId()?.nativeElement.focus();
             this.htmlSelectKlasse()?.nativeElement.focus();
         });
     }
@@ -96,6 +96,11 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     }
 
     override escapePressed(): void {
+        if (this.selectieLijst.hoveredIdx >= 0) {
+            this.selectieLijst.hoveredIdx = -1;
+            this.setEscapeCount();
+            return;
+        }
         if (this.teamChanged) {
             this.teamForm.reset();
             this.fillSelectieLijst();
@@ -216,10 +221,12 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
                 if (event.key === 'ArrowUp') {
                     this.selectieLijst.hoverPreviousItem();
                     this.ledenScroll.scrollUp(this.selectieLijst.hoveredIdx);
+                    this.setEscapeCount();
                 }
                 if (event.key === 'ArrowDown') {
                     this.selectieLijst.hoverNextItem();
                     this.ledenScroll.scrollDown(this.selectieLijst.hoveredIdx);
+                    this.setEscapeCount();
                 }
                 return false;    
             }
@@ -272,7 +279,7 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
                 this.subtitle = `Vereniging ${this.vereniging.naam}`;
                 if (teamId == 'toevoegen') {
                     this.mode = 'add';
-                    this.teamChanged = true;
+                    this.teamChanged = false;
                     this.teamTitle = 'Team toevoegen';
                     this.createdId = this.spelId;
                     this.existingIds = this.vereniging.teams
@@ -413,6 +420,9 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
 
     private setEscapeCount() {
         this.escapeCount = this.teamChanged ? 1 : 0;
+        if (this.selectieLijst.hoveredIdx >= 0) {
+            this.escapeCount++;
+        }
     }
 
     private sortKlassen() {

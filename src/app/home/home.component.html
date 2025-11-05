@@ -1,53 +1,42 @@
-<div>
+<div class="fullPageHeight">
     @if (screenReady) {
-        <div class="flexbox flexcenter flexmiddle" style="height: 100vh;">
-            <div>
-                <div style="height: .25em;" class="w3-teal"></div>
-                <div style="padding: 1rem 0;">
-                    <div class="flexbox flexmiddle">
-                        <div style="padding-right: 1rem;"><img src="images/ballen2.jpg" style="height: 5rem;" alt=""></div>
-                        <div>
-                            <div class="w3-text-green" style="font-size: 2.75rem; font-weight: bold; line-height: 1.2;">Biljart Scorebord Systeem</div>
-                            <div class="flexbox flexbetween" style="font-size: .75rem;">
-                                <div style="padding-left: .25rem;">v{{version}}</div>
-                                <div>&copy; Jan Bart Biemans</div>    
+        <div class="fullheight">
+            <div style="height: 4em;"></div>
+            <div class="flexbox flexcenter flexmiddle" style="padding: 2em 0; background-color: #93cf95;">
+                <div>
+                    <div style="height: .25em;" class="w3-green-d4"></div>
+                    <div style="padding: 1rem 0;">
+                        <div class="flexbox flexmiddle">
+                            <div style="padding-right: 1rem;"><img src="images/ballen2.jpg" style="height: 5rem;" alt=""></div>
+                            <div>
+                                <div class="w3-green-col-d6" style="font-size: 2.75rem; font-weight: bold; line-height: 1.2;">Biljart Scorebord Systeem</div>
+                                <div class="flexbox flexbetween w3-green-col-d3" style="font-size: .75rem;">
+                                    <div style="padding-left: .25rem;">v{{version}}</div>
+                                    <div>&copy; Jan Bart Biemans</div>    
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div style="height: .25em;" class="w3-green-d4"></div>
                 </div>
-                <div style="height: .25em;" class="w3-teal"></div>
-                @if (notAllowed) {
-                    <div style="margin-top: 4em; text-align: center; color: red;">
-                        <span>U gebruikt een illegale versie van dit programma !</span>
-                    </div>
-                }
-                @else {
-                    <div class="flexbox flexcenter" style="margin-top: 2rem;">
-                        <div class="flexbox">
-                            <div>
-                                <label for="spelsoort">Kies een spelsoort</label>
-                            </div>
-                            <div>
-                                <select id="spelsoort" [(ngModel)]="spelId" (change)="spelsoortChanged()" (keyup)="keyupSpelsoort($event)">
-                                    @for (spel of spelsoorten; track $index) {
-                                        <option [ngValue]="spel.spelsoortId">{{spel.spelsoortNaam}}</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flexbox flexcenter" style="margin-top: 2rem;">
-                        <div>
-                            <div style="text-align: center; padding-bottom: 1em;">
-                                <span style="color: green;">En maak een keuze</span>
-                            </div>
-                            <div class="flexgrow1 flexbox flexcenter flexmiddle" style="font-size: 1.25em;">
-                                <app-menu [menu]="menu" (menuItemClicked)="menuItemClicked($event)"></app-menu>
-                            </div>   
-                        </div>
-                    </div>    
-                }
             </div>
-        </div>    
+            <div style="text-align: center;" class="w3-green-col-d3">
+                <span>voor driebanden, annonceren en pentathlon</span>
+            </div>
+            @if (notAllowed) {
+                <div style="margin-top: 4em; text-align: center; color: red;">
+                    <span>U gebruikt een illegale versie van dit programma !</span>
+                </div>
+            }
+            @else {
+                <div class="flexbox flexcenter" style="margin-top: 3rem;">
+                    <div>
+                        <div class="flexgrow1 flexbox flexcenter flexmiddle" style="font-size: 1.25em;">
+                            <app-menu [menu]="menu" (menuItemClicked)="menuItemClicked($event)"></app-menu>
+                        </div>   
+                    </div>
+                </div>    
+            }
+        </div>
     }
 </div>

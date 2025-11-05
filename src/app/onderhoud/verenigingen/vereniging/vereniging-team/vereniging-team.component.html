@@ -9,7 +9,7 @@
         <div class="flexgrow1 flexbox flexstretch">
             <!-- Team section -->
             <div class="flex50perc flexbox flexcolumn" style="border-right: .25rem solid #93cf95;">
-                <app-section-header [title]="'Team'" [cssClasses]="'w3-green-l4'" [active]="activeSection == 0"
+                <app-section-header [title]="'Team'" [cssClasses]="'w3-green-l3'" [active]="activeSection == 0"
                             (headerClicked)="activateSection(0)"></app-section-header>
                 <div class="flexgrow1">
                     <div class="flexbox flexcenter">
@@ -107,7 +107,7 @@
                 </div>
             </div>
             <div class="flex50perc flexbox flexcolumn">
-                <app-section-header [title]="'Selecteer teamleden'" [cssClasses]="'w3-green-l4'" [active]="activeSection == 1"
+                <app-section-header [title]="'Selecteer teamleden'" [cssClasses]="'w3-green-l3'" [active]="activeSection == 1"
                             (headerClicked)="activateSection(1)"></app-section-header>
                 <div class="flexgrow1 scroll-container">
                     <div #ledenlijst class="scroll-content">
@@ -115,7 +115,7 @@
                             <div class="lijst">
                                 @for (spl of selectieLijst.filtered; track $index) {
                                     <div class="lijst-row selectable" (click)="spelerSelectieClicked($index)"
-                                            [ngClass]="{'hovered': selectieLijst.hoveredIdx == $index}">
+                                            [ngClass]="{'hovered': selectieLijst.hoveredIdx == $index, 'multselect': spl.spelerSelected}">
                                         <div class="lijst-col label" style="width: 2.5em;">
                                             <i class="fas" [ngClass]="spl.spelerSelected ? 'fa-check' : ''"></i>
                                         </div>
@@ -133,12 +133,12 @@
                 </div>
             </div>
         </div>
-        @if (teamChanged || (activeSection == 1 && selectieLijst.hoveredIdx >= 0)) {
+        @if ((teamChanged && teamForm && teamForm.valid && !duplicateId) || (activeSection == 1 && selectieLijst.hoveredIdx >= 0)) {
             <app-section-footer-btns [buttons]="buttons" [btnsHide]="[!teamChanged,
             activeSection == 0 || selectieLijst.hoveredIdx < 0 || selectieLijst.filtered[selectieLijst.hoveredIdx].spelerSelected, 
             activeSection == 0 || selectieLijst.hoveredIdx < 0 || !selectieLijst.filtered[selectieLijst.hoveredIdx].spelerSelected
         ]" (clickedButton)="buttonClicked($event)"
-            [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
+            [cssFooter]="'w3-green-bdr-l2'" [cssButtons]="'font125'"></app-section-footer-btns>
 
         }
     </div>

@@ -2,8 +2,8 @@
     @if (matchRead) {
         <div class="fullheight flexbox flexcolumn" style="background-color: #b7dfb8;">
             <div>
-                <app-page-header [title]="'KNBB team match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
-                            (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)"></app-page-header>
+                <app-page-header [title]="'KNBB team match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [help]="true"
+                    (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (hlpClicked)="helpClicked()"></app-page-header>
             </div>
             <div style="height: 25.5em;">
                 <div class="flexbox flexstart">
@@ -97,3 +97,33 @@
 @if (isDialogOpen) {
     <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
 }
+<app-help [title]="'Team match - resultaat overzicht'">
+    <div>
+        Dit scherm toont het resultaat overzicht van de team match.<br>
+        Je kan naar een wedstrijd (scorebord) gaan, de wedstrijdlijsten opvragen of een nieuwe team match aanmaken.
+    </div>
+    <div class="help-card-header">Naar wedstrijd (scorebord)</div>
+    <div>
+        Klik op de '1', '2' of '3' button (of toets 1, 2 of 3) om naar de betreffende wedstrijd te gaan. Via deze buttons kun je dus zelf
+        de volgorde van de te spelen wedstrijden bepalen. <br>
+    </div>
+    <div class="help-card-alinea">
+        Wanneer je op de 'Naar wedstrijd' button klikt zal het systeem (op volgorde) naar de eerste wedstrijd gaan die nog niet compleet gespeeld is.
+    </div>
+    <div class="help-card-alinea">
+        Op het scorebord kun je via de 'Esc' toets weer teruggaan naar dit scherm.
+    </div>
+    <div class="help-card-header">Naar wedstrijdlijsten</div>
+    <div>
+        Klik op de 'Lijsten' button (of druk op de 'L' toets) om naar de wedstrijdlijsten pagina te gaan. Druk vanaf daar op 'Esc' om weer terug
+        te keren naar dit scherm.
+    </div>
+    <div class="help-card-header">Nieuwe match aanmaken</div>
+    <div>
+        Klik op de 'Nieuwe match' button (of druk op de 'N' toets) om een nieuwe team match aan te maken. <br>
+        Er volgt dan eerst een bevestigings-scherm waarop je deze actie kan bevestigen of annuleren.
+    </div>
+    <div class="help-card-alinea">
+        Let op! Wanneer je deze actie bevestigt dan gaat alle data van de huidige match verloren.
+    </div>
+</app-help>

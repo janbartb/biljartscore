@@ -414,6 +414,19 @@ export class ApiService {
         return json;
     }
 
+    async saveVerenigingen(verenigingen: Vereniging[]): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + '/verenigingen', {
+            method: 'PUT',
+            body: JSON.stringify(verenigingen),
+            headers: this.myHeaders
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
     async updateVereniging(vereniging: Vereniging): Promise<ApiResponse> {
         const response: Response = await fetch(this.dbUrl + `/verenigingen/${vereniging.verId}`, {
             method: 'PUT',
@@ -586,6 +599,19 @@ export class ApiService {
     async deleteKnbbCompetitie(comp: KnbbCompetitie): Promise<ApiResponse> {
         const response: Response = await fetch(this.dbUrl + `/knbb/${comp.district}/${comp.spelsoort}/${comp.competitieId}`, {
             method: 'DELETE'
+        });
+        const json: ApiResponse = await response.json();
+        if (!response.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    }
+
+    async saveKnbbCompetities(comps: KnbbCompetitie[], distId: string, spelId: string): Promise<ApiResponse> {
+        const response: Response = await fetch(this.dbUrl + `/knbb/${distId}/${spelId}`, {
+            method: 'PUT',
+            body: JSON.stringify(comps),
+            headers: this.myHeaders
         });
         const json: ApiResponse = await response.json();
         if (!response.ok) {

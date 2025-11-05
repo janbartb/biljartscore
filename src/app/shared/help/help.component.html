@@ -1,8 +1,12 @@
 @if (alertService.helpVisible) {
-    <div class="help-container flexbox flexcenter flexmiddle">
-        <div class="help-card" (click)="alertService.hideHelp()">
+    <div class="help-container flexbox flexcenter flexmiddle" (click)="alertService.hideHelp()">
+        <div class="help-card">
             <div class="help-card-inner">
-                <div>
+                <div class="help-card-title">
+                    <span><i class="fas fa-question-circle"></i> {{title}}</span>
+                </div>
+                <hr>
+                <div class="help-card-content">
                     <ng-content></ng-content>
                 </div>
             </div>

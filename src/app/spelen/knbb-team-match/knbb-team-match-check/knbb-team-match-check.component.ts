@@ -9,6 +9,7 @@ import { Button } from '../../../model/button';
 import { DOCUMENT } from '@angular/common';
 import { HelperService } from '../../../services/helper.service';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
+import { HelpComponent } from '../../../shared/help/help.component';
 
 @Component({
     selector: 'app-knbb-team-match-check',
@@ -16,6 +17,7 @@ import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/
     imports: [
         PageHeaderComponent,
         SectionFooterBtnsComponent,
+        HelpComponent,
         FormsModule,
         NgClass
     ],
@@ -217,6 +219,10 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
+        if (this.alert.helpVisible) {
+            this.alert.hideHelp();
+            return false;
+        }        
         if (event.key ==='ArrowLeft' || event.key ==='ArrowRight') {
             if (!fromInput || event.ctrlKey) {
                 this.veranderVanTeam(event.key ==='ArrowLeft' ? -1 : 1);
@@ -256,6 +262,10 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
             }
             this.buttonPressed(this.buttons[0]);
             return false;    
+        }
+        if (event.code === 'KeyH' || event.code === 'Slash') {
+            super.helpClicked();
+            return false;
         }
         if (event.key === 'Escape') {
             this.escapePressed();

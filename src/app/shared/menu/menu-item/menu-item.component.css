@@ -1,16 +1,16 @@
 .cmp-menu-item {
-    color: gray;
+    color: #357a38;
     cursor: pointer;
 }
 .cmp-menu-item:hover {
-    color: black;
+    color: #163317;
 }
 .cmp-menu-item:hover .cmp-item-key {
-    background-color: #404040;
-    color: white;
+    background-color: #163317;
+    color: #dbefdc;
 }
 .cmp-menu-item.selected .cmp-item-txt {
-    color: black;
+    color: #163317;
 }
 
 .cmp-item-key {
@@ -18,9 +18,9 @@
     height: 1.2em;
     line-height: 1em;
     text-align: center;
-    border: .125rem solid gray;
+    border: .125rem solid #265728;
     border-radius: .25em;
-    background-color: lightgray;
+    background-color: #dbefdc;
 }
 .cmp-item-key span {
     font-size: .8em;
@@ -31,10 +31,10 @@
     padding: 0 .25em;
     line-height: 1em;
     text-align: center;
-    border: .125rem solid gray;
+    border: .125rem solid #265728;
     border-radius: .25em;
-    background-color: #404040;
-    color: white;
+    background-color: #163317;
+    color: #dbefdc;
 }
 .cmp-item-enter span {
     font-size: .8em;

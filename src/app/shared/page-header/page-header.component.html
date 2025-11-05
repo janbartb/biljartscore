@@ -19,8 +19,12 @@
     </div>
     <div class="header-subtitle w3-green-d3 w3-display-container">
         <div class="w3-display-middle ellips">{{subtitle}}</div>
-        <div class="header-game w3-display-right">
-            <span>{{district}}</span>
+        <div class="header-help w3-display-right">
+            <span>
+                @if (help) {
+                    <i class="fas fa-question-circle" (click)="helpClicked()"></i>
+                }
+            </span>
         </div>
     </div>
     <div class="header-logo" (click)="gotoHome()">

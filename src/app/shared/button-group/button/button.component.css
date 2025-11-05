@@ -6,13 +6,14 @@
     color: #265728;
     background-color: #6ec071;
     line-height: 1.5em;
-    border: .0625em solid green;
+    border: .0625em solid #265728;
     border-radius: .5em;
     cursor: pointer;
 }
 .cmp-button.disabled {
     background-color: lightgray;
     border-color: gray;
+    color: gray;
     cursor: not-allowed;
 }
 .cmp-button:not(.disabled):hover, .cmp-button:not(.disabled).selected {

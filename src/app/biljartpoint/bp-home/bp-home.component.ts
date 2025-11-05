@@ -3,13 +3,15 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { MenuComponent } from '../../shared/menu/menu.component';
 import { BaseComponent } from '../../base/base.component';
 import { Menu, MenuItem } from '../../model/menu';
+import { HelpComponent } from '../../shared/help/help.component';
 
 @Component({
     selector: 'app-bp-home',
     standalone: true,
     imports: [
         PageHeaderComponent,
-        MenuComponent
+        MenuComponent,
+        HelpComponent
     ],
     templateUrl: './bp-home.component.html',
     styleUrl: './bp-home.component.css'
@@ -36,7 +38,7 @@ export class BpHomeComponent extends BaseComponent implements OnInit {
     menuItemClicked(item: MenuItem) {
         this.menu.selectedIdx = this.menu.getIndex(item);
         console.log('menu item clicked : ' + item.text);
-        if (item.shortcut == 'c' && this.appData.getDistrict().disId == '') {
+        if (item.shortcut == '3' && this.appData.getDistrict().disId == '') {
             this.alert.showAlert(`Maak eerst via de optie 'Districten' het standaard district aan.`, 'info', 8);
             return;
         }
@@ -77,6 +79,10 @@ export class BpHomeComponent extends BaseComponent implements OnInit {
             this.buttonPressed('3');
             return false;
         }
+        if (event.code === 'Digit4' || event.code === 'Numpad4') {
+            this.buttonPressed('4');
+            return false;
+        }
         if (event.key === 'Home') {
             this.homePressed();
             return false;
@@ -90,6 +96,8 @@ export class BpHomeComponent extends BaseComponent implements OnInit {
         this.menu.addItem(new MenuItem('1', 'Districten', 'bpoint/districten'));
         this.menu.addItem(new MenuItem('2', 'Moyenne tabellen (driebanden klein B1-B2)', 'bpoint/moyennes'));
         this.menu.addItem(new MenuItem('3', 'Competities', 'bpoint/competities'));
+        this.menu.addItem(new MenuItem('', '', '', filler));
+        this.menu.addItem(new MenuItem('4', 'Oude seizoen verwijderen', 'bpoint/opschonen'));
     }
 
 }

@@ -1,9 +1,9 @@
 .opties.selectable {
     cursor: pointer;
-    color: black;
+    color: #163317;
     opacity: .5;
     padding: 0 .5em;
-    border: .0625em solid white;
+    border: .0625em solid #dbefdc;
     border-radius: .5em;
     line-height: 1.75em;
 }
@@ -11,14 +11,14 @@
     opacity: 1;
 }
 .opties.selectable.hovered {
-    border-color: green;
+    border-color: #357a38;
 }
 .opties.selectable:hover {
-    background-color: lightgray;
+    background-color: #93cf95;
 }
 
 .opties .indicator {
-    color: green;
+    color: #357a38;
     opacity: 0.5;
 }
 .opties.selectable.selected .indicator {
@@ -27,24 +27,24 @@
 
 .subopties .selectable {
     cursor: pointer;
-    color: black;
+    color: #163317;
     opacity: .5;
     padding: 0 .5em;
-    border: .0625em solid white;
+    border: .0625em solid #dbefdc;
     border-radius: .5em;
 }
 .subopties .selectable.selected {
     opacity: 1;
 }
 .subopties .selectable.hovered {
-    border-color: green;
+    border-color: #357a38;
 }
 .subopties .selectable:hover {
-    background-color: lightgray;
+    background-color: #93cf95;
 }
 
 .subopties .indicator {
-    color: green;
+    color: #357a38;
     position: relative;
     opacity: 0;
 }
