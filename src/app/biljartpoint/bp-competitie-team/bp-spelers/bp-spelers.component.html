@@ -4,8 +4,8 @@
             <div>
                 <app-page-header [title]="'Biljartpoint'" 
                             [subtitle]="'Competitie ' + bpComp.knbbId + '&nbsp; - &nbsp;Team ' + bpTeam.knbbId + ' : ' + bssTeam.naam" 
-                            [spel]="appData.getSpelNaam()" [escCount]="escapeCount" (escClicked)="escapePressed()" 
-                            (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+                            [spel]="appData.getSpelNaam()" [escCount]="escapeCount" [help]="true" (escClicked)="escapePressed()" 
+                            (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()" (hlpClicked)="helpClicked()"></app-page-header>
             </div>
             <app-section-header [title]="'Spelers'" [cssClasses]="'w3-green-d1'"></app-section-header>
             <div class="flexgrow1 flexbox flexstretch">
@@ -113,3 +113,37 @@
         </div>
     }
 </div>
+<app-help [title]="'Spelers in team'">
+    <div>
+        Op dit scherm worden de spelers van een team verwerkt. <br>
+        In de linker kolom staan de spelergegevens zoals ze in Biljartpoint staan. <br>
+        In de rechter kolom zoals ze in BSS staan of zoals ze gaan worden indien de speler nog niet in BSS aanwezig is.
+    </div>
+    <div class="help-card-header">Spelers verwerken</div>
+    <div>
+        Wanneer het systeem verschillen constateert tussen de linker en rechter kolom verschijnt onderin de button 
+        'Spelers verwerken in BSS'. Klik op deze button om alle verschillen weer ongedaan te maken, m.a.w. de spelergegevens in BSS 
+        worden aangepast zodat ze weer identiek zijn aan de gegevens in Biljartpoint.
+    </div>
+    <div class="help-card-alinea">
+        Na verwerking verschijnt onderin de button 'Terug naar teams' waarmee je kan terugkeren naar het 'Teams' scherm. <br>
+        Deze button zal meteen verschijnen wanneer het systeem initieel geen verschillen constateert tussen Biljartpoint en BSS en 
+        er dus niets verwerkt hoeft te worden.
+    </div>
+    <div class="help-card-header">Actie icons</div>
+    <div>
+        Links van de spelers in BSS staan 1 of meerdere actie icons. Hieronder staat de betekenis van deze icons.
+    </div>
+    <div class="help-card-alinea">
+        <i class="fas fa-user-check"></i>
+        <span style="padding-left: 1em;">De gegevens van de speler in BSS zijn in orde.</span><br>
+        <i class="fas fa-user-cog"></i>
+        <span style="padding-left: 1em;">Speler nog niet aanwezig in BSS - wordt aangemaakt.</span><br>
+        <i class="fas fa-user-edit"></i>
+        <span style="padding-left: 1em;">Verschillen geconstateerd - speler gegevens worden gewijzigd.</span><br>
+        <i class="fas fa-user-plus"></i>
+        <span style="padding-left: 1em;">Speler ok in BSS maar zit nog niet in competitie-team - wordt toegevoegd aan team.</span><br>
+        <i class="fas fa-user-minus"></i>
+        <span style="padding-left: 1em;">Speler zit niet meer in competitie-team - wordt verwijderd uit team.</span>
+    </div>
+</app-help>

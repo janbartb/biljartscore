@@ -4,8 +4,8 @@
             <div>
                 <app-page-header [title]="'Biljartpoint'" 
                             [subtitle]="'Competitie ' + bpComp.knbbId + '&nbsp; - &nbsp;Team ' + bpTeam.knbbId + ' : ' + bpTeam.naam" 
-                            [spel]="appData.getSpelNaam()" [escCount]="escapeCount" (escClicked)="escapePressed()" 
-                            (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+                            [spel]="appData.getSpelNaam()" [escCount]="escapeCount" [help]="true" (escClicked)="escapePressed()" 
+                            (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()" (hlpClicked)="helpClicked()"></app-page-header>
             </div>
             <app-section-header [title]="'Lokaliteit'" [cssClasses]="'w3-green-d1'"></app-section-header>
             <div class="flexgrow1 flexbox flexstretch">
@@ -201,3 +201,25 @@
         </div>
     }
 </div>
+<app-help [title]="'Biljartpoint lokaliteit'">
+    <div>
+        Op dit scherm kan een lokaliteit aan BSS worden toegevoegd (indien deze nog niet bestaat) of worden gewijzigd (indien de gegevens in BSS 
+        niet overeenkomen met de gegevens in Biljartpoint).
+    </div>
+    <div class="help-card-header">Lokaliteit toevoegen</div>
+    <div>
+        Klik op de button 'Toevoegen aan BSS' en op het rechter scherm verschijnen de lokaliteit gegevens (overgenomen van de Biljartpoint gegevens).
+        Hier kunnen eventueel de gegevens nog worden gewijzigd (behalve het BSS ID en KNBB ID).
+        Klik op opslaan en de lokaliteit is aan BSS toegevoegd. <br>
+        Onderin verschijnen na toevoeging de buttons 'Wijzigen' en 'Naar vereniging' om de lokaliteit te wijzigen of om naar 
+        de vereniging te gaan om die te verwerken.
+    </div>
+    <div class="help-card-header">Lokaliteit wijzigen</div>
+    <div>
+        Klik op de button 'Wijzigen' om de lokaliteit gegevens te kunnen wijzigen.
+    </div>
+    <div class="help-card-header">Naar vereniging</div>
+    <div>
+        Klik op de button 'Naar vereniging' om naar het 'Vereniging in BSS' scherm te gaan om de vereniging te kunnen verwerken.
+    </div>
+</app-help>

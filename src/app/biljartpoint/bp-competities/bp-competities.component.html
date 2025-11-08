@@ -1,8 +1,9 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'Biljartpoint'" [subtitle]="'Competities'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
-                        (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+            <app-page-header [title]="'Biljartpoint'" [subtitle]="'Competities'" [spel]="appData.getSpelNaam()" [help]="true" 
+                        (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" 
+                        (prevClicked)="previousPressed()" (hlpClicked)="helpClicked()"></app-page-header>
         </div>
         <div class="flexbox flexmiddle" style="min-height: 3em; border-bottom: .25em solid green;">
             <div class="label" style="padding-left: 1em;">
@@ -72,3 +73,37 @@
         </div>
     </div>
 </div>
+<app-help [title]="'Biljartpoint competities'">
+    <div>
+        Dit is het startscherm voor het inlezen van de competities en teams vanuit Biljartpoint.
+    </div>
+    <div class="help-card-alinea">
+        Er wordt een lijst getoond met alle drieband-klein (B1-B2) competities van het aangegeven district zoals aanwezig in Biljartpoint.
+    </div>
+    <div class="help-card-alinea">
+        De kolommen 'in BSS' en 'BSS ID' worden pas gevuld als de Biljartpoint competitie ook in BSS aanwezig is.
+    </div>
+    <div class="help-card-alinea">
+        Klik op een competitie om deze te gaan verwerken.
+    </div>
+    <div class="help-card-header">Competitie verwerken</div>
+    <div>
+        Na het selecteren van een competitie zijn er 3 mogelijkheden:
+    </div>
+    <div class="help-card-alinea">
+        1. De competitie bestaat nog niet in BSS. <br>
+        2. De competitie bestaat in BSS maar sommige gegevens in BSS verschillen met die in Biljartpoint. <br>
+        3. De competitie bestaat in BSS en is identiek aan die in Biljartpoint.
+    </div>
+    <div class="help-card-alinea">
+        Bij optie 1 en 2 wordt het 'Competitie' scherm getoond waarop de competitie kan worden toegevoegd (1) of gewijzigd (2). <br>
+        Bij optie 3 ga je meteen naar het 'Competitie - Teams' scherm waarop de teams van de competitie verwerkt kunnen worden.
+    </div>
+    <div class="help-card-header">Kies een district</div>
+    <div>
+        Het te kiezen district wordt default gevuld met het voorkeursdistrict zoals aangegeven bij de functie 'Districten'.
+    </div>
+    <div class="help-card-alinea help-card-bold">
+        Let op! De Biljartpoint functionaliteit werkt momenteel alleen voor district 'Kempenland'. Dus vul hier geen ander district in!
+    </div>
+</app-help>

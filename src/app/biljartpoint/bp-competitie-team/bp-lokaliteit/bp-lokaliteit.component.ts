@@ -9,6 +9,7 @@ import { noDuplicates, notEmpty } from '../../../directives/validators.directive
 import { Lokaliteit } from '../../../model/vereniging';
 import { NgClass } from '@angular/common';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
+import { HelpComponent } from '../../../shared/help/help.component';
 
 @Component({
     selector: 'app-bp-lokaliteit',
@@ -17,6 +18,7 @@ import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/
         PageHeaderComponent,
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
+        HelpComponent,
         ReactiveFormsModule,
         NgClass
     ],
@@ -158,6 +160,10 @@ export class BpLokaliteitComponent extends BaseComponent implements OnInit {
         handleKeyboardEvent(event: KeyboardEvent): boolean {
         const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
+        if (this.alert.helpVisible) {
+            this.alert.hideHelp();
+            return false;
+        }        
         if (event.key === 'Escape') {
             if (this.isDialogOpen) {
                 return true;

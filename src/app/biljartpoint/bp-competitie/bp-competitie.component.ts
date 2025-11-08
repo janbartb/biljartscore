@@ -9,6 +9,7 @@ import { KnbbCompetitie } from '../../model/knbb-competitie';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Button } from '../../model/button';
 import { noDuplicates, notEmpty } from '../../directives/validators.directive';
+import { HelpComponent } from '../../shared/help/help.component';
 
 @Component({
     selector: 'app-bp-competitie',
@@ -17,6 +18,7 @@ import { noDuplicates, notEmpty } from '../../directives/validators.directive';
         PageHeaderComponent,
         SectionFooterBtnsComponent,
         SectionHeaderComponent,
+        HelpComponent,
         ReactiveFormsModule,
         NgClass
     ],
@@ -156,6 +158,10 @@ export class BpCompetitieComponent extends BaseComponent implements OnInit {
         handleKeyboardEvent(event: KeyboardEvent): boolean {
         const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
+        if (this.alert.helpVisible) {
+            this.alert.hideHelp();
+            return false;
+        }        
         if (event.key === 'Escape') {
             if (this.isDialogOpen) {
                 return true;

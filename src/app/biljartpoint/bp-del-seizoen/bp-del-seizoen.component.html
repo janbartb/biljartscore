@@ -1,8 +1,9 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'Biljartpoint'" [subtitle]="'Oude seizoenen verwijderen'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
-                        (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+            <app-page-header [title]="'Biljartpoint'" [subtitle]="'Oude seizoenen verwijderen'" [spel]="appData.getSpelNaam()" 
+                    [help]="true" (hlpClicked)="helpClicked()" (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" 
+                    (prevClicked)="previousPressed()"></app-page-header>
         </div>
         @if (!seizoenen.length) {
             <div class="flexgrow1 flexbox flexcenter flexmiddle">
@@ -41,29 +42,29 @@
                                             <td>{{comptd.comp.seizoen}}</td>
                                             <td>{{comptd.comp.knbbId}}</td>
                                             <td>{{comptd.comp.klasse}}</td>
-                                            <td colspan="2" style="width: 25em;">{{comptd.comp.naam}}</td>
-                                            <td>
+                                            <td colspan="2" [ngClass]="{'verwijderd': comptd.verwijderd}">{{comptd.comp.naam}}</td>
+                                            <!-- <td>
                                                 @if (comptd.verwijderd) {
                                                     <i class="fas fa-check"></i>
                                                 }
                                                 @else {
                                                     <i class="fas fa-minus"></i>
                                                 }
-                                            </td>
+                                            </td> -->
                                         </tr>
                                         @for (teamtd of comptd.teams; track $index) {
                                             <tr class="w3-green-col-d3">
                                                 <td colspan="3"></td>
                                                 <td style="width: 5em;">{{teamtd.team.knbbId}}</td>
-                                                <td>{{teamtd.team.naam}}</td>
-                                                <td>
+                                                <td [ngClass]="{'verwijderd': teamtd.verwijderd}">{{teamtd.team.naam}}</td>
+                                                <!-- <td>
                                                     @if (teamtd.verwijderd) {
                                                         <i class="fas fa-check"></i>
                                                     }
                                                     @else {
                                                         <i class="fas fa-minus"></i>
                                                     }
-                                                </td>
+                                                </td> -->
                                             </tr>
                                         }
                                     }
@@ -84,33 +85,27 @@
 @if (isDialogOpen) {
     <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
 }
-<app-help [title]="'Team match - resultaat overzicht'">
+<app-help [title]="'Oude seizoen(en) verwijderen'">
     <div>
-        Dit scherm toont het resultaat overzicht van de team match.<br>
-        Je kan naar een wedstrijd (scorebord) gaan, de wedstrijdlijsten opvragen of een nieuwe team match aanmaken.
+        Omdat bij een nieuw seizoen in Biljartpoint de competities en de teams allemaal een nieuw ID krijgen, komen deze niet meer overeen
+        met de KNBB ID's die in BSS staan. <br>
+        Daarom is het het beste om bij wisseling van het seizoen eerst de competities en teams van het oude seizoen te verwijderen voordat
+        de data van het nieuwe seizoen ingelezen wordt.
     </div>
-    <div class="help-card-header">Naar wedstrijd (scorebord)</div>
+    <div class="help-card-header">Selecteer seizoen</div>
     <div>
-        Klik op de '1', '2' of '3' button (of toets 1, 2 of 3) om naar de betreffende wedstrijd te gaan. Via deze buttons kun je dus zelf
-        de volgorde van de te spelen wedstrijden bepalen. <br>
+        Selecteer hier het seizoen dat verwijderd moet worden. <br>
+        Na selectie verschijnt een lijst met alle te verwijderen competities en teams van het geselecteerde seizoen en eventuele voorgaande seizoenen.
     </div>
     <div class="help-card-alinea">
-        Wanneer je op de 'Naar wedstrijd' button klikt zal het systeem (op volgorde) naar de eerste wedstrijd gaan die nog niet compleet gespeeld is.
+        Indien er competities en/of teams in de lijst staan dan zal onderin de button 'Verwijderen' tevoorschijn komen.
+    </div>
+    <div class="help-card-header">Verwijderen</div>
+    <div>
+        Na het klikken op de 'Verwijderen' button verschijnt eerst nog een bevestigingsscherm. Pas na bevestiging zullen de competities en teams
+        daadwerkelijk verwijderd worden.
     </div>
     <div class="help-card-alinea">
-        Op het scorebord kun je via de 'Esc' toets weer teruggaan naar dit scherm.
-    </div>
-    <div class="help-card-header">Naar wedstrijdlijsten</div>
-    <div>
-        Klik op de 'Lijsten' button (of druk op de 'L' toets) om naar de wedstrijdlijsten pagina te gaan. Druk vanaf daar op 'Esc' om weer terug
-        te keren naar dit scherm.
-    </div>
-    <div class="help-card-header">Nieuwe match aanmaken</div>
-    <div>
-        Klik op de 'Nieuwe match' button (of druk op de 'N' toets) om een nieuwe team match aan te maken. <br>
-        Er volgt dan eerst een bevestigings-scherm waarop je deze actie kan bevestigen of annuleren.
-    </div>
-    <div class="help-card-alinea">
-        Let op! Wanneer je deze actie bevestigt dan gaat alle data van de huidige match verloren.
+        De spelers van de verwijderde teams blijven wel bestaan in BSS omdat hun ID in Biljartpoint altijd hetzelfde blijft.
     </div>
 </app-help>

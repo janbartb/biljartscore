@@ -10,6 +10,7 @@ import { SectionFooterBtnsComponent } from '../../shared/section-footer-btns/sec
 import { Alinea, ConfirmDialog } from '../../model/dialogs';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { HelpComponent } from '../../shared/help/help.component';
+import { NgClass } from '@angular/common';
 
 interface CompToDelete {
     comp: KnbbCompetitie;
@@ -30,7 +31,8 @@ interface TeamToDelete {
         SectionFooterBtnsComponent,
         ConfirmComponent,
         HelpComponent,
-        FormsModule
+        FormsModule,
+        NgClass
     ],
     templateUrl: './bp-del-seizoen.component.html',
     styleUrl: './bp-del-seizoen.component.css'

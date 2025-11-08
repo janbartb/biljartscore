@@ -11,6 +11,7 @@ import { SectionHeaderComponent } from '../../../shared/section-header/section-h
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 import { NgClass } from '@angular/common';
 import { ButtonComponent } from '../../../shared/button-group/button/button.component';
+import { HelpComponent } from '../../../shared/help/help.component';
 
 @Component({
     selector: 'app-bp-team',
@@ -19,6 +20,7 @@ import { ButtonComponent } from '../../../shared/button-group/button/button.comp
         PageHeaderComponent,
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
+        HelpComponent,
         ReactiveFormsModule,
         FormsModule,
         NgClass,
@@ -194,6 +196,10 @@ export class BpTeamComponent extends BaseComponent implements OnInit {
         handleKeyboardEvent(event: KeyboardEvent): boolean {
         const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
+        if (this.alert.helpVisible) {
+            this.alert.hideHelp();
+            return false;
+        }        
         if (event.key === 'Escape') {
             this.escapePressed();
             return false;

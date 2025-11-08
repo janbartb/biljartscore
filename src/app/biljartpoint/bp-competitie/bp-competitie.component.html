@@ -2,8 +2,9 @@
     @if (dataReady) {
         <div class="fullheight flexbox flexcolumn">
             <div>
-                <app-page-header [title]="'Biljartpoint'" [subtitle]="'Competitie ' + bpComp.knbbId" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
-                            (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+                <app-page-header [title]="'Biljartpoint'" [subtitle]="'Competitie ' + bpComp.knbbId" [spel]="appData.getSpelNaam()" 
+                        [escCount]="escapeCount" [help]="true" (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" 
+                        (prevClicked)="previousPressed()" (hlpClicked)="helpClicked()"></app-page-header>
             </div>
             <div class="flexgrow1 flexbox flexstretch">
                 <div class="flex50perc flexbox flexcolumn" style="border-right: .25em solid green;">
@@ -195,3 +196,24 @@
         </div>    
     }
 </div>
+<app-help [title]="'Biljartpoint competitie'">
+    <div>
+        Op dit scherm kan de competitie aan BSS worden toegevoegd (indien deze nog niet bestaat) of worden gewijzigd (indien de naam en/of het 
+        max. aantal beurten niet overeenkomen met de gegevens in Biljartpoint).
+    </div>
+    <div class="help-card-header">Competitie toevoegen</div>
+    <div>
+        Klik op de button 'Toevoegen aan BSS' en op het rechter scherm verschijnen de competitie gegevens (overgenomen van de Biljartpoint gegevens).
+        Hier kunnen eventueel de naam en het max. aantal beurten nog worden gewijzigd (is over het algemeen niet nodig).
+        Klik op opslaan en de competitie is aan BSS toegevoegd. <br>
+        Onderin verschijnen na toevoeging de buttons 'Wijzigen' en 'Naar teams' om de competitie te wijzigen of om naar de teams te gaan om die te verwerken.
+    </div>
+    <div class="help-card-header">Competitie wijzigen</div>
+    <div>
+        Klik op de button 'Wijzigen' om de naam en/of het max. aantal beurten te kunnen wijzigen.
+    </div>
+    <div class="help-card-header">Naar teams</div>
+    <div>
+        Klik op de button 'Naar teams' om naar het 'Competitie - Teams' scherm te gaan om de teams van de competitie te kunnen verwerken.
+    </div>
+</app-help>

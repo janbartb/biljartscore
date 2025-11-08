@@ -7,6 +7,9 @@
 .help-card-alinea {
     padding-top: .375rem;
 }
+.help-card-bold {
+    font-weight: bold;
+}
 
 .helptext {
     height: 1em;

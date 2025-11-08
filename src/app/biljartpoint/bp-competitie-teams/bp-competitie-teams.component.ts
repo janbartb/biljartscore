@@ -8,6 +8,7 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { SectionHeaderComponent } from '../../shared/section-header/section-header.component';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { Alinea, ConfirmDialog } from '../../model/dialogs';
+import { HelpComponent } from '../../shared/help/help.component';
 
 @Component({
     selector: 'app-bp-competitie-teams',
@@ -15,7 +16,8 @@ import { Alinea, ConfirmDialog } from '../../model/dialogs';
     imports: [
         PageHeaderComponent,
         SectionHeaderComponent,
-        ConfirmComponent
+        ConfirmComponent,
+        HelpComponent
     ],
     templateUrl: './bp-competitie-teams.component.html',
     styleUrl: './bp-competitie-teams.component.css'
@@ -74,6 +76,10 @@ export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit 
         handleKeyboardEvent(event: KeyboardEvent): boolean {
         const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
+        if (this.alert.helpVisible) {
+            this.alert.hideHelp();
+            return false;
+        }        
         if (event.key === 'Escape') {
             if (this.isDialogOpen) {
                 return true;

@@ -8,6 +8,7 @@ import { Speler, SpelerGemiddelde, SpelerWrapper } from '../../../model/speler';
 import { DecimalPipe, NgClass } from '@angular/common';
 import { Button } from '../../../model/button';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
+import { HelpComponent } from '../../../shared/help/help.component';
 
 class SpelerToProcess {
     inBSS: boolean = false;
@@ -26,6 +27,7 @@ class SpelerToProcess {
         PageHeaderComponent,
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
+        HelpComponent,
         NgClass,
         DecimalPipe
     ],
@@ -152,6 +154,10 @@ export class BpSpelersComponent extends BaseComponent implements OnInit {
         handleKeyboardEvent(event: KeyboardEvent): boolean {
         const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
+        if (this.alert.helpVisible) {
+            this.alert.hideHelp();
+            return false;
+        }        
         if (event.key === 'Escape') {
             if (this.isDialogOpen) {
                 return true;

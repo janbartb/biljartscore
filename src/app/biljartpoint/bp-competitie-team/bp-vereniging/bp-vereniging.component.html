@@ -4,8 +4,8 @@
             <div>
                 <app-page-header [title]="'Biljartpoint'" 
                             [subtitle]="'Competitie ' + bpComp.knbbId + '&nbsp; - &nbsp;Team ' + bpTeam.knbbId + ' : ' + bpTeam.naam" 
-                            [spel]="appData.getSpelNaam()" [escCount]="escapeCount" (escClicked)="escapePressed()" 
-                            (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+                            [spel]="appData.getSpelNaam()" [escCount]="escapeCount" [help]="true" (escClicked)="escapePressed()" 
+                            (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()" (hlpClicked)="helpClicked()"></app-page-header>
             </div>
             <app-section-header [title]="'Vereniging in BSS'" [cssClasses]="'w3-green-d1'"></app-section-header>
             <div class="flexbox flexcenter flexmiddle" style="height: 2.5em; border-bottom: .25em solid green;">
@@ -129,3 +129,55 @@
         </div>
     }
 </div>
+<app-help [title]="'Vereniging in BSS'">
+    <div>
+        Wanneer een biljartpoint team aan BSS wordt toegevoegd dient eerst de vereniging, waartoe het team behoort, bekend te zijn.
+        Op dit scherm kan die vereniging worden aangemaakt of geselecteerd.
+    </div>
+    <div class="help-card-alinea">
+        Als je op dit scherm uitkomt dan is de lokaliteit, waar het Biljartpoint team thuis speelt, al bekend in BSS. <br>
+        Het systeem gaat dan kijken of er al verenigingen in BSS aanwezig zijn die gebruik maken van die lokaliteit. <br>
+        Zo ja, dan biedt het systeem de mogelijkheid om een van die verenigingen te selecteren of om, als de goede er niet bij staat, een
+        vereniging toe te voegen. (zie 'Vereniging selecteren of toevoegen') <br>
+        Zo nee, dan is er alleen de mogelijkheid om een vereniging toe te voegen. (zie 'Vereniging toevoegen')
+    </div>
+    <div class="help-card-header">Vereniging selecteren of toevoegen</div>
+    <div>
+        Op het scherm is een dropdown box aanwezig met daarin alle gevonden verenigingen behorende bij de lokaliteit van het team.
+        Je kan een vereniging uit de lijst selecteren of, indien de goede er niet bij staat, op de button 'Nieuwe vereniging' klikken. <br>
+    </div>
+    <div class="help-card-alinea">
+        Wanneer een vereniging geselecteerd is verschijnt onderin de button 'Naar team' om naar het scherm te gaan om het team toe te voegen.
+    </div>
+    <div class="help-card-alinea">
+        Wanneer je op 'Nieuwe vereniging' klikt wordt het scherm getoond om een vereniging toe te voegen (zie hieronder).
+    </div>
+    <div class="help-card-header">Vereniging toevoegen</div>
+    <div>
+        Het 'BSS vereniging toevoegen' scherm toont 4 rubrieken waarvan enkele al een default waarde hebben op basis van de Biljartpoint team data:
+    </div>
+    <div class="help-card-alinea">
+        1. ID - het BSS ID van de vereniging (een vereniging heeft geen KNBB ID). De default waarde is meestal ok. <br>
+        2. Naam - initieel staat hier de team naam, maar als die bv. een volgnummer heeft dan zeker wijzigen. <br>
+        3. Lokaliteit - deze staat al vast en kan niet gewijzigd worden. <br>
+        4. Korte naam - vul hier een (herkenbare) korte naam van de vereniging in (max 5 a 6 tekens)
+    </div>
+    <div class="help-card-alinea">
+        Voorbeeld : het toe te voegen team is 'Biljart Na Arbeid 2' <br>
+        Dan wordt initieel <br>
+        1. ID : BNA2 <br>
+        2. Naam : Biljart Na Arbeid 2
+    </div>
+    <div class="help-card-alinea">
+        Verwijder dan in beide gevallen het volgnummer, dus ID : BNA en Naam : Biljart Na Arbeid <br>
+        De korte naam kan dan BNA worden.
+    </div>
+    <div class="help-card-alinea">
+        Wanneer alle rubrieken correct zijn gevuld, verschijnt onderin de button 'Opslaan'. <br>
+        Na klikken op 'Opslaan' wordt de vereniging toegevoegd en ga je naar het 'Team in BSS' scherm om het team toe te voegen.
+    </div>
+    <div class="help-card-header">Naar team</div>
+    <div>
+        Klik op de button 'Naar team' om naar het 'Team in BSS' scherm te gaan om het team toe te voegen.
+    </div>
+</app-help>

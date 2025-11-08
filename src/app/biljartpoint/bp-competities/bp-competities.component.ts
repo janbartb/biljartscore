@@ -5,12 +5,14 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { FormsModule } from '@angular/forms';
 import { BpCompetitie } from '../../model/bpoint';
 import { KnbbCompetitie } from '../../model/knbb-competitie';
+import { HelpComponent } from '../../shared/help/help.component';
 
 @Component({
     selector: 'app-bp-competities',
     standalone: true,
     imports: [
         PageHeaderComponent,
+        HelpComponent,
         FormsModule
     ],
     templateUrl: './bp-competities.component.html',
@@ -70,6 +72,10 @@ export class BpCompetitiesComponent extends BaseComponent implements OnInit {
         handleKeyboardEvent(event: KeyboardEvent): boolean {
         const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
+        if (this.alert.helpVisible) {
+            this.alert.hideHelp();
+            return false;
+        }        
         if (event.key === 'Escape') {
             if (this.isDialogOpen) {
                 return true;

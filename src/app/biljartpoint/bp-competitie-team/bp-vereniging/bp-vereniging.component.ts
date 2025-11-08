@@ -11,6 +11,7 @@ import { KnbbCompetitie, KnbbCompTeam } from '../../../model/knbb-competitie';
 import { Button } from '../../../model/button';
 import { noDuplicates, notEmpty } from '../../../directives/validators.directive';
 import { ButtonComponent } from "../../../shared/button-group/button/button.component";
+import { HelpComponent } from '../../../shared/help/help.component';
 
 @Component({
     selector: 'app-bp-vereniging',
@@ -19,6 +20,7 @@ import { ButtonComponent } from "../../../shared/button-group/button/button.comp
         PageHeaderComponent,
         SectionHeaderComponent,
         SectionFooterBtnsComponent,
+        HelpComponent,
         ReactiveFormsModule,
         FormsModule,
         NgClass,
@@ -139,6 +141,10 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
         handleKeyboardEvent(event: KeyboardEvent): boolean {
         const fromInput = event.target instanceof HTMLInputElement;
         console.log(event.code + ' : ' + event.key);
+        if (this.alert.helpVisible) {
+            this.alert.hideHelp();
+            return false;
+        }        
         if (event.key === 'Escape') {
             this.escapePressed();
             return false;

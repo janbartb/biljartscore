@@ -4,8 +4,8 @@
             <div>
                 <app-page-header [title]="'Biljartpoint'" 
                             [subtitle]="'Competitie ' + bpComp.knbbId + '&nbsp; - &nbsp;Team ' + bpTeam.knbbId + ' : ' + bpTeam.naam" 
-                            [spel]="appData.getSpelNaam()" [escCount]="escapeCount" (escClicked)="escapePressed()" 
-                            (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+                            [spel]="appData.getSpelNaam()" [escCount]="escapeCount" [help]="true" (escClicked)="escapePressed()" 
+                            (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()" (hlpClicked)="helpClicked()"></app-page-header>
             </div>
             <app-section-header [title]="'Team in BSS'" [cssClasses]="'w3-green-d1'"></app-section-header>
             <div class="flexbox flexcenter flexmiddle" style="height: 2.5em; border-bottom: .25em solid green;">
@@ -24,7 +24,7 @@
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <label for="teamId">ID<span class="req"> *</span></label>
+                                                <label for="teamId">BSS ID<span class="req"> *</span></label>
                                             </td>
                                             <td>
                                                 <span>{{teamId?.value}}</span>
@@ -170,3 +170,37 @@
         </div>
     }
 </div>
+<app-help [title]="'Team in BSS toevoegen'">
+    <div>
+        Op dit scherm kan een team aan BSS worden toegevoegd.
+    </div>
+    <div class="help-card-header">BSS team toevoegen</div>
+    <div>
+        De volgende rubrieken van een team moeten worden gevuld.
+    </div>
+    <div class="help-card-alinea">
+        1. BSS ID - wordt door het systeem gevuld. <br>
+        2. KNBB ID - wordt door het systeem gevuld. <br>
+        3. Klasse - wordt door het systeem gevuld. <br>
+        4. Volgnr. - wordt default door het systeem gevuld, verder zie hieronder. <br>
+        5. Naam - wordt default door het systeem gevuld met de teamnaam in Biljartpoint, verder zie hieronder.
+    </div>
+    <div class="help-card-header">Volgnr.</div>
+    <div>
+        Wanneer een vereniging bv. 2 klasse B2 teams heeft dan krijgt het ene team volgnr 1 en het andere volgnr 2. <br>
+        Het BSS ID van het ene team wordt dan 3BA-B2-1 en van het andere team 3BA-B2-2. <br>
+        Het volgnr. kan gewijzigd worden maar mag niet al in gebruik zijn. Het systeem controleert dit.
+    </div>
+    <div class="help-card-header">Naam</div>
+    <div>
+        De teamnaam wordt standaard gevuld met de teamnaam uit Biljartpoint. <br>
+        Deze naam kan ooit erg lang zijn (bv. doordat er 'Biljartvereniging' voor staat, wat overbodige informatie is). <br>
+        Aangezien de naam getoond wordt op het 'KNBB team match' scherm is het verstandig om lange namen wat in te korten. Max. 20 tekens 
+        wordt aanbevolen.
+    </div>
+    <div class="help-card-header">Opslaan</div>
+    <div>
+        Na klikken op button 'Opslaan' is het team in BSS toegevoegd en wordt het resultaat scherm getoond met onderin de button 
+        'Naar spelers'. Klik op deze button om de spelers van het team te gaan verwerken. 
+    </div>
+</app-help>

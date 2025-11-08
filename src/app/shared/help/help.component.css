@@ -17,7 +17,7 @@
     font-weight: normal;
     border: .25em solid #1e461f;
     border-radius: .75em;
-    padding: 0 1em;
+    padding: 0 .5em 0 1em;
     color: black;
 }
 .help-card-title {
@@ -30,6 +30,7 @@
     max-width: 40rem;
     max-height: 25rem;
     overflow-y: auto;
+    padding-right: .5rem;
     padding-bottom: .5rem;
 }
 

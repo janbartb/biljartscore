@@ -2,8 +2,9 @@
     @if (dataReady) {
         <div class="fullheight flexbox flexcolumn">
             <div>
-                <app-page-header [title]="'Biljartpoint'" [subtitle]="'Competitie ' + bpComp.knbbId + ' - Teams'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
-                            (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+                <app-page-header [title]="'Biljartpoint'" [subtitle]="'Competitie ' + bpComp.knbbId + ' - Teams'" [spel]="appData.getSpelNaam()" 
+                        [help]="true" (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"
+                        (hlpClicked)="helpClicked()"></app-page-header>
             </div>
             <div class="flexgrow1 flexbox flexstretch">
                 <div class="flex40perc flexbox flexcolumn" style="border-right: .125em solid green;">
@@ -95,3 +96,44 @@
 @if (isDialogOpen) {
     <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
 }
+<app-help [title]="'Biljartpoint competitie - teams'">
+    <div>
+        Op dit scherm worden links de teams van de competitie getoond zoals die in Biljartpoint staan en rechts de teams die al in BSS
+        aanwezig zijn. <br>
+        Door links op een Biljartpoint team te klikken kan dit team verder worden verwerkt (toegevoegd of gewijzigd).
+    </div>
+    <div class="help-card-header">De opzet van teams in BSS</div>
+    <div>
+        Een team in BSS is (in tegenstelling tot Biljartpoint) altijd onderdeel van een vereniging. Die vereniging is weer gelinked aan
+        een lokaliteit (daar waar de thuiswedstrijden worden gespeeld). <br>
+        In Biljartpoint bestaan geen verenigingen, alleen teams waarbij ieder team gelinked is aan een lokaliteit.
+    </div>
+    <div class="help-card-alinea">
+        De check of een Biljartpoint team of lokaliteit al aanwezig is in BSS wordt gedaan op basis van het KNBB ID. Iedere lokaliteit of
+        team in Biljartpoint heeft een ID en het systeem checkt of er een team of lokaliteit in BSS aanwezig is met een KNBB ID dat gelijk
+        is aan het ID in Biljartpoint.
+    </div>
+    <div class="help-card-header">Team verwerken</div>
+    <div>
+        Bij het verwerken van een Biljartpoint team gaat het systeem dus eerst kijken of er in BSS al een team is met datzelfde KNBB ID. <br>
+        Als dit het geval is dan wordt meteen het scherm getoond waarop de spelers van het team verwerkt kunnen worden. <br>
+        Als dit niet het geval is dan moet het team aan BSS worden toegevoegd.
+    </div>
+    <div class="help-card-header">Team toevoegen aan BSS</div>
+    <div>
+        Wanneer een Biljartpoint team nog niet bestaat in BSS moet het worden toegevoegd. <br>
+        Maar een team in BSS is altijd onderdeel van een vereniging dus we zullen eerst moeten bepalen aan welke vereniging het team moet
+        worden toegevoegd.
+    </div>
+    <div class="help-card-alinea">
+        Dit gebeurt aan de hand van de lokaliteit waaraan het team is gekoppeld in Biljartpoint. <br>
+        Het systeem gaat dus kijken of er in BSS al een lokaliteit aanwezig is met een KNBB ID gelijk aan het lokaliteit ID in Biljartpoint.
+    </div>
+    <div class="help-card-alinea">
+        Wanneer dit niet het geval is dan gaan we naar het scherm 'Lokaliteit' om de Biljartpoint lokaliteit toe te voegen aan BSS.
+    </div>
+    <div class="help-card-alinea">
+        Wanneer dit wel het geval is dan gaan we naar het scherm 'Vereniging' waarop we of een vereniging kunnnen toevoegen of een bestaande
+        vereniging (die gelinked is aan de lokaliteit) kunnen selecteren.
+    </div>
+</app-help>
