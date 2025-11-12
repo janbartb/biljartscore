@@ -20,7 +20,7 @@
                             <div class="flexbox flexcenter">
                                 <div class="lijst">
                                     @for (team of bpComp.teams; track $index) {
-                                        <div class="lijst-row selectable" (click)="bpTeamClicked($index)">
+                                        <div class="lijst-row" [ngClass]="{'selectable': !areTeamsInBssCompButNotInBpComp}" (click)="bpTeamClicked($index)">
                                             <div class="lijst-col" style="width: 6em;">
                                                 <span>{{team.knbbId}}</span>
                                             </div>
@@ -87,7 +87,12 @@
             </div>
             <div class="flexbox flexcenter flexmiddle" style="height: 3em; border-top: .25em solid green;">
                 <div class="label">
-                    <span>Selecteer een biljartpoint team om deze verder te verwerken.</span>
+                    @if (areTeamsInBssCompButNotInBpComp) {
+                        <span style="color: red;">Verwijder eerst de roodgekleurde teams uit de BSS competitie.</span>
+                    }
+                    @else {
+                        <span>Selecteer een biljartpoint team om deze verder te verwerken.</span>
+                    }
                 </div>
             </div>
         </div>
@@ -98,9 +103,16 @@
 }
 <app-help [title]="'Biljartpoint competitie - teams'">
     <div>
-        Op dit scherm worden links de teams van de competitie getoond zoals die in Biljartpoint staan en rechts de teams die al in BSS
-        aanwezig zijn. <br>
+        Op dit scherm worden links de teams van de competitie getoond zoals die in Biljartpoint staan en rechts de teams die al in de BSS
+        competitie aanwezig zijn.
+    </div>
+    <div class="help-card-alinea">
         Door links op een Biljartpoint team te klikken kan dit team verder worden verwerkt (toegevoegd of gewijzigd).
+    </div>
+    <div class="help-card-alinea">
+        Let op! Het kan voorkomen dat er teams in de BSS kolom staan die roodgekleurd zijn. Dat zijn teams die in de BSS competitie zitten 
+        maar niet in de Biljartpoint competitie (op basis van het KNBB ID). Deze teams moeten eerst verwijderd worden (klik op de vuilnisbak) 
+        voordat je met de normale verwerking door kan gaan.
     </div>
     <div class="help-card-header">De opzet van teams in BSS</div>
     <div>
@@ -127,13 +139,13 @@
     </div>
     <div class="help-card-alinea">
         Dit gebeurt aan de hand van de lokaliteit waaraan het team is gekoppeld in Biljartpoint. <br>
-        Het systeem gaat dus kijken of er in BSS al een lokaliteit aanwezig is met een KNBB ID gelijk aan het lokaliteit ID in Biljartpoint.
+        Het systeem gaat dus kijken of er in BSS al een lokaliteit aanwezig is met een KNBB ID gelijk aan het lokaliteit ID van het team in Biljartpoint.
     </div>
     <div class="help-card-alinea">
         Wanneer dit niet het geval is dan gaan we naar het scherm 'Lokaliteit' om de Biljartpoint lokaliteit toe te voegen aan BSS.
     </div>
     <div class="help-card-alinea">
-        Wanneer dit wel het geval is dan gaan we naar het scherm 'Vereniging' waarop we of een vereniging kunnnen toevoegen of een bestaande
-        vereniging (die gelinked is aan de lokaliteit) kunnen selecteren.
+        Wanneer dit wel het geval is dan gaan we naar het scherm 'Vereniging in BSS' waarop we of een vereniging kunnnen toevoegen of een bestaande
+        vereniging (die gelinked is aan bovenstaande lokaliteit) kunnen selecteren.
     </div>
 </app-help>

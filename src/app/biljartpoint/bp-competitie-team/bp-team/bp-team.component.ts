@@ -70,7 +70,7 @@ export class BpTeamComponent extends BaseComponent implements OnInit {
     }
 
     override previousPressed(): void {
-        this.router.navigate(['bpoint/vereniging']);
+        this.router.navigate(['bpoint/compteams']);
     }
 
     buttonPressed(button: Button) {
@@ -260,7 +260,7 @@ export class BpTeamComponent extends BaseComponent implements OnInit {
         .then(results => {
             this.vereniging = results[0];
             this.bssComp = results[1];
-            this.bssTeams = this.getBestaandeTeams(this.bssComp.klasse);
+            this.bssTeams = this.getBestaandeTeamsNotInComp(this.bssComp.klasse);
             this.findBssTeam(this.bpTeam.knbbId);
             if (this.bpTeam.bssTeamId == '') {
                 if (this.bssTeams.length) {
@@ -276,7 +276,7 @@ export class BpTeamComponent extends BaseComponent implements OnInit {
             }
             else {
                 this.teamInBss = true;
-                this.teamInComp = this.isTeamInComp();
+                this.teamInComp = this.isTeamInComp(this.bssTeam);
                 if (this.teamInComp) {
                     this.naarSpelersClicked();
                     return;
@@ -292,13 +292,13 @@ export class BpTeamComponent extends BaseComponent implements OnInit {
         });
     }
 
-    private isTeamInComp(): boolean {
-        return this.bssComp.teams.some(tm => tm.verId == this.bssTeam.verId && tm.teamId == this.bssTeam.teamId);
+    private isTeamInComp(bssTm: Team): boolean {
+        return this.bssComp.teams.some(tm => tm.verId == bssTm.verId && tm.teamId == bssTm.teamId);
     }
 
     private findBssTeam(knbbId: string) {
         this.bssTeams.some(team => {
-            if (team.knbbId == knbbId) {
+            if (team.knbbId == knbbId && !this.isTeamInComp(team)) {
                 this.bssTeam = team;
                 this.bpTeam.bssTeamId = this.bssTeam.teamId;
                 return true;
@@ -309,7 +309,7 @@ export class BpTeamComponent extends BaseComponent implements OnInit {
         })
     }
 
-    private getBestaandeTeams(klasse: string): Team[] {
+    private getBestaandeTeamsNotInComp(klasse: string): Team[] {
         let result: Team[] = [];
         this.vereniging.teams.forEach(team => {
             if (team.klasse == klasse) {

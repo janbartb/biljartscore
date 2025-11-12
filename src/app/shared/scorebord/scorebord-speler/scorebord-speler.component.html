@@ -37,6 +37,12 @@
             <div [style.font-size]="formatCar.length < 3 ? '11em' : '10.5em'">
                 <app-getal-var [naam]="'car'" [getal]="'' + speler.stand.aantCar" [format]="formatCar"></app-getal-var>
             </div>
+            @if (speler.actief && speler.stand.enNog > 0 && speler.stand.enNog < 4) {
+                <div class="ennog-container blink" [style.color]="speler.metWit ? 'white' : 'yellow'">
+                    <span style="font-size: 5em;">nog </span>
+                    <span style="font-size: 6em;">{{speler.stand.enNog}}</span>
+                </div>
+            }
         </div>
         <div class="flexgrow1" style="padding-right: .5em;">
             <div class="brt-ser-container flexbox flexright" style="height: 6em;">
@@ -70,10 +76,17 @@
     <div style="height: 4em;">
         <div class="flexbox flexmiddle arial" style="height: 4em;">
             <div class="flexgrow1" style="padding-left: .5em;">
-                <div style="font-size: 3em;">
+                <div class="flexbox flexmiddle" style="height: 4em;">
                     @for (cars of speler.stand.laatste5brt; track $index) {
-                        <span style="padding-right: .375em;" 
-                                [style.opacity]="1 - ((speler.stand.laatste5brt.length - $index - 1) * .15)">{{cars == 0 ? '­•' : cars}}</span>
+                        <div style="padding-right: 1em;" 
+                                [style.opacity]="1 - ((speler.stand.laatste5brt.length - $index - 1) * .15)">
+                            @if (cars == 0) {
+                                <span style="font-size: 3.5em;">­•</span>
+                            }
+                            @else {
+                                <span style="font-size: 3em;">{{cars}}</span>
+                            }
+                        </div>
                     }
                 </div>
             </div>

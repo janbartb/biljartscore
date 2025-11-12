@@ -238,6 +238,10 @@ export class ScorebordComponent implements OnInit {
         }
     }
 
+    private gotoConfig() {
+        this.appData.gotoPage(this.appData.router.url, '/config');
+    }
+
     toggleTestMode() {
         this.testModeToggled = true;
         this.testMode = !this.testMode;
@@ -282,6 +286,10 @@ export class ScorebordComponent implements OnInit {
                 return false;
             }
             this.keyPressed.emit('Escape');
+            return false;
+        }
+        if (event.code === 'KeyI') {
+            this.gotoConfig();
             return false;
         }
         if (event.code === 'KeyN') {
@@ -417,7 +425,6 @@ export class ScorebordComponent implements OnInit {
                 }, 3000);
             }
         }
-        this.actieveSpeler.message.hide();
         this.actieveSpeler.stand.serie += nr;
         if (this.isTeamWedstrijd()) {
             this.actieveTeam.stand.serie += nr;
@@ -431,7 +438,6 @@ export class ScorebordComponent implements OnInit {
         }
         this.aantBereikt = this.checkForSerieMessages();
         setTimeout(() => {
-            this.actieveSpeler.message.show();
             this.setGemiddeldes(this.actieveSpeler);
             if (this.isTeamWedstrijd()) {
                 this.setTeamGemiddeldes(this.actieveTeam);
@@ -467,16 +473,17 @@ export class ScorebordComponent implements OnInit {
             remainingCar = this.actieveSpeler.splTsCar - this.actieveSpeler.stand.aantCar - this.actieveSpeler.stand.serie;
         }
         if (remainingCar === 0) {
+            this.actieveSpeler.stand.enNog = -1;
             return true;
         }
         if (remainingCar < 4) {
-            this.actieveSpeler.message.textCar = `nog ${remainingCar}`;
+            this.actieveSpeler.stand.enNog = remainingCar;
             msgs.push(`${this.actieveSpeler.stand.serie}`);
             msgs.push(`en nog ${remainingCar}`);
             spk = `${this.actieveSpeler.stand.serie}, en nog ${remainingCar}.`;
         }
         else {
-            this.actieveSpeler.message.textCar = '';
+            this.actieveSpeler.stand.enNog = -1;
             msgs.push(`${this.actieveSpeler.stand.serie}`);
             msgs.push('');
             spk = `${this.actieveSpeler.stand.serie}`;
@@ -508,16 +515,17 @@ export class ScorebordComponent implements OnInit {
             remainingCar = this.actieveTeam.teamTsCar - this.actieveTeam.stand.aantCar - this.actieveTeam.stand.serie;
         }
         if (remainingCar === 0) {
+            this.actieveTeam.stand.enNog = -1;
             return true;
         }
         if (remainingCar < 4) {
-            this.actieveTeam.message.textCar = `nog ${remainingCar}`;
+            this.actieveTeam.stand.enNog = remainingCar;
             msgs.push(`${this.actieveTeam.stand.serie}`);
             msgs.push(`en nog ${remainingCar}`);
             spk = `${this.actieveTeam.stand.serie}, en nog ${remainingCar}.`;
         }
         else {
-            this.actieveTeam.message.textCar = '';
+            this.actieveTeam.stand.enNog = -1;
             msgs.push(`${this.actieveTeam.stand.serie}`);
             msgs.push('');
             spk = `${this.actieveTeam.stand.serie}`;
@@ -565,25 +573,27 @@ export class ScorebordComponent implements OnInit {
                 spk = 'Laatste beurt';
             }
         }
-        this.actieveSpeler.message.textBrt = spk.length ? spk : '';
         // herhaal 'en nog ...' melding
-        if (this.repeatRemaining) {
-            this.actieveSpeler.message.textCar = '';
+        if (this.wedstrijd.regels.idxOptie != 1) {
             const remainingCar = this.actieveSpeler.splTsCar - this.actieveSpeler.stand.aantCar - this.actieveSpeler.stand.serie;
             if (remainingCar > 0 && remainingCar < 4) {
-                msgs.push(this.actieveSpeler.splBordNaam);
-                msgs.push(`nog ${remainingCar}`);
-                msgType = 'remaining';
-                if (spk.length) {
-                    spk = spk + `. ${this.actieveSpeler.splBordNaam}, nog ${remainingCar}.`;    
+                this.actieveSpeler.stand.enNog = remainingCar;
+                if (this.repeatRemaining ) {
+                    msgs.push(this.actieveSpeler.splBordNaam);
+                    msgs.push(`nog ${remainingCar}`);
+                    msgType = 'remaining';
+                    if (spk.length) {
+                        spk = spk + `. ${this.actieveSpeler.splBordNaam}, nog ${remainingCar}.`;    
+                    }
+                    else {
+                        spk = `${this.actieveSpeler.splSpreekNaam}. Nog ${remainingCar}.`;    
+                    }
                 }
-                else {
-                    spk = `${this.actieveSpeler.splSpreekNaam}. Nog ${remainingCar}.`;    
-                }
-                this.actieveSpeler.message.textCar = `nog ${remainingCar}`;
+            }
+            else {
+                this.actieveSpeler.stand.enNog = -1;
             }
         }
-        this.actieveSpeler.message.show();
         if (msgs.length > 0) {
             const modalMsg = new ModalMessage(msgType, msgs, spk, 4);
             this.modals.push(modalMsg);
@@ -619,25 +629,29 @@ export class ScorebordComponent implements OnInit {
                 spk = 'Laatste beurt';
             }
         }
-        this.actieveTeam.message.textBrt = spk.length ? spk : '';
         // herhaal 'en nog ...' melding
-        if (this.repeatRemaining) {
-            this.actieveTeam.message.textCar = '';
+        if (this.wedstrijd.regels.idxOptie != 1) {
             const remainingCar = this.actieveTeam.teamTsCar - this.actieveTeam.stand.aantCar - this.actieveTeam.stand.serie;
             if (remainingCar > 0 && remainingCar < 4) {
-                msgs.push(this.actieveTeam.teamNaam);
-                msgs.push(`nog ${remainingCar}`);
-                msgType = 'remaining';
-                if (spk.length) {
-                    spk = spk + `. ${this.actieveTeam.teamNaam}, nog ${remainingCar}.`;    
+                this.actieveTeam.stand.enNog = remainingCar;
+                if (this.repeatRemaining) {
+                    if (remainingCar > 0 && remainingCar < 4) {
+                        msgs.push(this.actieveTeam.teamNaam);
+                        msgs.push(`nog ${remainingCar}`);
+                        msgType = 'remaining';
+                        if (spk.length) {
+                            spk = spk + `. ${this.actieveTeam.teamNaam}, nog ${remainingCar}.`;    
+                        }
+                        else {
+                            spk = `${this.actieveTeam.teamNaam}. Nog ${remainingCar}.`;    
+                        }
+                    }
                 }
-                else {
-                    spk = `${this.actieveTeam.teamNaam}. Nog ${remainingCar}.`;    
-                }
-                this.actieveTeam.message.textCar = `nog ${remainingCar}`;
+            }
+            else {
+                this.actieveTeam.stand.enNog = -1;
             }
         }
-        this.actieveTeam.message.show();
         if (msgs.length > 0) {
             const modalMsg = new ModalMessage(msgType, msgs, spk, 4);
             this.modals.push(modalMsg);

@@ -31,25 +31,3 @@ export class Message {
         this.visible = false;
     }
 }
-
-export class SpelerMessage {
-    textBrt: string = '';
-    textCar: string = '';
-    visible: boolean = false;
-
-    reset(): void {
-        this.visible = false;
-        this.textBrt = '';
-        this.textCar = '';
-    }
-
-    show(): void {
-        if (this.textBrt.length || this.textCar.length) {
-            this.visible = true;
-        }
-    }
-
-    hide(): void {
-        this.visible = false;
-    }
-}

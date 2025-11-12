@@ -9,16 +9,18 @@ import { SectionHeaderComponent } from '../../shared/section-header/section-head
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { Alinea, ConfirmDialog } from '../../model/dialogs';
 import { HelpComponent } from '../../shared/help/help.component';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'app-bp-competitie-teams',
     standalone: true,
     imports: [
-        PageHeaderComponent,
-        SectionHeaderComponent,
-        ConfirmComponent,
-        HelpComponent
-    ],
+    PageHeaderComponent,
+    SectionHeaderComponent,
+    ConfirmComponent,
+    HelpComponent,
+    NgClass
+],
     templateUrl: './bp-competitie-teams.component.html',
     styleUrl: './bp-competitie-teams.component.css'
 })
@@ -27,6 +29,7 @@ export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit 
     bssComp: KnbbCompetitie = new KnbbCompetitie();
     bssTeams: Team[] = [];
     bssTeamToRemove: Team = new Team();
+    areTeamsInBssCompButNotInBpComp: boolean = false;
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
     dataReady: boolean = false;
 
@@ -39,6 +42,9 @@ export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit 
     }
 
     bpTeamClicked(idx: number) {
+        if (this.areTeamsInBssCompButNotInBpComp) {
+            return;
+        }
         localStorage.setItem('bpTeam', JSON.stringify(this.bpComp.teams[idx]));
         this.router.navigate(['bpoint/lokaliteit']);
     }
@@ -64,6 +70,7 @@ export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit 
                 .then(resp => {
                     this.alert.showAlert(`Team '${this.bssTeamToRemove.naam}' is verwijderd uit de competitie.`, 'success');
                     this.bssTeams = this.bssTeams.filter(tm => tm.verId != this.bssTeamToRemove.verId || tm.teamId != this.bssTeamToRemove.teamId);
+                    this.areTeamsInBssCompButNotInBpComp = this.bssTeams.some(tm => !tm.inBpoint);
                 })
                 .catch(err => {
                     this.alert.showError(err);
@@ -116,6 +123,7 @@ export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit 
             this.bpComp.teams.sort(this.compareBpTeams);
             this.bssTeams.sort(this.compareBssTeams);
             this.bssTeams.forEach(bssTeam => {
+                bssTeam.inBpoint = false;
                 const bpTeam = this.bpComp.teams.find(tm => tm.knbbId == bssTeam.knbbId);
                 if (bpTeam) {
                     bssTeam.inBpoint = true;
@@ -123,6 +131,7 @@ export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit 
                     bpTeam.bssTeamId = bssTeam.teamId;
                 }
             });
+            this.areTeamsInBssCompButNotInBpComp = this.bssTeams.some(tm => !tm.inBpoint);
             this.dataReady = true;
         })
         .catch(err => {

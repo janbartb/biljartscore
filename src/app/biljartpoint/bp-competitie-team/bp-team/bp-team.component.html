@@ -154,7 +154,7 @@
                 @else {
                     <div class="flexbox flexcenter flexmiddle" style="height: 2.5em;">
                         <div class="label">
-                            <span>Het team is nog niet toegevoegd aan de competitie. Druk op [Opslaan] om dit te doen.</span>
+                            <span>Indien je het geselecteerde team wil toevoegen aan de competitie, druk dan op 'Opslaan'.</span>
                         </div>
                     </div>
                     <app-section-footer-btns [buttons]="saveButtons" (clickedButton)="opslaanClicked()"
@@ -170,37 +170,73 @@
         </div>
     }
 </div>
-<app-help [title]="'Team in BSS toevoegen'">
-    <div>
-        Op dit scherm kan een team aan BSS worden toegevoegd.
-    </div>
-    <div class="help-card-header">BSS team toevoegen</div>
-    <div>
-        De volgende rubrieken van een team moeten worden gevuld.
-    </div>
-    <div class="help-card-alinea">
-        1. BSS ID - wordt door het systeem gevuld. <br>
-        2. KNBB ID - wordt door het systeem gevuld. <br>
-        3. Klasse - wordt door het systeem gevuld. <br>
-        4. Volgnr. - wordt default door het systeem gevuld, verder zie hieronder. <br>
-        5. Naam - wordt default door het systeem gevuld met de teamnaam in Biljartpoint, verder zie hieronder.
-    </div>
-    <div class="help-card-header">Volgnr.</div>
-    <div>
-        Wanneer een vereniging bv. 2 klasse B2 teams heeft dan krijgt het ene team volgnr 1 en het andere volgnr 2. <br>
-        Het BSS ID van het ene team wordt dan 3BA-B2-1 en van het andere team 3BA-B2-2. <br>
-        Het volgnr. kan gewijzigd worden maar mag niet al in gebruik zijn. Het systeem controleert dit.
-    </div>
-    <div class="help-card-header">Naam</div>
-    <div>
-        De teamnaam wordt standaard gevuld met de teamnaam uit Biljartpoint. <br>
-        Deze naam kan ooit erg lang zijn (bv. doordat er 'Biljartvereniging' voor staat, wat overbodige informatie is). <br>
-        Aangezien de naam getoond wordt op het 'KNBB team match' scherm is het verstandig om lange namen wat in te korten. Max. 20 tekens 
-        wordt aanbevolen.
-    </div>
-    <div class="help-card-header">Opslaan</div>
-    <div>
-        Na klikken op button 'Opslaan' is het team in BSS toegevoegd en wordt het resultaat scherm getoond met onderin de button 
-        'Naar spelers'. Klik op deze button om de spelers van het team te gaan verwerken. 
-    </div>
+<app-help [title]="teamForm ? 'BSS Team toevoegen' : 'BSS Team selecteren of toevoegen'">
+    @if (teamForm) {
+        @if (modeTeam != 'view') {
+            <div>
+                Op dit scherm kan een team aan BSS worden toegevoegd.
+            </div>
+            <div class="help-card-header">BSS team toevoegen</div>
+            <div>
+                De volgende rubrieken van een team moeten worden gevuld.
+            </div>
+            <div class="help-card-alinea">
+                1. BSS ID - wordt door het systeem gevuld. <br>
+                2. KNBB ID - wordt door het systeem gevuld. <br>
+                3. Klasse - wordt door het systeem gevuld. <br>
+                4. Volgnr. - wordt default door het systeem gevuld, verder zie hieronder. <br>
+                5. Naam - wordt default door het systeem gevuld met de teamnaam in Biljartpoint, verder zie hieronder.
+            </div>
+            <div class="help-card-header">Volgnr.</div>
+            <div>
+                Wanneer een vereniging bv. 2 klasse B2 teams heeft dan krijgt het ene team volgnr 1 en het andere volgnr 2. <br>
+                Het BSS ID van het ene team wordt dan 3BA-B2-1 en van het andere team 3BA-B2-2. <br>
+                Het volgnr. kan gewijzigd worden maar mag niet al in gebruik zijn. Het systeem controleert dit.
+            </div>
+            <div class="help-card-header">Naam</div>
+            <div>
+                De teamnaam wordt standaard gevuld met de teamnaam uit Biljartpoint. <br>
+                Deze naam kan ooit erg lang zijn (bv. doordat er 'Biljartvereniging' voor staat, wat overbodige informatie is). <br>
+                Aangezien de naam getoond wordt op het 'KNBB team match' scherm is het verstandig om lange namen wat in te korten. Max. 20 tekens 
+                wordt aanbevolen.
+            </div>
+            <div class="help-card-header">Opslaan</div>
+            <div>
+                Na klikken op button 'Opslaan' is het team in BSS toegevoegd en wordt het resultaat scherm getoond met onderin de button 
+                'Naar spelers'. Klik op deze button om de spelers van het team te gaan verwerken. 
+            </div>
+        }
+        @else {
+            <div>
+                Via dit scherm kan een bestaand team aan de competitie worden toegevoegd.
+            </div>
+            <div class="help-card-alinea">
+                Het systeem heeft een team in BSS gevonden met hetzelfde KNBB ID als in biljartpoint. Dit wordt getoond op het scherm.
+            </div>
+            <div class="help-card-alinea">
+                Het systeem heeft een team in BSS gevonden met hetzelfde KNBB ID als in biljartpoint. Dit wordt getoond op het scherm.
+            </div>
+        }
+    }
+    @else {
+        <div>
+            Op dit scherm kan een team worden geselecteerd of een nieuw team worden toegevoegd.
+        </div>
+        <div class="help-card-alinea">
+            Het systeem heeft geconstateerd dat er al teams aanwezig zijn die onderdeel zijn van vereniging '{{vereniging.naam}}' en 
+            deze in de dropdown box gezet.
+        </div>
+        <div class="help-card-alinea">
+            je kan een van deze teams selecteren om die aan de competitie toe te voegen of, indien het gewenste team er niet bij 
+            staat, op 'Nieuw team' klikken om een nieuw team aan te maken.
+        </div>
+        <div class="help-card-alinea">
+            Wanneer een team geselecteerd is kan onderin op 'Opslaan' worden geklikt om het geselecteerde team aan de competitie 
+            toe te voegen. Na opslaan wordt het resultaatscherm getoond met onderin de button 'Naar spelers' om de spelers van het 
+            team te gaan verwerken.
+        </div>
+        <div class="help-card-alinea">
+            Wanneer op 'Nieuw team' geklikt wordt ga je naar het scherm om een nieuw team toe te voegen.
+        </div>
+    }
 </app-help>

@@ -81,14 +81,15 @@
 }
 
 .blink {
-    opacity: .15;
-    animation: blinker 5s linear infinite;
+    opacity: 0;
+    animation: blinker 3s linear infinite;
 }
 
 @keyframes blinker {
-    50% {
-        opacity: 1;
-    }
+    20% { opacity: 0; }
+    40% { opacity: 1; }
+    60% { opacity: 1; }
+    80% { opacity: 0; }
 }
 
 

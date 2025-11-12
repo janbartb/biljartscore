@@ -15,6 +15,12 @@
                     <div style="font-size: 14em;">
                         <app-getal-var [naam]="'car'" [getal]="'' + team.stand.aantCar" [format]="formatCar"></app-getal-var>
                     </div>
+                    @if (team.actief && team.stand.enNog > 0 && team.stand.enNog < 4) {
+                        <div class="ennog-container blink" [style.color]="team.metWit ? 'white' : 'yellow'">
+                            <span style="font-size: 6em;">nog </span>
+                            <span style="font-size: 7em;">{{team.stand.enNog}}</span>
+                        </div>
+                    }
                 </div>
                 <div style="width: 18.25em; padding-right: 1.25em;">
                     <div class="brt-ser-container flexbox flexright" style="height: 7em;">

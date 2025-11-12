@@ -1,5 +1,3 @@
-import { Message, SpelerMessage } from "./message";
-
 export class Wedstrijd {
     spel: string = 'standaard';
     aantSpelers: number = 2;
@@ -10,7 +8,6 @@ export class Wedstrijd {
     wedGespeeld: boolean = false;
     spelers: WedSpeler[] = [];
     teams: WedTeam[] = [];
-    message: Message = new Message();
 }
 
 export class WedRegels {
@@ -50,7 +47,6 @@ export class WedTeam {
     teamTsCar: number = 0;
     teamTsBrt: number = 0;
     stand: WedSpelerStand = new WedSpelerStand();
-    message: SpelerMessage = new SpelerMessage();
     spelers: WedSpeler[] = [];
 }
 
@@ -65,7 +61,6 @@ export class WedSpeler {
     splTsCar: number = 0;
     splTsBrt: number = 0;
     stand: WedSpelerStand = new WedSpelerStand();
-    message: SpelerMessage = new SpelerMessage();
 }
 
 export class WedSpelerStand {
@@ -78,6 +73,7 @@ export class WedSpelerStand {
     score: number[] = [];
     laatste5brt: number[] = [];
     voortgang: number = 0;
+    enNog: number = 0;
     moyView: string = '0,000';
     percView: string = '0,00';
 }
