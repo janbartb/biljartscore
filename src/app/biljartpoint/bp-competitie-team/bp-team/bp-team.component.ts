@@ -174,6 +174,7 @@ export class BpTeamComponent extends BaseComponent implements OnInit {
             localStorage.setItem('bpTeam', JSON.stringify(this.bpTeam));
             this.sectTitleTeam = 'BSS team';
             this.alert.showAlert('Team succesvol verwerkt in BSS.', 'success');
+            this.escapeCount = 0;
         })
         .catch(err => {
             this.alert.showError(err);
