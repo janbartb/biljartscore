@@ -1199,14 +1199,16 @@ export class ScorebordComponent implements OnInit {
     hideModal(): void {
         if (this.modalVisible) {
             this.modalVisible = false;
-            this.modals.shift();
-            if (this.modals.length) {
-                this.showModal();
-            }
-            else if (this.wedstrijd.opslaanInComp && this.wedstrijd.wedGespeeld) {
-                this.idxSpeler = -1;
-                this.keyPressed.emit('Ready');
-            }
+            setTimeout(() => {
+                this.modals.shift();
+                if (this.modals.length) {
+                    this.showModal();
+                }
+                else if (this.wedstrijd.opslaanInComp && this.wedstrijd.wedGespeeld) {
+                    this.idxSpeler = -1;
+                    this.keyPressed.emit('Ready');
+                }
+            }, 1000);
         }
     }
 
