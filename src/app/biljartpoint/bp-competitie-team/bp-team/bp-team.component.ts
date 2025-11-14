@@ -313,7 +313,7 @@ export class BpTeamComponent extends BaseComponent implements OnInit {
     private getBestaandeTeamsNotInComp(klasse: string): Team[] {
         let result: Team[] = [];
         this.vereniging.teams.forEach(team => {
-            if (team.klasse == klasse) {
+            if (team.klasse == klasse && !this.isTeamInComp(team)) {
                 result.push(team);
             }
         });

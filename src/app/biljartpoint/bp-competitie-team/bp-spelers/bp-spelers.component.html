@@ -45,7 +45,7 @@
                                                 @if (spl.inBp) {
                                                     @if (spl.inBSS) {
                                                         @if (spl.inTeam && !spl.toUpd) {
-                                                            <div title="Speler is in orde"><i class="fas fa-user-check"></i></div>
+                                                            <div class="clr-ok" title="Speler is in orde"><i class="fas fa-user-check"></i></div>
                                                         }
                                                         @else {
                                                             @if (spl.toUpd) {
@@ -64,8 +64,6 @@
                                                 @else {
                                                     <div class="padr clr-del" title="Speler wordt verwijderd uit team"><i class="fas fa-user-minus"></i></div>
                                                 }
-                                                <!-- <div>{{spl.inBp ? (spl.inTeam ? '' : '+') : '-'}}</div>
-                                                <div style="font-size: .75em;">{{spl.inBSS ? '' : '(BSS)'}}</div> -->
                                             </div>
                                             <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS, 'clr-del': !spl.inBp}" style="width: 5em;">
                                                 <span>{{spl.bssSpeler.speler.id}}</span>

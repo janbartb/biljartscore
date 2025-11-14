@@ -7,6 +7,7 @@ import { List } from '../../../model/list';
 import { KnbbCompetitie } from '../../../model/knbb-competitie';
 import { BaseComponent } from '../../../base/base.component';
 import { Button } from '../../../model/button';
+import { HelpComponent } from '../../../shared/help/help.component';
 
 @Component({
     selector: 'app-knbb-team-match-comp',
@@ -14,6 +15,7 @@ import { Button } from '../../../model/button';
     imports: [
         PageHeaderComponent,
         SectionFooterBtnsComponent,
+        HelpComponent,
         NgClass
     ],
     templateUrl: './knbb-team-match-comp.component.html',
@@ -67,6 +69,10 @@ export class KnbbTeamMatchCompComponent extends BaseComponent implements OnInit 
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
+        if (this.alert.helpVisible) {
+            this.alert.hideHelp();
+            return false;
+        }        
         if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
             if (event.key === 'ArrowUp') {
                 this.compLijst.hoverPreviousItem();

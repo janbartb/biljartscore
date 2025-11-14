@@ -83,10 +83,10 @@
                 }
                 @else {
                     <!-- selecteer vereniging of maak een nieuwe -->
-                    <div class="flexbox flexcenter flexmiddle" style="height: 3em;">
-                        <div class="label">
-                            <span>Selecteer een vereniging of maak een nieuwe indien de goede er niet bij staat.</span>
-                        </div>
+                    <div class="label" style="text-align: center; padding: 1em 0;">
+                        <span>Geef eerst aan bij welke vereniging team '{{bpTeam.naam}}' thuishoort.</span><br>
+                        <span>Er zijn 1 of meer verenigingen gevonden die spelen op lokatie '{{lokaliteit.naam}}'.</span><br>
+                        <span>Selecteer een van die verenigingen of klik op 'Nieuwe vereniging' indien de goede er niet bij staat.</span>
                     </div>
                     <div class="flexbox flexcenter">
                         <div>
@@ -94,7 +94,7 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <label for="selVer">Vereniging</label>
+                                            <label for="selVer">Selecteer vereniging</label>
                                         </td>
                                         <td>
                                             <select id="selVer" [(ngModel)]="vereniging" (change)="verenigingChanged()" style="width: 12em;">
@@ -103,6 +103,10 @@
                                                 }
                                             </select>
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><label for="" style="padding-left: .5em;">of</label></td>
                                     </tr>
                                     <tr>
                                         <td></td>
@@ -117,8 +121,10 @@
                 }
             </div>
             @if (!verenigingForm) {
-                <app-section-footer-btns [buttons]="pageButtons" (clickedButton)="naarTeamClicked()"
-                        [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                @if (vereniging.verId != '') {
+                    <app-section-footer-btns [buttons]="pageButtons" (clickedButton)="naarTeamClicked()"
+                            [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
             }
             @else {
                 @if (verenigingForm.valid) {

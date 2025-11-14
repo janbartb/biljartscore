@@ -1,9 +1,9 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'KNBB team match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
+            <app-page-header [title]="'KNBB team match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [help]="true"
                     [escCount]="escapeCount" (escClicked)="escapePressed()" (prevClicked)="previousClicked()"
-                    (hdrClicked)="headerClicked($event)"></app-page-header>
+                    (hdrClicked)="headerClicked($event)" (hlpClicked)="helpClicked()"></app-page-header>
         </div>
         @if (dataReady) {
             <app-section-header [title]="compTitle" [cssClasses]="'w3-green-l1'"></app-section-header>
@@ -80,131 +80,51 @@
             </div>
             @if (inputValid && teamLijst.hoveredIdx == teamLijst.selectedIdx && spelerLijst.hoveredIdx < 0) {
                 <app-section-footer-btns [buttons]="pageButtons" (clickedButton)="pageButtonClicked()"
-                                        [cssFooter]="'w3-green-bdr-l3'" [cssButtons]="'font125'"></app-section-footer-btns>
+                                        [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
             }
         }
     </div>
 </div>
-
-<app-help>
-    <div style="font-size: 1em; letter-spacing: -.04em;">Uitleg gebruik van toetsen</div>
-    <hr>
+<app-help [title]="'Team match - selectie (THUIS of GASTEN) spelers'">
     <div>
-        <img src="images/hlp-selectie-spelers.png" alt="">
+        Op dit scherm kunnen het team en de spelers van dat team worden geselecteerd.
     </div>
-    <div class="helptext" style="font-size: .875em; margin: .25em 0;">
-        <span>De <b style="color: red;">rode</b> lijn geeft de actieve sectie en speler aan.</span>
+    <div class="help-card-alinea">
+        Het scherm bestaat uit 3 kolommen: <br>
+        Kolom 1: alle teams die meedoen aan de geselecteerde competitie. <br>
+        Kolom 2: alle spelers (teamleden) van het in kolom 1 geselecteerde team. <br>
+        Kolom 3: de (in kolom 2) geselecteerde spelers die mee gaan doen aan de match.
     </div>
-    <hr>
+    <div class="help-card-header">Navigatie</div>
     <div>
-        <table>
-            <tr>
-                <td>
-                    <div class="flexbox flexmiddle">
-                        <div class="help-btn-key" style="margin-right: .125em;">
-                            <span>◄</span>
-                        </div>        
-                        <div class="help-btn-key">
-                            <span>►</span>
-                        </div>                
-                    </div>
-                </td>
-                <td>
-                    <div class="help-btn-equ">
-                        <span>=</span>
-                    </div>        
-                </td>
-                <td>
-                    <div class="helptext">
-                        <span>Wisselen van actieve sectie.</span>
-                    </div>        
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="flexbox flexmiddle">
-                        <div class="help-btn-key" style="margin-right: .125em;">
-                            <span>▲</span>
-                        </div>        
-                        <div class="help-btn-key">
-                            <span>▼</span>
-                        </div>                
-                    </div>
-                </td>
-                <td>
-                    <div class="help-btn-equ">
-                        <span>=</span>
-                    </div>        
-                </td>
-                <td>
-                    <div class="helptext">
-                        <span>Scroll door de lijst van de actieve sectie.</span>
-                    </div>        
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="flexbox flexmiddle">
-                        <div class="help-btn-key" style="width: 1.5em;">
-                            <span>Ctrl</span>
-                        </div>
-                        <div style="padding: 0 .25em; font-size: .75em; line-height: 1em;">
-                            <span>+</span>
-                        </div>
-                        <div class="help-btn-key" style="margin-right: .125em;">
-                            <span>▲</span>
-                        </div>        
-                        <div class="help-btn-key">
-                            <span>▼</span>
-                        </div>                
-                    </div>
-                </td>
-                <td>
-                    <div class="help-btn-equ">
-                        <span>=</span>
-                    </div>        
-                </td>
-                <td>
-                    <div class="helptext">
-                        <span>Maak een andere speler actief in de laatste sectie.</span>
-                    </div>        
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="flexbox flexmiddle">
-                        <div class="help-btn-key" style="width: 1.5em;">
-                            <span>Ctrl</span>
-                        </div>
-                        <div style="padding: 0 .25em; font-size: .75em; line-height: 1em;">
-                            <span>+</span>
-                        </div>
-                        <div class="help-btn-key" style="width: 2em; margin-right: .125em;">
-                            <span>Enter</span>
-                        </div>        
-                    </div>
-                </td>
-                <td>
-                    <div class="help-btn-equ">
-                        <span>=</span>
-                    </div>        
-                </td>
-                <td>
-                    <div class="helptext">
-                        <span>Maak de volgende speler actief in de laatste sectie.</span>
-                    </div>        
-                </td>
-            </tr>
-        </table>
+        Indien de muis niet beschikbaar is kun je de pijltjes-toetsen gebruiken om te navigeren door het scherm. <br>
+        Gebruik de omhoog-omlaag pijltjes om door de lijst in de actieve kolom te scrollen. De actieve kolom wordt aangegeven door 
+        een rode lijn onder de kolom header. <br>
+        Gebruik de links-rechts pijltjes om te wisselen van actieve kolom.
     </div>
-    <hr>
-    <div class="helptext">
-        <span>Wanneer een speler (onder Teamleden) geselecteerd wordt, dan wordt</span>
+    <div class="help-card-header">Teams</div>
+    <div>
+        Selecteer een team met de muis of met de navigatie-toetsen. Na selectie verschijnen de leden van dat team in kolom 2 en wordt 
+        deze kolom automatisch actief gemaakt.
     </div>
-    <div class="helptext">
-        <span>deze speler geplaatst in de rood omlijnde actieve speler.</span>
+    <div class="help-card-alinea">
+        Voor het thuis team wordt automatisch al het team geselecteerd. Dan moet bij 'Instellingen' de voorkeur-vereniniging en 
+        voorkeur-klasse opgegeven zijn.
     </div>
-    <div class="helptext">
-        <span>Daarna wordt automatisch de volgende speler actief gemaakt.</span>
+    <div class="help-card-header">Teamleden</div>
+    <div>
+        Selecteer een teamlid met de muis of met de navigatie-toetsen. Na selectie wordt het teamlid in kolom 3 geplaatst in de 
+        actieve (rood-omlijnde) speler en wordt in kolom 3 automatisch de volgende speler actief gemaakt.
+    </div>
+    <div class="help-card-header">Match team (thuis of gasten)</div>
+    <div>
+        Hier staan de spelers die uiteindelijk gaan spelen in de match. <br>
+        De volgorde van deze spelers maakt niks uit. Ze worden op het volgende scherm automatisch op volgorde van moyenne gezet. 
+        Daar kunnen dan ook eventueel spelers gewiddeld worden.
+    </div>
+    <div class="help-card-header">Naar volgend scherm</div>
+    <div>
+        Wanneer alle spelers correct geselecteerd zijn verschijnt onderin de button 'Naar controle' (of 'Naar GASTEN team' indien je 
+        met het thuis team bezig bent) waarmee je naar het volgende scherm kan gaan.
     </div>
 </app-help>

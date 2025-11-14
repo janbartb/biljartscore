@@ -1,8 +1,9 @@
 <div class="fullPageHeight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'KNBB team match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount"
-                        (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)"></app-page-header>
+            <app-page-header [title]="'KNBB team match'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" 
+                        [escCount]="escapeCount" [help]="true" (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)"
+                        (hlpClicked)="helpClicked()"></app-page-header>
         </div>
         @if (compLijst.isEmpty()) {
             <div class="label" style="padding-top: 5em; text-align: center;">
@@ -41,3 +42,12 @@
         }
     </div>
 </div>
+<app-help [title]="'Team match - selectie competitie'">
+    <div>
+        Het scherm toont een lijst van alle KNBB competities die in het systeem aanwezig zijn.
+    </div>
+    <div class="help-card-alinea">
+        Klik op een competitie om die te selecteren en door te gaan naar het volgende scherm. <br>
+        Je kan ook de omhoog-omlaag pijltjes-toetsen gebruiken om de competitie te selecteren en daarna 'Enter' te toetsen.
+    </div>
+</app-help>

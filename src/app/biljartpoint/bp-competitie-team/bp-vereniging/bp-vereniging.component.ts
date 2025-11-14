@@ -95,9 +95,11 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
     }
 
     naarTeamClicked() {
-        this.bpTeam.bssVerId = this.vereniging.verId;
-        localStorage.setItem('bpTeam', JSON.stringify(this.bpTeam));
-        this.router.navigate(['bpoint/team']);
+        if (this.vereniging.verId != '') {
+            this.bpTeam.bssVerId = this.vereniging.verId;
+            localStorage.setItem('bpTeam', JSON.stringify(this.bpTeam));
+            this.router.navigate(['bpoint/team']);
+        }
     }
 
     opslaanClicked() {
@@ -196,12 +198,20 @@ export class BpVerenigingComponent extends BaseComponent implements OnInit {
             if (this.vereniging.verId == '') {
                 this.verenigingen = results[0].filter(ver => ver.locatie == this.lokaliteit.lokId);
                 if (this.verenigingen.length) {
+                    if (this.verenigingen.length > 1) {
+                        const dummyVer = new Vereniging();
+                        dummyVer.naam = '---';
+                        this.verenigingen.unshift(dummyVer);
+                    }
                     this.vereniging = this.verenigingen[0];
                     this.sectTitleVer = 'BSS vereniging selecteren of toevoegen';
                     if (this.bpTeam.bssVerId != '') {
                         const idx = this.verenigingen.findIndex(ver => ver.verId == this.bpTeam.bssVerId);
                         if (idx >= 0) {
                             this.vereniging = this.verenigingen[idx];
+                            if (this.verenigingen.length > 2) {
+                                this.verenigingen.splice(0, 1);
+                            }
                         }
                     }
                     this.bpTeam.bssVerId = this.vereniging.verId;

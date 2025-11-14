@@ -1,5 +1,8 @@
+.clr-ok {
+    color: green;
+}
 .clr-mod {
-    color: blue;
+    color: red;
 }
 .clr-del {
     color: firebrick;
