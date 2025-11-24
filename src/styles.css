@@ -238,13 +238,6 @@ select:disabled, select.disabled {
 .lijst-row .lijst-col.nowidth { padding-right: 2em; }
 
 .lijst-col { min-height: .25em; }
-.lijst-row.selectable .lijst-col.indicator, .lijst-row.selectable .lijst-col span.indicator {
-    color: green;
-    opacity: 0;
-}
-.lijst-row.selectable.selected .lijst-col.indicator, .lijst-row.selectable.selected .lijst-col span.indicator {
-    opacity: 1;
-}
 
 /* DYNAMIC SCROLL AREA */
 

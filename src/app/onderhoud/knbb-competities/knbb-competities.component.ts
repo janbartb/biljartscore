@@ -176,15 +176,20 @@ export class KnbbCompetitiesComponent extends BaseComponent implements OnInit {
     }
 
     private compareCompetities(a: KnbbCompetitie, b: KnbbCompetitie): number {
-        if (a.klasse == b.klasse) {
-            if (a.volgNr == b.volgNr) {
-                if (a.poule == b.poule) {
-                    return (a.naam < b.naam) ? 1 : -1;
+        if (a.seizoen == b.seizoen) {
+            if (a.klasse == b.klasse) {
+                if (a.volgNr == b.volgNr) {
+                    if (a.poule == b.poule) {
+                        return (a.naam < b.naam) ? 1 : -1;
+                    }
+                    return a.poule - b.poule;
                 }
-                return a.poule - b.poule;
+                return a.volgNr - b.volgNr;
             }
-            return a.volgNr - b.volgNr;
+            return (a.klasse > b.klasse) ? 1 : -1;
         }
-        return (a.klasse > b.klasse) ? 1 : -1;
+        else {
+            return (a.seizoen > b.seizoen) ? 1 : -1;
+        }
     }
 }

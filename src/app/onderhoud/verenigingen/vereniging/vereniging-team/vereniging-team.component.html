@@ -8,7 +8,7 @@
         <app-section-header [title]="teamTitle" [cssClasses]="'w3-green-l2'"></app-section-header>
         <div class="flexgrow1 flexbox flexstretch">
             <!-- Team section -->
-            <div class="flex50perc flexbox flexcolumn" style="border-right: .25rem solid #93cf95;">
+            <div class="flex55perc flexbox flexcolumn" style="border-right: .25rem solid #93cf95;">
                 <app-section-header [title]="'Team'" [cssClasses]="'w3-green-l3'" [active]="activeSection == 0"
                             (headerClicked)="activateSection(0)"></app-section-header>
                 <div class="flexgrow1">
@@ -85,12 +85,24 @@
                                         </tbody>
                                     </table>
                                 </form>
-                                <div style="margin-top: 1em;">
+                                <div style="margin-top: .5em;">
                                     <span class="label" style="padding-right: 1em;">Aantal leden :</span>
                                     <span class="view">{{aantalLeden}}</span>
                                 </div>
+                                @if (inComps.length > 0) {
+                                    <div style="margin-top: .5em;">
+                                        <span class="label">In KNBB competities :</span>
+                                    </div>
+                                    @for (cmp of inComps; track $index) {
+                                        <div style="color: #1e461f; padding-left: 2em;">
+                                            <span>{{cmp.seizoen}}</span>
+                                            <span style="padding-left: 1em;">{{cmp.klasse}}-{{cmp.volgNr}}</span>
+                                            <span style="padding-left: 1em;">{{cmp.naam}}</span>
+                                        </div>
+                                    }
+                                }
                                 @if (biljartPointLink != '') {
-                                    <div class="flexbox flexmiddle" style="margin-top: 1em;">
+                                    <div class="flexbox flexmiddle" style="margin-top: .5em;">
                                         <div style="padding-right: .5em;">
                                             <span class="label">Bekijk team in </span>
                                         </div>
@@ -106,7 +118,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex50perc flexbox flexcolumn">
+            <div class="flex45perc flexbox flexcolumn">
                 <app-section-header [title]="'Selecteer teamleden'" [cssClasses]="'w3-green-l3'" [active]="activeSection == 1"
                             (headerClicked)="activateSection(1)"></app-section-header>
                 <div class="flexgrow1 scroll-container">

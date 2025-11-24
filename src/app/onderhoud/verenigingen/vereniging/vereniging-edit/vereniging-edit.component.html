@@ -1,86 +1,80 @@
-<div class="fullviewheight">
-    <div class="fullheight flexbox flexcolumn">
-        <div>
-            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
-                        (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+<div class="fullheight flexbox flexcolumn">
+    <div class="flexgrow1 flexbox flexcenter">
+        <div class="section-body" style="margin-top: 2em;">
+            @if (verenigingForm) {
+                <form [formGroup]="verenigingForm">
+                    <table class="tbl-normal tbl-input">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label for="verId">ID<span class="req"> *</span></label>
+                                </td>
+                                <td>
+                                    <input type="text" id="verId" style="width: 4em;" formControlName="verId" autocomplete="off"
+                                        [ngClass]="{'invalid': verId?.invalid && (verId?.dirty), 'valid': verId?.valid && (verId?.dirty)}"
+                                        (blur)="verId?.setValue(verId?.value.trim())">
+                                </td>
+                            </tr>
+                            @if (verId?.hasError('noDuplicates')) {
+                                <tr class="input-msg error">
+                                    <td></td>
+                                    <td><span>ID wordt al gebruikt</span></td>
+                                </tr>
+                            }
+                            <tr>
+                                <td>
+                                    <label for="naam">Naam<span class="req"> *</span></label>
+                                </td>
+                                <td>
+                                    <input #verenigingnaam type="text" id="naam" style="width: 12em;" formControlName="naam" autocomplete="off"
+                                        [ngClass]="{'invalid': naam?.invalid && (naam?.dirty), 'valid': naam?.valid && (naam?.dirty)}"
+                                        (blur)="naam?.setValue(naam?.value.trim())">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="korteNaam">Korte naam<span class="req"> *</span></label>
+                                </td>
+                                <td>
+                                    <input type="text" id="korteNaam" style="width: 5em;" formControlName="korteNaam" autocomplete="off"
+                                        [ngClass]="{'invalid': korteNaam?.invalid && (korteNaam?.dirty), 'valid': korteNaam?.valid && (korteNaam?.dirty)}"
+                                        (blur)="korteNaam?.setValue(korteNaam?.value.trim())">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="locatie">Locatie</label>
+                                </td>
+                                <td>
+                                    <select id="locatie" formControlName="locatie" style="width: 15em;">
+                                        <option value=""></option>
+                                        @for (lok of lokaliteiten; track $index) {
+                                            <option [ngValue]="lok.lokId">{{lok.naam}}</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                            @if (vereniging.verId != config.vereniging) {
+                                <tr><td style="height: 1em;"></td></tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <span class="label" (click)="voorkeurClicked()">
+                                            <i class="far" [ngClass]="voorkeur?.value ? 'fa-check-square' : 'fa-square'" 
+                                                    style="color: black;"></i>
+                                            <span style="padding-left: .5em;">Zet deze als voorkeur vereniging</span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </form>
+            }
         </div>
-        <div class="flexgrow1 flexbox flexcenter">
-            <div class="section-body" style="margin-top: 1em;">
-                @if (verenigingForm) {
-                    <form [formGroup]="verenigingForm">
-                        <table class="tbl-normal tbl-input">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <label for="verId">ID<span class="req"> *</span></label>
-                                    </td>
-                                    <td>
-                                        <input type="text" id="verId" style="width: 4em;" formControlName="verId" autocomplete="off"
-                                            [ngClass]="{'invalid': verId?.invalid && (verId?.dirty), 'valid': verId?.valid && (verId?.dirty)}"
-                                            (blur)="verId?.setValue(verId?.value.trim())">
-                                    </td>
-                                </tr>
-                                @if (verId?.hasError('noDuplicates')) {
-                                    <tr class="input-msg error">
-                                        <td></td>
-                                        <td><span>ID wordt al gebruikt</span></td>
-                                    </tr>
-                                }
-                                <tr>
-                                    <td>
-                                        <label for="naam">Naam<span class="req"> *</span></label>
-                                    </td>
-                                    <td>
-                                        <input type="text" id="naam" style="width: 12em;" formControlName="naam" autocomplete="off"
-                                            [ngClass]="{'invalid': naam?.invalid && (naam?.dirty), 'valid': naam?.valid && (naam?.dirty)}"
-                                            (blur)="naam?.setValue(naam?.value.trim())">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label for="korteNaam">Korte naam<span class="req"> *</span></label>
-                                    </td>
-                                    <td>
-                                        <input type="text" id="korteNaam" style="width: 5em;" formControlName="korteNaam" autocomplete="off"
-                                            [ngClass]="{'invalid': korteNaam?.invalid && (korteNaam?.dirty), 'valid': korteNaam?.valid && (korteNaam?.dirty)}"
-                                            (blur)="korteNaam?.setValue(korteNaam?.value.trim())">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label for="locatie">Locatie</label>
-                                    </td>
-                                    <td>
-                                        <select id="locatie" formControlName="locatie" style="width: 15em;">
-                                            <option value=""></option>
-                                            @for (lok of lokaliteiten; track $index) {
-                                                <option [ngValue]="lok.lokId">{{lok.naam}}</option>
-                                            }
-                                        </select>
-                                    </td>
-                                </tr>
-                                @if (vereniging.verId != config.vereniging) {
-                                    <tr><td style="height: 1em;"></td></tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>
-                                            <span class="label" (click)="voorkeurClicked()">
-                                                <i class="far" [ngClass]="voorkeur?.value ? 'fa-check-square' : 'fa-square'" 
-                                                        style="color: black;"></i>
-                                                <span style="padding-left: .5em;">Zet deze als voorkeur vereniging</span>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </form>
-                }
-            </div>
-        </div>
-        @if (verenigingForm && verenigingForm.valid) {
-            <app-section-footer-btns [buttons]="enterButtons" (clickedButton)="opslaanClicked()"
-                                [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
-        }
     </div>
+    @if (verenigingForm && verenigingForm.valid) {
+        <app-section-footer-btns [buttons]="enterButtons" (clickedButton)="opslaanClicked()"
+                            [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+    }
 </div>

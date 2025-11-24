@@ -14,8 +14,8 @@
 }
 
 .cmp-item-key {
-    width: 1.2em;
-    height: 1.2em;
+    width: 1.25em;
+    height: 1.25em;
     line-height: 1em;
     text-align: center;
     border: .125rem solid #265728;
@@ -27,7 +27,7 @@
 }
 
 .cmp-item-enter {
-    height: 1.2em;
+    height: 1.25em;
     padding: 0 .25em;
     line-height: 1em;
     text-align: center;

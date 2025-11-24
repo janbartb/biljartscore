@@ -1,13 +1,11 @@
-import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild, ViewChild } from '@angular/core';
-import { Lokaliteit, Team, Vereniging } from '../../../../model/vereniging';
+import { Component, effect, ElementRef, EventEmitter, HostListener, inject, Input, OnInit, Output, viewChild } from '@angular/core';
+import { Lokaliteit, Vereniging } from '../../../../model/vereniging';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { notEmpty } from '../../../../directives/validators.directive';
 import { Button } from '../../../../model/button';
 import { BaseComponent } from '../../../../base/base.component';
 import { ActivatedRoute } from '@angular/router';
-import { Spelsoort } from '../../../../model/spelsoort';
-import { PageHeaderComponent } from '../../../../shared/page-header/page-header.component';
 import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-btns/section-footer-btns.component';
 import { Config } from '../../../../model/config';
 import { ApiResponse } from '../../../../model/api-response';
@@ -18,7 +16,6 @@ import { ApiResponse } from '../../../../model/api-response';
     imports: [
         ReactiveFormsModule, 
         NgClass, 
-        PageHeaderComponent, 
         SectionFooterBtnsComponent
     ],
     templateUrl: './vereniging-edit.component.html',
@@ -28,22 +25,27 @@ export class VerenigingEditComponent extends BaseComponent implements OnInit {
     fb = inject(FormBuilder);
     route = inject(ActivatedRoute);
 
-    subtitle: string = "Vereniging"
-    vereniging: Vereniging = new Vereniging();
+    @Input() vereniging: Vereniging = new Vereniging();
+    @Output() finished: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     lokaliteiten: Lokaliteit[] = [];
     config: Config = new Config();
 
     enterButtons: Button[] = [new Button('Enter', 'Opslaan', true)];
 
-    htmlInputKnbbId = viewChild<ElementRef<HTMLInputElement>>("knbbid");
+    htmlInputNaam = viewChild<ElementRef<HTMLInputElement>>('verenigingnaam');
 
     verenigingForm!: FormGroup;
 
     constructor() {
         super();
         effect(() => {
-            this.htmlInputKnbbId()?.nativeElement.focus();
+            this.htmlInputNaam()?.nativeElement.focus();
         });
+    }
+
+    override escapePressed() {
+        this.finished.emit(true);
     }
 
     enterPressed() {
@@ -89,30 +91,18 @@ export class VerenigingEditComponent extends BaseComponent implements OnInit {
             this.escapePressed();
             return false;
         }
-        if (event.key === 'Home') {
-            this.homePressed();
-            return false;
-        }
         return true;
     }
 
     ngOnInit(): void {
-        const id: string | null = this.route.snapshot.paramMap.get('verId');
-        if (!id) {
-            this.alert.showAlert('Het ID in de URL is undefined.', 'error');
-            return;
-        }
         Promise.all([
-            this.bssApi.getVereniging(id),
             this.bssApi.getLokaliteiten(),
             this.bssApi.getConfig()
         ])
         .then(results => {
-            this.vereniging = results[0];
-            this.lokaliteiten = results[1];
-            this.config = results[2];
+            this.lokaliteiten = results[0];
+            this.config = results[1];
             this.lokaliteiten.sort(this.compareLokaliteiten);
-            this.subtitle = `Vereniging '${this.vereniging.naam}' wijzigen`;
             this.createVerenigingForm();
         })
         .catch((err) => {

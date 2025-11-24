@@ -6,7 +6,6 @@ import { NgClass } from '@angular/common';
 import { ScorebordSpelerComponent } from "./scorebord-speler/scorebord-speler.component";
 import { SpelerNamen, SpelerNamenDialog } from '../../model/dialogs';
 import { ModalMessage } from '../../model/modal-message';
-import { Message } from '../../model/message';
 import { ScorebordSpelerLandscapeComponent } from './scorebord-speler-landscape/scorebord-speler-landscape.component';
 import { ScorebordTeamComponent } from './scorebord-team/scorebord-team.component';
 import { SpelersNamenComponent } from '../spelers-namen/spelers-namen.component';
@@ -67,6 +66,7 @@ export class ScorebordComponent implements OnInit {
     speechToggled: boolean = false;
     repeatRemaining: boolean = false;
     sayGenoteerd: boolean = false;
+    helpPopupVisible: boolean = false;
 
     enterPressed() {
         if (this.wedstrijd.wedGespeeld) {
@@ -238,7 +238,7 @@ export class ScorebordComponent implements OnInit {
         }
     }
 
-    private gotoConfig() {
+    gotoConfig() {
         this.appData.gotoPage(this.appData.router.url, '/config');
     }
 
@@ -256,6 +256,18 @@ export class ScorebordComponent implements OnInit {
         setTimeout(() => {
             this.speechToggled = false;
         }, 2000);
+    }
+
+    toggleHelpPopup() {
+        this.helpPopupVisible = !this.helpPopupVisible;
+    }
+
+    openHelpPopup() {
+        this.helpPopupVisible = true;
+    }
+
+    closeHelpPopup() {
+        this.helpPopupVisible = false;
     }
 
     @HostListener('document:keydown', ['$event'])
@@ -294,22 +306,23 @@ export class ScorebordComponent implements OnInit {
         }
         if (event.code === 'KeyN') {
             this.wijzigNamenPressed();
+
             return false;
         }
         if (event.code === 'KeyS') {
             this.toggleSpeech();
             return false;
         }
-        if (event.code === 'KeyT') {
-            this.toggleTestMode();
-            return false;
-        }
         if (event.code === 'KeyH') {
-            this.alert.showHelp();
+            this.toggleHelpPopup();
             return false;
         }
         if (event.code === 'KeyL') {
             this.keyPressed.emit('Lijst');
+            return false;
+        }
+        if (event.code === 'KeyT') {
+            this.alert.showHelp();
             return false;
         }
         if (this.toetsen.beurtMin.indexOf(event.code) >= 0) {

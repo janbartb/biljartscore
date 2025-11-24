@@ -6,23 +6,38 @@ import { Lokaliteit, Team, Vereniging } from '../../../model/vereniging';
 import { List } from '../../../model/list';
 import { SpelerWrapper } from '../../../model/speler';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
-import { NgClass } from '@angular/common';
+import { DecimalPipe, NgClass } from '@angular/common';
 import { Button } from '../../../model/button';
-import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
 import { SectionFooterBtnsComponent } from "../../../shared/section-footer-btns/section-footer-btns.component";
 import { KnbbCompetitie } from '../../../model/knbb-competitie';
 import { ConfirmComponent } from '../../../shared/confirm/confirm.component';
 import { Alinea, ConfirmDialog } from '../../../model/dialogs';
+import { TabsComponent } from '../../../shared/tabs/tabs.component';
+import { VerenigingEditComponent } from './vereniging-edit/vereniging-edit.component';
+import { VerenigingViewComponent } from './vereniging-view/vereniging-view.component';
+
+interface TeamItem {
+    team: Team;
+    inComps: string[];
+}
+
+interface LidItem {
+    lid: SpelerWrapper;
+    inTeams: string[];
+}
 
 @Component({
     selector: 'app-vereniging',
     standalone: true,
     imports: [
         PageHeaderComponent,
-        SectionHeaderComponent,
         SectionFooterBtnsComponent,
+        TabsComponent,
+        VerenigingViewComponent,
+        VerenigingEditComponent,
         ConfirmComponent,
         NgClass,
+        DecimalPipe,
         FormsModule,
         ReactiveFormsModule
     ],
@@ -33,26 +48,26 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
     route = inject(ActivatedRoute);
 
     subtitle: string = "Vereniging"
-    sections: string[] = ['Vereniging', 'Teams', 'Leden'];
+    tabs: string[] = ['Vereniging', 'Teams', 'Leden'];
     vereniging: Vereniging = new Vereniging();
     verLokaliteit: Lokaliteit = new Lokaliteit();
-    teamLijst: List<Team> = new List<Team>();
-    ledenLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
+    teamLijst: List<TeamItem> = new List<TeamItem>();
+    ledenLijst: List<LidItem> = new List<LidItem>();
     comps: KnbbCompetitie[] = [];
     lokaliteiten: Lokaliteit[] = [];
+    idxTab: number = 0;
     idxToDelete: number = -1;
     confirmDialog: ConfirmDialog = new ConfirmDialog('', []);
+
+    editVer: boolean = false;
 
     wijzigButtons: Button[] = [new Button('W', 'Wijzigen', true)];
     ledenButtons: Button[] = [new Button('L', 'Wijzigen', true)];
     teamButtons = [
         new Button('+', 'Team', true), 
+        new Button('Enter', 'Selecteer', true), 
         new Button('Del', 'Team', true)
     ];
-
-    enterPressed() {
-        this.teamClicked(this.teamLijst.hoveredIdx);
-    }
 
     buttonPressed(event: any, button: Button) {
         button.selected = true;
@@ -60,6 +75,9 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
             button.selected = false;
             if (button.key == 'W') {
                 this.verenigingWijzigenClicked();
+            }
+            else if (button.key == 'Enter') {
+                this.teamSelecterenClicked(this.teamLijst.hoveredIdx);
             }
             else if (button.key == '+') {
                 this.teamToevoegenClicked();
@@ -78,25 +96,33 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
             this.teamToevoegenClicked();
         }
         else if (idx == 1) {
+            this.teamSelecterenClicked(this.teamLijst.hoveredIdx);
+        }
+        else if (idx == 2) {
             this.teamVerwijderenClicked(undefined, this.teamLijst.hoveredIdx);
         }
     }
 
     verenigingWijzigenClicked() {
-        this.appData.gotoPage(this.router.url, this.router.url + '/edit');
+        this.editVer = true;
     }
 
-    teamClicked(idx: number) {
+    verenigingWijzigenFinished() {
+        this.editVer = false;
+    }
+
+    teamSelecterenClicked(idx: number) {
         if (this.teamLijst.isIndexWithinRange(idx)) {
-            const team = this.teamLijst.filtered[idx];
-            this.appData.gotoPage(this.router.url, this.router.url + '/team/' + team.teamId);
+            const item = this.teamLijst.filtered[idx];
+            let url = this.getOriginalUrl();
+            this.appData.gotoPage(url + '/1', url + '/team/' + item.team.teamId);
             return;
         }
-        this.alert.showError(`Team index ${idx} valt buiten de range in de team lijst.`);
     }
 
     teamToevoegenClicked() {
-        this.appData.gotoPage(this.router.url, this.router.url + '/team/toevoegen');
+        let url = this.getOriginalUrl();
+        this.appData.gotoPage(url + '/1', url + '/team/toevoegen');
     }
 
     teamVerwijderenClicked(event: any, idx: number) {
@@ -104,13 +130,13 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
         if (this.teamLijst.isIndexWithinRange(idx)) {
             //TODO: first confirm and save if confirmed
             const teamToRemove = this.teamLijst.filtered[idx];
-            let compNaam = this.teamZitInCompetitie(teamToRemove);
+            let compNaam = this.teamZitInCompetitie(teamToRemove.team);
             if (compNaam.length) {
                 this.alert.showAlert(`Kan team niet verwijderen. Zit nog in KNBB competitie '${compNaam}'.`, 'warning', 5);
                 return;
             }
             this.idxToDelete = idx;
-            this.confirmVerwijderen(teamToRemove);
+            this.confirmVerwijderen(teamToRemove.team);
         }
     }
 
@@ -125,13 +151,14 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
     confirmReplied(confirmed: boolean) {
         if (confirmed) {
             const teamToRemove = this.teamLijst.filtered[this.idxToDelete];
-            this.teamLijst.items = this.teamLijst.items.filter(team => team.teamId != teamToRemove.teamId);
+            this.teamLijst.items = this.teamLijst.items.filter(item => item.team.teamId != teamToRemove.team.teamId);
             this.teamLijst.filtered.splice(this.idxToDelete, 1);
             this.teamLijst.clearSelection();
-            this.vereniging.teams = this.teamLijst.items;
+            this.vereniging.teams = this.teamLijst.items.map(item => item.team);
             this.bssApi.updateVereniging(this.vereniging)
                 .then(resp => {
-                    this.alert.showAlert(`Team '${teamToRemove.naam}' is verwijderd.`, 'success');
+                    this.tabs[1] = `Teams (${this.teamLijst.filtered.length})`;
+                    this.alert.showAlert(`Team '${teamToRemove.team.naam}' is verwijderd.`, 'success');
                 })
                 .catch(err => {
                     this.alert.showError(err);
@@ -141,50 +168,73 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
     }
 
     ledenWijzigenClicked() {
-        this.appData.gotoPage(this.router.url, this.router.url + '/spelers');
+        const url = this.getOriginalUrl();
+        this.appData.gotoPage(url + '/2', url + '/spelers');
+    }
+
+    activateTab(idx: number) {
+        if (idx == this.idxTab) {
+            return;
+        }
+        this.editVer = false;
+        this.idxTab = idx;
     }
 
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
-        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            if (event.key === 'ArrowUp') {
-                this.teamLijst.hoverPreviousItem();
+        if (!this.editVer) {
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                if (event.key === 'ArrowLeft') {
+                    this.nextTab(-1);
+                }
+                if (event.key === 'ArrowRight') {
+                    this.nextTab(1);
+                }
+                return false;
             }
-            if (event.key === 'ArrowDown') {
-                this.teamLijst.hoverNextItem();
+            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                if (event.key === 'ArrowUp') {
+                    this.teamLijst.hoverPreviousItem();
+                }
+                if (event.key === 'ArrowDown') {
+                    this.teamLijst.hoverNextItem();
+                }
+                return false;
             }
-            return false;
-        }
-        if (event.key === 'Enter') {
-            if (this.isDialogOpen) {
-                return true;
+            if (event.key === 'Enter') {
+                if (this.isDialogOpen) {
+                    return true;
+                }
+                if (this.idxTab != 1) {
+                    return true;
+                }
+                this.buttonPressed(event, this.teamButtons[1]);
+                return false;
             }
-            this.enterPressed();
-            return false;
-        }
-        if (event.key === 'Escape') {
-            if (this.isDialogOpen) {
-                return true;
+            if (event.key === 'Escape') {
+                if (this.isDialogOpen) {
+                    return true;
+                }
+                this.escapePressed();
+                return false;
             }
-            this.escapePressed();
-            return false;
-        }
-        if (event.key === '+' || event.key === '=') {
-            this.buttonPressed(event, this.teamButtons[0]);
-            return false;
-        }
-        if (event.code === 'KeyW') {
-            this.buttonPressed(event, this.wijzigButtons[0]);
-            return false;
-        }
-        if (event.key === 'Delete') {
-            this.buttonPressed(event, this.teamButtons[1]);
-            return false;
-        }
-        if (event.code === 'KeyL') {
-            this.buttonPressed(event, this.ledenButtons[0]);
-            return false;
+            if (event.key === '+' || event.key === '=') {
+                this.buttonPressed(event, this.teamButtons[0]);
+                return false;
+            }
+            if (event.code === 'KeyW') {
+                this.buttonPressed(event, this.wijzigButtons[0]);
+                return false;
+            }
+            if (event.key === 'Delete') {
+                this.buttonPressed(event, this.teamButtons[2]);
+                return false;
+            }
+            if (event.code === 'KeyL') {
+                this.buttonPressed(event, this.ledenButtons[0]);
+                return false;
+            }
         }
         if (event.key === 'Home') {
             this.homePressed();
@@ -199,26 +249,27 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
             this.alert.showAlert('Het ID in de URL is undefined.', 'error');
             return;
         }
+        const tab: string | null = this.route.snapshot.paramMap.get('tabNr');
+        if (tab && Number(tab)) {
+            this.idxTab = Number(tab);
+        }
         Promise.all([
             this.bssApi.getVereniging(id),
             this.bssApi.getLedenVanVereniging(id, this.spelId),
-            this.bssApi.getKnbbCompetities(this.appData.getDistrict().disId, this.spelId),
-            this.bssApi.getLokaliteiten()
+            this.bssApi.getKnbbCompetities(this.appData.getDistrict().disId, this.spelId)
         ])
             .then(results => {
                 this.vereniging = results[0];
-                let teams = this.vereniging.teams.filter(team => team.spelsoort == this.spelId);
-                this.teamLijst.fillItems(teams);
-                this.sortTeams();
-                this.ledenLijst.fillItems(results[1]);
-                this.sortLeden();
                 this.comps = results[2];
-                this.lokaliteiten = results[3];
-                this.sortLokaliteiten();
-                const idx = this.lokaliteiten.findIndex(lok => lok.lokId == this.vereniging.locatie);
-                if (idx >= 0) {
-                    this.verLokaliteit = this.lokaliteiten[idx];
-                }
+                let teams = this.vereniging.teams.filter(team => team.spelsoort == this.spelId);
+                const fullTeams = this.completeTeamData(teams);
+                this.teamLijst.fillItems(fullTeams);
+                this.tabs[1] += ` (${this.teamLijst.filtered.length})`;
+                this.sortTeams();
+                const fullLeden = this.completeLedenData(results[1]);
+                this.ledenLijst.fillItems(fullLeden);
+                this.tabs[2] += ` (${this.ledenLijst.filtered.length})`;
+                this.sortLeden();
                 this.subtitle = `Vereniging '${this.vereniging.naam}'`;
             })
             .catch((err) => {
@@ -226,35 +277,67 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
             });
     }
 
+    private completeTeamData(tms: Team[]): TeamItem[] {
+        let result: TeamItem[] = [];
+        tms.forEach(tm => {
+            let inComps: string[] = [];
+            this.comps.forEach(cmp => {
+                if (cmp.klasse == tm.klasse) {
+                    if (cmp.teams.some(cmpTm => cmpTm.verId == tm.verId && cmpTm.teamId == tm.teamId)) {
+                        inComps.push(`${cmp.seizoen} ${cmp.klasse}-${cmp.volgNr}`);
+                    }
+                }
+            });
+            result.push({'team': tm, 'inComps': inComps});
+        });
+        return result;
+    }
+
+    private completeLedenData(leden: SpelerWrapper[]): LidItem[] {
+        let result: LidItem[] = [];
+        leden.forEach(lid => {
+            let inTeams: string[] = [];
+            this.teamLijst.filtered.forEach(team => {
+                if (team.team.teamLeden.some(teamLid => teamLid == lid.speler.id)) {
+                    inTeams.push(`${team.team.klasse}-${team.team.volgNr}`);
+                }
+            });
+            result.push({'lid': lid, 'inTeams': inTeams});
+        });
+        return result;
+    }
+
+    private nextTab(direction: number) {
+        let idx = this.idxTab + direction;
+        if (idx < 0 || idx >= this.tabs.length) {
+            return;
+        }
+        this.activateTab(idx);
+    }
+
     private sortTeams() {
-        this.teamLijst.filtered.sort((a: Team, b: Team) => {
-            if (a.klasse == b.klasse) {
-                return (a.teamId > b.teamId) ? 1 : -1;
+        this.teamLijst.filtered.sort((a: TeamItem, b: TeamItem) => {
+            if (a.team.klasse == b.team.klasse) {
+                return (a.team.teamId > b.team.teamId) ? 1 : -1;
             }
             else {
-                return (a.klasse > b.klasse) ? 1 : -1;
+                return (a.team.klasse > b.team.klasse) ? 1 : -1;
             }
         });
     }
 
     private sortLeden() {
-        this.ledenLijst.filtered.sort((a: SpelerWrapper, b: SpelerWrapper) => {
-            if (a.getNaam() == b.getNaam()) {
-                return 0;
+        this.ledenLijst.filtered.sort((a: LidItem, b: LidItem) => {
+            if (a.lid.getGemiddeldeVanSpel() == b.lid.getGemiddeldeVanSpel()) {
+                if (a.lid.getNaam() == b.lid.getNaam()) {
+                    return 0;
+                }
+                else {
+                    return (a.lid.getNaam() > b.lid.getNaam()) ? 1 : -1;
+                }
             }
             else {
-                return (a.getNaam() > b.getNaam()) ? 1 : -1;
-            }
-        });
-    }
-
-    private sortLokaliteiten() {
-        this.lokaliteiten.sort((a: Lokaliteit, b: Lokaliteit) => {
-            if (a.naam == b.naam) {
-                return 0;
-            }
-            else {
-                return (a.naam > b.naam) ? 1 : -1;
+                return b.lid.getGemiddeldeVanSpel() - a.lid.getGemiddeldeVanSpel();
             }
         });
     }
@@ -267,6 +350,19 @@ export class VerenigingComponent extends BaseComponent implements OnInit {
             return foundComp.naam;
         }
         return '';
+    }
+
+    private getOriginalUrl(): string {
+        let segments = this.route.snapshot.url.map(s => s.path);
+        if (segments.length < 4) {
+            return this.router.url;
+        }
+        let result = '';
+        segments.pop();
+        segments.forEach(segm => {
+            result += '/' + segm;
+        });
+        return result;
     }
 
 }

@@ -1,0 +1,30 @@
+<div class="fullheight">
+    <div class="flexbox flexcenter" style="padding-left: .5em;">
+        <div style="padding-top: 2em;">
+            <table class="tbl-normal tbl-input">
+                <tbody>
+                    <tr>
+                        <td><label>ID</label></td>
+                        <td class="view" style="width: 10em;">{{vereniging.verId}}</td>
+                    </tr>
+                    <tr>
+                        <td><label>Naam</label></td>
+                        <td class="view">{{vereniging.naam}}</td>
+                    </tr>
+                    <tr>
+                        <td><label>Korte naam</label></td>
+                        <td class="view">{{vereniging.korteNaam}}</td>
+                    </tr>
+                    <tr>
+                        <td><label>Locatie</label></td>
+                        <td class="view ellips" style="max-width: 10em;" [title]="lokaliteit.naam">{{lokaliteit.naam}}</td>
+                    </tr>
+                    <tr>
+                        <td><label>Plaats</label></td>
+                        <td class="view">{{lokaliteit.plaats}}</td>
+                    </tr>
+                </tbody>
+            </table>    
+        </div>
+    </div>
+</div>

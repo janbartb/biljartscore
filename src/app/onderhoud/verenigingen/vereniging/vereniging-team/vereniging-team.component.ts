@@ -41,6 +41,7 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     selectieLijst: List<SpelerSelectie> = new List<SpelerSelectie>();
     klassen: string[] = [];
     existingIds: string[] = [];
+    inComps: KnbbCompetitie[] = [];
     compKnbbId: string = '';
     compPoule: string = '';
     biljartPointLink: string = '';
@@ -296,6 +297,7 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
                     this.teamTitle = `Team '${this.team.naam}' wijzigen`;
                     this.createdId = this.team.teamId;
                     this.fillCompKnbbIdAndPoule(results[3]);
+                    this.inComps = this.teamZitInCompetities(results[3]);
                 }
                 this.aantalLeden = this.team.teamLeden.length;
                 this.ledenLijst.fillItems(results[1]);
@@ -327,6 +329,14 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
                 this.compPoule = '' + foundComp.poule;
             }
         }
+    }
+
+    private teamZitInCompetities(comps: KnbbCompetitie[]): KnbbCompetitie[] {
+        let result = comps.filter(cmp => {
+            return cmp.teams.some(tm => tm.verId == this.team.verId && tm.teamId == this.team.teamId);
+        });
+        result.sort(this.compareCompetities);
+        return result;
     }
 
     private createBiljartpointLink() {
@@ -446,6 +456,24 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
                 return b.spelerMoy - a.spelerMoy;
             }
         });
+    }
+
+    private compareCompetities(a: KnbbCompetitie, b: KnbbCompetitie): number {
+        if (a.seizoen == b.seizoen) {
+            if (a.klasse == b.klasse) {
+                if (a.volgNr == b.volgNr) {
+                    if (a.poule == b.poule) {
+                        return (a.naam < b.naam) ? 1 : -1;
+                    }
+                    return a.poule - b.poule;
+                }
+                return a.volgNr - b.volgNr;
+            }
+            return (a.klasse > b.klasse) ? 1 : -1;
+        }
+        else {
+            return (a.seizoen > b.seizoen) ? 1 : -1;
+        }
     }
 
     get teamId() {

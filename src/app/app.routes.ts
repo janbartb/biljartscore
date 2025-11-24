@@ -97,6 +97,7 @@ export const routes: Routes = [
     { path: 'onderhoud/verenigingen/:verId/team/:teamId', component: VerenigingTeamComponent },
     { path: 'onderhoud/verenigingen/:verId/edit', component: VerenigingEditComponent },
     { path: 'onderhoud/verenigingen/:verId/spelers', component: SpelersComponent },
+    { path: 'onderhoud/verenigingen/:verId/:tabNr', component: VerenigingComponent },
     { path: 'onderhoud/verenigingen/:verId', component: VerenigingComponent },
     { path: 'onderhoud/verenigingen', component: VerenigingenComponent },
     { path: 'onderhoud/lokaliteiten/:lokId', component: LokaliteitComponent },

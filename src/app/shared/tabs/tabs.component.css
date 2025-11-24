@@ -1,0 +1,32 @@
+.tab-outer {
+    padding: .125em;
+    border-bottom: .125em solid #163317;
+}
+.tab-outer.active, .tab-outer:hover {
+    padding-bottom: 0;
+}
+.tab-inner {
+    height: 100%;
+    text-align: center;
+    color: #a3a3a3;
+    background-color: #b7dfb8;
+    line-height: 1.5em;
+    border-left: .125em solid grey;
+    border-top: .125em solid grey;
+    border-right: .125em solid grey;
+    border-top-left-radius: .75em;
+    border-top-right-radius: .75em;
+    cursor: pointer;
+}
+.tab-inner span {
+    font-size: 1.125em;
+}
+.tab-outer.active .tab-inner {
+    border-color: #163317;
+    cursor: not-allowed;
+}
+.tab-outer:not(.active) .tab-inner:hover {
+    color: black;
+    border-color: #1e461f
+
+}

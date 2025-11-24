@@ -1,0 +1,9 @@
+<div class="flexbox flexstretch" style="height: 2em;">
+    @for (tab of tabs; track $index) {
+        <div class="tab-outer" [ngClass]="{'active': idxActive == $index}" [style.width]="tabWidths[$index]">
+            <div class="tab-inner" [ngClass]="idxActive == $index ? colorClass : ''" (click)="tabClicked($index)">
+                <span>{{tab}}</span>
+            </div>
+        </div>
+    }
+</div>
