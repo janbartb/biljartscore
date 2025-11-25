@@ -130,13 +130,25 @@
         </div>
     </div>
     <div style="height: 2.5em; padding: .5em; position: relative">
-        <div class="fullheight" style="background-color: #6ec071; border-radius: .75em; overflow: hidden;">
-            <div class="fullheight voortgang" [ngClass]="{'actief': speler.actief, 'geel': !speler.metWit}"
-                        [style.width]="speler.stand.voortgang + '%'"></div>
-        </div>
-        <div class="voortgang-perc">
-            <span style="font-size: 1.5em;">{{speler.stand.voortgang}}</span>
-            <span style="position: relative; top: -.125em;"> %</span>
-        </div>
+        @if (speler.teamTsCar == 0) {
+            <div class="fullheight" style="background-color: #6ec071; border-radius: .75em; overflow: hidden;">
+                <div class="fullheight voortgang" [ngClass]="{'actief': speler.actief, 'geel': !speler.metWit}"
+                            [style.width]="speler.stand.voortgang + '%'"></div>
+            </div>
+            <div class="voortgang-perc">
+                <span style="font-size: 1.5em;">{{speler.stand.voortgang}}</span>
+                <span style="position: relative; top: -.125em;"> %</span>
+            </div>
+        }
+        @else {
+            <div class="fullheight" style="background-color: #6ec071; border-radius: .75em; overflow: hidden;">
+                <div class="fullheight voortgang" [ngClass]="{'actief': speler.actief, 'geel': !speler.metWit}"
+                        [style.width]="(100 * (speler.teamAantCar + speler.stand.aantCar + speler.stand.serie) / speler.teamTsCar) + '%'"></div>
+            </div>
+            <div class="voortgang-perc">
+                <span style="font-size: 1.5em;">{{(100 * (speler.teamAantCar + speler.stand.aantCar + speler.stand.serie) / speler.teamTsCar) | number:'1.1-1':''}}</span>
+                <span style="position: relative; top: -.125em;"> %</span>
+            </div>
+        }
     </div>
 </div>

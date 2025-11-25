@@ -61,6 +61,8 @@ export class WedSpeler {
     splTsCar: number = 0;
     splTsBrt: number = 0;
     stand: WedSpelerStand = new WedSpelerStand();
+    teamTsCar: number = 0;
+    teamAantCar: number = 0;
 }
 
 export class WedSpelerStand {

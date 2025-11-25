@@ -102,7 +102,14 @@ export class KnbbTeamMatchScorebordComponent extends BaseComponent implements On
         result.telling.bovenMoyPunten = 1;
         result.wedGespeeld = this.match.gameOver[this.idxWed];
         this.match.teams.forEach(team => {
-            result.spelers.push(this.createWedSpelerFromMatchSpeler(team.spelers[this.idxWed]));
+            const speler = this.createWedSpelerFromMatchSpeler(team.spelers[this.idxWed]);
+            team.spelers.forEach((tmSpl, idx) => {
+                speler.teamTsCar += tmSpl.splTsCar;
+                if (idx != this.idxWed) {
+                    speler.teamAantCar += tmSpl.stand.aantCar;
+                }
+            });
+            result.spelers.push(speler);
         });
         return result;
     }
