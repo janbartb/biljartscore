@@ -63,6 +63,7 @@ export class WedSpeler {
     stand: WedSpelerStand = new WedSpelerStand();
     teamTsCar: number = 0;
     teamAantCar: number = 0;
+    teamMaxCar: number = 0;
 }
 
 export class WedSpelerStand {

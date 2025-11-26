@@ -141,9 +141,11 @@
             </div>
         }
         @else {
-            <div class="fullheight" style="background-color: #6ec071; border-radius: .75em; overflow: hidden;">
+            <div class="fullheight" style="position: relative; background-color: #6ec071; border-radius: .75em; overflow: hidden;">
                 <div class="fullheight voortgang" [ngClass]="{'actief': speler.actief, 'geel': !speler.metWit}"
                         [style.width]="(100 * (speler.teamAantCar + speler.stand.aantCar + speler.stand.serie) / speler.teamTsCar) + '%'"></div>
+                <div class="voortgang-max" [ngClass]="{'actief': speler.actief}"
+                        [style.width]="(100 * (speler.teamTsCar - speler.teamMaxCar) / speler.teamTsCar) + '%'"></div>
             </div>
             <div class="voortgang-perc">
                 <span style="font-size: 1.5em;">{{(100 * (speler.teamAantCar + speler.stand.aantCar + speler.stand.serie) / speler.teamTsCar) | number:'1.1-1':''}}</span>

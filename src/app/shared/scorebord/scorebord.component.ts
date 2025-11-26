@@ -152,6 +152,13 @@ export class ScorebordComponent implements OnInit {
                 const modalMsg = new ModalMessage('klaar', ['Einde wedstrijd'], 'Einde wedstrijd', 2.5);
                 this.modals.push(modalMsg);
                 this.showModal();
+                setTimeout(() => {
+                    if (this.wedstrijd.spelers[0].teamTsCar > 0) {
+                        this.wedstrijd.spelers.forEach(spl => {
+                            spl.teamMaxCar = spl.teamMaxCar - (spl.splTsCar - spl.stand.aantCar);
+                        });
+                    }
+                }, 1000);
             }, 1000);
             this.opslaan.emit(this.wedstrijd);
             return;
@@ -846,6 +853,9 @@ export class ScorebordComponent implements OnInit {
             else {
                 this.wedstrijd.spelers.forEach(spl => {
                     spl.stand.punten = this.getPunten(spl);
+                    if (spl.teamTsCar > 0) {
+                        spl.teamMaxCar = spl.teamMaxCar + (spl.splTsCar - spl.stand.aantCar);
+                    }
                 });
             }
         }

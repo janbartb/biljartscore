@@ -108,9 +108,12 @@ export class KnbbTeamMatchScorebordComponent extends BaseComponent implements On
                 if (idx != this.idxWed) {
                     speler.teamAantCar += tmSpl.stand.aantCar;
                 }
+                speler.teamMaxCar += (this.match.gameOver[idx] ? tmSpl.stand.aantCar : tmSpl.splTsCar);
             });
             result.spelers.push(speler);
         });
+        console.log(this.match);
+        console.log(result);
         return result;
     }
 
