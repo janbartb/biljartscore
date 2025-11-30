@@ -1,7 +1,4 @@
 <div class="bss-scorebord" style="position: relative;" (click)="closeHelpPopup()">
-    @if (!modalVisible) {
-        <div class="help-popup-trigger" (mouseenter)="openHelpPopup()"></div>
-    }
     <div class="help-popup flexbox flexaround" [ngClass]="{'visible': helpPopupVisible}" 
             (click)="closeHelpPopup()" (mouseleave)="closeHelpPopup()">
         <div class="help-key-icon" style="text-align: center;" (click)="keyPressed.emit('Escape')">
@@ -263,6 +260,9 @@
     </div>
 }
 @if (isDialogOpen) {
-    <app-spelers-namen [dialog]="namenDialog" (reply)="namenDialogReplied($event)"></app-spelers-namen>
+    <app-spelers-namen style="font-size: 1.25em;" [dialog]="namenDialog" (reply)="namenDialogReplied($event)"></app-spelers-namen>
+}
+@if (isUndoDialogOpen) {
+    <app-confirm style="font-size: 1.5em;" [dialog]="confirmUndoDialog" (reply)="confirmUndoLaatsteBeurtReplied($event)"></app-confirm>
 }
 <app-help-score></app-help-score>

@@ -4,7 +4,7 @@ import { AlertService } from '../../services/alert.service';
 import { WedSpeler, Wedstrijd, WedTeam } from '../../model/wedstrijd';
 import { NgClass } from '@angular/common';
 import { ScorebordSpelerComponent } from "./scorebord-speler/scorebord-speler.component";
-import { SpelerNamen, SpelerNamenDialog } from '../../model/dialogs';
+import { Alinea, ConfirmDialog, SpelerNamen, SpelerNamenDialog } from '../../model/dialogs';
 import { ModalMessage } from '../../model/modal-message';
 import { ScorebordSpelerLandscapeComponent } from './scorebord-speler-landscape/scorebord-speler-landscape.component';
 import { ScorebordTeamComponent } from './scorebord-team/scorebord-team.component';
@@ -14,6 +14,7 @@ import { Apparaat, Config } from '../../model/config';
 import { StatusService } from '../../services/status.service';
 import { HelperService } from '../../services/helper.service';
 import { NotificationComponent } from '../notification/notification.component';
+import { ConfirmComponent } from '../confirm/confirm.component';
 
 class ActieToetsen {
     beurtPlus: string[] = [];
@@ -32,6 +33,7 @@ class ActieToetsen {
         ScorebordTeamComponent,
         NotificationComponent,
         SpelersNamenComponent,
+        ConfirmComponent,
         HelpScoreComponent
     ],
     templateUrl: './scorebord.component.html',
@@ -54,6 +56,8 @@ export class ScorebordComponent implements OnInit {
     aantBereikt: boolean = false;
     toetsen: ActieToetsen = new ActieToetsen();
     namenDialog: SpelerNamenDialog = new SpelerNamenDialog();
+    confirmUndoDialog: ConfirmDialog = new ConfirmDialog('', []);
+    isUndoDialogOpen: boolean = false;
     modals: ModalMessage[] = [];
     modalVisible: boolean = false;
     textsToSpeak: string[] = [];
@@ -289,7 +293,7 @@ export class ScorebordComponent implements OnInit {
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         //console.log(event);
         console.log(event.code + ' : ' + event.key);
-        if (this.isDialogOpen) {
+        if (this.isDialogOpen || this.isUndoDialogOpen) {
             return false;
         }
         if (this.alert.helpVisible && event.key != 'Shift') {
@@ -299,6 +303,9 @@ export class ScorebordComponent implements OnInit {
             this.alert.hideHelp();
             return false;
         }        
+        if (this.keysLocked && !this.testMode) {
+            return false;
+        }
         if (event.key === 'Escape') {
             if (this.actieveSpeler.stand.serie > 0) {
                 this.addNumberToSerie('-1');
@@ -313,14 +320,13 @@ export class ScorebordComponent implements OnInit {
         }
         if (event.code === 'KeyN') {
             this.wijzigNamenPressed();
-
             return false;
         }
         if (event.code === 'KeyS') {
             this.toggleSpeech();
             return false;
         }
-        if (event.code === 'KeyH') {
+        if (event.code === 'KeyH' || event.code === 'Slash') {
             this.toggleHelpPopup();
             return false;
         }
@@ -333,7 +339,7 @@ export class ScorebordComponent implements OnInit {
             return false;
         }
         if (this.toetsen.beurtMin.indexOf(event.code) >= 0) {
-            this.undoLaatsteBeurt();
+            this.confirmUndoLaatsteBeurt();
             return false;
         }
         if (!this.wedstrijd.wedGespeeld) {
@@ -418,9 +424,6 @@ export class ScorebordComponent implements OnInit {
     }
 
     private addNumberToSerie(numString: string) {
-        if (this.keysLocked && !this.testMode) {
-            return;
-        }
         const nr = Number(numString);
         if (nr < 0 && this.actieveSpeler.stand.serie === 0) {
             return;
@@ -736,6 +739,33 @@ export class ScorebordComponent implements OnInit {
         }
     }
 
+    private confirmUndoLaatsteBeurt() {
+        if (this.keysLocked && !this.testMode) {
+            return;
+        }
+        this.keysLocked = true;
+        setTimeout(() => {
+            this.keysLocked = false;
+        }, 2000);
+        this.textsToSpeak.push('Een beurt teruggaan bevestigen.');
+        this.speakTexts();
+        let inhoud: Alinea[] = [];
+        inhoud.push(new Alinea([`Laatste beurt ongedaan maken.`]));
+        inhoud.push(new Alinea([`Weet u het zeker?`]));
+        this.confirmUndoDialog = new ConfirmDialog('beurt terug', inhoud);
+        this.isUndoDialogOpen = true;
+    }
+
+    confirmUndoLaatsteBeurtReplied(confirmed: boolean) {
+        if (this.keysLocked && !this.testMode) {
+            return;
+        }
+        if (confirmed) {
+            this.undoLaatsteBeurt();
+        }
+        this.isUndoDialogOpen = false;
+    }
+
     private undoLaatsteBeurt(): boolean {
         if (this.isTeamWedstrijd()) {
             if (this.wedstrijd.teams[0].spelers[0].actief && this.wedstrijd.teams[0].spelers[0].stand.aantBrt === 1) {
@@ -854,7 +884,7 @@ export class ScorebordComponent implements OnInit {
                 this.wedstrijd.spelers.forEach(spl => {
                     spl.stand.punten = this.getPunten(spl);
                     if (spl.teamTsCar > 0) {
-                        spl.teamMaxCar = spl.teamMaxCar + (spl.splTsCar - spl.stand.aantCar);
+                        spl.teamMaxCar = spl.teamMaxCar + (spl.splTsCar - (spl.stand.aantCar + spl.stand.serie));
                     }
                 });
             }

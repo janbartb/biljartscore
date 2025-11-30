@@ -48,11 +48,11 @@ export class ConfirmComponent implements OnInit, OnDestroy {
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         console.log(event.code + ' : ' + event.key);
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' || event.code === 'PageDown') {
             this.buttonPressed(this.dialog.acceptButton);
             return false;
         }
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' || event.code === 'PageUp' || event.code === 'NumpadDecimal') {
             this.buttonPressed(this.dialog.rejectButton);
             return false;
         }

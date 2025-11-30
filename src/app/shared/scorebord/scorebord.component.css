@@ -1,12 +1,3 @@
-.help-popup-trigger {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: .5em; 
-    background-color: #dbefdc;
-    z-index: 50;
-}
 .help-popup {
     position: absolute;
     top: 0;
@@ -25,7 +16,6 @@
 .help-popup.visible {
     translate: 0 0;
 }
-
 .help-popup .help-key-icon {
     text-align: center;
     cursor: pointer;
