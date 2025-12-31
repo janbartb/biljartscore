@@ -20,6 +20,19 @@ export class HelperService {
         return '' + new Date().getFullYear();
     }
 
+    getDateAsString(d: Date): string {
+        const result = d.toLocaleDateString('nl-NL');
+        return result.substring(6) + '-' + result.substring(3, 5) + '-' + result.substring(0, 2);
+    }
+
+    getTimeAsString(d: Date): string {
+        return d.toLocaleTimeString('nl-NL');
+    }
+
+    getDateTimeAsString(d: Date): string {
+        return this.getDateAsString(d) + ' ' + this.getTimeAsString(d);
+    }
+
     isValidInteger(val: string): boolean {
         let nr = Number(val);
         if (isNaN(nr) || nr <= 0) {
@@ -231,15 +244,15 @@ export class HelperService {
         return teams;
     }
 
-    transform(txt: string): number {
+    transform(txt: string): string {
         if (!txt || txt == '') {
-            return 0;
+            return '';
         }
         let res = 0;
         txt.split('').forEach((ch, idx) => {
-            res += Number(idx + '1') * (txt.charCodeAt(idx) + 5);
+            res += Number((idx + 3) + '1') * (txt.charCodeAt(idx) + 77);
         });
-        res++;
-        return res;
+        res = (13 * res) + 7;
+        return '' + res;
     }
 }

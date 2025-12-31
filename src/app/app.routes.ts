@@ -71,10 +71,17 @@ import { BpTeamComponent } from './biljartpoint/bp-competitie-team/bp-team/bp-te
 import { TryoutComponent } from './tryout/tryout.component';
 import { RandApparatuurComponent } from './onderhoud/config/rand-apparatuur/rand-apparatuur.component';
 import { BpDelSeizoenComponent } from './biljartpoint/bp-del-seizoen/bp-del-seizoen.component';
+import { AccountsComponent } from './onderhoud/accounts/accounts.component';
+import { AccountAddComponent } from './onderhoud/accounts/account-add/account-add.component';
+import { AccountEditComponent } from './onderhoud/accounts/account-edit/account-edit.component';
+import { AccountComponent } from './onderhoud/account/account.component';
+import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
+import { AccountResetComponent } from './onderhoud/account/account-reset/account-reset.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
-    { path: 'home', component: HomeComponent },
+    { path: 'home', component: HomeComponent, canActivate: [authGuard] },
     { path: 'probeer', component: TryoutComponent },
     { path: 'match/lijst/:wedNr', component: KnbbMatchLijstComponent },
     { path: 'match/lijst', component: KnbbMatchLijstComponent },
@@ -82,7 +89,7 @@ export const routes: Routes = [
     { path: 'match/setup/comp', component: KnbbMatchCompComponent },
     { path: 'match/setup/check', component: KnbbMatchCheckComponent },
     { path: 'match/score', component: KnbbMatchScorebordComponent },
-    { path: 'match', component: KnbbMatchComponent },
+    { path: 'match', component: KnbbMatchComponent, canActivate: [authGuard] },
     { path: 'teammatch/lijst', component: KnbbTeamMatchLijstComponent },
     { path: 'teammatch/setup', children: [
         { path: 'thuis', component: KnbbTeamMatchSetupComponent },
@@ -92,7 +99,12 @@ export const routes: Routes = [
     { path: 'teammatch/setup/check', component: KnbbTeamMatchCheckComponent },
     { path: 'teammatch/score/:wedNr', component: KnbbTeamMatchScorebordComponent },
     { path: 'teammatch/:wedNr', component: KnbbTeamMatchComponent },
-    { path: 'teammatch', component: KnbbTeamMatchComponent },
+    { path: 'teammatch', component: KnbbTeamMatchComponent, canActivate: [authGuard] },
+    { path: 'account/reset/:userId', component: AccountResetComponent },
+    { path: 'onderhoud/account', component: AccountComponent, canActivate: [authGuard] },
+    { path: 'onderhoud/accounts/toevoegen', component: AccountAddComponent, canActivate: [authGuard, adminGuard] },
+    { path: 'onderhoud/accounts/:userId', component: AccountEditComponent, canActivate: [authGuard, adminGuard] },
+    { path: 'onderhoud/accounts', component: AccountsComponent, canActivate: [authGuard, adminGuard] },
     { path: 'onderhoud/verenigingen/toevoegen', component: VerenigingAddComponent },
     { path: 'onderhoud/verenigingen/:verId/team/:teamId', component: VerenigingTeamComponent },
     { path: 'onderhoud/verenigingen/:verId/edit', component: VerenigingEditComponent },
@@ -121,20 +133,20 @@ export const routes: Routes = [
         { path: ':naam/spelers', component: CompSpelersComponent },
         { path: ':naam', component: CompetitieComponent }
     ]},
-    { path: 'onderhoud', component: OnderhoudComponent },
+    { path: 'onderhoud', component: OnderhoudComponent, canActivate: [authGuard] },
     { path: 'config/rand', component: RandApparatuurComponent },
-    { path: 'config', component: ConfigComponent },
+    { path: 'config', component: ConfigComponent, canActivate: [authGuard] },
     { path: 'spelkeuze', component: SpelkeuzeComponent },
     { path: 'annon/aantspl', component: AnnonAantSpelersComponent },
     { path: 'annon/spelers', component: AnnonSpelersComponent },
     { path: 'annon/score', component: AnnonScorebordComponent },
-    { path: 'annon', component: AnnonComponent },
+    { path: 'annon', component: AnnonComponent, canActivate: [authGuard] },
     { path: 'wedstrijd/score', component: WedScorebordComponent },
     { path: 'wedstrijd/config', component: WedConfigComponent },
     { path: 'wedstrijd/lijst', component: WedLijstComponent },
     { path: 'wedstrijd/spelers', component: WedSpelersComponent },
     { path: 'wedstrijd/aantspl', component: WedAantSpelersComponent },
-    { path: 'wedstrijd', component: WedstrijdComponent },
+    { path: 'wedstrijd', component: WedstrijdComponent, canActivate: [authGuard] },
     { path: 'eigencomps/:naam/match/:ronde/:idxspl/:idxteg', component: EigenCompetitieMatchComponent },
     { path: 'eigencomps/:naam/score/:ronde/:idxspl/:idxteg', component: EigenCompetitieScorebordComponent },
     { path: 'eigencomps/:naam/lijst/:ronde/:idxspl/:idxteg', component: EigenCompetitieLijstComponent },
@@ -143,8 +155,8 @@ export const routes: Routes = [
     { path: 'eigencomps/:naam/planning/:ronde', component: EigenCompetitiePlanningComponent },
     { path: 'eigencomps/:naam/:splId/:ronde', component: EigenCompetitieSpelerComponent },
     { path: 'eigencomps/:naam', component: EigenCompetitieComponent },
-    { path: 'eigencomps', component: EigenCompetitiesComponent },
-    { path: 'bpoint/home', component: BpHomeComponent },
+    { path: 'eigencomps', component: EigenCompetitiesComponent, canActivate: [authGuard] },
+    { path: 'bpoint/home', component: BpHomeComponent, canActivate: [authGuard] },
     { path: 'bpoint/districten', component: BpDistrictenComponent },
     { path: 'bpoint/district', component: BpDistrictComponent },
     { path: 'bpoint/competitie', component: BpCompetitieComponent },
@@ -157,6 +169,6 @@ export const routes: Routes = [
     { path: 'bpoint/moyennes', component: BpMoyennesComponent },
     { path: 'bpoint/opschonen', component: BpDelSeizoenComponent },
     { path: 'error/:condition', component: ErrorPageComponent },
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
-    { path: '**', redirectTo: 'home', pathMatch: 'full' }
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
+    { path: '**', redirectTo: 'login', pathMatch: 'full' }
 ];

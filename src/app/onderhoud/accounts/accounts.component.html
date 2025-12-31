@@ -1,0 +1,57 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="'Accounts'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+            <div class="lijst-row">
+                <div class="lijst-col" style="width: 8em;">ID</div>
+                <div class="lijst-col" style="width: 9em;">Rol</div>
+                <div class="lijst-col" style="width: 11em;">Laatste login</div>
+                <div class="lijst-col" style="width: 15em;">Vereniging</div>
+                <div class="lijst-col" style="width: 5em;">Klasse</div>
+                <div class="lijst-col" style="width: 2.5em;"></div>
+            </div>
+        </div>
+        <div class="flexgrow1 scroll-container">
+            <div #accountlijst class="scroll-content">
+                <div class="flexbox flexcenter">
+                    <div class="lijst">
+                        @for (item of accountLijst.filtered; track $index) {
+                            <div class="lijst-row selectable" (click)="accountClicked($index)"
+                                    [ngClass]="{'hovered': accountLijst.hoveredIdx == $index}">
+                                <div class="lijst-col" style="width: 8em;">
+                                    <span [ngClass]="{'clr-red': item.account.password == ''}">{{item.account.userId}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 9em;">
+                                    <span>{{item.account.role}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 11em; font-weight: normal;">
+                                    <span>{{item.account.lastLogin}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 15em;">
+                                    <span>{{item.verNaam}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 5em;">
+                                    <span>{{item.account.klasse}}</span>
+                                </div>
+                                <div class="lijst-col" style="width: 2.5em;">
+                                    @if (item.account.role != 'beheerder') {
+                                        <i class="fas fa-trash-alt iconbtn" title="Verwijder" (click)="accountVerwijderenClicked($event, $index)"></i>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>    
+        <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)"
+                        [btnsHide]="[false, accountLijst.hoveredIdx < 0]"
+                        [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+    </div>
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}

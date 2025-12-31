@@ -114,7 +114,6 @@ export class VerenigingenComponent extends BaseComponent implements OnInit {
     }
 
     private confirmVerwijderen(vereniging: Vereniging) {
-        console.log('confirm');
         let inhoud: Alinea[] = [];
         let lines = [`Vereniging '${vereniging.naam}' verwijderen.`];
         if (vereniging.verId == this.config.vereniging) {

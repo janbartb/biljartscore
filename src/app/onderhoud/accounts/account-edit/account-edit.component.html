@@ -1,0 +1,92 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="'Account wijzigen'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1">
+            <div class="flexbox flexcenter" style="padding-top: 2em;">
+                <div>
+                    @if (accountForm) {
+                        <form [formGroup]="accountForm">
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label for="userId">ID<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <span style="padding-left: .25em;">{{account.userId}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="role">Rol<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <select id="role" formControlName="role" (change)="setGewijzigd()">
+                                                @for (rol of rollen; track $index) {
+                                                    <option [ngValue]="rol">{{rol}}</option>
+                                                }
+                                            </select>                                
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="verId">Vereniging</label>
+                                        </td>
+                                        <td>
+                                            <select id="verId" formControlName="verId" (change)="setGewijzigd()">
+                                                <option value=""></option>
+                                                @for (ver of verenigingen; track $index) {
+                                                    <option [ngValue]="ver.verId">{{ver.naam}}</option>
+                                                }
+                                            </select>                                
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="klasse">Klasse</label>
+                                        </td>
+                                        <td>
+                                            <select id="klasse" formControlName="klasse" (change)="setGewijzigd()">
+                                                <option value=""></option>
+                                                @for (klas of klassen; track $index) {
+                                                    <option [ngValue]="klas">{{klas}}</option>
+                                                }
+                                            </select>                                
+                                        </td>
+                                    </tr>
+                                    <tr><td><div style="height: 1em;"></div></td></tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            @if (account.password == '') {
+                                                <span style="color: red;">Wachtwoord is gereset!</span>
+                                            }
+                                            @else {
+                                                @if (password?.value == '') {
+                                                    <span style="color: red;">Wachtwoord wordt blanco.</span>
+                                                }
+                                                @else {
+                                                    <app-button [button]="pwResetButton" (buttonClicked)="pwResetButtonClicked()"></app-button>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+        @if (gewijzigd && accountForm && accountForm.valid) {
+            <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)"
+                        [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+        }
+    </div>
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmPwResetDialog" (reply)="confirmPwResetReplied($event)"></app-confirm>
+}

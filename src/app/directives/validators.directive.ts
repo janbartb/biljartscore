@@ -1,5 +1,24 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
+/** confirm password */
+export function confirmPassword(matchTocontrolName: string, reverse?: boolean): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+        if (control.parent && reverse) {
+            const c = (control.parent?.controls as any)[matchTocontrolName] as AbstractControl;
+            if (c) {
+                c.updateValueAndValidity();
+            }
+            return null;
+        }
+        if (!!control.parent && !!control.parent.value && control.value === (control.parent?.controls as any)[matchTocontrolName].value) {
+            return null;
+        }
+        else {
+            return { mismatch: true };
+        }
+    };
+}
+
 /** No duplicates allowed */
 export function noDuplicates(existing: string[]): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {

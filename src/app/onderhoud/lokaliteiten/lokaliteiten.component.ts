@@ -162,7 +162,7 @@ export class LokaliteitenComponent extends BaseComponent implements OnInit {
     }
 
     private setEscapeCount() {
-
+        this.escapeCount = this.lokLijst.hoveredIdx < 0 ? 0 : 1;
     }
 
     private sortLokaliteiten() {

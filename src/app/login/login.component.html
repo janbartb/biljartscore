@@ -1,16 +1,81 @@
-<div class="fullviewheight flexbox flexcenter flexmiddle">
-    <div>
-        <div style="text-align: center; font-size: 1.25em;">
-            <span>Eenmalige login</span>
-        </div>
-        <div style="margin-top: 2em;">
-            <span class="label">Wachtwoord </span>
-            <input #pw type="password" style="width: 8em;" [(ngModel)]="pwInput">    
-        </div>
-        <div class="flexbox flexcenter" style="margin-top: .5em;">
-            <div>
-                <app-button [button]="button" (buttonClicked)="enterClicked()"></app-button>
+<div class="fullPageHeight">
+    <div style="height: 3em;"></div>
+    <div class="flexbox flexcenter flexmiddle" style="padding: 2em 0; background-color: #93cf95;">
+        <div>
+            <div style="height: .25em;" class="w3-green-d4"></div>
+            <div style="padding: 1rem 0;">
+                <div class="flexbox flexmiddle">
+                    <div style="padding-right: 1rem;"><img src="images/ballen2.jpg" style="height: 5rem;" alt=""></div>
+                    <div>
+                        <div class="w3-green-col-d6" style="font-size: 2.75rem; font-weight: bold; line-height: 1.2;">Biljart Scorebord Systeem</div>
+                        <div class="flexbox flexbetween w3-green-col-d3" style="font-size: .75rem;">
+                            <div style="padding-left: .25rem;">
+                                <span>v{{version}}</span>
+                                @if (!appData.isRemote()) {
+                                    <span style="font-weight: normal; padding-left: .5rem;">(local)</span>
+                                }
+                            </div>
+                            <div>&copy; Jan Bart Biemans</div>    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="height: .25em;" class="w3-green-d4"></div>
+            <div style="text-align: center;" class="w3-green-col-d3">
+                <span style="font-size: 1rem;">voor driebanden, annonceren en pentathlon</span>
             </div>
         </div>
     </div>
+    @if (loginForm) {
+        <div>
+            <div style="text-align: center; padding-top: 1em;">
+                <span style="font-size: 1.25em; color: #265728;">Inloggen</span>
+            </div>
+            <div class="flexbox flexcenter" style="padding-top: 1em;">
+                <div>
+                    <form [formGroup]="loginForm">
+                        <table class="tbl-normal tbl-input">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="loginId">ID<span class="req"> *</span></label>
+                                    </td>
+                                    <td>
+                                        <input #loginid type="text" id="loginId" style="width: 10em;" formControlName="loginId" autocomplete="off"
+                                            [ngClass]="{'invalid': loginId?.invalid && (loginId?.dirty), 'valid': loginId?.valid && (loginId?.dirty)}"
+                                            (blur)="loginId?.setValue(loginId?.value.trim())">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="password">Wachtwoord<span class="req"> *</span></label>
+                                    </td>
+                                    <td>
+                                        <input #loginpw type="password" id="loginPw" style="width: 10em;" formControlName="loginPw" autocomplete="off"
+                                            [ngClass]="{'invalid': loginPw?.invalid && (loginPw?.dirty), 'valid': loginPw?.valid && (loginPw?.dirty)}"
+                                            (blur)="loginPw?.setValue(loginPw?.value.trim())">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+            <div class="flexbox flexcenter" style="margin-top: 1em;">
+                <div>
+                    <app-button [button]="button" [disabled]="!(loginForm && loginForm.valid)" (buttonClicked)="enterClicked()"></app-button>
+                </div>
+            </div>
+            <div class="flexbox flexcenter" style="margin-top: 2em;">
+                <div style="font-weight: normal; text-align: center;">
+                    <div>
+                        <a class="bsslink" href="">Wachtwoord vergeten?</a>
+                    </div>
+                    <div>
+                        <a class="bsslink" href="">Account aanvragen.</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

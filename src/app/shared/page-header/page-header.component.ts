@@ -1,11 +1,14 @@
 import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { StatusService } from '../../services/status.service';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'app-page-header',
     standalone: true,
-    imports: [],
+    imports: [
+        NgClass
+    ],
     templateUrl: './page-header.component.html',
     styleUrl: './page-header.component.css'
 })
@@ -19,15 +22,22 @@ export class PageHeaderComponent implements OnInit, OnChanges {
     @Input() spel: string = this.appData.getSpelNaam();
     @Input() district: string = '';
     @Input() help: boolean = false;
+    @Input() pwReset: boolean = false;
     @Output() prevClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() escClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() hlpClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() logoffClicked: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() hdrClicked: EventEmitter<string> = new EventEmitter<string>();
 
     escapes: number[] = [];
 
     gotoHome() {
-        this.router.navigate(['home']);
+        if (this.title == 'B.S.S.') {
+            this.logoffClicked.emit(true);
+        }
+        else {
+            this.router.navigate(['home']);
+        }
     }
 
     headerClicked() {

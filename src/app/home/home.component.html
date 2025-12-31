@@ -1,42 +1,17 @@
-<div class="fullPageHeight">
-    @if (screenReady) {
-        <div class="fullheight">
-            <div style="height: 4em;"></div>
-            <div class="flexbox flexcenter flexmiddle" style="padding: 2em 0; background-color: #93cf95;">
-                <div>
-                    <div style="height: .25em;" class="w3-green-d4"></div>
-                    <div style="padding: 1rem 0;">
-                        <div class="flexbox flexmiddle">
-                            <div style="padding-right: 1rem;"><img src="images/ballen2.jpg" style="height: 5rem;" alt=""></div>
-                            <div>
-                                <div class="w3-green-col-d6" style="font-size: 2.75rem; font-weight: bold; line-height: 1.2;">Biljart Scorebord Systeem</div>
-                                <div class="flexbox flexbetween w3-green-col-d3" style="font-size: .75rem;">
-                                    <div style="padding-left: .25rem;">v{{version}}</div>
-                                    <div>&copy; Jan Bart Biemans</div>    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="height: .25em;" class="w3-green-d4"></div>
-                </div>
-            </div>
-            <div style="text-align: center;" class="w3-green-col-d3">
-                <span>voor driebanden, annonceren en pentathlon</span>
-            </div>
-            @if (notAllowed) {
-                <div style="margin-top: 4em; text-align: center; color: red;">
-                    <span>U gebruikt een illegale versie van dit programma !</span>
-                </div>
-            }
-            @else {
-                <div class="flexbox flexcenter" style="margin-top: 3rem;">
-                    <div>
-                        <div class="flexgrow1 flexbox flexcenter flexmiddle" style="font-size: 1.25em;">
-                            <app-menu [menu]="menu" (menuItemClicked)="menuItemClicked($event)"></app-menu>
-                        </div>   
-                    </div>
-                </div>    
-            }
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'B.S.S.'" [subtitle]="'Hoofdmenu'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="escapePressed()"
+                    (logoffClicked)="confirmLogoff()"></app-page-header>
         </div>
-    }
+        <div class="flexgrow1 flexbox flexcenter flexmiddle">
+            <div style="font-size: 1.25em;">
+                <app-menu [menu]="menu" (menuItemClicked)="menuItemClicked($event)"></app-menu>
+            </div>   
+        </div>
+    </div>
 </div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="logoffDialog" (reply)="confirmLogoffReplied($event)"></app-confirm>
+}

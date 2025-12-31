@@ -88,16 +88,19 @@ input[type="text"], input[type="number"], input[type="password"], select {
 input[type="text"]:not(:disabled).valid, input[type="number"]:not(:disabled).valid {
     background-color: #beffbe;
 }
-input[type="text"]:not(:disabled).invalid, input[type="number"]:not(:disabled).invalid {
+input[type="text"]:not(:disabled).invalid, input[type="number"]:not(:disabled).invalid, input[type="password"]:not(:disabled).invalid {
     background-color: #ffacac;
 }
 input[type="text"]:not(:disabled):hover, input[type="text"]:not(:disabled):focus,
 input[type="number"]:not(:disabled):hover, input[type="number"]:not(:disabled):focus,
+input[type="password"]:not(:disabled):hover, input[type="number"]:not(:disabled):focus,
 select:not(:disabled):hover, select:not(:disabled):focus {
     border-color: grey;
 }
 input[type="text"]:not(:disabled):not(.filter):not(.valid):not(.invalid):focus,
-input[type="number"]:not(:disabled):not(.filter):not(.valid):not(.invalid):focus {
+input[type="number"]:not(:disabled):not(.filter):not(.valid):not(.invalid):focus,
+input[type="password"]:not(:disabled):not(.filter):not(.valid):not(.invalid):focus
+{
     background-color: #e0e0e0;
 }
 input[type="text"]:disabled, input[type="number"]:disabled, select:disabled {

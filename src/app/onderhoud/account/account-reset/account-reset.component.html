@@ -1,0 +1,50 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'B.S.S.'" [subtitle]="title" [pwReset]="true"></app-page-header>
+        </div>
+        <div class="flexbox flexcenter" style="padding-top: 3em;">
+            <div>
+                @if (pwResetForm) {
+                    <form [formGroup]="pwResetForm">
+                        <table class="tbl-normal tbl-input">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="pw1">Nieuw wachtwoord<span class="req"> *</span></label>
+                                    </td>
+                                    <td>
+                                        <input #pw1 type="password" id="pw1" style="width: 8em;" formControlName="pw1" autocomplete="off"
+                                            [ngClass]="{'invalid': pwResetForm.get('pw1')?.invalid && (pwResetForm.get('pw1')?.dirty), 
+                                                        'valid': pwResetForm.get('pw1')?.valid && (pwResetForm.get('pw1')?.dirty)}"
+                                            (blur)="pwResetForm.get('pw1')?.setValue(pwResetForm.get('pw1')?.value.trim())">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="pw2">Herhaal wachtwoord<span class="req"> *</span></label>
+                                    </td>
+                                    <td>
+                                        <input #pw2 type="password" id="pw2" style="width: 8em;" formControlName="pw2" autocomplete="off"
+                                            [ngClass]="{'invalid': pwResetForm.get('pw2')?.invalid && (pwResetForm.get('pw2')?.dirty), 
+                                                        'valid': pwResetForm.get('pw2')?.valid && (pwResetForm.get('pw2')?.dirty)}"
+                                            (blur)="pwResetForm.get('pw2')?.setValue(pwResetForm.get('pw2')?.value.trim())">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                }
+            </div>
+        </div>
+        <div class="flexbox flexcenter" style="padding-top: 2em;">
+            <div class="flexbox">
+                <app-button style="font-size: 1.125em;" [button]="buttonResetCancel" (buttonClicked)="resetCancelClicked()"></app-button>
+                @if (pwResetForm && pwResetForm.valid) {
+                    <app-button style="font-size: 1.125em;" [button]="buttonResetOpslaan" (buttonClicked)="resetOpslaanClicked()"></app-button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

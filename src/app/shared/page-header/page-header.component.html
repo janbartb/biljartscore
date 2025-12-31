@@ -1,9 +1,11 @@
 <div class="header-container">
     <div class="header-title w3-green-d5 w3-display-container">
         <div class="fullheight flexbox flexmiddle" style="padding-left: 4.125rem;">
-            <div class="header-esc" (click)="previousClicked()">
-                <span class="fas fa-arrow-left" style="font-size: .75rem; position: relative; top: -.85rem;"></span>
-            </div>
+            @if (!pwReset) {
+                <div class="header-esc" (click)="previousClicked()">
+                    <span class="fas fa-arrow-left" style="font-size: .75rem; position: relative; top: -.85rem;"></span>
+                </div>
+            }
             @for (item of escapes; track $index) {
                 <div class="header-esc" (click)="escapeClicked()">
                     <span class="fas fa-undo-alt" style="font-size: .75rem; position: relative; top: -.85rem;"></span>
@@ -13,9 +15,19 @@
         <div class="w3-display-middle">
             <span class="clickable" (click)="headerClicked()">{{title}}</span>
         </div>
-        <div class="header-game w3-display-right">
-            <span>{{spel}}</span>
-        </div>
+        @if (!pwReset) {
+            <div class="header-game w3-display-right" style="line-height: 1rem;">
+                <span>{{appData.getLoginAccountId()}}</span>
+                <span style="padding-left: .5em; font-size: 1rem;">
+                    @if (appData.getLoginAccountRole() == 'beheerder') {
+                        <i class="fas fa-user-cog"></i>
+                    }
+                    @else {
+                        <i class="fa-user" [ngClass]="appData.isRemote() ? 'fas' : 'far'"></i>
+                    }
+                </span>
+            </div>
+        }
     </div>
     <div class="header-subtitle w3-green-d3 w3-display-container">
         <div class="w3-display-middle ellips">{{subtitle}}</div>

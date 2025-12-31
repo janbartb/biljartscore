@@ -14,7 +14,7 @@
 .car-ls-container {
     position: relative;
     width: 25.5em;
-    height: 16em;
+    height: 14em;
     background-color: #163317;
 }
 .bord-speler-ls.actief .car-ls-container {
@@ -28,7 +28,7 @@
 
 .ennog-container {
     position: absolute;
-    top: 7.5em;
+    top: 6em;
     left: 0;
     width: 100%;
     height: 100%;

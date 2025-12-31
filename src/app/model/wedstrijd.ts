@@ -79,6 +79,7 @@ export class WedSpelerStand {
     enNog: number = 0;
     moyView: string = '0,000';
     percView: string = '0,00';
+    serView: string = '0';
 }
 
 export class WedstrijdLeesResultaat {

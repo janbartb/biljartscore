@@ -16,6 +16,19 @@ export class StatusService {
 
     constructor() {}
 
+    setRemote(r: boolean) {
+        if (r) {
+            sessionStorage.setItem('remote', '1');
+        }
+        else {
+            sessionStorage.removeItem('remote');
+        }
+    }
+
+    isRemote(): boolean {
+        return sessionStorage.getItem('remote') != null;
+    }
+
     // CONFIG
 
     isAllowed(allow?: boolean): boolean {
@@ -26,6 +39,34 @@ export class StatusService {
             return false;
         }
         return true;
+    }
+
+    getLoginAccountId(): string {
+        let result = sessionStorage.getItem('accountId');
+        if (!result || result == '') {
+            result = 'onbekend';
+        }
+        return result;
+    }
+
+    getLoginAccountRole(): string {
+        let result = sessionStorage.getItem('accountRole');
+        if (!result || result == '') {
+            result = 'onbekend';
+        }
+        return result;
+    }
+
+    isNotLoggedIn(): boolean {
+        return !sessionStorage.getItem('accountId');
+    }
+
+    isBeheerder() {
+        return this.getLoginAccountRole() == 'beheerder';
+    }
+
+    clearSession() {
+        sessionStorage.clear();
     }
 
     setConfig(config: Config) {

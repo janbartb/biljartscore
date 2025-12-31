@@ -1,0 +1,6 @@
+.bsslink {
+    color: #265728;
+}
+.bsslink:hover {
+    text-decoration: underline;
+}

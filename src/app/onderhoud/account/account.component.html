@@ -1,0 +1,90 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onderhoud gegevens'" [subtitle]="'Mijn account'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1">
+            <div class="flexbox flexcenter" style="padding-top: 2em;">
+                <div>
+                    @if (accountForm) {
+                        <form [formGroup]="accountForm">
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label for="userId">ID<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <span style="padding-left: .25em;">{{account.userId}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="role">Rol<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <span style="padding-left: .25em;">{{account.role}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr><td style="height: .5em;"></td></tr>
+                                    <tr>
+                                        <td>
+                                            <label for="pw">Wachtwoord</label>
+                                        </td>
+                                        <td>
+                                            <input #pw type="password" id="pw" style="width: 8em;" formControlName="passw" autocomplete="off"
+                                                [ngClass]="{'invalid': passw?.invalid && passw?.dirty, 'valid': passw?.valid && passw?.dirty}"
+                                                (blur)="passw?.setValue(passw?.value.trim())">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="pw2">Herhaal</label>
+                                        </td>
+                                        <td>
+                                            <input #pw2 type="password" id="pw2" style="width: 8em;" formControlName="passw2" autocomplete="off"
+                                                [ngClass]="{'invalid': passw2?.invalid && passw2?.dirty, 'valid': passw2?.valid && passw2?.dirty}"
+                                                (blur)="passw2?.setValue(passw2?.value.trim())">
+                                        </td>
+                                    </tr>
+                                    <tr><td style="height: .5em;"></td></tr>
+                                    <tr>
+                                        <td>
+                                            <label for="verId">Vereniging</label>
+                                        </td>
+                                        <td>
+                                            <select id="verId" formControlName="verId" (change)="setGewijzigd()">
+                                                <option value=""></option>
+                                                @for (ver of verenigingen; track $index) {
+                                                    <option [ngValue]="ver.verId">{{ver.naam}}</option>
+                                                }
+                                            </select>                                
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="klasse">Klasse</label>
+                                        </td>
+                                        <td>
+                                            <select id="klasse" formControlName="klasse" (change)="setGewijzigd()">
+                                                <option value=""></option>
+                                                @for (klas of klassen; track $index) {
+                                                    <option [ngValue]="klas">{{klas}}</option>
+                                                }
+                                            </select>                                
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+        @if (gewijzigd && accountForm && accountForm.valid) {
+            <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)"
+                        [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+        }
+    </div>
+</div>

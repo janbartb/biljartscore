@@ -47,20 +47,20 @@
     @else if (wedstrijd.aantSpelers == 2) {
         <div class="bss-score-2 fullheight flexbox flexstretch" [ngClass]="{'gameover': wedstrijd.wedGespeeld}">
             <div class="flex50perc" [ngClass]="{'active': idxSpeler == 0}">
-                <app-scorebord-speler [speler]="wedstrijd.spelers[0]"
+                <app-scorebord-speler-left [speler]="wedstrijd.spelers[0]"
                                   [maxBrt]="wedstrijd.regels.maxBeurten"
                                   [showPunten]="wedstrijd.telling.idxOptie == 0"
                                   [oldPunten]="oldPunten[0]"
                                   [wedOver]="wedstrijd.wedGespeeld"
-                                  [border]="'bss-border for-left'"></app-scorebord-speler>
+                                  [border]="'bss-border for-left'"></app-scorebord-speler-left>
             </div>
             <div class="flex50perc" [ngClass]="{'active': idxSpeler == 1}">
-                <app-scorebord-speler [speler]="wedstrijd.spelers[1]"
+                <app-scorebord-speler-right [speler]="wedstrijd.spelers[1]"
                                   [maxBrt]="wedstrijd.regels.maxBeurten"
                                   [showPunten]="wedstrijd.telling.idxOptie == 0"
                                   [oldPunten]="oldPunten[1]"
                                   [wedOver]="wedstrijd.wedGespeeld"
-                                  [border]="'bss-border for-right'"></app-scorebord-speler>
+                                  [border]="'bss-border for-right'"></app-scorebord-speler-right>
              </div>
         </div>
     }
@@ -164,20 +164,20 @@
                     <div class="flexbox">
                         <div class="flex50perc">
                             <div class="bss-portrait" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 0}">
-                                <app-scorebord-speler [speler]="wedstrijd.teams[0].spelers[0]"
+                                <app-scorebord-speler-left [speler]="wedstrijd.teams[0].spelers[0]"
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
                                                     [teamCar]="wedstrijd.teams[0].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
-                                                    [border]="'bss-border for-bottom-left'"></app-scorebord-speler>
+                                                    [border]="'bss-border for-bottom-left'"></app-scorebord-speler-left>
                             </div>
                         </div>        
                         <div class="flex50perc">
                             <div class="bss-portrait" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 1}">
-                                <app-scorebord-speler [speler]="wedstrijd.teams[0].spelers[1]"
+                                <app-scorebord-speler-left [speler]="wedstrijd.teams[0].spelers[1]"
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
                                                     [teamCar]="wedstrijd.teams[0].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
-                                                    [border]="'bss-border for-bottom'"></app-scorebord-speler>
+                                                    [border]="'bss-border for-bottom'"></app-scorebord-speler-left>
                             </div>
                         </div>        
                     </div>
@@ -194,20 +194,20 @@
                     <div class="flexbox">
                         <div class="flex50perc">
                             <div class="bss-portrait" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 0}">
-                                <app-scorebord-speler [speler]="wedstrijd.teams[1].spelers[0]"
+                                <app-scorebord-speler-right [speler]="wedstrijd.teams[1].spelers[0]"
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
                                                     [teamCar]="wedstrijd.teams[1].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
-                                                    [border]="'bss-border for-bottom'"></app-scorebord-speler>
+                                                    [border]="'bss-border for-bottom'"></app-scorebord-speler-right>
                             </div>
                         </div>        
                         <div class="flex50perc">
                             <div class="bss-portrait" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 1}">
-                                <app-scorebord-speler [speler]="wedstrijd.teams[1].spelers[1]"
+                                <app-scorebord-speler-right [speler]="wedstrijd.teams[1].spelers[1]"
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
                                                     [teamCar]="wedstrijd.teams[1].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
-                                                    [border]="'bss-border for-bottom-right'"></app-scorebord-speler>
+                                                    [border]="'bss-border for-bottom-right'"></app-scorebord-speler-right>
                             </div>
                         </div>        
                     </div>
