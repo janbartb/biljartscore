@@ -100,7 +100,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
             return;
         }
         const pwToCheck = this.helper.transform(this.loginPw?.value);
-        console.log(pwToCheck);
+        console.log(pwToCheck + ' - ' + this.localAccount.password);
         if (this.localAccount.password != pwToCheck) {
             this.alert.showAlert('Wachtwoord is niet juist.', 'warning', 5);
             return;
