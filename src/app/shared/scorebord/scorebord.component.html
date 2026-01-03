@@ -112,20 +112,20 @@
             <div class="flexbox" style="font-size: .5rem;">
                 <div class="flex50perc">
                     <div class="bss-landscape" [ngClass]="{'active': idxSpeler == 0}">
-                        <app-scorebord-speler-landscape [speler]="wedstrijd.spelers[0]"
+                        <app-scorebord-speler-ls-left [speler]="wedstrijd.spelers[0]"
                                         [maxBrt]="wedstrijd.regels.maxBeurten"
                                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                                         [oldPunten]="oldPunten[0]"
                                         [wedOver]="wedstrijd.wedGespeeld"
-                                        [border]="'bss-border for-top-left'"></app-scorebord-speler-landscape>
+                                        [border]="'bss-border for-top-left'"></app-scorebord-speler-ls-left>
                     </div>
                     <div class="bss-landscape" [ngClass]="{'active': idxSpeler == 2}">
-                        <app-scorebord-speler-landscape [speler]="wedstrijd.spelers[2]"
+                        <app-scorebord-speler-ls-left [speler]="wedstrijd.spelers[2]"
                                         [maxBrt]="wedstrijd.regels.maxBeurten"
                                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                                         [oldPunten]="oldPunten[2]"
                                         [wedOver]="wedstrijd.wedGespeeld"
-                                        [border]="'bss-border for-bottom-left'"></app-scorebord-speler-landscape>
+                                        [border]="'bss-border for-bottom-left'"></app-scorebord-speler-ls-left>
                     </div>
                 </div>
                 <div class="flex50perc">
@@ -154,12 +154,12 @@
             <div class="flexbox" style="font-size: .5rem;">
                 <div class="flex50perc">
                     <div class="bss-landscape" [ngClass]="{'active': idxTeam == 0}">
-                        <app-scorebord-team [team]="wedstrijd.teams[0]" 
+                        <app-scorebord-team-left [team]="wedstrijd.teams[0]" 
                                         [maxBrt]="wedstrijd.regels.maxBeurten"
                                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                                         [oldPunten]="oldPunten[0]"
                                         [wedOver]="wedstrijd.wedGespeeld"
-                                        [border]="'bss-border for-top-left'"></app-scorebord-team>
+                                        [border]="'bss-border for-top-left'"></app-scorebord-team-left>
                     </div>
                     <div class="flexbox">
                         <div class="flex50perc">
@@ -173,11 +173,11 @@
                         </div>        
                         <div class="flex50perc">
                             <div class="bss-portrait" [ngClass]="{'active': idxTeam == 0 && idxSpeler == 1}">
-                                <app-scorebord-speler-left [speler]="wedstrijd.teams[0].spelers[1]"
+                                <app-scorebord-speler-right [speler]="wedstrijd.teams[0].spelers[1]"
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
                                                     [teamCar]="wedstrijd.teams[0].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
-                                                    [border]="'bss-border for-bottom'"></app-scorebord-speler-left>
+                                                    [border]="'bss-border for-bottom'"></app-scorebord-speler-right>
                             </div>
                         </div>        
                     </div>
@@ -194,11 +194,11 @@
                     <div class="flexbox">
                         <div class="flex50perc">
                             <div class="bss-portrait" [ngClass]="{'active': idxTeam == 1 && idxSpeler == 0}">
-                                <app-scorebord-speler-right [speler]="wedstrijd.teams[1].spelers[0]"
+                                <app-scorebord-speler-left [speler]="wedstrijd.teams[1].spelers[0]"
                                                     [maxBrt]="wedstrijd.regels.maxBeurten"
                                                     [teamCar]="wedstrijd.teams[1].teamTsCar"
                                                     [wedOver]="wedstrijd.wedGespeeld"
-                                                    [border]="'bss-border for-bottom'"></app-scorebord-speler-right>
+                                                    [border]="'bss-border for-bottom'"></app-scorebord-speler-left>
                             </div>
                         </div>        
                         <div class="flex50perc">

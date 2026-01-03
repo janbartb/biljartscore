@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { WedSpeler } from '../../../model/wedstrijd';
-import { GetalComponent } from '../../getal/getal.component';
 import { DecimalPipe, NgClass } from '@angular/common';
 import { GetalVarComponent } from '../../getal-var/getal-var.component';
 
@@ -8,7 +7,6 @@ import { GetalVarComponent } from '../../getal-var/getal-var.component';
     selector: 'app-scorebord-speler-landscape',
     standalone: true,
     imports: [
-        GetalComponent,
         GetalVarComponent,
         DecimalPipe,
         NgClass

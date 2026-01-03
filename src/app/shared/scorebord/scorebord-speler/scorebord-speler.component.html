@@ -47,12 +47,12 @@
         <div class="flexgrow1" style="padding-right: .5em;">
             <div class="brt-ser-container flexbox flexright" style="height: 6em;">
                 <div class="brt-ser" [ngClass]="{'serie': speler.stand.serie > 0, 'notrans': speler.stand.serie < 1}">
-                    <div class="flexbox flexright flexend" style="height: 6em;">
+                    <div class="flexbox flexcenter flexend" style="height: 6em;">
                         <div style="padding-right: 1em; color: #93cf95;">
                             <span style="font-size: 3em;">in</span>
                         </div>
                         <div [style.font-size]="formatBrt.length < 3 ? '5.5em' : '5em'">
-                            <app-getal [naam]="'brt'" [getal]="'' + speler.stand.aantBrt" [format]="formatBrt"></app-getal>
+                            <app-getal-var [naam]="'brt'" [getal]="'' + speler.stand.aantBrt" [format]="formatBrt"></app-getal-var>
                         </div>
                     </div>
                     <div class="flexbox flexright flexend" style="height: 6em;">

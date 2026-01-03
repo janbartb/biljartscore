@@ -3,7 +3,6 @@ import { SpeechService } from '../../services/speech.service';
 import { AlertService } from '../../services/alert.service';
 import { WedSpeler, Wedstrijd, WedTeam } from '../../model/wedstrijd';
 import { NgClass } from '@angular/common';
-import { ScorebordSpelerComponent } from "./scorebord-speler/scorebord-speler.component";
 import { Alinea, ConfirmDialog, SpelerNamen, SpelerNamenDialog } from '../../model/dialogs';
 import { ModalMessage } from '../../model/modal-message';
 import { ScorebordSpelerLandscapeComponent } from './scorebord-speler-landscape/scorebord-speler-landscape.component';
@@ -17,6 +16,8 @@ import { NotificationComponent } from '../notification/notification.component';
 import { ConfirmComponent } from '../confirm/confirm.component';
 import { ScorebordSpelerLeftComponent } from './scorebord-speler-left/scorebord-speler-left.component';
 import { ScorebordSpelerRightComponent } from './scorebord-speler-right/scorebord-speler-right.component';
+import { ScorebordSpelerLsLeftComponent } from './scorebord-speler-ls-left/scorebord-speler-ls-left.component';
+import { ScorebordTeamLeftComponent } from './scorebord-team-left/scorebord-team-left.component';
 
 class ActieToetsen {
     beurtPlus: string[] = [];
@@ -30,11 +31,12 @@ class ActieToetsen {
     standalone: true,
     imports: [
         NgClass,
-        ScorebordSpelerComponent,
         ScorebordSpelerLeftComponent,
         ScorebordSpelerRightComponent,
         ScorebordSpelerLandscapeComponent,
+        ScorebordSpelerLsLeftComponent,
         ScorebordTeamComponent,
+        ScorebordTeamLeftComponent,
         NotificationComponent,
         SpelersNamenComponent,
         ConfirmComponent,

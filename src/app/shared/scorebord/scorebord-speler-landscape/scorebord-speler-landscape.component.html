@@ -25,19 +25,19 @@
                 <div style="width: 18.25em; padding-right: 1.25em;">
                     <div class="brt-ser-container flexbox flexright" style="height: 6em;">
                         <div class="brt-ser">
-                            <div class="flexbox flexright flexend" style="height: 6em;">
-                                <div style="padding-right: 1em; color: #93cf95;">
+                            <div class="flexbox flexright" style="height: 6em;">
+                                <div style="padding-right: 1em; padding-top: .25em; color: #93cf95;">
                                     <span style="font-size: 3.5em;">in</span>
                                 </div>
                                 <div style="font-size: 7em;">
-                                    <app-getal [naam]="'brt'" [getal]="'' + speler.stand.aantBrt" [format]="formatBrt"></app-getal>
+                                    <app-getal-var [naam]="'brt'" [getal]="'' + speler.stand.aantBrt" [format]="formatBrt"></app-getal-var>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="flexbox flexright flexstart" style="height: 6em;">
+                    <div class="flexbox flexcenter flexright" style="height: 6em;">
                         <div style="padding-top: .75em;">
-                            <app-getal style="font-size: 5.5em;" [naam]="'moy'" [getal]="speler.stand.moyView" [format]="'09,999'"></app-getal>
+                            <app-getal-var style="font-size: 5.5em;" [naam]="'moy'" [getal]="speler.stand.moyView" [format]="'09,999'"></app-getal-var>
                         </div>
                     </div>
                 </div>
@@ -46,38 +46,38 @@
         <div class="flexbox flexcolumn" style="height: 12em; padding-left: .5em;">
             <div class="flexbox flexmiddle arial" style="height: 8em;">
                 <div class="flexbox flexmiddle" style="height: 8em;">
+                    <div style="letter-spacing: -.06em; padding-left: .5em; color: #93cf95;">
+                        <span style="font-size: 3em;">laatste 5</span>
+                    </div>
+                    <div style="padding-left: .5em; padding-right: 1em; color: #93cf95;">
+                        <span style="font-size: 2em;">►</span>
+                    </div>
                     @if (speler.actief) {
+                        <div style="padding-top: .75em; padding-left: 1.5em;">
+                            <app-getal-var style="font-size: 8em; color: #00ccff;" 
+                                            [naam]="'ser'" [getal]="speler.stand.serView" [format]="formatSer"></app-getal-var>
+                        </div>
                         <div class="flexgrow1" style="padding-left: .5em;">
                             <div style="font-size: 4.5em; line-height: 1;">
-                                @for (cars of speler.stand.laatste5brt; track $index) {
-                                    @if (speler.stand.laatste5brt.length < 5 || $index > 0) {
-                                        <span style="padding-right: .5em;" 
-                                            [style.opacity]="1 - ((speler.stand.laatste5brt.length - $index - 1) * .15)">{{cars == 0 ? '­•' : cars}}</span>
+                                @for (cars of speler.stand.laatste5brt.slice().reverse(); track $index) {
+                                    @if ($index < 4) {
+                                        <span style="padding-left: .5em;" 
+                                            [style.opacity]="1 - ($index * .15)">{{cars == 0 ? '­•' : cars}}</span>
                                     }
                                 }
                             </div>
-                        </div>
-                        <div style="padding-top: .75em; padding-right: 1.5em;">
-                            <app-getal-var style="font-size: 8em; color: #00ccff;" 
-                                            [naam]="'ser'" [getal]="speler.stand.serView" [format]="formatSer"></app-getal-var>
                         </div>
                     }
                     @else {
                         <div class="flexgrow1" style="padding-left: .5em;">
                             <div style="font-size: 4.5em; line-height: 1;">
-                                @for (cars of speler.stand.laatste5brt; track $index) {
+                                @for (cars of speler.stand.laatste5brt.slice().reverse(); track $index) {
                                     <span style="padding-right: .5em;" 
-                                            [style.opacity]="1 - ((speler.stand.laatste5brt.length - $index - 1) * .15)">{{cars == 0 ? '­•' : cars}}</span>
+                                            [style.opacity]="1 - ($index * .15)">{{cars == 0 ? '­•' : cars}}</span>
                                 }
                             </div>
                         </div>
                     }
-                    <div style="padding: 0 .5em; color: #93cf95;">
-                        <span style="font-size: 2em;">◄</span>
-                    </div>
-                    <div style="letter-spacing: -.06em; padding-right: .5em; color: #93cf95;">
-                        <span style="font-size: 3em;">laatste 5</span>
-                    </div>
                 </div>
             </div>
             <div class="flexgrow1 flexbox flexmiddle" style="height: 4em; background-color: #1e461f;">

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { WedTeam } from '../../../model/wedstrijd';
-import { GetalComponent } from '../../getal/getal.component';
 import { DecimalPipe, NgClass } from '@angular/common';
 import { GetalVarComponent } from '../../getal-var/getal-var.component';
 
@@ -8,7 +7,6 @@ import { GetalVarComponent } from '../../getal-var/getal-var.component';
     selector: 'app-scorebord-team',
     standalone: true,
     imports: [
-        GetalComponent,
         GetalVarComponent,
         DecimalPipe,
         NgClass

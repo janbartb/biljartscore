@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { WedSpeler } from '../../../model/wedstrijd';
-import { GetalComponent } from '../../getal/getal.component';
 import { GetalVarComponent } from '../../getal-var/getal-var.component';
 import { DecimalPipe, NgClass } from '@angular/common';
 
@@ -8,7 +7,6 @@ import { DecimalPipe, NgClass } from '@angular/common';
     selector: 'app-scorebord-speler-right',
     standalone: true,
     imports: [
-        GetalComponent,
         GetalVarComponent,
         DecimalPipe,
         NgClass
