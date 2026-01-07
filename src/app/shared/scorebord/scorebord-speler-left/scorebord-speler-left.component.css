@@ -3,6 +3,7 @@
     max-width: 30em;
     background-color: #2e6830;
     color: #93cf95;
+    transition: color 2s;
 }
 .bord-speler.actief {
     color: white;
@@ -15,6 +16,7 @@
     position: relative;
     width: 17.5em;
     background-color: #163317;
+    transition: background-color 2s, color 2s;
 }
 .bord-speler.actief .car-container {
     background-color: white;
@@ -63,7 +65,7 @@
 
 .voortgang {
     background-color: #b7dfb8;
-    transition: width 2s ease;
+    transition: width 2s ease, background-color 2s;
 }
 .voortgang.actief {
     background-color: #f3f3f3;
@@ -77,8 +79,12 @@
     top: 0;
     right: 0;
     height: 1.5em;
-    background-color: red;
+    background-color: #1e461f;
     z-index: 10;
+    transition: background-color 2s;
+}
+.voortgang-max.actief {
+    background-color: red;
 }
 
 .voortgang-perc {
