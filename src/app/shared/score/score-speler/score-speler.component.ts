@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { WedSpeler } from '../../../model/wedstrijd';
 import { NgClass } from '@angular/common';
 import { ScoreSpelerInfoComponent } from './score-speler-info/score-speler-info.component';
@@ -6,6 +6,7 @@ import { ScoreSpelerStandComponent } from './score-speler-stand/score-speler-sta
 import { ScoreSpelerLaatste5Component } from './score-speler-laatste5/score-speler-laatste5.component';
 import { ScoreSpelerExtraComponent } from "./score-speler-extra/score-speler-extra.component";
 import { ScoreSpelerVoortgangComponent } from './score-speler-voortgang/score-speler-voortgang.component';
+import { StatusService } from '../../../services/status.service';
 
 @Component({
     selector: 'app-score-speler',
@@ -22,6 +23,7 @@ import { ScoreSpelerVoortgangComponent } from './score-speler-voortgang/score-sp
     styleUrl: './score-speler.component.css'
 })
 export class ScoreSpelerComponent implements OnInit {
+    appData = inject(StatusService);
     @Input() speler: WedSpeler = new WedSpeler();
     @Input() maxBrt: number = 0;
     @Input() teamCar: number = 0;
@@ -29,6 +31,7 @@ export class ScoreSpelerComponent implements OnInit {
     @Input() oldPunten: number = 0;
     @Input() wedOver: boolean = false;
     @Input() position: string = 'left';
+    meteenToev: boolean = false;
 
     formatCar: string = '009';
     formatBrt: string = '009';
@@ -46,6 +49,7 @@ export class ScoreSpelerComponent implements OnInit {
                 this.formatBrt = '09';
             }
         }
+        this.meteenToev = this.appData.isCarMeteenToevoegen();
     }
 
 }

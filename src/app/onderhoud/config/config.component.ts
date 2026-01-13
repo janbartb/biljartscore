@@ -75,6 +75,10 @@ export class ConfigComponent extends BaseComponent implements OnInit {
         this.appData.gotoPage(this.router.url, this.router.url + '/rand');
     }
 
+    toggleCarMeteenToevoegen() {
+        this.carMeteen?.setValue(!this.carMeteen.value);
+    }
+
     toggleRepeatRemaining() {
         if (this.speech?.value) {
             this.repeatRemaining?.setValue(!this.repeatRemaining.value);
@@ -183,6 +187,7 @@ export class ConfigComponent extends BaseComponent implements OnInit {
             this.config.district = foundDistrict;
         }
         this.config.klasse = this.klasse?.value;
+        this.config.carMeteenToev = this.carMeteen?.value;
         this.config.vereniging = this.vereniging?.value;
         this.config.speech = this.speech?.value;
         this.config.stem = this.stem?.value;
@@ -210,6 +215,7 @@ export class ConfigComponent extends BaseComponent implements OnInit {
             seizoen: [this.config.seizoen],
             district: [this.config.district.disId],
             klasse: [this.config.klasse],
+            carMeteen: [this.config.carMeteenToev],
             vereniging: [this.config.vereniging],
             speech: [this.config.speech],
             stem: [this.config.stem],
@@ -231,6 +237,9 @@ export class ConfigComponent extends BaseComponent implements OnInit {
     }
     get klasse() {
         return this.configForm.get('klasse');
+    }
+    get carMeteen() {
+        return this.configForm.get('carMeteen');
     }
     get vereniging() {
         return this.configForm.get('vereniging');

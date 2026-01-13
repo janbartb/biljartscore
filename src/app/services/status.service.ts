@@ -83,6 +83,11 @@ export class StatusService {
         return JSON.parse(conf);
     }
 
+    isCarMeteenToevoegen(): boolean {
+        const conf = this.getConfig();
+        return conf ? conf.carMeteenToev : false;
+    }
+
     getSeizoen(): string {
         const conf = this.getConfig();
         let result = this.getHuidigSeizoen();

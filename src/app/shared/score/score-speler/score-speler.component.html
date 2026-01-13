@@ -4,7 +4,7 @@
                             [aantCar]="speler.splTsCar"
                             [aantBrt]="speler.splTsBrt"
                             [position]="position"></app-score-speler-info>
-    <app-score-speler-stand [aantCar]="speler.stand.aantCar"
+    <app-score-speler-stand [aantCar]="meteenToev ? (speler.stand.aantCar + speler.stand.serie) : speler.stand.aantCar"
                             [aantBrt]="speler.stand.aantBrt"
                             [serie]="speler.stand.serie"
                             [moyView]="speler.stand.moyView"

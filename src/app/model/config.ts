@@ -7,6 +7,7 @@ export class Config {
     district: District = new District();
     id: number = 0;
     klasse: string = '';
+    carMeteenToev: boolean = false;
     speech: boolean = true;
     stem: string = '';
     repeatRemaining: boolean = true;

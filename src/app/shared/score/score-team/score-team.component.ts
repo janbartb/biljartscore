@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { WedTeam } from '../../../model/wedstrijd';
 import { ScoreWideInfoComponent } from '../score-wide/score-wide-info/score-wide-info.component';
 import { ScoreWideStandComponent } from '../score-wide/score-wide-stand/score-wide-stand.component';
@@ -7,6 +7,7 @@ import { ScoreWideLaatste5Component } from '../score-wide/score-wide-laatste5/sc
 import { ScoreWideBalComponent } from '../score-wide/score-wide-bal/score-wide-bal.component';
 import { ScoreWideExtraComponent } from '../score-wide/score-wide-extra/score-wide-extra.component';
 import { NgClass } from '@angular/common';
+import { StatusService } from '../../../services/status.service';
 
 @Component({
     selector: 'app-score-team',
@@ -24,9 +25,11 @@ import { NgClass } from '@angular/common';
     styleUrl: './score-team.component.css'
 })
 export class ScoreTeamComponent implements OnInit {
+    appData = inject(StatusService);
     @Input() team: WedTeam = new WedTeam();
     @Input() maxBrt: number = 0;
     @Input() position: string = 'left';
+    meteenToev: boolean = false;
 
     formatCar: string = '009';
     formatBrt: string = '009';
@@ -43,6 +46,7 @@ export class ScoreTeamComponent implements OnInit {
                 this.formatBrt = '09';
             }
         }
+        this.meteenToev = this.appData.isCarMeteenToevoegen();
     }
 
 }

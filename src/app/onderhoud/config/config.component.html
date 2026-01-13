@@ -67,6 +67,15 @@
                         </div>
                         <div style="height: 1em;"></div>
                         <div class="row flexbox">
+                            <div class="label">Telling</div>
+                            <div>
+                                <div><i class="clickable" [ngClass]="carMeteen?.value ? 'fas fa-check-square' : 'far fa-square'" 
+                                            (click)="toggleCarMeteenToevoegen()"></i></div>
+                            </div>
+                            <div style="padding-left: 1em; color: green;">Gemaakte carambole meteen toevoegen aan totaal.</div>
+                        </div>
+                        <div style="height: 1em;"></div>
+                        <div class="row flexbox">
                             <div class="label">
                                 <label for="spraak">Spraak</label>
                             </div>

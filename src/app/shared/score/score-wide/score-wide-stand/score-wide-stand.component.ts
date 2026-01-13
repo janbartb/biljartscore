@@ -20,5 +20,4 @@ export class ScoreWideStandComponent {
     @Input() moyView: string = '0,000';
     @Input() numFormats: string[] = ['009', '009', '009'];
     @Input() position: string = 'left';
-
 }
