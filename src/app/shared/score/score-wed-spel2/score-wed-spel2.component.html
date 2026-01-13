@@ -1,0 +1,14 @@
+<div class="flexbox" style="border: .25em solid #dbefdc;">
+    <app-score-speler  [speler]="speler"
+                        [maxBrt]="wedstrijd.regels.maxBeurten"
+                        [showPunten]="wedstrijd.telling.idxOptie == 0"
+                        [oldPunten]="oldPunten[0]"
+                        [wedOver]="wedstrijd.wedGespeeld"
+                        [position]="'left'"></app-score-speler>
+    <app-score-speler [speler]="tegenstander"
+                        [maxBrt]="wedstrijd.regels.maxBeurten"
+                        [showPunten]="wedstrijd.telling.idxOptie == 0"
+                        [oldPunten]="oldPunten[1]"
+                        [wedOver]="wedstrijd.wedGespeeld"
+                        [position]="'right'"></app-score-speler>
+</div>

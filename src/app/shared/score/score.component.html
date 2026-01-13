@@ -1,0 +1,118 @@
+<div class="scorebord" (click)="closeHelpPopup()">
+    <div class="help-popup flexbox flexaround" [ngClass]="{'visible': helpPopupVisible}" 
+            (click)="closeHelpPopup()" (mouseleave)="closeHelpPopup()">
+        <div class="help-key-icon" style="text-align: center;" (click)="keyPressed.emit('Escape')">
+            <div><i class="fas fa-arrow-left"></i></div>
+            <div>[<b>Esc</b>] Match ovz.</div>
+        </div>
+        <div class="help-key-icon" style="text-align: center;" (click)="gotoConfig()">
+            <div><i class="fas fa-cog"></i></div>
+            <div>[<b>I</b>]nstelling</div>
+        </div>
+        <div class="help-key-icon" style="text-align: center;" (click)="keyPressed.emit('Lijst')">
+            <div><i class="fas fa-list-ol"></i></div>
+            <div>Score [<b>L</b>]ijst</div>
+        </div>
+        <div class="help-key-icon" style="text-align: center;" (click)="toggleSpeech()">
+            <div><i class="fas fa-volume-up"></i></div>
+            <div>[<b>S</b>]praak aan/uit</div>
+        </div>
+        <div class="help-key-icon" style="text-align: center;" (click)="wijzigNamenPressed()">
+            <div><i class="fas fa-user-edit"></i></div>
+            <div>[<b>N</b>]amen</div>
+        </div>
+        <div class="help-key-icon" style="text-align: center;" (click)="alert.showHelp()">
+            <div><i class="fas fa-info-circle"></i></div>
+            <div>[<b>T</b>]oets info</div>
+        </div>
+    </div>
+    @if (keysLocked) {
+        <div class="wed-message flexbox flexcenter flexmiddle">
+            <div style="font-size: 1.75em; line-height: 1; translate: 0 -.125em;">
+                <i class="fas fa-lock"></i>
+            </div>
+        </div>
+    }
+    @if (wedstrijd.aantSpelers == 1) {
+        <div class="fullheight">
+            <app-score-wed-spel1 [wedstrijd]="wedstrijd"></app-score-wed-spel1>
+        </div>
+    }
+    @else if (wedstrijd.aantSpelers == 2) {
+        <div class="fullheight">
+            <app-score-wed-spel2 [wedstrijd]="wedstrijd"
+                                 [speler]="wedstrijd.spelers[0]"
+                                 [tegenstander]="wedstrijd.spelers[1]"
+                                 [oldPunten]="oldPunten"></app-score-wed-spel2>
+        </div>
+    }
+    @else if (wedstrijd.aantSpelers == 3) {
+        <div class="fullheight">
+            <app-score-wed-spel3 [wedstrijd]="wedstrijd"></app-score-wed-spel3>
+        </div>
+    }
+    @else if (wedstrijd.aantSpelers == 4) {
+        <div class="fullheight">
+            <app-score-wed-spel4 [wedstrijd]="wedstrijd"></app-score-wed-spel4>
+        </div>
+    }
+    @else if (wedstrijd.aantSpelers == 5) {
+        <div class="fullheight">
+            <app-score-wed-team2 [wedstrijd]="wedstrijd"></app-score-wed-team2>
+        </div>
+    }
+</div>
+@if (wedstrijd.wedGespeeld) {
+    <div class="notification notification-full">
+        <div class="notification-full-content arial" [ngClass]="{ 'visible': modalVisible }">
+            @if (modals.length && modals[0].texts.length) {
+                <app-notification [type]="'full'" [modal]="modals[0]"></app-notification>
+            }
+        </div>
+    </div>
+}
+@else if ((wedstrijd.aantSpelers == 2 && idxSpeler == 1) || (wedstrijd.aantSpelers == 5 && idxTeam == 1) ||
+            (wedstrijd.aantSpelers == 4 && (idxSpeler == 1 || idxSpeler == 3))) {
+    <div class="notification notification-left">
+        <div class="notification-left-content arial" [ngClass]="{ 'visible': modalVisible }">
+            @if (modals.length && modals[0].texts.length) {
+                <app-notification [type]="'vertical'" [modal]="modals[0]"></app-notification>
+            }
+        </div>
+    </div>
+}
+@else if ((wedstrijd.aantSpelers == 2 && idxSpeler == 0) || (wedstrijd.aantSpelers == 5 && idxTeam == 0) ||
+            (wedstrijd.aantSpelers == 4 && (idxSpeler == 0 || idxSpeler == 2))) {
+    <div class="notification notification-right">
+        <div class="notification-right-content arial" [ngClass]="{ 'visible': modalVisible }">
+            @if (modals.length && modals[0].texts.length) {
+                <app-notification [type]="'vertical'" [modal]="modals[0]"></app-notification>
+            }
+        </div>
+    </div>
+}
+@else if (idxSpeler >= 2) {
+    <div class="notification notification-top" [ngClass]="{'smaller': wedstrijd.aantSpelers == 1}">
+        <div class="notification-top-content arial" [ngClass]="{ 'visible': modalVisible, 'geel': !wedstrijd.spelers[idxSpeler].metWit }">
+            @if (modals.length && modals[0].texts.length) {
+                <app-notification [type]="'horizontal'" [modal]="modals[0]"></app-notification>
+            }
+        </div>
+    </div>
+}
+@else {
+    <div class="notification notification-bottom">
+        <div class="notification-bottom-content arial" [ngClass]="{ 'visible': modalVisible, 'geel': !wedstrijd.spelers[idxSpeler].metWit }">
+            @if (modals.length && modals[0].texts.length) {
+                <app-notification [type]="'horizontal'" [modal]="modals[0]"></app-notification>
+            }
+        </div>
+    </div>
+}
+@if (isDialogOpen) {
+    <app-spelers-namen style="font-size: 1.25em;" [dialog]="namenDialog" (reply)="namenDialogReplied($event)"></app-spelers-namen>
+}
+@if (isUndoDialogOpen) {
+    <app-confirm style="font-size: 1.5em;" [dialog]="confirmUndoDialog" (reply)="confirmUndoLaatsteBeurtReplied($event)"></app-confirm>
+}
+<app-help-score></app-help-score>

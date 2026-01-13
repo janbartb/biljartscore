@@ -1,0 +1,18 @@
+<div style="height: 11em; padding: .75em 0;">
+    <div class="speler-info-bal-container">
+        <div class="speler-info-bal flexbox flexcenter flexmiddle">
+            <div data-kleur="" class="biljartbal fullheight flexbox flexcenter flexmiddle" [ngClass]="{'rechthoek': aantCar == 0}">
+                <div style="position: relative; top: -.25em; left: -.125em;">
+                    @if (aantCar > 0) {
+                        <span style="line-height: 1;" 
+                                [style.font-size]="aantCar > 99 ? '4.5em' : '5.5em'">{{aantCar}}</span>
+                    }
+                    @else {
+                        <span style="line-height: 1;" 
+                                [style.font-size]="aantBrt > 99 ? '4.5em' : '5.5em'">{{aantBrt}}</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

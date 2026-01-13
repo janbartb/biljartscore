@@ -1,0 +1,64 @@
+<div class="scorebord-spl wide flexbox flexstretch" [ngClass]="{'actief': speler.actief, 'geel': !speler.metWit}">
+    @if (position == 'left') {
+        <div style="width: 15em;">
+            <app-score-wide-bal [aantCar]="speler.splTsCar"
+                                [aantBrt]="speler.splTsBrt"></app-score-wide-bal>
+            <app-score-wide-extra [serie]="speler.stand.serie"
+                                [hoogSer]="speler.stand.hoogSer"
+                                [punten]="speler.stand.punten"
+                                [percView]="speler.stand.percView"
+                                [formatSer]="formatSer"></app-score-wide-extra>
+        </div>
+        <div style="width: 44em;">
+            <app-score-wide-info [naam]="speler.splBordNaam"
+                                [moyenne]="speler.splTsMoy"
+                                [position]="position"></app-score-wide-info>
+            <app-score-wide-stand [aantCar]="speler.stand.aantCar + speler.stand.serie"
+                                [aantBrt]="speler.stand.aantBrt"
+                                [serie]="speler.stand.serie"
+                                [moyView]="speler.stand.moyView"
+                                [enNog]="speler.stand.enNog"
+                                [numFormats]="[formatCar, formatBrt, formatSer]"
+                                [position]="position"></app-score-wide-stand>
+            <app-score-wide-voortgang [aantCar]="speler.stand.aantCar"
+                                [serie]="speler.stand.serie"
+                                [voortgang]="speler.stand.voortgang"></app-score-wide-voortgang>
+            <app-score-wide-laatste5 [actief]="speler.actief"
+                                [serView]="speler.stand.serView"
+                                [formatSer]="formatSer"
+                                [laatste5]="speler.stand.laatste5brt"
+                                [position]="position"></app-score-wide-laatste5>
+        </div>
+    }
+    @else {
+        <div style="width: 44em;">
+            <app-score-wide-info [naam]="speler.splBordNaam"
+                                [moyenne]="speler.splTsMoy"
+                                [position]="position"></app-score-wide-info>
+            <app-score-wide-stand [aantCar]="speler.stand.aantCar + speler.stand.serie"
+                                [aantBrt]="speler.stand.aantBrt"
+                                [serie]="speler.stand.serie"
+                                [moyView]="speler.stand.moyView"
+                                [enNog]="speler.stand.enNog"
+                                [numFormats]="[formatCar, formatBrt, formatSer]"
+                                [position]="position"></app-score-wide-stand>
+            <app-score-wide-voortgang [aantCar]="speler.stand.aantCar"
+                                [serie]="speler.stand.serie"
+                                [voortgang]="speler.stand.voortgang"></app-score-wide-voortgang>
+            <app-score-wide-laatste5 [actief]="speler.actief"
+                                [serView]="speler.stand.serView"
+                                [formatSer]="formatSer"
+                                [laatste5]="speler.stand.laatste5brt"
+                                [position]="position"></app-score-wide-laatste5>
+        </div>
+        <div style="width: 15em;">
+            <app-score-wide-bal [aantCar]="speler.splTsCar"
+                                [aantBrt]="speler.splTsBrt"></app-score-wide-bal>
+            <app-score-wide-extra [serie]="speler.stand.serie"
+                                [hoogSer]="speler.stand.hoogSer"
+                                [punten]="speler.stand.punten"
+                                [percView]="speler.stand.percView"
+                                [formatSer]="formatSer"></app-score-wide-extra>
+        </div>
+    }
+</div>

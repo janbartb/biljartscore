@@ -1,0 +1,33 @@
+<div class="scorebord-spl" [ngClass]="{'actief': speler.actief, 'geel': !speler.metWit}">
+    <app-score-speler-info [naam]="speler.splBordNaam"
+                            [moyenne]="speler.splTsMoy"
+                            [aantCar]="speler.splTsCar"
+                            [aantBrt]="speler.splTsBrt"
+                            [position]="position"></app-score-speler-info>
+    <app-score-speler-stand [aantCar]="speler.stand.aantCar + speler.stand.serie"
+                            [aantBrt]="speler.stand.aantBrt"
+                            [serie]="speler.stand.serie"
+                            [moyView]="speler.stand.moyView"
+                            [enNog]="speler.stand.enNog"
+                            [numFormats]="[formatCar, formatBrt, formatSer]"
+                            [position]="position"></app-score-speler-stand>
+    <app-score-speler-laatste5 [actief]="speler.actief"
+                            [serView]="speler.stand.serView"
+                            [formatSer]="formatSer"
+                            [laatste5]="speler.stand.laatste5brt"
+                            [position]="position"></app-score-speler-laatste5>
+    <app-score-speler-extra [serie]="speler.stand.serie"
+                            [hoogSer]="speler.stand.hoogSer"
+                            [punten]="speler.stand.punten"
+                            [oldPunten]="oldPunten"
+                            [percView]="speler.stand.percView"
+                            [formatSer]="formatSer"
+                            [position]="position"></app-score-speler-extra>
+    <app-score-speler-voortgang [aantCar]="speler.stand.aantCar"
+                            [serie]="speler.stand.serie"
+                            [voortgang]="speler.stand.voortgang"
+                            [teamAantCar]="speler.teamAantCar"
+                            [teamTsCar]="speler.teamTsCar"
+                            [teamMaxCar]="speler.teamMaxCar"
+                            [position]="position"></app-score-speler-voortgang>
+</div>

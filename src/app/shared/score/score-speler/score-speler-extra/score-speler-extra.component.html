@@ -1,0 +1,56 @@
+<div class="speler-extra flexbox flexbetween arial" style="height: 6.25em;">
+    @if (position == 'left') {
+        <div style="padding: 0 .5em;">
+            <div style="height: 2em; color: #93cf95; overflow: hidden; text-align: center;">
+                <span style="font-size: 2em; line-height: 1;">PERC</span>
+            </div>
+            <div class="flexbox flexcenter flexstretch" style="height: 4em; padding-top: .25em;">
+                <app-getal-var style="font-size: 3.5em;" [naam]="'prc'" [getal]="percView" [format]="'0009,99'"></app-getal-var>
+            </div>
+        </div>
+        <div style="padding: 0 .5em;">
+            <div style="height: 2em; color: #93cf95; overflow: hidden; text-align: right; padding-right: .125em;">
+                <span style="font-size: 2em; line-height: 1;">SER</span>
+            </div>
+            <div class="flexbox flexcenter" style="height: 4em; padding-top: .25em;">
+                <app-getal-var style="font-size: 3.5em;" [style.color]="serie > hoogSer ? '#00ccff' : ''" 
+                    [getal]="(serie > hoogSer) ? '' + serie : '' + hoogSer"
+                    [naam]="'hoogser'" [format]="formatSer"></app-getal-var>
+            </div>
+        </div>
+        <div style="padding: 0 .5em; width: 8em; min-width: 8em;">
+            <div class="flexbox flexcenter flexmiddle speler-punten" [ngClass]="{'gewijzigd': punten > oldPunten}">
+                <div class="flexbox flexmiddle" style="padding-bottom: 1em;">
+                    <app-getal-var style="font-size: 5em;" [naam]="'pnt'" [getal]="'' + punten" [format]="'09'"></app-getal-var>
+                </div>
+            </div>
+        </div>
+    }
+    @else {
+        <div style="padding: 0 .5em; width: 8em; min-width: 8em;">
+            <div class="flexbox flexcenter flexmiddle speler-punten" [ngClass]="{'gewijzigd': punten > oldPunten}">
+                <div class="flexbox flexmiddle" style="padding-bottom: 1em;">
+                    <app-getal-var style="font-size: 5em;" [naam]="'pnt'" [getal]="'' + punten" [format]="'09'"></app-getal-var>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 0 .5em;">
+            <div style="height: 2em; color: #93cf95; overflow: hidden; text-align: right; padding-right: .125em;">
+                <span style="font-size: 2em; line-height: 1;">SER</span>
+            </div>
+            <div class="flexbox flexcenter" style="height: 4em; padding-top: .25em;">
+                <app-getal-var style="font-size: 3.5em;" [style.color]="serie > hoogSer ? '#00ccff' : ''" 
+                    [getal]="(serie > hoogSer) ? '' + serie : '' + hoogSer"
+                    [naam]="'hoogser'" [format]="formatSer"></app-getal-var>
+            </div>
+        </div>
+        <div style="padding: 0 .5em;">
+            <div style="height: 2em; color: #93cf95; overflow: hidden; text-align: center;">
+                <span style="font-size: 2em; line-height: 1;">PERC</span>
+            </div>
+            <div class="flexbox flexcenter flexstretch" style="height: 4em; padding-top: .25em;">
+                <app-getal-var style="font-size: 3.5em;" [naam]="'prc'" [getal]="percView" [format]="'0009,99'"></app-getal-var>
+            </div>
+        </div>
+    }
+</div>

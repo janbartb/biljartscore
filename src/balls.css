@@ -18,10 +18,13 @@
     /*box-shadow: -.0625rem .0625rem .0625rem hsl(0 0% 0% / .5); */
     background-color: var(--_color-white);
     background-image: var(--_grad-light);
-    transition: background-color 1s;
+    transition: background-color 2s, color 2s;
 }
 .biljartbal.cat-bullet {
     aspect-ratio: auto;
+}
+.biljartbal.rechthoek {
+    border-radius: 20%;
 }
 
 /* snooker */

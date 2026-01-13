@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Match, MatchSpeler } from '../../../model/match';
 import { WedSpeler, Wedstrijd } from '../../../model/wedstrijd';
 import { BaseComponent } from '../../../base/base.component';
-import { ScorebordComponent } from '../../../shared/scorebord/scorebord.component';
+import { ScoreComponent } from "../../../shared/score/score.component";
 
 @Component({
     selector: 'app-knbb-match-scorebord',
     standalone: true,
     imports: [
-        ScorebordComponent
+        ScoreComponent
     ],
     templateUrl: './knbb-match-scorebord.component.html',
     styleUrl: './knbb-match-scorebord.component.css'

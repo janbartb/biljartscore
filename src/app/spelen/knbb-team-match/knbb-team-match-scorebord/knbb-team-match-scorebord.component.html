@@ -1,6 +1,6 @@
 <div>
     @if (wedReady) {
-        <app-scorebord [wedstrijd]="wedstrijd" 
-                (opslaan)="updateAndSaveTeamMatch($event)" (keyPressed)="handleKey($event)"></app-scorebord>
+        <app-score [wedstrijd]="wedstrijd" 
+                (opslaan)="updateAndSaveTeamMatch($event)" (keyPressed)="handleKey($event)"></app-score>
     }
 </div>

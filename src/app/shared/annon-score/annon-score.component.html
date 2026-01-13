@@ -187,14 +187,18 @@
     @else if (idxSpeler >= 2) {
         <div class="notification notification-top" [ngClass]="{'smaller': wedstrijd.config.aantSpelers == 1}">
             <div class="notification-top-content arial" [ngClass]="{ 'visible': modalVisible, 'geel': !wedstrijd.spelers[idxSpeler].metWit }">
-                <app-notification [spel]="'annon'" [type]="'horizontal'" [modal]="modals[0]"></app-notification>
+                @if (modals.length && modals[0].texts.length) {
+                    <app-notification [spel]="'annon'" [type]="'horizontal'" [modal]="modals[0]"></app-notification>
+                }
             </div>
         </div>
     }
     @else {
         <div class="notification notification-bottom">
             <div class="notification-bottom-content arial" [ngClass]="{ 'visible': modalVisible, 'geel': !wedstrijd.spelers[idxSpeler].metWit }">
-                <app-notification [spel]="'annon'" [type]="'horizontal'" [modal]="modals[0]"></app-notification>
+                @if (modals.length && modals[0].texts.length) {
+                    <app-notification [spel]="'annon'" [type]="'horizontal'" [modal]="modals[0]"></app-notification>
+                }
             </div>
         </div>
     }

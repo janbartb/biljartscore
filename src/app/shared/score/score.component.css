@@ -1,0 +1,33 @@
+.scorebord { 
+    width: 60em; 
+    height: 33.75em; 
+    position: relative; 
+    background-color: #265728; 
+    color: #93cf95;
+}
+
+.help-popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 7rem;
+    padding-top: 1.5rem;
+    background-color: #163317;
+    color: #93cf95;
+    font-size: 1.25rem;
+    font-weight: normal;
+    translate: 0 -8rem;
+    transition: translate .5s;
+    z-index: 60;
+}
+.help-popup.visible {
+    translate: 0 0;
+}
+.help-popup .help-key-icon {
+    text-align: center;
+    cursor: pointer;
+}
+.help-popup .help-key-icon:hover {
+    color: white;
+}

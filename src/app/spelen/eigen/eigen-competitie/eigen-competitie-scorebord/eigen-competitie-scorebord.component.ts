@@ -6,13 +6,13 @@ import { HelperService } from '../../../../services/helper.service';
 import { ConfirmEndOfMatchDialog } from '../../../../model/dialogs';
 import { WedSpeler, Wedstrijd } from '../../../../model/wedstrijd';
 import { ConfirmEndOfMatchComponent } from '../../../../shared/confirm-end-of-match/confirm-end-of-match.component';
-import { ScorebordComponent } from '../../../../shared/scorebord/scorebord.component';
+import { ScoreComponent } from '../../../../shared/score/score.component';
 
 @Component({
     selector: 'app-eigen-competitie-scorebord',
     standalone: true,
     imports: [
-        ScorebordComponent,
+        ScoreComponent,
         ConfirmEndOfMatchComponent
     ],
     templateUrl: './eigen-competitie-scorebord.component.html',

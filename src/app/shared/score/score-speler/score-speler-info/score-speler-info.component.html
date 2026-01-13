@@ -1,0 +1,32 @@
+<div class="speler-info flexbox flexstretch" style="height: 8em;">
+    @if (position == 'left') {
+        <div class="flexgrow1" style="padding: 0 .5em; overflow: hidden;">
+            <div style="height: 5em; overflow: hidden; line-height: 5em; white-space: nowrap; padding-left: .125em;">
+                <span style="font-size: 4em; position: relative; top: -.125em;">{{naam}}</span>
+            </div>
+            <div style="height: 3em; line-height: 2.5em; padding-left: .125em;">
+                <span style="font-size: 2.5em; position: relative; top: -.125em;">{{moyenne | number:'1.3-3':'nl-NL'}}</span>
+            </div>
+        </div>
+        <div style="width: 8em; padding: .5em;">
+            <app-score-speler-info-bal [aantCar]="aantCar" [aantBrt]="aantBrt"></app-score-speler-info-bal>
+        </div>
+    }
+    @else {
+        <div style="width: 8em; padding: .5em;">
+            <app-score-speler-info-bal [aantCar]="aantCar" [aantBrt]="aantBrt"></app-score-speler-info-bal>
+        </div>
+        <div class="flexgrow1" style="padding: 0 .5em; overflow: hidden;">
+            <div class="flexbox flexright">
+                <div style="height: 5em; overflow: hidden; line-height: 5em; white-space: nowrap; padding-right: .5em;">
+                    <span style="font-size: 4em; position: relative; top: -.125em;">{{naam}}</span>
+                </div>
+            </div>
+            <div class="flexbox flexright">
+                <div style="height: 3em; line-height: 2.5em; padding-right: .25em;">
+                    <span style="font-size: 2.5em; position: relative; top: -.125em;">{{moyenne | number:'1.3-3':'nl-NL'}}</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,58 @@
+<div class="speler-stand flexbox flexstretch arial" style="height: 10.5em;">
+    @if (position == 'left') {
+        <div class="flexgrow1">
+            <div class="flexbox flexcenter flexend" style="height: 5.5em;">
+                <div style="padding-right: 1em; color: #93cf95;">
+                    <span style="font-size: 3em;">in</span>
+                </div>
+                <div [style.font-size]="numFormats[1].length < 3 ? '5.5em' : '5em'">
+                    <app-getal-var [naam]="'brt'" [getal]="'' + aantBrt" [format]="numFormats[1]"></app-getal-var>
+                </div>
+            </div>
+            <div class="flexbox flexstart flexcenter" style="height: 5em;">
+                <div style="padding-top: .75em;">
+                    <app-getal-var style="font-size: 4em;" [naam]="'moy'" [getal]="moyView" [format]="'09,999'"></app-getal-var>
+                </div>
+            </div>
+        </div>
+        <div class="speler-stand-car flexbox flexcenter flexmiddle" [ngClass]="{'gewijzigd': serie > 0}" style="width: 17.5em;">
+            <div [style.font-size]="numFormats[0].length < 3 ? '11em' : '10.5em'">
+                <app-getal-var [naam]="'car'" [getal]="'' + aantCar" [format]="numFormats[0]"></app-getal-var>
+            </div>
+            @if (enNog > 0 && enNog < 4) {
+                <div class="speler-stand-ennog">
+                    <span style="font-size: 5em;">nog </span>
+                    <span style="font-size: 6em;">{{enNog}}</span>
+                </div>
+            }
+        </div>
+    }
+    @else { <!-- RECHTS -->
+        <div class="speler-stand-car flexbox flexcenter flexmiddle" [ngClass]="{'gewijzigd': serie > 0}" style="width: 17.5em;">
+            <div [style.font-size]="numFormats[0].length < 3 ? '11em' : '10.5em'">
+                <app-getal-var [naam]="'car'" [getal]="'' + aantCar" [format]="numFormats[0]"></app-getal-var>
+            </div>
+            @if (enNog > 0 && enNog < 4) {
+                <div class="speler-stand-ennog">
+                    <span style="font-size: 5em;">nog </span>
+                    <span style="font-size: 6em;">{{enNog}}</span>
+                </div>
+            }
+        </div>
+        <div class="flexgrow1">
+            <div class="flexbox flexcenter flexend" style="height: 5.5em;">
+                <div style="padding-right: 1em; color: #93cf95;">
+                    <span style="font-size: 3em;">in</span>
+                </div>
+                <div [style.font-size]="numFormats[1].length < 3 ? '5.5em' : '5em'">
+                    <app-getal-var [naam]="'brt'" [getal]="'' + aantBrt" [format]="numFormats[1]"></app-getal-var>
+                </div>
+            </div>
+            <div class="flexbox flexstart flexcenter" style="height: 5em;">
+                <div style="padding-top: .75em;">
+                    <app-getal-var style="font-size: 4em;" [naam]="'moy'" [getal]="moyView" [format]="'09,999'"></app-getal-var>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -2,13 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../base/base.component';
 import { OefWedSpeler, OefWedstrijd, OefWedTeam } from '../../../model/oef-wedstrijd';
 import { WedSpeler, Wedstrijd, WedTeam } from '../../../model/wedstrijd';
-import { ScorebordComponent } from '../../../shared/scorebord/scorebord.component';
+import { ScoreComponent } from '../../../shared/score/score.component';
 
 @Component({
     selector: 'app-wed-scorebord',
     standalone: true,
     imports: [
-        ScorebordComponent
+        ScoreComponent
     ],
     templateUrl: './wed-scorebord.component.html',
     styleUrl: './wed-scorebord.component.css'
