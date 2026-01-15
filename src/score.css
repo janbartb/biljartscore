@@ -117,6 +117,11 @@
     border-radius: 1em;
 }
 
+.speler-voortgang-container {
+    padding: .5em; 
+    position: relative;
+    background-color: #1e461f;
+}
 .speler-voortgang {
     background-color: #b7dfb8;
     transition: width 2s ease, background-color 2s;
@@ -133,7 +138,7 @@
     top: 0;
     right: 0;
     height: 1.5em;
-    background-color: #1e461f;
+    background-color: #3d8b40;
     z-index: 10;
     transition: background-color 2s;
 }

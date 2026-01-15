@@ -1,4 +1,4 @@
-<div style="height: 2.5em; padding: .5em; position: relative">
+<div class="speler-voortgang-container" style="height: 2.5em;">
     @if (teamTsCar == 0) {
         <div class="fullheight" style="background-color: #6ec071; border-radius: .75em; overflow: hidden;">
             <div class="fullheight speler-voortgang" [style.width]="voortgang + '%'"></div>
@@ -11,23 +11,6 @@
     @else {
         <div class="fullheight flexbox flexstretch">
             @if (position == 'left') {
-                <div class="flexgrow1" style="position: relative;">
-                    <div class="fullheight" style="position: relative; background-color: #6ec071; border-radius: .75em; overflow: hidden;">
-                        <div class="fullheight speler-voortgang"
-                                [style.width]="(100 * (teamAantCar + aantCar + serie) / teamTsCar) + '%'"></div>
-                        <div class="speler-voortgang-max"
-                                [style.width]="(100 * (teamTsCar - teamMaxCar) / teamTsCar) + '%'"></div>
-                    </div>
-                    <div class="speler-voortgang-perc" style="top: 0;">
-                        <span style="font-size: 1.5em;">{{(100 * (teamAantCar + aantCar + serie) / teamTsCar) | number:'1.1-1':''}}</span>
-                        <span style="position: relative; top: -.125em;"> %</span>
-                    </div>
-                </div>
-                <div style="line-height: 1.5em; padding-left: .5em; color: #93cf95;">
-                    <span style="font-size: 1.5em;">TEAM</span>
-                </div>
-            }
-            @else {
                 <div style="line-height: 1.5em; padding-right: .5em; color: #93cf95;">
                     <span style="font-size: 1.5em;">TEAM</span>
                 </div>
@@ -42,6 +25,23 @@
                         <span style="font-size: 1.5em;">{{(100 * (teamAantCar + aantCar + serie) / teamTsCar) | number:'1.1-1':''}}</span>
                         <span style="position: relative; top: -.125em;"> %</span>
                     </div>
+                </div>
+            }
+            @else {
+                <div class="flexgrow1" style="position: relative;">
+                    <div class="fullheight" style="position: relative; background-color: #6ec071; border-radius: .75em; overflow: hidden;">
+                        <div class="fullheight speler-voortgang"
+                                [style.width]="(100 * (teamAantCar + aantCar + serie) / teamTsCar) + '%'"></div>
+                        <div class="speler-voortgang-max"
+                                [style.width]="(100 * (teamTsCar - teamMaxCar) / teamTsCar) + '%'"></div>
+                    </div>
+                    <div class="speler-voortgang-perc" style="top: 0;">
+                        <span style="font-size: 1.5em;">{{(100 * (teamAantCar + aantCar + serie) / teamTsCar) | number:'1.1-1':''}}</span>
+                        <span style="position: relative; top: -.125em;"> %</span>
+                    </div>
+                </div>
+                <div style="line-height: 1.5em; padding-left: .5em; color: #93cf95;">
+                    <span style="font-size: 1.5em;">TEAM</span>
                 </div>
             }
         </div>
