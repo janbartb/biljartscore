@@ -37,7 +37,7 @@
                             "src/dialogs.css",
                             "src/help.css",
                             "src/score.css",
-                            "src/annon.css",
+                            "src/annonscore.css",
                             "src/balls.css"
                         ],
                         "scripts": []

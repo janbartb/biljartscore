@@ -43,7 +43,7 @@
                             <div class="flexbox flexcenter" style="padding-top: 1em;">
                                 <div class="column-score">
                                     <div><span>{{annon.spelers[idxSpl].stand.aantBrt}}</span></div>
-                                    <div class="annon-score" style="padding-top: 1em;">
+                                    <div class="column-score" style="padding-top: 1em;">
                                         @for (cat of annon.config.cats; track $index; let idxCat = $index) {
                                             <div class="category flexbox flexmiddle">
                                                 @if (!annon.wedGespeeld && annon.spelers[idxSpl].stand.totaal.cars[idxCat] == annon.spelers[idxSpl].splTsCar) {

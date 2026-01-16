@@ -1,0 +1,10 @@
+<div class="flexbox" style="border: .25em solid #dbefdc;">
+    <app-annon-speler [speler]="speler"
+                        [cats]="wedstrijd.config.cats"
+                        [wedklaar]="wedstrijd.wedGespeeld"
+                        [isTeamWed]="wedstrijd.config.aantSpelers == 5"></app-annon-speler>
+    <app-annon-speler [speler]="tegenstander"
+                        [cats]="wedstrijd.config.cats"
+                        [wedklaar]="wedstrijd.wedGespeeld"
+                        [isTeamWed]="wedstrijd.config.aantSpelers == 5"></app-annon-speler>
+</div>

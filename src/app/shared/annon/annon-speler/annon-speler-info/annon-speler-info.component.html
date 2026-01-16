@@ -1,0 +1,20 @@
+<div class="flexbox flexstretch" style="height: 9em;">
+    <!-- naam en te spelen moyenne -->
+    <div style="width: 20em;">
+        <div class="speler-naam">
+            <span>{{naam}}</span>
+        </div>
+        <div class="speler-tsmoy">
+            <div style="position: relative; top: -.5em; line-height: 2.5em;">
+                <span style="font-size: 2.5em; padding-right: .5em;">{{moyenne | number:'1.3-3':'nl-NL'}}</span>
+            </div>
+        </div>
+    </div>
+    <!-- biljartbal -->
+    <div class="speler-bal">
+        @if (actief) {
+            <div data-kleur="" class="biljartbal fullheight flexbox flexcenter flexmiddle wit">
+            </div>
+        }
+    </div>
+</div>

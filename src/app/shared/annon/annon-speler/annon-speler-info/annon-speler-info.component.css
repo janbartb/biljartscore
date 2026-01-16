@@ -1,0 +1,4 @@
+.speler-naam { height: 5.5em; padding: .25em .5em; line-height: 5em; overflow: hidden; white-space: nowrap; }
+.speler-naam span { font-size: 4em; }
+.speler-tsmoy { height: 3.5em; padding: .25em .5em; line-height: 2.5em; overflow: visible; }
+.speler-bal { width: 9em; padding: .5em; }

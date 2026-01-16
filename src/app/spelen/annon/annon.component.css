@@ -14,16 +14,16 @@
     font-size: 1.25em;
 }
 
-.annon-score .category {
+.column-score .category {
     padding: .425em 0;
 }
-.annon-score .category .cat-bullet-container {
+.column-score .category .cat-bullet-container {
     width: 1.0625em;
 }
-.annon-score .category .cat-bullet-container .cat-bullet {
+.column-score .category .cat-bullet-container .cat-bullet {
     width: 1em;
     height: 1em;
 }
-.annon-score .category .cat-bullet-container .cat-bullet.red {
+.column-score .category .cat-bullet-container .cat-bullet.red {
     background-color: red;
 }

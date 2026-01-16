@@ -1,0 +1,29 @@
+<div>
+    <div class="active" style="width: 11em; height: 10em; padding: .5em 1em;">
+        <div class="fullheight flexbox flexcenter flexmiddle clickable wit" data-kleur=""
+                [ngClass]="{'active biljartbal': actief}">
+        </div>
+    </div>
+    <div style="height: 10.75em; padding-top: 1em;">
+        <div style="color: #6ec071; text-align: center;">
+            <span style="font-size: 2.5em;">Beurt</span>
+        </div>
+        <div class="annon-beurt flexbox flexcenter arial">
+            <div style="padding-top: .5em;">
+                <app-getal-var style="font-size: 6em;" [naam]="'brt'" [getal]="'' + beurten" [format]="'009'"></app-getal-var>
+            </div>
+        </div>
+    </div>
+    <div style="height: 11em; padding-top: .25em;">
+        <div style="color: #6ec071; text-align: center;">
+            <span style="font-size: 2.5em;">Punt</span>
+        </div>
+        <div class="flexbox flexcenter">
+            <div class="annon-punten wide flexbox flexcenter flexmiddle arial" style="height: 7em;">
+                <div style="padding-top: .25em;">
+                    <app-getal-var style="font-size: 7em;" [naam]="'pnt'" [getal]="'' + punten" [format]="'9'"></app-getal-var>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

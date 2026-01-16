@@ -1,0 +1,27 @@
+<div class="annon-score">
+    @for (cat of cats; track $index; let idx = $index) {
+        <div class="category flexbox flexmiddle">
+            <div class="catnaam">
+                <span>{{cat.naam}}</span>
+            </div>
+            @if (stand.totaal.cars[idx] == tsCar && !wedklaar) {
+                <div class="flexgrow1 vol">
+                    <span>▪ ▪ ▪ V O L ▪ ▪ ▪</span>
+                </div>
+            }
+            @else {
+                @for (nr of tsCarArr; track $index) {
+                    <div class="cat-bullet-container flexbox flexcenter" [style.width]="grid.balContainerWidth + 'em'">
+                        <div data-kleur="" class="cat-bullet biljartbal" style="height: 3em;" [style.width]="grid.balWidth + 'em'" 
+                            [ngClass]="{'lichtgroen': !actief && nr <= stand.totaal.cars[idx], 
+                                        'wit': actief && nr <= stand.totaal.cars[idx],
+                                        'rood': nr > stand.totaal.cars[idx] && nr <= (stand.totaal.cars[idx] + stand.serie.cars[idx]),
+                                        'donkergroen': nr > (stand.totaal.cars[idx] + stand.serie.cars[idx]),
+                                        'hide': isTeamWed && nr > (stand.totaal.cars[idx] + stand.serie.cars[idx])}">
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>

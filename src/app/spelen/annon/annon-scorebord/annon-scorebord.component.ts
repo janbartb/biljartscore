@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AnnonScoreComponent } from '../../../shared/annon-score/annon-score.component';
 import { BaseComponent } from '../../../base/base.component';
 import { Annonceer } from '../../../model/annonceer';
+import { AnnonComponent } from '../../../shared/annon/annon.component';
 
 @Component({
     selector: 'app-annon-scorebord',
     standalone: true,
     imports: [
-        AnnonScoreComponent
+        AnnonComponent
     ],
     templateUrl: './annon-scorebord.component.html',
     styleUrl: './annon-scorebord.component.css'

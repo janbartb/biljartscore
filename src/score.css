@@ -14,6 +14,10 @@
     width: 60rem;
     height: 33.75rem;
 }
+.scorebord.annon {
+    background-color: #265728;
+    color: #93cf95;
+}
 
 .scorebord-spl {
     width: 29.75em;

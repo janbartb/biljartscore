@@ -1,0 +1,18 @@
+<div class="scorebord-spl wide flexbox flexstretch" [ngClass]="{'actief': speler.actief, 'penta': !speler.grid.isAnnon}">
+    <div style="width: 48em;">
+        <app-annon-wide-info [naam]="speler.splBordNaam"
+                            [moyenne]="speler.splTsMoy"></app-annon-wide-info>
+        <app-annon-wide-stand [actief]="speler.actief"
+                            [cats]="cats"
+                            [grid]="speler.grid"
+                            [stand]="speler.stand"
+                            [tsCar]="speler.splTsCar"
+                            [tsCarArr]="speler.splTsCarArr"
+                            [wedklaar]="wedklaar"></app-annon-wide-stand>
+    </div>
+    <div style="width: 11em;">
+        <app-annon-wide-extra [actief]="speler.actief"
+                            [beurten]="speler.stand.aantBrt"
+                            [punten]="speler.stand.punten"></app-annon-wide-extra>
+    </div>
+</div>

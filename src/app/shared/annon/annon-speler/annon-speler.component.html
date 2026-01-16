@@ -1,0 +1,15 @@
+<div class="scorebord-spl" [ngClass]="{'actief': speler.actief, 'penta': !speler.grid.isAnnon}">
+    <app-annon-speler-info [naam]="speler.splBordNaam"
+                            [moyenne]="speler.splTsMoy"
+                            [actief]="speler.actief"></app-annon-speler-info>
+    <app-annon-speler-stand [actief]="speler.actief"
+                            [cats]="cats"
+                            [grid]="speler.grid"
+                            [stand]="speler.stand"
+                            [tsCar]="speler.splTsCar"
+                            [tsCarArr]="speler.splTsCarArr"
+                            [wedklaar]="wedklaar"
+                            [isTeamWed]="isTeamWed"></app-annon-speler-stand>
+    <app-annon-speler-extra [beurten]="speler.stand.aantBrt"
+                            [punten]="speler.stand.punten"></app-annon-speler-extra>
+</div>
