@@ -11,7 +11,10 @@ export class Config {
     speech: boolean = true;
     stem: string = '';
     repeatRemaining: boolean = true;
+
     sayGenoteerd: boolean = true;
+    alsoForZero: boolean = false;
+
     notify: boolean = false;
     version: string = '1.0.0';
     apparaten: Apparaat[] = [];

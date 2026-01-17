@@ -8,6 +8,28 @@
     width: 12em;
 }
 
+.checkbox {
+    color: gray;
+    cursor: default;
+}
+.actief .checkbox {
+    color: black;
+    cursor: pointer;
+}
+.actief .checkbox:hover {
+    scale: 1.5;
+}
+.checkbox-txt {
+    color: gray;
+}
+.actief .checkbox-txt {
+    color: green;
+    cursor: pointer;
+}
+.actief .checkbox-txt:hover {
+    color: #102511;
+}
+
 .spreektest.clickable {
     cursor: pointer;
 }

@@ -91,6 +91,12 @@ export class ConfigComponent extends BaseComponent implements OnInit {
         }
     }
 
+    toggleAlsoForZero() {
+        if (this.speech?.value && this.sayGenoteerd?.value) {
+            this.alsoForZero?.setValue(!this.alsoForZero.value);
+        }
+    }
+
     toggleSpeech() {
         this.speech?.setValue(!this.speech.value);
         if (this.speech?.value) {
@@ -193,6 +199,7 @@ export class ConfigComponent extends BaseComponent implements OnInit {
         this.config.stem = this.stem?.value;
         this.config.repeatRemaining = this.repeatRemaining?.value;
         this.config.sayGenoteerd = this.sayGenoteerd?.value;
+        this.config.alsoForZero = this.alsoForZero?.value;
         this.bssApi.saveConfig(this.config)
         .then(resp => {
             this.alert.showAlert(resp.message, 'success');
@@ -221,7 +228,8 @@ export class ConfigComponent extends BaseComponent implements OnInit {
             stem: [this.config.stem],
             speechTest: [this.spraakTest],
             repeatRemaining: [this.config.repeatRemaining],
-            sayGenoteerd: [this.config.sayGenoteerd]
+            sayGenoteerd: [this.config.sayGenoteerd],
+            alsoForZero: [this.config.alsoForZero]
         });
         this.formCreated = true;
     }
@@ -258,5 +266,8 @@ export class ConfigComponent extends BaseComponent implements OnInit {
     }
     get sayGenoteerd() {
         return this.configForm.get('sayGenoteerd');
+    }
+    get alsoForZero() {
+        return this.configForm.get('alsoForZero');
     }
 }

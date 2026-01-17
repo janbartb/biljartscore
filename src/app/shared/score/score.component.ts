@@ -76,6 +76,7 @@ export class ScoreComponent implements OnInit {
     speechToggled: boolean = false;
     repeatRemaining: boolean = false;
     sayGenoteerd: boolean = false;
+    alsoForZero: boolean = false;
     helpPopupVisible: boolean = false;
 
     enterPressed() {
@@ -98,7 +99,14 @@ export class ScoreComponent implements OnInit {
     processEnter() {
         // werk score bij
         const notif = [this.actieveSpeler.splBordNaam, '' + this.actieveSpeler.stand.serie];
-        const msgToSpeak = (this.sayGenoteerd ? 'Genoteerd, ' : '') + this.actieveSpeler.splSpreekNaam + ', ' + this.actieveSpeler.stand.serie;
+        let genoteerdTekst = '';
+        if (this.sayGenoteerd) {
+            genoteerdTekst = 'Genoteerd, ';
+            if (this.actieveSpeler.stand.serie == 0 && !this.alsoForZero) {
+                genoteerdTekst = '';
+            }
+        }
+        const msgToSpeak = genoteerdTekst + this.actieveSpeler.splSpreekNaam + ', ' + this.actieveSpeler.stand.serie;
         const modalMsg = new ModalMessage('noteer', notif, msgToSpeak, 4);
         this.modals.push(modalMsg);
         this.showModal();
@@ -112,7 +120,6 @@ export class ScoreComponent implements OnInit {
             this.laatste5.shift();
         }
         this.laatste5.push(this.actieveSpeler.stand.serie);
-        //this.actieveSpeler.stand.laatste5brt = this.laatste5;
         this.actieveSpeler.stand.serie = 0;
         if (this.isTeamWedstrijd()) {
             this.actieveTeam.stand.aantCar += this.actieveTeam.stand.serie;
@@ -392,7 +399,8 @@ export class ScoreComponent implements OnInit {
             this.setDefaultActieToetsen();
         }
         this.repeatRemaining = this.appData.getConfig()?.repeatRemaining || false;
-        this.sayGenoteerd = this.appData.getConfig()?.sayGenoteerd || false;
+        this.sayGenoteerd = this.appData.getConfig()?.sayGenoteerd || true;
+        this.alsoForZero = this.appData.getConfig()?.alsoForZero || false;
         if (this.wedstrijd.wedGespeeld) {
             if (this.wedstrijd.telling.idxOptie == 0) {
                 if (this.isTeamWedstrijd()) {
@@ -458,7 +466,7 @@ export class ScoreComponent implements OnInit {
                 this.keysLocked = true;
                 setTimeout(() => {
                     this.keysLocked = false;
-                }, 3000);
+                }, 2000);
             }
         }
         this.actieveSpeler.stand.serie += nr;

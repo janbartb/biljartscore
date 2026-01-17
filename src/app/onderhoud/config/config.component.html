@@ -66,23 +66,23 @@
                             </div>
                         </div>
                         <div style="height: 1em;"></div>
-                        <div class="row flexbox">
-                            <div class="label">Telling</div>
+                        <div class="row flexbox actief">
+                            <div class="label checkbox-txt" (click)="toggleCarMeteenToevoegen()">Telling</div>
                             <div>
-                                <div><i class="clickable" [ngClass]="carMeteen?.value ? 'fas fa-check-square' : 'far fa-square'" 
+                                <div class="checkbox"><i [ngClass]="carMeteen?.value ? 'fas fa-check-square' : 'far fa-square'" 
                                             (click)="toggleCarMeteenToevoegen()"></i></div>
                             </div>
-                            <div style="padding-left: 1em; color: green;">Gemaakte carambole meteen toevoegen aan totaal.</div>
+                            <div class="checkbox-txt" style="padding-left: 1em;"
+                                            (click)="toggleCarMeteenToevoegen()">Gemaakte carambole meteen toevoegen aan totaal.</div>
                         </div>
                         <div style="height: 1em;"></div>
-                        <div class="row flexbox">
-                            <div class="label">
-                                <label for="spraak">Spraak</label>
+                        <div class="row flexbox actief">
+                            <div class="label checkbox-txt" (click)="toggleSpeech()">Spraak</div>
+                            <div class="checkbox actief">
+                                <div><i [ngClass]="speech?.value ? 'fas fa-check-square' : 'far fa-square'" (click)="toggleSpeech()"></i></div>
                             </div>
-                            <div>
-                                <div><i class="clickable" [ngClass]="speech?.value ? 'fas fa-check-square' : 'far fa-square'" (click)="toggleSpeech()"></i></div>
-                            </div>
-                            <div style="padding-left: 1em; color: green;">({{speech?.value ? 'aan' : 'uit'}})</div>
+                            <div class="checkbox-txt actief" style="padding-left: 1em;"
+                                             (click)="toggleSpeech()">({{speech?.value ? 'aan' : 'uit'}})</div>
                         </div>
                         <div class="row flexbox">
                             <div class="label">
@@ -96,21 +96,37 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row flexbox">
+                        <div class="row flexbox" [ngClass]="{'actief': speech?.value}">
                             <div class="label"></div>
                             <div>
-                                <div><i [style.color]="speech?.value ? 'black' : 'gray'" [ngClass]="repeatRemaining?.value ? 'fas fa-check-square' : 'far fa-square'" 
-                                            (click)="toggleRepeatRemaining()"></i></div>
+                                <div class="checkbox">
+                                    <i [ngClass]="repeatRemaining?.value ? 'fas fa-check-square' : 'far fa-square'" 
+                                            (click)="toggleRepeatRemaining()"></i>
+                                </div>
                             </div>
-                            <div style="padding-left: 1em; color: green;">Herhaal de 'en nog ...' meldingen bij hetzelfde aantal</div>
+                            <div class="checkbox-txt" style="padding-left: 1em;"
+                                            (click)="toggleRepeatRemaining()">Herhaal de 'en nog ...' meldingen bij hetzelfde aantal</div>
                         </div>
-                        <div class="row flexbox">
+                        <div class="row flexbox" [ngClass]="{'actief': speech?.value}">
                             <div class="label"></div>
                             <div>
-                                <div><i [style.color]="speech?.value ? 'black' : 'gray'" [ngClass]="sayGenoteerd?.value ? 'fas fa-check-square' : 'far fa-square'" 
-                                            (click)="toggleSayGenoteerd()"></i></div>
+                                <div class="checkbox">
+                                    <i [ngClass]="sayGenoteerd?.value ? 'fas fa-check-square' : 'far fa-square'" 
+                                            (click)="toggleSayGenoteerd()"></i>
+                                </div>
                             </div>
-                            <div style="padding-left: 1em; color: green;">Spreek het woord 'genoteerd' uit bij einde van beurt</div>
+                            <div class="checkbox-txt" style="padding-left: 1em;"
+                                            (click)="toggleSayGenoteerd()">Spreek het woord 'genoteerd' uit bij einde van serie</div>
+                        </div>
+                        <div class="row flexbox" [ngClass]="{'actief': speech?.value && sayGenoteerd?.value}">
+                            <div class="label"></div>
+                            <div style="width: 1.75em;"></div>
+                            <div>
+                                <div class="checkbox"><i [ngClass]="alsoForZero?.value ? 'fas fa-check-square' : 'far fa-square'" 
+                                            (click)="toggleAlsoForZero()"></i></div>
+                            </div>
+                            <div class="checkbox-txt" style="padding-left: 1em;"
+                                            (click)="toggleAlsoForZero()">Ook uitspreken bij serie van nul</div>
                         </div>
                         <div class="row flexbox">
                             <div class="label">Spraak test</div>
