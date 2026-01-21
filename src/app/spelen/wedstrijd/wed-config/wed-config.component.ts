@@ -1,261 +1,95 @@
-import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
+import { Component, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { BaseComponent } from '../../../base/base.component';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
-import { OefWedstrijd } from '../../../model/oef-wedstrijd';
-import { List } from '../../../model/list';
 import { NgClass } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { HelperService } from '../../../services/helper.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Button } from '../../../model/button';
-import { ButtonComponent } from '../../../shared/button-group/button/button.component';
-
-class InpNumber {
-    val: number = 0;
-    oldVal: number = 0;
-    valid: boolean = false;
-
-    constructor(val: number) {
-        this.val = this.oldVal = val;
-    }
-
-    hasChanged(): boolean {
-        return this.val != this.oldVal;
-    }
-
-    reset(): void {
-        this.val = this.oldVal;
-    }
-}
+import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
+import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
+import { ActivatedRoute } from '@angular/router';
+import { Wedstrijd } from '../../../model/wedstrijd';
+import { MoyenneTabel } from '../../../model/moyenne-tabel';
 
 @Component({
     selector: 'app-wed-config',
     standalone: true,
     imports: [
-        FormsModule,
         PageHeaderComponent,
-        ButtonComponent,
+        SectionHeaderComponent,
+        SectionFooterBtnsComponent,
+        ReactiveFormsModule,
         NgClass
     ],
     templateUrl: './wed-config.component.html',
     styleUrl: './wed-config.component.css'
 })
 export class WedConfigComponent extends BaseComponent implements OnInit {
-    helper = inject(HelperService);
+    route = inject(ActivatedRoute);
+    fb = inject(FormBuilder);
+    title: string = 'Wedstrijd spelen';
+    subtitle: string = 'Oefen wedstrijd - instellingen';
+    wedstrijd: Wedstrijd = new Wedstrijd();
+    wedstrijdOk: boolean = false;
+    regelOpties: string[] = [];
+    telOpties: string[] = [];
+    knbbKlassen: string[] = [];
+    moyTabel: MoyenneTabel = new MoyenneTabel();
 
-    wedOrig: OefWedstrijd = new OefWedstrijd();
-    wedstrijd: OefWedstrijd = new OefWedstrijd();
-    wedstrijdChanged: boolean = false;
+    buttons: Button[] = [
+        new Button('Enter', 'Opslaan', true)
+    ];
 
-    optieLijst: List<string> = new List<string>();
-    subOptieLijst: List<string> = new List<string>();
-    activeLijst: number = 0;
-
-    enterButton: Button = new Button('Enter', 'Ga verder', true);
-
-    vastBrt: InpNumber = new InpNumber(0);
-    vastCar: InpNumber = new InpNumber(0);
-    gemBrt: InpNumber = new InpNumber(0);
-    maxBrt: InpNumber = new InpNumber(0);
-    inputValid: boolean = false;
-
-    htmlVastBrt = viewChild<ElementRef<HTMLInputElement>>("vastbrt");
-    htmlVastCar = viewChild<ElementRef<HTMLInputElement>>("vastcar");
-    htmlGemBrt = viewChild<ElementRef<HTMLInputElement>>("gembrt");
-    htmlMaxBrt = viewChild<ElementRef<HTMLInputElement>>("maxbrt");
-
-    constructor() {
-        super();
-        effect(() => {
-            this.htmlVastBrt()?.nativeElement.focus();
-            this.htmlVastCar()?.nativeElement.focus();
-            this.htmlGemBrt()?.nativeElement.focus();
-        });
-    }
-
-    enterPressed() {
-        if (this.activeLijst == 0) {
-            this.optieClicked(0, this.optieLijst.hoveredIdx);
-        }
-        else {
-            this.optieClicked(1, this.subOptieLijst.hoveredIdx);
-        }
-    }
-
-    override escapePressed(): void {
-        if (this.wedstrijdChanged) {
-            this.resetWedstrijd();
-            return;
-        }
-        if (this.activeLijst == 1) {
-            this.activeLijst = 0;
-            this.subOptieLijst.selectedIdx = this.subOptieLijst.hoveredIdx = -1;
-            this.optieClicked(0, 0);
-            this.setEscapeCount();
-            return;
-        }
-        this.previousClicked();
-    }
+    wedstrijdForm!: FormGroup;
 
     buttonPressed(button: Button) {
-        if (button.disabled) {
-            return;
+        if (button.key == 'Enter') { 
+            if (!this.wedstrijdOk) {
+                return;
+            }
         }
         button.selected = true;
         setTimeout(() => {
             button.selected = false;
             if (button.key == 'Enter') {
-                this.gaVerderClicked();
+                this.buttonClicked(0);
             }
         }, 300);
     }
 
-    previousClicked() {
-        this.router.navigate(['wedstrijd/spelers']);
+    buttonClicked(idx: number) {
+        if (idx == 0) {
+            this.opslaanClicked();
+        }
     }
 
-    optieClicked(idxActive: number, idxOptie: number) {
-        if (idxActive == 1 && this.activeLijst == 0) {
-            return;
-        }
-        if (idxActive == 0) {
-            this.activeLijst = 0;
-            this.optieLijst.hoveredIdx = -1;
-            this.subOptieLijst.selectedIdx = this.subOptieLijst.hoveredIdx = -1;
-            if (idxOptie == 1) {
-                this.optieLijst.selectItem(idxOptie);
-                this.activeLijst = 1;
-                if (this.subOptieLijst.selectedIdx < 0) {
-                    this.subOptieLijst.selectItem(0);
-                    this.helper.setFocus(this.htmlVastCar()?.nativeElement);
-                }
-            }
-            else {
-                this.optieLijst.selectItem(idxOptie);
-                this.helper.setFocus(this.htmlVastBrt()?.nativeElement);
-            }
-        }
-        else {
-            this.subOptieLijst.selectItem(idxOptie);
-            this.subOptieLijst.hoveredIdx = -1;
-            if (idxOptie == 0) {
-                this.helper.setFocus(this.htmlVastCar()?.nativeElement);
-            }
-            else {
-                this.helper.setFocus(this.htmlGemBrt()?.nativeElement);
-            }
-        }
-        this.validateInput();
-        this.setEscapeCount();
+    opslaanClicked() {
+        this.fillWedstrijdFromFormAndSave();
     }
 
-    gaVerderClicked() {
-        this.wedstrijd.tsBeurten = 0;
-        this.wedstrijd.tsCaramboles = 0;
-        this.wedstrijd.maxBeurten = 0;
-        if (this.activeLijst == 0) {
-            this.wedstrijd.isVastAantBrt = true;
-            this.wedstrijd.tsBeurten = Number(this.vastBrt.val);
+    regelOptieClicked(idx: number) {
+        this.wedIdxRegels?.setValue(idx);
+        if (idx == 0) {
+            this.wedMaxBrt?.setValue(60);
         }
-        else {
-            this.wedstrijd.isVastAantBrt = false;
-            this.wedstrijd.maxBeurten = Number(this.maxBrt.val);
-            if (this.subOptieLijst.selectedIdx == 0) {
-                this.wedstrijd.isVastAantCar = true;
-                this.wedstrijd.tsCaramboles = Number(this.vastCar.val);
-            }
-            else {
-                this.wedstrijd.isVastAantCar = false;
-                this.wedstrijd.tsBeurten = Number(this.gemBrt.val);
-            }
+        else if (idx == 1) {
+            this.wedMaxBrt?.setValue(0);
         }
-        if (this.wedstrijdChanged) {
-            this.wedstrijd.wedOver = false;
-            this.helper.clearWedstrijdResultaten(this.wedstrijd);
-            if (!this.wedstrijd.isVastAantBrt) {
-                if (this.wedstrijd.aantSpelers == 5) {
-                    this.berekenAantCarambolesVoorTeams();
-                }
-                else {
-                    this.berekenAantCarambolesVoorSpelers();
-                }    
-            }
-            else {
-                this.wedstrijd.teams.forEach(team => {
-                    team.teamTsGem = Math.round(1000 * ((team.spelers[0].splTsGem + team.spelers[1].splTsGem) / 2)) / 1000;
-                    team.teamTsBrt = 2 * this.wedstrijd.tsBeurten;
-                    team.spelers.forEach(spl => {
-                        spl.splTsBrt = this.wedstrijd.tsBeurten;
-                    });
-                });
-                this.wedstrijd.spelers.forEach(spl => {
-                    spl.splTsBrt = this.wedstrijd.tsBeurten;
-                });
-            }
-        }
-        this.bssApi.saveOefenWedstrijd(this.wedstrijd)
-        .then(resp => {
-            this.router.navigate(['wedstrijd']);
-        })
-        .catch(err => {
-            this.alert.showError(err);
-        });
+        this.enableDisableFields();
     }
 
-    validateInput() {
-        this.hasWedstrijdChanged();
-        this.inputValid = false;
-        if (this.activeLijst == 0) {
-            this.vastBrt.valid = this.helper.isValidInteger('' + this.vastBrt.val);
-            this.inputValid = this.vastBrt.valid;
-        }
-        else {
-            this.maxBrt.valid = this.helper.isValidIntegerOrZero('' + this.maxBrt.val);
-            if (this.subOptieLijst.selectedIdx == 0) {
-                this.vastCar.valid = this.helper.isValidInteger('' + this.vastCar.val);
-                this.inputValid = this.maxBrt.valid && this.vastCar.valid;
-            }
-            else {
-                this.gemBrt.valid = this.helper.isValidInteger('' + this.gemBrt.val);
-                this.inputValid = this.maxBrt.valid && this.gemBrt.valid;
-            }
-        }
+    telOptieClicked(idx: number) {
+        this.wedIdxTelling?.setValue(idx);
     }
 
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
-        //console.log(event);
         console.log(event.code + ' : ' + event.key);
-        if (event.key ==='ArrowUp' || event.key ==='ArrowDown') {
-            if (event.key === 'ArrowUp') {
-                if (this.activeLijst == 0) {
-                    this.optieLijst.hoverPreviousItem();
-                }
-                else if (this.activeLijst == 1) {
-                    this.subOptieLijst.hoverPreviousItem();
-                }
-                return false;
-            }
-            if (event.key === 'ArrowDown') {
-                if (this.activeLijst == 0) {
-                    this.optieLijst.hoverNextItem();
-                }
-                else if (this.activeLijst == 1) {
-                    this.subOptieLijst.hoverNextItem();
-                }
-                return false;
-            }
-            return true;
+        if (this.isDialogOpen) {
+            return false;
         }
         if (event.key === 'Enter') {
-            if (this.inputValid && this.optieLijst.hoveredIdx < 0 && this.subOptieLijst.hoveredIdx < 0) {
-                this.buttonPressed(this.enterButton);
-                return false;
-            }
-            if (this.optieLijst.hoveredIdx >= 0 || this.subOptieLijst.hoveredIdx >= 0) {
-                this.enterPressed();
-                return false;
-            }
-            return true;
+            this.buttonPressed(this.buttons[0]);
+            return false;
         }
         if (event.key === 'Escape') {
             this.escapePressed();
@@ -264,132 +98,292 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         if (event.key === 'Home') {
             this.homePressed();
             return false;
-        }
+        }    
         return true;
     }
 
     ngOnInit(): void {
-        const opts = ['Speel een vast aantal beurten', 'Doorspelen tot het aantal caramboles is bereikt'];
-        this.optieLijst.fillItems(opts);
-        let subOpts = ['Een vast aantal caramboles voor iedere speler', 'Bereken aantal caramboles op basis van moyenne van speler'];
         Promise.all([
-            this.bssApi.getOefenWedstrijd()
+            this.bssApi.getWedstrijd(),
+            this.bssApi.getMoyenneKlassenLijst(this.spelId)
         ])
         .then(results => {
             if (results[0].gevonden) {
                 this.wedstrijd = results[0].wedstrijd;
             }
-            if (!this.helper.areWedstrijdSpelersFilled(this.wedstrijd)) {
-                this.escapePressed();
+            if (this.wedstrijd.aantSpelers == 0) {
+                this.router.navigate(['wedstrijd/aantspl']);
                 return;
-            }
+            } 
+            this.knbbKlassen = results[1];
+            this.createCompetitieForm();
             if (this.wedstrijd.aantSpelers == 5) {
-                subOpts = ['Een vast aantal caramboles voor ieder team', 'Bereken aantal caramboles op basis van moyenne van team'];
-            }
-            console.log(this.wedstrijd);
-            this.subOptieLijst.fillItems(subOpts);
-            if (this.wedstrijd.isVastAantBrt) {
-                this.activeLijst = 0;
-                this.optieLijst.selectedIdx = 0;
-                this.optieLijst.hoveredIdx = -1;
-                this.vastBrt = new InpNumber(this.wedstrijd.tsBeurten);
+                this.regelOpties.push('Aantal caramboles teams o.b.v. KNBB tabel driebanden klein, klasse');
+                this.regelOpties.push('Vast aantal beurten voor iedere speler');
+                this.regelOpties.push('Vast aantal caramboles voor ieder team');
+                this.regelOpties.push('Aantal caramboles o.b.v. moyenne team en');
             }
             else {
-                this.optieLijst.selectedIdx = 1;
-                this.optieLijst.hoveredIdx = -1;
-                this.activeLijst = 1;
-                this.subOptieLijst.selectedIdx = this.wedstrijd.isVastAantCar ? 0 : 1;
-                this.subOptieLijst.hoveredIdx = -1;
-                this.maxBrt = new InpNumber(this.wedstrijd.maxBeurten);
-                if (this.wedstrijd.isVastAantCar) {
-                    this.vastCar = new InpNumber(this.wedstrijd.tsCaramboles);
-                }
-                else {
-                    this.gemBrt = new InpNumber(this.wedstrijd.tsBeurten);
-                }
+                this.regelOpties.push('Aantal caramboles spelers o.b.v. KNBB tabel driebanden klein, klasse');
+                this.regelOpties.push('Vast aantal beurten voor iedere speler');
+                this.regelOpties.push('Vast aantal caramboles voor iedere speler');
+                this.regelOpties.push('Aantal caramboles o.b.v. moyenne speler en');
             }
-            this.validateInput();
+
+            this.telOpties.push('KNBB match telling (1 punt per 10% van te spelen caramboles)');
+            this.telOpties.push('Eigen telling');
         })
         .catch(err => {
             this.alert.showError(err);
         });
     }
 
-    private berekenAantCarambolesVoorSpelers() {
-        if (this.wedstrijd.isVastAantCar) {
-            this.wedstrijd.spelers.forEach(spl => {
-                spl.splTsCar = this.wedstrijd.tsCaramboles;
-            });
+    initWedstrijd() {
+        this.wedstrijd.regels.vastAantBrt = 1;
+        this.wedstrijd.regels.vastAantCar = 1;
+        this.wedstrijd.regels.moyAantBrt = 1;
+        const foundKlasse = this.knbbKlassen.find(klasse => klasse == 'B2');
+        if (foundKlasse) {
+            this.wedstrijd.regels.knbbKlasse = foundKlasse;
+            this.wedstrijd.regels.maxBeurten = 60;
+        }
+        this.wedstrijd.telling.winstPunten = 2;
+        this.wedstrijd.telling.gelijkPunten = 1;
+        this.wedstrijd.telling.bovenMoyPunten = 1;
+        this.wedstrijd.regels.idxOptie = 0;
+        this.wedstrijd.telling.idxOptie = 0;
+    }
+
+    private enableDisableFields() {
+        if (!this.wedstrijdForm) {
+            return;
+        }
+        if (this.wedIdxRegels?.value == 0) {
+            this.wedKlasse?.enable();
+            this.wedAantBrt?.disable();
+            this.wedAantCar?.disable();
+            this.wedMoyBrt?.disable();
+            }
+        else if (this.wedIdxRegels?.value == 1) {
+            this.wedKlasse?.disable();
+            this.wedAantBrt?.enable();
+            this.wedAantCar?.disable();
+            this.wedMoyBrt?.disable();
+            }
+        else if (this.wedIdxRegels?.value == 2) {
+            this.wedKlasse?.disable();
+            this.wedAantBrt?.disable();
+            this.wedAantCar?.enable();
+            this.wedMoyBrt?.disable();
+            }
+        else if (this.wedIdxRegels?.value == 3) {
+            this.wedKlasse?.disable();
+            this.wedAantBrt?.disable();
+            this.wedAantCar?.disable();
+            this.wedMoyBrt?.enable();
+        }
+    }
+
+    private fillWedstrijdFromFormAndSave() {
+        this.wedstrijd.regels.idxOptie = this.wedIdxRegels?.value;
+        if (this.wedstrijd.regels.idxOptie == 0) {
+            this.wedstrijd.regels.knbbKlasse = this.wedKlasse?.value;
+            this.wedstrijd.regels.maxBeurten = this.wedMaxBrt?.value;
+        }
+        else if (this.wedstrijd.regels.idxOptie == 1) {
+            this.wedstrijd.regels.vastAantBrt = this.wedAantBrt?.value;
+            this.wedstrijd.regels.maxBeurten = this.wedstrijd.regels.vastAantBrt;            
+        }
+        else if (this.wedstrijd.regels.idxOptie == 2) {
+            this.wedstrijd.regels.vastAantCar = this.wedAantCar?.value;
+            this.wedstrijd.regels.maxBeurten = this.wedMaxBrt?.value;            
+        }
+        else if (this.wedstrijd.regels.idxOptie == 3) {
+            this.wedstrijd.regels.moyAantBrt = this.wedMoyBrt?.value;
+            this.wedstrijd.regels.maxBeurten = this.wedMaxBrt?.value;            
+        }
+        this.wedstrijd.telling.idxOptie = this.wedIdxTelling?.value;
+        if (this.wedstrijd.telling.idxOptie == 1) {
+            this.wedstrijd.telling.winstPunten = this.wedPntWinst?.value;
+            this.wedstrijd.telling.gelijkPunten = this.wedPntGelijk?.value;
+        }
+        this.wedstrijd.telling.bovenMoyPunten = this.wedPntBovenMoy?.value;
+        this.fillTeSpelenCarambolesAndBeurten();
+    }
+
+    private fillTeSpelenCarambolesAndBeurten() {
+        if (this.wedstrijd.regels.idxOptie == 1) {
+            this.setVastCarambolesAndBeurten(0, this.wedstrijd.regels.vastAantBrt);
+            this.saveWedstrijdEnGaVerder();
+            return;
+        }
+        if (this.wedstrijd.regels.idxOptie == 2) {
+            this.setVastCarambolesAndBeurten(this.wedstrijd.regels.vastAantCar, 0);
+            this.saveWedstrijdEnGaVerder();
+            return;
+        }
+        if (this.wedstrijd.regels.idxOptie == 3) {
+            this.berekenAantalCaramboles();
+            this.saveWedstrijdEnGaVerder();
+            return;
+        }
+        this.bepaalAantalCarambolesViaTabel();
+    }
+
+    private bepaalAantalCarambolesViaTabel() {
+        if (this.moyTabel.klasse == this.wedstrijd.regels.knbbKlasse) {
+            this.getAantalCarambolesUitTabel();
+            this.saveWedstrijdEnGaVerder();
         }
         else {
-            this.wedstrijd.spelers.forEach(spl => {
-                spl.splTsCar = Math.round(this.wedstrijd.tsBeurten * spl.splTsGem);
+            this.bssApi.getMoyenneTabel(this.spelId + '-' + this.wedstrijd.regels.knbbKlasse)
+            .then(data => {
+                this.moyTabel = data;
+                this.getAantalCarambolesUitTabel();
+                this.saveWedstrijdEnGaVerder();
+            })
+            .catch(err => {
+                this.alert.showError(err);
             });
         }
     }
 
-    private berekenAantCarambolesVoorTeams() {
-        if (this.wedstrijd.isVastAantCar) {
+    private getAantalCarambolesUitTabel() {
+        if (this.wedstrijd.aantSpelers == 5) {
             this.wedstrijd.teams.forEach(team => {
-                team.teamTsGem = Math.round(1000 * ((team.spelers[0].splTsGem + team.spelers[1].splTsGem) / 2)) / 1000;
-                team.teamTsCar = this.wedstrijd.tsCaramboles;
-                const totGem = team.spelers[0].splTsGem + team.spelers[1].splTsGem;
-                team.spelers[0].splTsCar = Math.round((team.spelers[0].splTsGem / totGem) * team.teamTsCar);
+                team.teamTsMoy = (team.spelers[0].splTsMoy + team.spelers[1].splTsMoy) / 2;
+                team.teamTsCar = this.getAantalCarsFromTabel(team.teamTsMoy);
+                team.teamTsBrt = 0;
+                const ratio = team.spelers[0].splTsMoy / (team.spelers[0].splTsMoy + team.spelers[1].splTsMoy);
+                team.spelers[0].splTsCar = Math.round(ratio * team.teamTsCar);
                 team.spelers[1].splTsCar = team.teamTsCar - team.spelers[0].splTsCar;
+                team.spelers[0].splTsBrt = team.spelers[1].splTsBrt = 0;
             });
         }
         else {
+            this.wedstrijd.spelers.forEach(spl => {
+                spl.splTsCar = this.getAantalCarsFromTabel(spl.splTsMoy);
+                spl.splTsBrt = 0;
+            });
+        }
+    }
+
+    private berekenAantalCaramboles() {
+        if (this.wedstrijd.aantSpelers == 5) {
             this.wedstrijd.teams.forEach(team => {
-                team.teamTsGem = Math.round(1000 * ((team.spelers[0].splTsGem + team.spelers[1].splTsGem) / 2)) / 1000;
-                team.teamTsCar = Math.round(team.teamTsGem * this.wedstrijd.tsBeurten);
-                const totGem = team.spelers[0].splTsGem + team.spelers[1].splTsGem;
-                team.spelers[0].splTsCar = Math.round((team.spelers[0].splTsGem / totGem) * team.teamTsCar);
+                team.teamTsMoy = (team.spelers[0].splTsMoy + team.spelers[1].splTsMoy) / 2;
+                team.teamTsBrt = 0;
+                team.teamTsCar = Math.round(team.teamTsMoy * this.wedstrijd.regels.moyAantBrt);
+                const ratio = team.spelers[0].splTsMoy / (team.spelers[0].splTsMoy + team.spelers[1].splTsMoy);
+                team.spelers[0].splTsCar = Math.round(ratio * team.teamTsCar);
                 team.spelers[1].splTsCar = team.teamTsCar - team.spelers[0].splTsCar;
+                team.spelers[0].splTsBrt = team.spelers[1].splTsBrt = 0;
+            });
+        }
+        else {
+            this.wedstrijd.spelers.forEach(spl => {
+                spl.splTsBrt = 0;
+                spl.splTsCar = Math.round(spl.splTsMoy * this.wedstrijd.regels.moyAantBrt);
             });
         }
     }
 
-    private resetWedstrijd() {
-        if (this.activeLijst == 0) {
-            this.vastBrt.reset();
+    private setVastCarambolesAndBeurten(car: number, brt: number) {
+        if (this.wedstrijd.aantSpelers == 5) {
+            this.wedstrijd.teams.forEach(team => {
+                if (car > 0) {
+                    team.teamTsCar = car;
+                    team.teamTsBrt = 0;
+                    const ratio = team.spelers[0].splTsMoy / (team.spelers[0].splTsMoy + team.spelers[1].splTsMoy);
+                    team.spelers[0].splTsCar = Math.round(ratio * car);
+                    team.spelers[1].splTsCar = car - team.spelers[0].splTsCar;
+                    team.spelers[0].splTsBrt = team.spelers[1].splTsBrt = 0;
+                }
+                else {
+                    team.teamTsBrt = 2 * brt;
+                    team.teamTsCar = 0;
+                    team.spelers.forEach(spl => {
+                        spl.splTsBrt = brt;
+                        spl.splTsCar = 0;
+                    });
+                }
+            });
         }
         else {
-            if (this.subOptieLijst.selectedIdx == 0) {
-                this.vastCar.reset();
-                this.maxBrt.reset();
-            }
-            else {
-                this.gemBrt.reset();
-                this.maxBrt.reset();
-            }
-        }
-        this.validateInput();
-        this.setEscapeCount();
-    }
-
-    private hasWedstrijdChanged() {
-        if (this.activeLijst == 0) {
-            this.wedstrijdChanged = this.vastBrt.hasChanged();
-        }
-        else {
-            if (this.subOptieLijst.selectedIdx == 0) {
-                this.wedstrijdChanged = this.vastCar.hasChanged() || this.maxBrt.hasChanged();
-            }
-            else {
-                this.wedstrijdChanged = this.gemBrt.hasChanged() || this.maxBrt.hasChanged();
-            }
-        }
-        this.setEscapeCount();
-    }
-
-    setEscapeCount() {
-        this.escapeCount = 0;
-        if (this.wedstrijdChanged) {
-            this.escapeCount++;
-        }
-        if (this.activeLijst == 1) {
-            this.escapeCount++;
+            this.wedstrijd.spelers.forEach(spl => {
+                spl.splTsCar = car;
+                spl.splTsBrt = brt;
+            });
         }
     }
 
+    private getAantalCarsFromTabel(moy: number): number {
+        let result = this.moyTabel.minimum;
+        this.moyTabel.moyennes.every(entry => {
+            if (moy >= entry.vanaf) {
+                result = entry.cars;
+                return true;
+            }
+            return false;
+        });
+        return result;
+    }
+
+    private saveWedstrijdEnGaVerder() {
+        this.bssApi.saveWedstrijd(this.wedstrijd)
+        .then(result => {
+            this.router.navigate(['wedstrijd']);
+        })
+        .catch(err => {
+            this.alert.showError(err);
+        });
+
+    }
+
+    private createCompetitieForm() {
+        this.wedstrijdForm = this.fb.nonNullable.group({
+            wedKlasse: [this.wedstrijd.regels.knbbKlasse],
+            wedAantBrt: [this.wedstrijd.regels.vastAantBrt, [Validators.required, Validators.min(1)]],
+            wedAantCar: [this.wedstrijd.regels.vastAantCar, [Validators.required, Validators.min(1)]],
+            wedMaxBrt: [this.wedstrijd.regels.maxBeurten, [Validators.required, Validators.min(0)]],
+            wedMoyBrt: [this.wedstrijd.regels.moyAantBrt, [Validators.required, Validators.min(1)]],
+            wedPntWinst: [this.wedstrijd.telling.winstPunten, [Validators.required, Validators.min(0)]],
+            wedPntGelijk: [this.wedstrijd.telling.gelijkPunten, [Validators.required, Validators.min(0)]],
+            wedPntBovenMoy: [this.wedstrijd.telling.bovenMoyPunten, [Validators.required, Validators.min(0)]],
+            wedIdxRegels: [this.wedstrijd.regels.idxOptie],
+            wedIdxTelling: [this.wedstrijd.telling.idxOptie]
+        });
+        this.enableDisableFields();
+    }
+
+    get wedAantBrt() {
+        return this.wedstrijdForm.get('wedAantBrt');
+    }
+    get wedAantCar() {
+        return this.wedstrijdForm.get('wedAantCar');
+    }
+    get wedMaxBrt() {
+        return this.wedstrijdForm.get('wedMaxBrt');
+    }
+    get wedMoyBrt() {
+        return this.wedstrijdForm.get('wedMoyBrt');
+    }
+    get wedKlasse() {
+        return this.wedstrijdForm.get('wedKlasse');
+    }
+    get wedPntWinst() {
+        return this.wedstrijdForm.get('wedPntWinst');
+    }
+    get wedPntGelijk() {
+        return this.wedstrijdForm.get('wedPntGelijk');
+    }
+    get wedPntBovenMoy() {
+        return this.wedstrijdForm.get('wedPntBovenMoy');
+    }
+    get wedIdxRegels() {
+        return this.wedstrijdForm.get('wedIdxRegels');
+    }
+    get wedIdxTelling() {
+        return this.wedstrijdForm.get('wedIdxTelling');
+    }
 }

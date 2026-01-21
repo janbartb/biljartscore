@@ -38,7 +38,8 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
     menuItemClicked(item: MenuItem) {
         this.menu.selectedIdx = this.menu.getIndex(item);
         console.log('menu item clicked : ' + item.text);
-        this.router.navigate([item.navigateTo]);
+        this.appData.gotoPage(this.router.url, 'wedstrijd');
+        //this.router.navigate([item.navigateTo]);
     }
 
     @HostListener('document:keyup', ['$event'])

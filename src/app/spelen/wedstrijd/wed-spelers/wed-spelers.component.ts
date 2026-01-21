@@ -1,6 +1,5 @@
 import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { BaseComponent } from '../../../base/base.component';
-import { OefWedSpeler, OefWedSpelerStand, OefWedstrijd } from '../../../model/oef-wedstrijd';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { List } from '../../../model/list';
 import { NgClass } from '@angular/common';
@@ -15,6 +14,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { greaterZero, notEmpty } from '../../../directives/validators.directive';
 import { ButtonComponent } from '../../../shared/button-group/button/button.component';
 import { SpeechService } from '../../../services/speech.service';
+import { WedSpeler, WedSpelerStand, Wedstrijd } from '../../../model/wedstrijd';
 
 class SpelerZelfDialog {
     brdNaam: string = '';
@@ -48,9 +48,10 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     activeSection: number = 0;
     verenigingLijst: List<VerenigingKort> = new List<VerenigingKort>();
     spelerLijst: List<SpelerWrapper> = new List<SpelerWrapper>();
+    knbbKlassen: string[] = [];
     verenigingFilter: string = this.appData.getConfig()?.vereniging || '';
-    wedOrig: OefWedstrijd = new OefWedstrijd();
-    wedstrijd: OefWedstrijd = new OefWedstrijd();
+    wedOrig: Wedstrijd = new Wedstrijd();
+    wedstrijd: Wedstrijd = new Wedstrijd();
     spelerZelfDialog: SpelerZelfDialog = new SpelerZelfDialog();
 
     idxActiveTeam: number = -1;
@@ -192,13 +193,13 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         if (!this.spelerZelfForm || !this.spelerZelfForm.valid) {
             return;
         }
-        let speler: OefWedSpeler = this.getWedstrijdSpeler(this.idxActiveSpeler, this.idxActiveTeam);
+        let speler: WedSpeler = this.getWedstrijdSpeler(this.idxActiveSpeler, this.idxActiveTeam);
         speler.splBordNaam = this.brdNaam?.value;
         speler.splSpreekNaam = this.spkNaam?.value;
-        speler.splTsGem = this.moy?.value;
+        speler.splTsMoy = this.moy?.value;
         speler.splId = speler.splBordNaam;
         speler.splNaam = speler.splBordNaam;
-        speler.stand = new OefWedSpelerStand();
+        speler.stand = new WedSpelerStand();
         speler.inBSS = false;
         this.isDialogOpen = false;
         this.setWedstrijdChanged();
@@ -233,15 +234,9 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         }
         console.log(this.wedstrijd);
         if (this.wedstrijdChanged) {
-            this.wedstrijd.wedOver = false;
-            this.wedstrijd.isVastAantBrt = true;
-            this.wedstrijd.isVastAantCar = true;
-            this.wedstrijd.maxBeurten = 0;
-            this.wedstrijd.tsBeurten = 0;
-            this.wedstrijd.tsCaramboles = 0;
-            this.helper.clearWedstrijdResultaten(this.wedstrijd);
+            this.initWedstrijd();
         }
-        this.bssApi.saveOefenWedstrijd(this.wedstrijd)
+        this.bssApi.saveWedstrijd(this.wedstrijd)
         .then(resp => {
             const gotoUrl = this.router.url.replace('spelers', 'config');
             this.router.navigate([gotoUrl]);
@@ -249,6 +244,24 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         .catch(err => {
             this.alert.showError(err);
         });
+    }
+
+    initWedstrijd() {
+        this.wedstrijd.wedGespeeld = false;
+        this.wedstrijd.regels.vastAantBrt = 1;
+        this.wedstrijd.regels.vastAantCar = 1;
+        this.wedstrijd.regels.moyAantBrt = 1;
+        const foundKlasse = this.knbbKlassen.find(klasse => klasse == 'B2');
+        if (foundKlasse) {
+            this.wedstrijd.regels.knbbKlasse = foundKlasse;
+            this.wedstrijd.regels.maxBeurten = 60;
+        }
+        this.wedstrijd.telling.winstPunten = 2;
+        this.wedstrijd.telling.gelijkPunten = 1;
+        this.wedstrijd.telling.bovenMoyPunten = 1;
+        this.wedstrijd.regels.idxOptie = 0;
+        this.wedstrijd.telling.idxOptie = 0;
+        this.helper.clearWedstrijdResultaten(this.wedstrijd);
     }
 
     maakSpelerActief(idxSpl: number, idxTeam?: number) {
@@ -375,7 +388,8 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         Promise.all([
             this.bssApi.getVerenigingenKort(),
             this.bssApi.getSpelersLijst(this.spelId),
-            this.bssApi.getOefenWedstrijd()
+            this.bssApi.getWedstrijd(),
+            this.bssApi.getMoyenneKlassenLijst(this.spelId)
         ])
         .then(results => {
             let verenigingen = results[0];
@@ -398,7 +412,8 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
             if (this.wedOrig.aantSpelers == 0) {
                 this.router.navigate(['wedstrijd/aantspl']);
                 return;
-            } 
+            }
+            this.knbbKlassen = results[3];
             this.resetClicked();
             this.setupScrolling();
         })
@@ -452,7 +467,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
     }
 
     private addSpelerToWedstrijd(spelerToAdd: SpelerWrapper) {
-        let speler: OefWedSpeler = this.getWedstrijdSpeler(this.idxActiveSpeler, this.idxActiveTeam);
+        let speler: WedSpeler = this.getWedstrijdSpeler(this.idxActiveSpeler, this.idxActiveTeam);
         if (speler && speler.splId == spelerToAdd.speler.id) {
             this.maakVolgendeSpelerActief();
             return;
@@ -461,15 +476,15 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         speler.splNaam = spelerToAdd.getNaam();
         speler.splBordNaam = spelerToAdd.speler.bordnaam && spelerToAdd.speler.bordnaam.length ? spelerToAdd.speler.bordnaam : spelerToAdd.speler.vnaam;
         speler.splSpreekNaam = (spelerToAdd.speler.spreeknaam != '') ? spelerToAdd.speler.spreeknaam : speler.splBordNaam;
-        speler.splTsGem = spelerToAdd.getGemiddeldeVanSpel();
-        speler.stand = new OefWedSpelerStand();
+        speler.splTsMoy = spelerToAdd.getGemiddeldeVanSpel();
+        speler.stand = new WedSpelerStand();
         speler.inBSS = true;
         this.setWedstrijdChanged();
         this.maakVolgendeSpelerActief();
         this.setSpelersFilled();
     }
 
-    private getWedstrijdSpeler(idxSpl: number, idxTeam: number): OefWedSpeler {
+    private getWedstrijdSpeler(idxSpl: number, idxTeam: number): WedSpeler {
         if (idxTeam >= 0) {
             return this.wedstrijd.teams[idxTeam].spelers[idxSpl];
         }
@@ -596,7 +611,7 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
         });
     }
 
-    private copyWedstrijd(): OefWedstrijd {
+    private copyWedstrijd(): Wedstrijd {
         return JSON.parse(JSON.stringify(this.wedOrig));
     }
 

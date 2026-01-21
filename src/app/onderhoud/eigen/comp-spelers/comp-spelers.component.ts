@@ -6,7 +6,6 @@ import { List } from '../../../model/list';
 import { SpelerWrapper } from '../../../model/speler';
 import { ActivatedRoute } from '@angular/router';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
-import { Button } from '../../../model/button';
 import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe, NgClass } from '@angular/common';

@@ -1,8 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { OefWedSpeler, OefWedstrijd } from '../../../model/oef-wedstrijd';
 import { BaseComponent } from '../../../base/base.component';
 import { LijstDimensies, ScoreBeurt, ScoreSpeler } from '../../../model/score-beurt';
 import { WedLijstSpelerComponent } from "./wed-lijst-speler/wed-lijst-speler.component";
+import { WedSpeler, Wedstrijd } from '../../../model/wedstrijd';
 
 @Component({
     selector: 'app-wed-lijst',
@@ -12,20 +12,20 @@ import { WedLijstSpelerComponent } from "./wed-lijst-speler/wed-lijst-speler.com
     styleUrl: './wed-lijst.component.css'
 })
 export class WedLijstComponent extends BaseComponent implements OnInit {
-    wedstrijd: OefWedstrijd = new OefWedstrijd();
+    wedstrijd: Wedstrijd = new Wedstrijd();
     spelerLijsten: ScoreSpeler[] = [];
-    spelers: OefWedSpeler[] = [];
+    spelers: WedSpeler[] = [];
     dataReady: boolean = false;
     dim: LijstDimensies = new LijstDimensies();
 
     fillScoreLijsten(): void {
         this.dim.maxBrt = 100;
-        if (this.wedstrijd.isVastAantBrt) {
-            this.dim.maxBrt = this.wedstrijd.tsBeurten;
+        if (this.wedstrijd.regels.idxOptie == 1) {
+            this.dim.maxBrt = this.wedstrijd.regels.vastAantBrt;
         }
         else {
-            if (this.wedstrijd.maxBeurten > 0) {
-                this.dim.maxBrt = this.wedstrijd.maxBeurten;
+            if (this.wedstrijd.regels.maxBeurten > 0) {
+                this.dim.maxBrt = this.wedstrijd.regels.maxBeurten;
             }
         }
         this.bepaalDimensies();
@@ -40,7 +40,7 @@ export class WedLijstComponent extends BaseComponent implements OnInit {
         this.spelers.forEach(spl => {
             let scoreSpeler = new ScoreSpeler();
             scoreSpeler.naam = spl.splBordNaam;
-            scoreSpeler.tsCar = this.wedstrijd.isVastAantBrt ? 0 : this.wedstrijd.isVastAantCar ? this.wedstrijd.tsCaramboles : spl.splTsCar;
+            scoreSpeler.tsCar = spl.splTsCar;
             scoreSpeler.dim = this.dim;
             let totaal = 0;
             for (let i = 0; i < this.dim.totBrt; i++) {
@@ -72,7 +72,7 @@ export class WedLijstComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.bssApi.getOefenWedstrijd()
+        this.bssApi.getWedstrijd()
         .then(resp => {
             if (resp.gevonden) {
                 this.wedstrijd = resp.wedstrijd;

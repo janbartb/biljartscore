@@ -1,7 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { OefWedTeam } from '../../../model/oef-wedstrijd';
 import { FormsModule } from '@angular/forms';
+import { WedTeam } from '../../../model/wedstrijd';
 
 @Component({
     selector: 'app-team',
@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
     styleUrl: './team.component.css'
 })
 export class TeamComponent {
-    @Input() team: OefWedTeam = new OefWedTeam(0, '');
+    @Input() team: WedTeam = new WedTeam();
     @Output() teamNaamChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     keyupTeamNaam() {

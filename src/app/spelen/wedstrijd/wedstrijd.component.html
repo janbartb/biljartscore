@@ -6,20 +6,26 @@
         </div>
         <div class="flexbox flexcenter">
             <div style="padding: .5em 0; color: gray;">
-                @if (wedstrijd.isVastAantBrt) {
-                    <span>Iedere speler speelt <span class="label">{{wedstrijd.tsBeurten}}</span> beurten</span>
+                @if (wedstrijd.regels.idxOptie == 1) {
+                    <span>Iedere speler speelt <span class="label">{{wedstrijd.regels.vastAantBrt}}</span> beurten</span>
                 }
-                @else if (wedstrijd.isVastAantCar) {
-                    <span>Iedere speler speelt <span class="label">{{wedstrijd.tsCaramboles}}</span> caramboles</span>
+                @else if (wedstrijd.regels.idxOptie == 2) {
+                    <span>{{wedstrijd.aantSpelers == 5 ? 'Ieder team' : 'Iedere speler'}} speelt <span class="label">{{wedstrijd.regels.vastAantCar}}</span> caramboles</span>
                     <br>
-                    <span>Maximum aantal beurten: </span>
-                    <span class="label">{{wedstrijd.maxBeurten == 0 ? 'geen maximum' : wedstrijd.maxBeurten}}</span>
+                    <span>Maximum aantal beurten per speler: </span>
+                    <span class="label">{{wedstrijd.regels.maxBeurten == 0 ? 'geen maximum' : wedstrijd.regels.maxBeurten}}</span>
+                }
+                @else if (wedstrijd.regels.idxOptie == 3) {
+                    <span>Aantal caramboles op basis van gemiddelde {{wedstrijd.aantSpelers == 5 ? 'team' : 'speler'}} en <span class="label">{{wedstrijd.regels.moyAantBrt}}</span> beurten</span>
+                    <br>
+                    <span>Maximum aantal beurten per speler: </span>
+                    <span class="label">{{wedstrijd.regels.maxBeurten == 0 ? 'geen maximum' : wedstrijd.regels.maxBeurten}}</span>
                 }
                 @else {
-                    <span>Aantal caramboles op basis van gemiddelde en <span class="label">{{wedstrijd.tsBeurten}}</span> beurten</span>
+                    <span>Aantal caramboles {{wedstrijd.aantSpelers == 5 ? 'teams' : 'spelers'}} op basis van KNBB moyenne tabel</span>
                     <br>
-                    <span>Maximum aantal beurten: </span>
-                    <span class="label">{{wedstrijd.maxBeurten == 0 ? 'geen maximum' : wedstrijd.maxBeurten}}</span>
+                    <span>Maximum aantal beurten per speler: </span>
+                    <span class="label">{{wedstrijd.regels.maxBeurten == 0 ? 'geen maximum' : wedstrijd.regels.maxBeurten}}</span>
                 }
             </div>
         </div>

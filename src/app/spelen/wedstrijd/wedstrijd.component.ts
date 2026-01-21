@@ -1,12 +1,12 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { BaseComponent } from '../../base/base.component';
-import { OefWedstrijd } from '../../model/oef-wedstrijd';
 import { HelperService } from '../../services/helper.service';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { SpelerComponent } from '../../shared/wedstrijd/speler/speler.component';
 import { TeamComponent } from "../../shared/wedstrijd/team/team.component";
 import { Button } from '../../model/button';
 import { ButtonComponent } from '../../shared/button-group/button/button.component';
+import { Wedstrijd } from '../../model/wedstrijd';
 
 @Component({
     selector: 'app-wedstrijd',
@@ -23,7 +23,7 @@ import { ButtonComponent } from '../../shared/button-group/button/button.compone
 export class WedstrijdComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
 
-    wedstrijd: OefWedstrijd = new OefWedstrijd();
+    wedstrijd: Wedstrijd = new Wedstrijd();
     namesValid: boolean = true;
     wedGestart: boolean = false;
 
@@ -65,15 +65,15 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
             this.helper.clearWedstrijdStanden(this.wedstrijd);
             if (this.wedstrijd.teams.length) {
                 this.wedstrijd.teams.forEach(team => {
-                    team.active = false;
-                    team.spelers.forEach(spl => spl.active = false);
+                    team.actief = false;
+                    team.spelers.forEach(spl => spl.actief = false);
                 });
-                this.wedstrijd.teams[0].active = true;
-                this.wedstrijd.teams[0].spelers[0].active = true;
+                this.wedstrijd.teams[0].actief = true;
+                this.wedstrijd.teams[0].spelers[0].actief = true;
             }
             else {
-                this.wedstrijd.spelers.forEach(spl => spl.active = false);
-                this.wedstrijd.spelers[0].active = true;
+                this.wedstrijd.spelers.forEach(spl => spl.actief = false);
+                this.wedstrijd.spelers[0].actief = true;
             }
             this.naarScorebord();
         }
@@ -165,13 +165,14 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.bssApi.getOefenWedstrijd()
+        this.bssApi.getWedstrijd()
         .then(resp => {
             if (!resp.gevonden) {
                 this.router.navigate(['wedstrijd/aantspl']);
                 return;
             }
             this.wedstrijd = resp.wedstrijd;
+            console.log(this.wedstrijd);
             if (!this.helper.areWedstrijdSpelersFilled(this.wedstrijd)) {
                 this.router.navigate(['wedstrijd/aantspl']);
                 return;
@@ -181,14 +182,15 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
                 return;
             }
             console.log(this.wedstrijd);
+            this.namesValid = true;
             this.wedGestart = this.isWedstrijdGestart();
             if (!this.wedGestart) {
                 if (this.wedstrijd.teams.length) {
-                    this.wedstrijd.teams[0].active = true;
-                    this.wedstrijd.teams[0].spelers[0].active = true;
+                    this.wedstrijd.teams[0].actief = true;
+                    this.wedstrijd.teams[0].spelers[0].actief = true;
                 }
                 else {
-                    this.wedstrijd.spelers[0].active = true;
+                    this.wedstrijd.spelers[0].actief = true;
                 }
                 this.enterButton.text = 'Start wedstrijd';
             }
@@ -201,53 +203,53 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
         });
     }
 
-    private aanvullenTeamEnSpelerData() {
-        this.wedstrijd.teams.forEach(team => {
-            team.teamTsGem = Math.round(1000 * ((team.spelers[0].splTsGem + team.spelers[1].splTsGem) / 2)) / 1000;
-        });
-        if (this.wedstrijd.isVastAantBrt) {
-            this.wedstrijd.teams.forEach(team => {
-                team.teamTsBrt = 2 * this.wedstrijd.tsBeurten;
-                team.spelers.forEach(spl => {
-                    spl.splTsBrt = this.wedstrijd.tsBeurten;
-                });
-            });
-            this.wedstrijd.spelers.forEach(spl => {
-                spl.splTsBrt = this.wedstrijd.tsBeurten;
-            });
-        }
-        else {
-            if (this.wedstrijd.isVastAantCar) {
-                this.wedstrijd.teams.forEach(team => {
-                    team.teamTsCar = 2 * this.wedstrijd.tsCaramboles;
-                    team.spelers.forEach(spl => {
-                        spl.splTsCar = this.wedstrijd.tsCaramboles;
-                    });
-                });
-                this.wedstrijd.spelers.forEach(spl => {
-                    spl.splTsCar = this.wedstrijd.tsCaramboles;
-                });
-            }
-            else {
-                this.wedstrijd.teams.forEach(team => {
-                    team.spelers.forEach(spl => {
-                        spl.splTsCar = Math.round(this.wedstrijd.tsBeurten * spl.splTsGem);
-                    });
-                    team.teamTsCar = team.spelers[0].splTsCar + team.spelers[1].splTsCar;
-                });
-                this.wedstrijd.spelers.forEach(spl => {
-                    spl.splTsCar = Math.round(this.wedstrijd.tsBeurten * spl.splTsGem);
-                });
-            }
-        }
-        if (this.wedstrijd.teams.length) {
-            this.wedstrijd.teams[0].active = true;
-            this.wedstrijd.teams[0].spelers[0].active = true;
-        }
-        else {
-            this.wedstrijd.spelers[0].active = true;
-        }
-    }
+    // private aanvullenTeamEnSpelerData() {
+    //     this.wedstrijd.teams.forEach(team => {
+    //         team.teamTsMoy = Math.round(1000 * ((team.spelers[0].splTsMoy + team.spelers[1].splTsMoy) / 2)) / 1000;
+    //     });
+    //     if (this.wedstrijd.regels.idxOptie == 1) {
+    //         this.wedstrijd.teams.forEach(team => {
+    //             team.teamTsBrt = 2 * this.wedstrijd.regels.vastAantBrt;
+    //             team.spelers.forEach(spl => {
+    //                 spl.splTsBrt = this.wedstrijd.regels.vastAantBrt;
+    //             });
+    //         });
+    //         this.wedstrijd.spelers.forEach(spl => {
+    //             spl.splTsBrt = this.wedstrijd.regels.vastAantBrt;
+    //         });
+    //     }
+    //     else {
+    //         if (this.wedstrijd.regels.idxOptie == 2) {
+    //             this.wedstrijd.teams.forEach(team => {
+    //                 team.teamTsCar = 2 * this.wedstrijd.regels.vastAantCar;
+    //                 team.spelers.forEach(spl => {
+    //                     spl.splTsCar = this.wedstrijd.regels.vastAantCar;
+    //                 });
+    //             });
+    //             this.wedstrijd.spelers.forEach(spl => {
+    //                 spl.splTsCar = this.wedstrijd.regels.vastAantCar;
+    //             });
+    //         }
+    //         else {
+    //             this.wedstrijd.teams.forEach(team => {
+    //                 team.spelers.forEach(spl => {
+    //                     spl.splTsCar = Math.round(this.wedstrijd.regels.moyAantBrt * spl.splTsMoy);
+    //                 });
+    //                 team.teamTsCar = team.spelers[0].splTsCar + team.spelers[1].splTsCar;
+    //             });
+    //             this.wedstrijd.spelers.forEach(spl => {
+    //                 spl.splTsCar = Math.round(this.wedstrijd.regels.moyAantBrt * spl.splTsMoy);
+    //             });
+    //         }
+    //     }
+    //     if (this.wedstrijd.teams.length) {
+    //         this.wedstrijd.teams[0].actief = true;
+    //         this.wedstrijd.teams[0].spelers[0].actief = true;
+    //     }
+    //     else {
+    //         this.wedstrijd.spelers[0].actief = true;
+    //     }
+    // }
 
     private isWedstrijdGestart(): boolean {
         if (this.wedstrijd.teams.length) {
@@ -259,21 +261,46 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
     }
 
     private isWedstrijdConfigOk(): boolean {
-        if (this.wedstrijd.isVastAantBrt) {
-            return this.wedstrijd.tsBeurten > 0;
+        if (this.wedstrijd.regels.idxOptie == 0) {
+            if (this.wedstrijd.regels.knbbKlasse == '') {
+                return false;
+            }
+            if (this.wedstrijd.telling.idxOptie == 1) {
+                return this.isEigenTellingOk();
+            }
+            return true;
+        }
+        else if (this.wedstrijd.regels.idxOptie == 1) {
+            return this.wedstrijd.regels.vastAantBrt > 0;
+        }
+        else if (this.wedstrijd.regels.idxOptie == 2) {
+            if (this.wedstrijd.regels.vastAantCar <= 0) {
+                return false;
+            }
+            if (this.wedstrijd.telling.idxOptie == 1) {
+                return this.isEigenTellingOk();
+            }
+            return true;
         }
         else {
-            if (this.wedstrijd.isVastAantCar) {
-                return this.wedstrijd.tsCaramboles > 0;
+            if (this.wedstrijd.regels.moyAantBrt <= 0) {
+                return false;
             }
-            else {
-                return this.wedstrijd.tsBeurten > 0;
+            if (this.wedstrijd.telling.idxOptie == 1) {
+                return this.isEigenTellingOk();
             }
+            return true;
         }
     }
 
+    private isEigenTellingOk(): boolean {
+        return this.wedstrijd.telling.winstPunten >= 0 &&
+               this.wedstrijd.telling.gelijkPunten >= 0 &&
+               this.wedstrijd.telling.bovenMoyPunten >= 0;
+    }
+
     private naarScorebord() {
-        this.bssApi.saveOefenWedstrijd(this.wedstrijd)
+        this.bssApi.saveWedstrijd(this.wedstrijd)
         .then(resp => {
             this.router.navigate(['wedstrijd/score']);
         })

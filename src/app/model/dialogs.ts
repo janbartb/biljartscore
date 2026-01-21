@@ -2,7 +2,6 @@ import { Button } from "./button";
 import { CmpMatchSpeler } from "./competitie";
 import { MatchSpeler } from "./match";
 import { SpelerWrapper } from "./speler";
-import { OefWedSpeler } from "./oef-wedstrijd";
 import { WedSpeler } from "./wedstrijd";
 import { AnnonSpeler } from "./annonceer";
 
@@ -63,7 +62,7 @@ export class SpelerNamen {
     splBordNaam: string = '';
     splSpreekNaam: string = '';
 
-    constructor(speler: WedSpeler | OefWedSpeler | MatchSpeler | AnnonSpeler | null, cmpSpeler?: CmpMatchSpeler) {
+    constructor(speler: WedSpeler | MatchSpeler | AnnonSpeler | null, cmpSpeler?: CmpMatchSpeler) {
         if (cmpSpeler) {
             this.splId = cmpSpeler.id;
             this.splNaam = cmpSpeler.naam;

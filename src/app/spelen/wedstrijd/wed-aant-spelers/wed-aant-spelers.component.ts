@@ -1,11 +1,11 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { OefWedSpeler, OefWedstrijd, OefWedTeam } from '../../../model/oef-wedstrijd';
 import { List } from '../../../model/list';
 import { BaseComponent } from '../../../base/base.component';
 import { Button } from '../../../model/button';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 import { NgClass } from '@angular/common';
+import { WedSpeler, Wedstrijd, WedTeam } from '../../../model/wedstrijd';
 
 @Component({
     selector: 'app-wed-aant-spelers',
@@ -19,7 +19,7 @@ import { NgClass } from '@angular/common';
     styleUrl: './wed-aant-spelers.component.css'
 })
 export class WedAantSpelersComponent extends BaseComponent implements OnInit {
-    wedstrijd: OefWedstrijd = new OefWedstrijd();
+    wedstrijd: Wedstrijd = new Wedstrijd();
     aantalLijst: List<string> = new List<string>();
     wedstrijdChanged: boolean = false;
 
@@ -90,7 +90,7 @@ export class WedAantSpelersComponent extends BaseComponent implements OnInit {
 
     ngOnInit(): void {
         this.fillAantalLijst();
-        this.bssApi.getOefenWedstrijd()
+        this.bssApi.getWedstrijd()
         .then(resp => {
             if (resp.gevonden) {
                 this.wedstrijd = resp.wedstrijd;
@@ -105,34 +105,36 @@ export class WedAantSpelersComponent extends BaseComponent implements OnInit {
     }
 
     private initWedstrijd(aantSpl: number) {
-        this.wedstrijd = new OefWedstrijd();
+        this.wedstrijd = new Wedstrijd();
         this.wedstrijd.aantSpelers = aantSpl;
         if (this.wedstrijd.aantSpelers == 5) {
-            const team1 = new OefWedTeam(0, 'Team A');
-            team1.spelers.push(new OefWedSpeler(0, 0));
-            team1.spelers.push(new OefWedSpeler(1, 0));
-            const team2 = new OefWedTeam(1, 'Team B');
-            team2.spelers.push(new OefWedSpeler(0, 1));
-            team2.spelers.push(new OefWedSpeler(1, 1));
+            const team1 = new WedTeam();
+            team1.teamNaam = 'Team A';
+            team1.spelers.push(new WedSpeler());
+            team1.spelers.push(new WedSpeler());
+            const team2 = new WedTeam();
+            team2.teamNaam = 'Team B';
+            team2.spelers.push(new WedSpeler());
+            team2.spelers.push(new WedSpeler());
             this.wedstrijd.teams.push(team1);
             this.wedstrijd.teams.push(team2);
         }
         else {
-            this.wedstrijd.spelers.push(new OefWedSpeler(0));
+            this.wedstrijd.spelers.push(new WedSpeler());
             if (this.wedstrijd.aantSpelers > 1) {
-                this.wedstrijd.spelers.push(new OefWedSpeler(1));
+                this.wedstrijd.spelers.push(new WedSpeler());
             }
             if (this.wedstrijd.aantSpelers > 2) {
-                this.wedstrijd.spelers.push(new OefWedSpeler(2));
+                this.wedstrijd.spelers.push(new WedSpeler());
             }
             if (this.wedstrijd.aantSpelers > 3) {
-                this.wedstrijd.spelers.push(new OefWedSpeler(3));
+                this.wedstrijd.spelers.push(new WedSpeler());
             }
         }
     }
 
     private saveWedstrijdAndContinue() {
-        this.bssApi.saveOefenWedstrijd(this.wedstrijd)
+        this.bssApi.saveWedstrijd(this.wedstrijd)
         .then(resp => {
             this.router.navigate(['wedstrijd/spelers']);
         })

@@ -1,11 +1,11 @@
 import { ElementRef, inject, Injectable } from '@angular/core';
-import { OefWedSpelerStand, OefWedstrijd, OefWedTeamStand } from '../model/oef-wedstrijd';
 import { Match, TeamMatch } from '../model/match';
 import { AlertService } from './alert.service';
 import { KnbbCompetitie } from '../model/knbb-competitie';
 import { Team, Vereniging } from '../model/vereniging';
 import { CompetitieMatch } from '../model/competitie';
 import { DecimalPipe } from '@angular/common';
+import { WedSpelerStand, Wedstrijd } from '../model/wedstrijd';
 
 @Injectable({
     providedIn: 'root'
@@ -79,7 +79,7 @@ export class HelperService {
         return !result ? '' : result;
     }
 
-    areWedstrijdSpelersFilled(wedstrijd: OefWedstrijd): boolean {
+    areWedstrijdSpelersFilled(wedstrijd: Wedstrijd): boolean {
         if (wedstrijd.aantSpelers == 0) {
             return false;
         }
@@ -96,75 +96,41 @@ export class HelperService {
         return toCheck.filter((value, index, self) => self.indexOf(value) === index).length === toCheck.length;
     }
 
-    clearWedstrijdStanden(wedstrijd: OefWedstrijd) {
-        wedstrijd.wedOver = false;
-        wedstrijd.idxTeam = -1;
-        wedstrijd.idxSpeler = -1;
+    clearWedstrijdStanden(wedstrijd: Wedstrijd) {
+        wedstrijd.wedGespeeld = false;
         wedstrijd.teams.forEach((team, idxT) => {
-            team.active = idxT == 0;
+            team.actief = idxT == 0;
             team.metWit = idxT == 0;
-            team.stand = new OefWedTeamStand();
+            team.stand = new WedSpelerStand();
             team.spelers.forEach((spl, idxS) => {
-                spl.active = idxT == 0 && idxS == 0;
+                spl.actief = idxT == 0 && idxS == 0;
                 spl.metWit = idxT == 0;
-                spl.stand = new OefWedSpelerStand();
+                spl.stand = new WedSpelerStand();
             });
         });
         wedstrijd.spelers.forEach((spl, idx) => {
-            spl.active = idx == 0;
+            spl.actief = idx == 0;
             spl.metWit = idx % 2 == 0;
-            spl.stand = new OefWedSpelerStand();
+            spl.stand = new WedSpelerStand();
         });
     }
 
-    clearWedstrijdResultaten(wedstrijd: OefWedstrijd) {
-        wedstrijd.wedOver = false;
-        wedstrijd.idxTeam = -1;
-        wedstrijd.idxSpeler = -1;
+    clearWedstrijdResultaten(wedstrijd: Wedstrijd) {
+        wedstrijd.wedGespeeld = false;
         wedstrijd.teams.forEach((team, idxT) => {
-            team.active = idxT == 0;
+            team.actief = idxT == 0;
             team.metWit = idxT == 0;
-            if (wedstrijd.isVastAantBrt) {
-                team.teamTsCar = 0;
-            }
-            if (wedstrijd.isVastAantCar) {
-                team.teamTsBrt = 0;
-            }
-            if (!(wedstrijd.isVastAantBrt || wedstrijd.isVastAantCar)) {
-                team.teamTsCar = 0;
-                team.teamTsBrt = 0;
-            }
-            team.stand = new OefWedTeamStand();
+            team.stand = new WedSpelerStand();
             team.spelers.forEach((spl, idxS) => {
-                spl.active = idxT == 0 && idxS == 0;
+                spl.actief = idxT == 0 && idxS == 0;
                 spl.metWit = idxT == 0;
-                if (wedstrijd.isVastAantBrt) {
-                    spl.splTsCar = 0;
-                }
-                if (wedstrijd.isVastAantCar) {
-                    spl.splTsBrt = 0;
-                }
-                if (!(wedstrijd.isVastAantBrt || wedstrijd.isVastAantCar)) {
-                    spl.splTsCar = 0;
-                    spl.splTsBrt = 0;
-                }
-                spl.stand = new OefWedSpelerStand();
+                spl.stand = new WedSpelerStand();
             });
         });
         wedstrijd.spelers.forEach((spl, idx) => {
-            spl.active = idx == 0;
+            spl.actief = idx == 0;
             spl.metWit = idx % 2 == 0;
-            if (wedstrijd.isVastAantBrt) {
-                spl.splTsCar = 0;
-            }
-            if (wedstrijd.isVastAantCar) {
-                spl.splTsBrt = 0;
-            }
-            if (!(wedstrijd.isVastAantBrt || wedstrijd.isVastAantCar)) {
-                spl.splTsCar = 0;
-                spl.splTsBrt = 0;
-            }
-            spl.stand = new OefWedSpelerStand();
+            spl.stand = new WedSpelerStand();
         });
     }
 

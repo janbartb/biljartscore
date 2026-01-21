@@ -8,7 +8,6 @@ import { MoyenneTabel } from '../model/moyenne-tabel';
 import { District } from '../model/district';
 import { KnbbCompetitie } from '../model/knbb-competitie';
 import { Seizoenen } from '../model/seizoenen';
-import { OefWedstrijd, OefWedstrijdLeesResultaat } from '../model/oef-wedstrijd';
 import { Match, MatchLeesResultaat, TeamMatch, TeamMatchLeesResultaat } from '../model/match';
 import { StatusService } from './status.service';
 import { BpCompetitie, BpDistrict, BpMoyTabel, CompTemp, TeamPageData } from '../model/bpoint';
@@ -265,11 +264,6 @@ export class ApiService {
 
     async getWedstrijd(): Promise<WedstrijdLeesResultaat> {
         const result: WedstrijdLeesResultaat = await this.getResource(this.apiUrl + `/wedstrijd`);
-        return result;
-    }
-
-    async getOefenWedstrijd(): Promise<OefWedstrijdLeesResultaat> {
-        const result: OefWedstrijdLeesResultaat = await this.getResource(this.apiUrl + `/wedstrijd`);
         return result;
     }
 
@@ -692,21 +686,6 @@ export class ApiService {
     // WEDSTRIJD
 
     async saveWedstrijd(wedstrijd: Wedstrijd): Promise<ApiResponse> {
-        const response: Response = await fetch(this.apiUrl + `/wedstrijd`, {
-            method: 'POST',
-            body: JSON.stringify(wedstrijd),
-            headers: this.myHeaders
-        });
-        const json: ApiResponse = await response.json();
-        if (!response.ok) {
-            throw new Error(json.message);
-        }
-        return json;
-    }
-
-    // OEFEN WEDSTRIJD
-
-    async saveOefenWedstrijd(wedstrijd: OefWedstrijd): Promise<ApiResponse> {
         const response: Response = await fetch(this.apiUrl + `/wedstrijd`, {
             method: 'POST',
             body: JSON.stringify(wedstrijd),

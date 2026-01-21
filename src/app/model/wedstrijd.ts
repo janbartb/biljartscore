@@ -64,6 +64,7 @@ export class WedSpeler {
     teamTsCar: number = 0;
     teamAantCar: number = 0;
     teamMaxCar: number = 0;
+    inBSS: boolean = true;
 }
 
 export class WedSpelerStand {

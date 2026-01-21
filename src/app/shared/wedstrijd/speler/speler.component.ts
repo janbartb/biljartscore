@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { OefWedSpeler } from '../../../model/oef-wedstrijd';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
+import { WedSpeler } from '../../../model/wedstrijd';
 
 @Component({
     selector: 'app-speler',
@@ -14,7 +14,7 @@ import { DecimalPipe } from '@angular/common';
     styleUrl: './speler.component.css'
 })
 export class SpelerComponent {
-    @Input() speler: OefWedSpeler = new OefWedSpeler(0);
+    @Input() speler: WedSpeler = new WedSpeler();
     @Output() bordNaamChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     keyupBordNaam() {
