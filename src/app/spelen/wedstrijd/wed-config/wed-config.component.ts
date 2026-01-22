@@ -9,6 +9,7 @@ import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/
 import { ActivatedRoute } from '@angular/router';
 import { Wedstrijd } from '../../../model/wedstrijd';
 import { MoyenneTabel } from '../../../model/moyenne-tabel';
+import { HelperService } from '../../../services/helper.service';
 
 @Component({
     selector: 'app-wed-config',
@@ -26,44 +27,70 @@ import { MoyenneTabel } from '../../../model/moyenne-tabel';
 export class WedConfigComponent extends BaseComponent implements OnInit {
     route = inject(ActivatedRoute);
     fb = inject(FormBuilder);
+    helper = inject(HelperService);
     title: string = 'Wedstrijd spelen';
     subtitle: string = 'Oefen wedstrijd - instellingen';
     wedstrijd: Wedstrijd = new Wedstrijd();
-    wedstrijdOk: boolean = false;
     regelOpties: string[] = [];
     telOpties: string[] = [];
     knbbKlassen: string[] = [];
     moyTabel: MoyenneTabel = new MoyenneTabel();
+    gewijzigd: boolean = false;
+    configOk: boolean = true;
 
     buttons: Button[] = [
-        new Button('Enter', 'Opslaan', true)
+        new Button('Enter', 'Naar wedstrijd', true),
+        new Button('Enter', 'Opslaan en naar wedstrijd', true)
     ];
 
-    wedstrijdForm!: FormGroup;
+    configForm!: FormGroup;
+
+    override escapePressed(): void {
+        if (this.escapeCount == 1) {
+            this.createConfigForm();
+            this.gewijzigd = false;
+            this.configOk = true;
+            this.escapeCount = 0;
+            return;
+        }
+        this.previousPressed();
+    }
+
+    override previousPressed(): void {
+        this.router.navigate(['wedstrijd/spelers']);
+    }
 
     buttonPressed(button: Button) {
-        if (button.key == 'Enter') { 
-            if (!this.wedstrijdOk) {
-                return;
-            }
+        if (!this.configForm || !this.configForm.valid) {
+            return;
+        }
+        this.checkInput();
+        if (!this.configOk) {
+            return;
         }
         button.selected = true;
         setTimeout(() => {
             button.selected = false;
-            if (button.key == 'Enter') {
-                this.buttonClicked(0);
-            }
+            this.buttonClicked(button.text.includes('Opslaan') ? 1 : 0);
         }, 300);
     }
 
     buttonClicked(idx: number) {
         if (idx == 0) {
+            this.gaVerderClicked();
+        }
+        else {
             this.opslaanClicked();
         }
     }
 
     opslaanClicked() {
+        this.helper.clearWedstrijdStanden(this.wedstrijd);
         this.fillWedstrijdFromFormAndSave();
+    }
+
+    gaVerderClicked() {
+        this.router.navigate(['wedstrijd']);
     }
 
     regelOptieClicked(idx: number) {
@@ -71,14 +98,23 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         if (idx == 0) {
             this.wedMaxBrt?.setValue(60);
         }
-        else if (idx == 1) {
+        else {
             this.wedMaxBrt?.setValue(0);
         }
         this.enableDisableFields();
+        this.checkInput();
+        this.setGewijzigd();
     }
 
     telOptieClicked(idx: number) {
         this.wedIdxTelling?.setValue(idx);
+        this.checkInput();
+        this.setGewijzigd();
+    }
+
+    checkInput() {
+        this.setGewijzigd();
+        this.configOk = this.inputOk();
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -88,7 +124,12 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (event.key === 'Enter') {
-            this.buttonPressed(this.buttons[0]);
+            if (this.gewijzigd) {
+                this.buttonPressed(this.buttons[1]);
+            }
+            else {
+                this.buttonPressed(this.buttons[0]);
+            }
             return false;
         }
         if (event.key === 'Escape') {
@@ -116,7 +157,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
                 return;
             } 
             this.knbbKlassen = results[1];
-            this.createCompetitieForm();
+            this.createConfigForm();
             if (this.wedstrijd.aantSpelers == 5) {
                 this.regelOpties.push('Aantal caramboles teams o.b.v. KNBB tabel driebanden klein, klasse');
                 this.regelOpties.push('Vast aantal beurten voor iedere speler');
@@ -138,24 +179,52 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         });
     }
 
-    initWedstrijd() {
-        this.wedstrijd.regels.vastAantBrt = 1;
-        this.wedstrijd.regels.vastAantCar = 1;
-        this.wedstrijd.regels.moyAantBrt = 1;
-        const foundKlasse = this.knbbKlassen.find(klasse => klasse == 'B2');
-        if (foundKlasse) {
-            this.wedstrijd.regels.knbbKlasse = foundKlasse;
-            this.wedstrijd.regels.maxBeurten = 60;
+    private setGewijzigd() {
+        this.gewijzigd = this.wedIdxRegels?.value != this.wedstrijd.regels.idxOptie ||
+                        this.wedKlasse?.value != this.wedstrijd.regels.knbbKlasse ||
+                        this.wedAantBrt?.value != this.wedstrijd.regels.vastAantBrt ||
+                        this.wedAantCar?.value != this.wedstrijd.regels.vastAantCar ||
+                        this.wedMoyBrt?.value != this.wedstrijd.regels.moyAantBrt ||
+                        this.wedMaxBrt?.value != this.wedstrijd.regels.maxBeurten ||
+                        this.wedIdxTelling?.value != this.wedstrijd.telling.idxOptie ||
+                        this.wedPntWinst?.value != this.wedstrijd.telling.winstPunten ||
+                        this.wedPntGelijk?.value != this.wedstrijd.telling.gelijkPunten ||
+                        this.wedPntBovenMoy?.value != this.wedstrijd.telling.bovenMoyPunten
+        this.escapeCount = this.gewijzigd ? 1 : 0;
+    }
+
+    private inputOk(): boolean {
+        let result = false;
+        if (this.wedIdxRegels?.value == 0) {
+            if (this.wedKlasse?.value == '') {
+                return false;
+            }
         }
-        this.wedstrijd.telling.winstPunten = 2;
-        this.wedstrijd.telling.gelijkPunten = 1;
-        this.wedstrijd.telling.bovenMoyPunten = 1;
-        this.wedstrijd.regels.idxOptie = 0;
-        this.wedstrijd.telling.idxOptie = 0;
+        else if (this.wedIdxRegels?.value == 1) {
+            if (this.wedAantBrt?.value <= 0) {
+                return false;
+            }
+        }
+        else if (this.wedIdxRegels?.value == 2) {
+            if (this.wedAantCar?.value <= 0) {
+                return false;
+            }
+        }
+        else if (this.wedIdxRegels?.value == 3) {
+            if (this.wedMoyBrt?.value <= 0) {
+                return false;
+            }
+        }
+        if (this.wedIdxTelling?.value == 1) {
+            if (this.wedPntWinst?.value < 0 || this.wedPntGelijk?.value < 0 || this.wedPntBovenMoy?.value < 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private enableDisableFields() {
-        if (!this.wedstrijdForm) {
+        if (!this.configForm) {
             return;
         }
         if (this.wedIdxRegels?.value == 0) {
@@ -340,8 +409,8 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
 
     }
 
-    private createCompetitieForm() {
-        this.wedstrijdForm = this.fb.nonNullable.group({
+    private createConfigForm() {
+        this.configForm = this.fb.nonNullable.group({
             wedKlasse: [this.wedstrijd.regels.knbbKlasse],
             wedAantBrt: [this.wedstrijd.regels.vastAantBrt, [Validators.required, Validators.min(1)]],
             wedAantCar: [this.wedstrijd.regels.vastAantCar, [Validators.required, Validators.min(1)]],
@@ -353,37 +422,40 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             wedIdxRegels: [this.wedstrijd.regels.idxOptie],
             wedIdxTelling: [this.wedstrijd.telling.idxOptie]
         });
+        this.configForm.valueChanges.subscribe(val => {
+            this.checkInput();
+        })
         this.enableDisableFields();
     }
 
     get wedAantBrt() {
-        return this.wedstrijdForm.get('wedAantBrt');
+        return this.configForm.get('wedAantBrt');
     }
     get wedAantCar() {
-        return this.wedstrijdForm.get('wedAantCar');
+        return this.configForm.get('wedAantCar');
     }
     get wedMaxBrt() {
-        return this.wedstrijdForm.get('wedMaxBrt');
+        return this.configForm.get('wedMaxBrt');
     }
     get wedMoyBrt() {
-        return this.wedstrijdForm.get('wedMoyBrt');
+        return this.configForm.get('wedMoyBrt');
     }
     get wedKlasse() {
-        return this.wedstrijdForm.get('wedKlasse');
+        return this.configForm.get('wedKlasse');
     }
     get wedPntWinst() {
-        return this.wedstrijdForm.get('wedPntWinst');
+        return this.configForm.get('wedPntWinst');
     }
     get wedPntGelijk() {
-        return this.wedstrijdForm.get('wedPntGelijk');
+        return this.configForm.get('wedPntGelijk');
     }
     get wedPntBovenMoy() {
-        return this.wedstrijdForm.get('wedPntBovenMoy');
+        return this.configForm.get('wedPntBovenMoy');
     }
     get wedIdxRegels() {
-        return this.wedstrijdForm.get('wedIdxRegels');
+        return this.configForm.get('wedIdxRegels');
     }
     get wedIdxTelling() {
-        return this.wedstrijdForm.get('wedIdxTelling');
+        return this.configForm.get('wedIdxTelling');
     }
 }

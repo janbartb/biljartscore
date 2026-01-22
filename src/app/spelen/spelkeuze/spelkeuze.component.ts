@@ -38,8 +38,8 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
     menuItemClicked(item: MenuItem) {
         this.menu.selectedIdx = this.menu.getIndex(item);
         console.log('menu item clicked : ' + item.text);
-        this.appData.gotoPage(this.router.url, 'wedstrijd');
-        //this.router.navigate([item.navigateTo]);
+        //this.appData.gotoPage(this.router.url, item.navigateTo);
+        this.router.navigate([item.navigateTo]);
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -97,7 +97,7 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
         this.menu.addItem(new MenuItem('1', 'KNBB competitie team match', 'teammatch'));
         this.menu.addItem(new MenuItem('2', 'KNBB competitie single match', 'match'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('3', 'Oefen wedstrijd', 'wedstrijd/aantspl'));
+        this.menu.addItem(new MenuItem('3', 'Oefen wedstrijd', 'wedstrijd'));
         this.menu.addItem(new MenuItem('4', 'Pentathlon / Annonceren', 'annon'));
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('5', 'Eigen competitie', 'eigencomps'));

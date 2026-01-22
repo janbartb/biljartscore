@@ -5,8 +5,8 @@
                     (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
         </div>
         <div class="flexgrow1">
-            @if (wedstrijdForm) {
-                <form [formGroup]="wedstrijdForm" class="fullheight flexbox flexstretch">
+            @if (configForm) {
+                <form [formGroup]="configForm" class="fullheight flexbox flexstretch">
                     <div class="flex35perc" style="border-right: .25em solid green;">
                         <app-section-header [title]="'Spelers'" [cssClasses]="'w3-green-l2 font100'"></app-section-header>
                         <div class="flexbox flexcenter" style="padding: 1em 2em;">
@@ -165,7 +165,9 @@
                 </form>
             }
         </div>
-        <app-section-footer-btns [buttons]="buttons" (clickedButton)="buttonClicked($event)" 
+        <app-section-footer-btns [buttons]="buttons" [btnsHide]="[gewijzigd, !gewijzigd]"
+                    [btnsDisabled]="[!configForm || !configForm.valid || !configOk, !configForm || !configForm.valid || !configOk]" 
+                    (clickedButton)="buttonClicked($event)" 
                     [cssFooter]="'w3-green-bdr'" [cssButtons]="'font125'"></app-section-footer-btns>
     </div>
 </div>
