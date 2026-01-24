@@ -90,7 +90,12 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     }
 
     gaVerderClicked() {
-        this.router.navigate(['wedstrijd']);
+        if (!this.isSpelerDataGevuld()) {
+            this.opslaanClicked();
+        }
+        else {
+            this.router.navigate(['wedstrijd']);
+        }
     }
 
     regelOptieClicked(idx: number) {
@@ -177,6 +182,15 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         .catch(err => {
             this.alert.showError(err);
         });
+    }
+
+    private isSpelerDataGevuld(): boolean {
+        if (this.wedstrijd.aantSpelers == 5) {
+            return this.wedstrijd.teams[0].teamTsCar > 0 || this.wedstrijd.teams[0].teamTsBrt > 0;
+        }
+        else {
+            return this.wedstrijd.spelers[0].splTsCar > 0 || this.wedstrijd.spelers[0].splTsBrt > 0;
+        }
     }
 
     private setGewijzigd() {

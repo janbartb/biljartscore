@@ -12,14 +12,15 @@
                         <div class="flexbox flexcenter" style="padding: 1em 2em;">
                             <div style="text-align: center;">
                                 @if (wedstrijd.aantSpelers == 5) {
+                                    <span style="color: green;">Team A</span><br>
                                     @for (spl of wedstrijd.teams[0].spelers; track $index) {
                                         <span>{{spl.splNaam}}</span><br>
                                     }
                                     <br>
+                                    <span style="color: green;">Team B</span><br>
                                     @for (spl of wedstrijd.teams[1].spelers; track $index) {
                                         <span>{{spl.splNaam}}</span><br>
                                     }
-
                                 }
                                 @else {
                                     @for (spl of wedstrijd.spelers; track $index) {
