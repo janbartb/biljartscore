@@ -1,10 +1,10 @@
-<div class="flexbox flexright getal-container" [style.width]="getalWidth + 'em'">
+<div class="flexbox flexright getal-container" [ngClass]="{'arial-nw': narrow}" [style.width]="getalWidth + 'em'">
     @for (cijfer of cijfers; track $index) {
         @if (cijfer == ',') {
-            <div class="komma"><span>,</span></div>
+            <div class="komma" [style.width]="kommaWidth + 'em'"><span>,</span></div>
         }
         @else {
-            <app-cijfer [cijfer]="cijfer" [moveUp]="moveUp"></app-cijfer>
+            <app-cijfer [cijfer]="cijfer" [moveUp]="moveUp" [cijferWidth]="cijferWidth"></app-cijfer>
         }
     }
 </div>

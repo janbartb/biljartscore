@@ -3,6 +3,7 @@
         <div>
             <app-score-team [team]="wedstrijd.teams[0]"
                             [maxBrt]="wedstrijd.regels.maxBeurten"
+                            [isVijfde]="wedstrijd.regels.idxOptie == 4"
                             [position]="'left'"></app-score-team>
             <app-score-wed-spel2 [wedstrijd]="wedstrijd"
                                  [speler]="wedstrijd.teams[0].spelers[0]"
@@ -11,6 +12,7 @@
         <div>
             <app-score-team [team]="wedstrijd.teams[1]"
                             [maxBrt]="wedstrijd.regels.maxBeurten"
+                            [isVijfde]="wedstrijd.regels.idxOptie == 4"
                             [position]="'right'"></app-score-team>
             <app-score-wed-spel2 [wedstrijd]="wedstrijd"
                                  [speler]="wedstrijd.teams[1].spelers[0]"

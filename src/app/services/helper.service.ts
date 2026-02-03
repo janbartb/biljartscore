@@ -84,9 +84,18 @@ export class HelperService {
             return false;
         }
         if (wedstrijd.aantSpelers == 5) {
+            if (wedstrijd.teams.length == 0) {
+                return false;
+            }
             return wedstrijd.teams.every(team => {
+                if (team.spelers.length == 0) {
+                    return false;
+                }
                 return team.spelers.every(spl => spl.splId != '');
             });
+        }
+        if (wedstrijd.spelers.length == 0) {
+            return false;
         }
         return wedstrijd.spelers.every(spl => spl.splId != '');
     }

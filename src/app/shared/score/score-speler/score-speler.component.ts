@@ -30,6 +30,7 @@ export class ScoreSpelerComponent implements OnInit {
     @Input() showPunten: boolean = false;
     @Input() oldPunten: number = 0;
     @Input() wedOver: boolean = false;
+    @Input() isVijfde: boolean = false;
     @Input() position: string = 'left';
     meteenToev: boolean = false;
 

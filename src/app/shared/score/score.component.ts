@@ -392,6 +392,7 @@ export class ScoreComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        console.log(this.wedstrijd);
         const apparaten: Apparaat[] = this.appData.getConfig()?.apparaten || [];
         const toetsenOk = this.setActieToetsen(apparaten);
         if (!toetsenOk) {
@@ -487,12 +488,12 @@ export class ScoreComponent implements OnInit {
             this.setGemiddeldes(this.actieveSpeler);
             if (this.isTeamWedstrijd()) {
                 this.setTeamGemiddeldes(this.actieveTeam);
-                if (this.wedstrijd.telling.idxOptie == 0) {
+                if (this.wedstrijd.telling.idxOptie == 0 || this.wedstrijd.regels.idxOptie == 4) {
                     this.actieveTeam.stand.punten = this.getTeamPunten(this.actieveTeam);
                 }
             }
             else {
-                if (this.wedstrijd.telling.idxOptie == 0) {
+                if (this.wedstrijd.telling.idxOptie == 0 || this.wedstrijd.regels.idxOptie == 4) {
                     this.actieveSpeler.stand.punten = this.getPunten(this.actieveSpeler);
                 }
             }
@@ -526,13 +527,25 @@ export class ScoreComponent implements OnInit {
             this.actieveSpeler.stand.enNog = remainingCar;
             msgs.push(`${this.actieveSpeler.stand.serie}`);
             msgs.push(`en nog ${remainingCar}`);
-            spk = `${this.actieveSpeler.stand.serie}, en nog ${remainingCar}.`;
+            spk = `${this.actieveSpeler.stand.serie}, en nog ${remainingCar}`;
+            if (this.wedstrijd.regels.idxOptie == 4 && remainingCar == 1) {
+                spk = spk + ' driebander.';
+            }
+            else {
+                spk = spk + '.';
+            }
         }
         else {
             this.actieveSpeler.stand.enNog = -1;
             msgs.push(`${this.actieveSpeler.stand.serie}`);
-            msgs.push('');
             spk = `${this.actieveSpeler.stand.serie}`;
+            if (this.wedstrijd.regels.idxOptie == 4 && (this.actieveSpeler.stand.aantCar + this.actieveSpeler.stand.serie) % 5 == 4) {
+                msgs.push('nu 3 band');
+                spk = spk + ', en nu een driebander.';
+            }
+            else {
+                msgs.push('');
+            }
         }
         if (this.actieveSpeler.stand.serie >= 0) {
             if (msgs.length > 0) {
@@ -568,13 +581,25 @@ export class ScoreComponent implements OnInit {
             this.actieveTeam.stand.enNog = remainingCar;
             msgs.push(`${this.actieveTeam.stand.serie}`);
             msgs.push(`en nog ${remainingCar}`);
-            spk = `${this.actieveTeam.stand.serie}, en nog ${remainingCar}.`;
+            spk = `${this.actieveTeam.stand.serie}, en nog ${remainingCar}`;
+            if (this.wedstrijd.regels.idxOptie == 4 && remainingCar == 1) {
+                spk = spk + ' driebander.';
+            }
+            else {
+                spk = spk + '.';
+            }
         }
         else {
             this.actieveTeam.stand.enNog = -1;
             msgs.push(`${this.actieveTeam.stand.serie}`);
-            msgs.push('');
             spk = `${this.actieveTeam.stand.serie}`;
+            if (this.wedstrijd.regels.idxOptie == 4 && (this.actieveTeam.stand.aantCar + this.actieveTeam.stand.serie) % 5 == 4) {
+                msgs.push('nu 3 band');
+                spk = spk + ', en nu een driebander.';
+            }
+            else {
+                msgs.push('');
+            }
         }
         if (this.actieveTeam.stand.serie > 0) {
             if (msgs.length > 0) {
@@ -1017,6 +1042,10 @@ export class ScoreComponent implements OnInit {
 
     private getPunten(spl: WedSpeler, idx?: number): number {
         let punten = 0;
+        if (this.wedstrijd.regels.idxOptie == 4) {
+            punten = Math.floor((spl.stand.aantCar + spl.stand.serie) / 5);
+            return punten;
+        }
         if (this.wedstrijd.telling.idxOptie == 0) {
             punten = Math.floor(10 * (spl.stand.aantCar + spl.stand.serie) / spl.splTsCar);
         }
@@ -1068,6 +1097,10 @@ export class ScoreComponent implements OnInit {
 
     private getTeamPunten(team: WedTeam, idx?: number): number {
         let punten = 0;
+        if (this.wedstrijd.regels.idxOptie == 4) {
+            punten = Math.floor((team.stand.aantCar + team.stand.serie) / 5);
+            return punten;
+        }
         if (this.wedstrijd.telling.idxOptie == 0) {
             punten = Math.floor(10 * (team.stand.aantCar + team.stand.serie) / team.teamTsCar);
         }

@@ -73,6 +73,7 @@ export class KnbbMatchScorebordComponent extends BaseComponent implements OnInit
 
     private createWedstrijdFromKnbbMatch(): Wedstrijd {
         let result = new Wedstrijd();
+        result.aantSpelers = 2;
         result.regels.idxOptie = 0;
         result.regels.knbbKlasse = this.match.klasse;
         result.regels.maxBeurten = this.match.maxBeurten;

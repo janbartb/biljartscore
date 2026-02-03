@@ -1,6 +1,6 @@
 export class Wedstrijd {
     spel: string = 'standaard';
-    aantSpelers: number = 2;
+    aantSpelers: number = 0;
     regels: WedRegels = new WedRegels();
     telling: WedTelling = new WedTelling();
     opslaanInComp: boolean = false;
@@ -21,6 +21,7 @@ export class WedRegels {
     idxOptie: number = 0;
     vastAantBrt: number = 0;
     vastAantCar: number = 0;
+    vijfdeAantCar: number = 5;
     maxBeurten: number = 0;
     moyAantBrt: number = 0;
     knbbKlasse: string = '';

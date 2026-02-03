@@ -1,7 +1,7 @@
 <div class="fullviewheight">
     <div class="fullheight flexbox flexcolumn">
         <div>
-            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="'Oefen wedstrijd'" [spel]="appData.getSpelNaam()"
+            <app-page-header [title]="'Wedstrijd spelen'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()"
                         (prevClicked)="escapePressed()" (hdrClicked)="headerClicked($event)"></app-page-header>
         </div>
         <div class="flexbox flexcenter">
@@ -17,6 +17,12 @@
                 }
                 @else if (wedstrijd.regels.idxOptie == 3) {
                     <span>Aantal caramboles op basis van gemiddelde {{wedstrijd.aantSpelers == 5 ? 'team' : 'speler'}} en <span class="label">{{wedstrijd.regels.moyAantBrt}}</span> beurten</span>
+                    <br>
+                    <span>Maximum aantal beurten per speler: </span>
+                    <span class="label">{{wedstrijd.regels.maxBeurten == 0 ? 'geen maximum' : wedstrijd.regels.maxBeurten}}</span>
+                }
+                @else if (wedstrijd.regels.idxOptie == 4) {
+                    <span>{{wedstrijd.aantSpelers == 5 ? 'Ieder team' : 'Iedere speler'}} speelt <span class="label">{{wedstrijd.regels.vijfdeAantCar}}</span> libre caramboles met iedere 5e een driebander</span>
                     <br>
                     <span>Maximum aantal beurten per speler: </span>
                     <span class="label">{{wedstrijd.regels.maxBeurten == 0 ? 'geen maximum' : wedstrijd.regels.maxBeurten}}</span>

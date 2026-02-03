@@ -28,6 +28,7 @@ export class ScoreSpelerWideComponent implements OnInit {
     appData = inject(StatusService);
     @Input() speler: WedSpeler = new WedSpeler();
     @Input() maxBrt: number = 0;
+    @Input() isVijfde: boolean = false;
     @Input() position: string = 'left';
     meteenToev: boolean = false;
 

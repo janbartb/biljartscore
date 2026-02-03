@@ -37,57 +37,73 @@
                                 <div>
                                     <table class="tbl-normal tbl-input">
                                         <tbody>
-                                            <tr (click)="regelOptieClicked(0)">
-                                                <td style="padding-right: .5em;">
-                                                    <i [ngClass]="wedIdxRegels?.value == 0 ? 'fas fa-check-circle' : 'far fa-circle'"
-                                                            style="cursor: pointer;"></i>
-                                                </td>
-                                                <td style="cursor: pointer;">
-                                                    <label for="wedKlasse">{{regelOpties[0]}}</label>
-                                                    <select id="wedKlasse" formControlName="wedKlasse">
-                                                        @for (klasse of knbbKlassen; track $index) {
-                                                            <option [value]="klasse">{{klasse}}</option>
-                                                        }
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr (click)="regelOptieClicked(1)">
-                                                <td style="padding-right: .5em;">
-                                                    <i [ngClass]="wedIdxRegels?.value == 1 ? 'fas fa-check-circle' : 'far fa-circle'"
-                                                            style="cursor: pointer;"></i>
-                                                </td>
-                                                <td style="cursor: pointer;">
-                                                    <label for="wedAantBrt">{{regelOpties[1]}}</label>
-                                                    <input type="number" id="wedAantBrt" style="width: 3.5em;" formControlName="wedAantBrt" autocomplete="off"
-                                                            [ngClass]="{'invalid': wedAantBrt?.invalid && (wedAantBrt?.dirty), 
-                                                                        'valid': wedAantBrt?.valid && (wedAantBrt?.dirty)}">
-                                                </td>
-                                            </tr>
-                                            <tr (click)="regelOptieClicked(2)">
-                                                <td style="padding-right: .5em;">
-                                                    <i [ngClass]="wedIdxRegels?.value == 2 ? 'fas fa-check-circle' : 'far fa-circle'"
-                                                            style="cursor: pointer;"></i>
-                                                </td>
-                                                <td style="cursor: pointer;">
-                                                    <label for="wedAantCar">{{regelOpties[2]}}</label>
-                                                    <input type="number" id="wedAantCar" style="width: 3.5em;" formControlName="wedAantCar" autocomplete="off"
-                                                            [ngClass]="{'invalid': wedAantCar?.invalid && (wedAantCar?.dirty), 
-                                                                        'valid': wedAantCar?.valid && (wedAantCar?.dirty)}">
-                                                </td>
-                                            </tr>
-                                            <tr (click)="regelOptieClicked(3)">
-                                                <td style="padding-right: .5em;">
-                                                    <i [ngClass]="wedIdxRegels?.value == 3 ? 'fas fa-check-circle' : 'far fa-circle'"
-                                                            ></i>
-                                                </td>
-                                                <td style="cursor: pointer;">
-                                                    <label for="wedMoyBrt">{{regelOpties[3]}}</label>
-                                                    <input type="number" id="wedMoyBrt" style="width: 3.5em;" formControlName="wedMoyBrt" autocomplete="off"
-                                                            [ngClass]="{'invalid': wedMoyBrt?.invalid && (wedMoyBrt?.dirty), 
-                                                                        'valid': wedMoyBrt?.valid && (wedMoyBrt?.dirty)}">
-                                                    <label for="wedMoyBrt" style="padding-left: 1em;">beurten</label>
-                                                </td>
-                                            </tr>
+                                            @if (wedstrijd.regels.idxOptie != 4) {
+                                                <tr (click)="regelOptieClicked(0)">
+                                                    <td style="padding-right: .5em;">
+                                                        <i [ngClass]="wedIdxRegels?.value == 0 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                                style="cursor: pointer;"></i>
+                                                    </td>
+                                                    <td style="cursor: pointer;">
+                                                        <label for="wedKlasse">{{regelOpties[0]}}</label>
+                                                        <select id="wedKlasse" formControlName="wedKlasse">
+                                                            @for (klasse of knbbKlassen; track $index) {
+                                                                <option [value]="klasse">{{klasse}}</option>
+                                                            }
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr (click)="regelOptieClicked(1)">
+                                                    <td style="padding-right: .5em;">
+                                                        <i [ngClass]="wedIdxRegels?.value == 1 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                                style="cursor: pointer;"></i>
+                                                    </td>
+                                                    <td style="cursor: pointer;">
+                                                        <label for="wedAantBrt">{{regelOpties[1]}}</label>
+                                                        <input type="number" id="wedAantBrt" style="width: 3.5em;" formControlName="wedAantBrt" autocomplete="off"
+                                                                [ngClass]="{'invalid': wedAantBrt?.invalid && (wedAantBrt?.dirty), 
+                                                                            'valid': wedAantBrt?.valid && (wedAantBrt?.dirty)}">
+                                                    </td>
+                                                </tr>
+                                                <tr (click)="regelOptieClicked(2)">
+                                                    <td style="padding-right: .5em;">
+                                                        <i [ngClass]="wedIdxRegels?.value == 2 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                                style="cursor: pointer;"></i>
+                                                    </td>
+                                                    <td style="cursor: pointer;">
+                                                        <label for="wedAantCar">{{regelOpties[2]}}</label>
+                                                        <input type="number" id="wedAantCar" style="width: 3.5em;" formControlName="wedAantCar" autocomplete="off"
+                                                                [ngClass]="{'invalid': wedAantCar?.invalid && (wedAantCar?.dirty), 
+                                                                            'valid': wedAantCar?.valid && (wedAantCar?.dirty)}">
+                                                    </td>
+                                                </tr>
+                                                <tr (click)="regelOptieClicked(3)">
+                                                    <td style="padding-right: .5em;">
+                                                        <i [ngClass]="wedIdxRegels?.value == 3 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                                ></i>
+                                                    </td>
+                                                    <td style="cursor: pointer;">
+                                                        <label for="wedMoyBrt">{{regelOpties[3]}}</label>
+                                                        <input type="number" id="wedMoyBrt" style="width: 3.5em;" formControlName="wedMoyBrt" autocomplete="off"
+                                                                [ngClass]="{'invalid': wedMoyBrt?.invalid && (wedMoyBrt?.dirty), 
+                                                                            'valid': wedMoyBrt?.valid && (wedMoyBrt?.dirty)}">
+                                                        <label for="wedMoyBrt" style="padding-left: 1em;">beurten</label>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            @else {
+                                                <tr (click)="regelOptieClicked(4)">
+                                                    <td style="padding-right: .5em;">
+                                                        <i [ngClass]="wedIdxRegels?.value == 4 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                                ></i>
+                                                    </td>
+                                                    <td style="cursor: pointer;">
+                                                        <input type="number" id="wedVijfdeCar" style="width: 3.5em;" formControlName="wedVijfdeCar" autocomplete="off"
+                                                                [ngClass]="{'invalid': wedVijfdeCar?.invalid && (wedVijfdeCar?.dirty), 
+                                                                            'valid': wedVijfdeCar?.valid && (wedVijfdeCar?.dirty)}">
+                                                        <label for="wedVijfdeCar" style="padding-left: .5em;">{{regelOpties[4]}}</label>
+                                                    </td>
+                                                </tr>
+                                            }
                                             @if (wedIdxRegels?.value != 1) {
                                                 <tr>
                                                     <td></td>
@@ -110,54 +126,69 @@
                                 <div>
                                     <table class="tbl-normal tbl-input">
                                         <tbody>
-                                            <tr (click)="telOptieClicked(0)">
-                                                <td style="padding-right: .5em;">
-                                                    <i [ngClass]="wedIdxTelling?.value == 0 ? 'fas fa-check-circle' : 'far fa-circle'"
-                                                            style="cursor: pointer;"></i>
-                                                </td>
-                                                <td style="cursor: pointer;">
-                                                    <label>{{telOpties[0]}}</label>
-                                                </td>
-                                            </tr>
-                                            <tr (click)="telOptieClicked(1)">
-                                                <td style="padding-right: .5em;">
-                                                    <i [ngClass]="wedIdxTelling?.value == 1 ? 'fas fa-check-circle' : 'far fa-circle'"
-                                                            style="cursor: pointer;"></i>
-                                                </td>
-                                                <td style="cursor: pointer;">
-                                                    <label>{{telOpties[1]}}</label>
-                                                </td>
-                                            </tr>
-                                            @if (wedIdxTelling?.value == 1) {
-                                                <tr>
-                                                    <td></td>
-                                                    <td>
-                                                        <label for="wedPntWinst">Aantal punten bij winst</label>
-                                                        <input type="number" id="wedPntWinst" style="width: 3em;" formControlName="wedPntWinst" autocomplete="off"
-                                                            [ngClass]="{'invalid': wedPntWinst?.invalid && (wedPntWinst?.dirty), 
-                                                                        'valid': wedPntWinst?.valid && (wedPntWinst?.dirty)}">
+                                            @if (wedIdxRegels?.value != 4) {
+                                                @if (wedIdxRegels?.value != 1) {
+                                                    <tr (click)="telOptieClicked(0)">
+                                                        <td style="padding-right: .5em;">
+                                                            <i [ngClass]="wedIdxTelling?.value == 0 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                                    style="cursor: pointer;"></i>
+                                                        </td>
+                                                        <td style="cursor: pointer;">
+                                                            <label>{{telOpties[0]}}</label>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                <tr (click)="telOptieClicked(1)">
+                                                    <td style="padding-right: .5em;">
+                                                        <i [ngClass]="wedIdxTelling?.value == 1 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                                style="cursor: pointer;"></i>
+                                                    </td>
+                                                    <td style="cursor: pointer;">
+                                                        <label>{{telOpties[1]}}</label>
                                                     </td>
                                                 </tr>
+                                                @if (wedIdxTelling?.value == 1) {
+                                                    <tr>
+                                                        <td></td>
+                                                        <td>
+                                                            <label for="wedPntWinst">Aantal punten bij winst</label>
+                                                            <input type="number" id="wedPntWinst" style="width: 3em;" formControlName="wedPntWinst" autocomplete="off"
+                                                                [ngClass]="{'invalid': wedPntWinst?.invalid && (wedPntWinst?.dirty), 
+                                                                            'valid': wedPntWinst?.valid && (wedPntWinst?.dirty)}">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td>
+                                                            <label for="wedPntGelijk">Aantal punten bij gelijkspel</label>
+                                                            <input type="number" id="wedPntGelijk" style="width: 3em;" formControlName="wedPntGelijk" autocomplete="off"
+                                                                [ngClass]="{'invalid': wedPntGelijk?.invalid && (wedPntGelijk?.dirty), 
+                                                                            'valid': wedPntGelijk?.valid && (wedPntGelijk?.dirty)}">
+                                                        </td>
+                                                    </tr>    
+                                                }
                                                 <tr>
                                                     <td></td>
                                                     <td>
-                                                        <label for="wedPntGelijk">Aantal punten bij gelijkspel</label>
-                                                        <input type="number" id="wedPntGelijk" style="width: 3em;" formControlName="wedPntGelijk" autocomplete="off"
-                                                            [ngClass]="{'invalid': wedPntGelijk?.invalid && (wedPntGelijk?.dirty), 
-                                                                        'valid': wedPntGelijk?.valid && (wedPntGelijk?.dirty)}">
+                                                        <label for="wedPntBovenMoy">Extra punten indien boven moyenne</label>
+                                                        <input type="number" id="wedPntBovenMoy" style="width: 3em;" formControlName="wedPntBovenMoy" autocomplete="off"
+                                                            [ngClass]="{'invalid': wedPntBovenMoy?.invalid && (wedPntBovenMoy?.dirty), 
+                                                                        'valid': wedPntBovenMoy?.valid && (wedPntBovenMoy?.dirty)}">
                                                     </td>
-                                                </tr>    
+                                                </tr>
                                             }
-                                            <tr>
-                                                <td></td>
-                                                <td>
-                                                    <label for="wedPntBovenMoy">Extra punten indien boven moyenne</label>
-                                                    <input type="number" id="wedPntBovenMoy" style="width: 3em;" formControlName="wedPntBovenMoy" autocomplete="off"
-                                                        [ngClass]="{'invalid': wedPntBovenMoy?.invalid && (wedPntBovenMoy?.dirty), 
-                                                                    'valid': wedPntBovenMoy?.valid && (wedPntBovenMoy?.dirty)}">
-                                                </td>
-                                            </tr>
-                                    </tbody>
+                                            @else {
+                                                <tr (click)="telOptieClicked(2)">
+                                                    <td style="padding-right: .5em;">
+                                                        <i [ngClass]="wedIdxTelling?.value == 2 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                                style="cursor: pointer;"></i>
+                                                    </td>
+                                                    <td style="cursor: pointer;">
+                                                        <label>{{telOpties[2]}}</label>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>

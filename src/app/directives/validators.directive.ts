@@ -39,6 +39,12 @@ export function greaterZero(): ValidatorFn {
     };
 }
 
+export function isModuloVijf(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+        return Number(control.value) && Number(control.value) % 5 == 0 ? null : {isModuloVijf: {valid: false}};
+    };
+}
+
 export function isHeelGetal(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
         return (Number.isInteger(control.value)) ? null : {isHeelGetal: {valid: false}};

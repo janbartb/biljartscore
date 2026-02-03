@@ -78,6 +78,9 @@
                     </div>
                 </div>
             </div>
+            <div style="height: 2em; border-top: .25em solid #6ec071; line-height: 1.75em; text-align: center; color: green;">
+                <span>De volgorde van de spelers (in de rechter kolom) is op dit scherm nog niet van belang.</span>
+            </div>
             @if (inputValid && teamLijst.hoveredIdx == teamLijst.selectedIdx && spelerLijst.hoveredIdx < 0) {
                 <app-section-footer-btns [buttons]="pageButtons" (clickedButton)="pageButtonClicked()"
                                         [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
@@ -116,11 +119,11 @@
         Selecteer een teamlid met de muis of met de navigatie-toetsen. Na selectie wordt het teamlid in kolom 3 geplaatst in de 
         actieve (rood-omlijnde) speler en wordt in kolom 3 automatisch de volgende speler actief gemaakt.
     </div>
-    <div class="help-card-header">Match team (thuis of gasten)</div>
+    <div class="help-card-header">THUIS (of GASTEN) team</div>
     <div>
         Hier staan de spelers die uiteindelijk gaan spelen in de match. <br>
         De volgorde van deze spelers maakt niks uit. Ze worden op het volgende scherm automatisch op volgorde van moyenne gezet. 
-        Daar kunnen dan ook eventueel spelers gewiddeld worden.
+        Daar kunnen dan ook eventueel spelers gewisseld worden.
     </div>
     <div class="help-card-header">Naar volgend scherm</div>
     <div>

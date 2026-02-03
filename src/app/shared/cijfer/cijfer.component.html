@@ -1,4 +1,4 @@
-<div class="cijfer-container">
+<div class="cijfer-container" [style.width]="cijferWidth + 'em'">
     <div class="cijfers" [ngClass]="cijfersCss">
         @for (digit of cijferRol; track $index) {
             <div class="cijfer">{{digit}}</div>

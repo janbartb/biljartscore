@@ -3,6 +3,11 @@
     animation: blinker 3s linear infinite;
 }
 
+.blink-fast {
+    opacity: 0;
+    animation: blinker 1.5s linear infinite;
+}
+
 @keyframes blinker {
     20% { opacity: 0; }
     40% { opacity: 1; }

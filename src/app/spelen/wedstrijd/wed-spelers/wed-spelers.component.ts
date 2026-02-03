@@ -248,19 +248,21 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
 
     initWedstrijd() {
         this.wedstrijd.wedGespeeld = false;
-        this.wedstrijd.regels.vastAantBrt = 1;
-        this.wedstrijd.regels.vastAantCar = 1;
-        this.wedstrijd.regels.moyAantBrt = 1;
-        const foundKlasse = this.knbbKlassen.find(klasse => klasse == 'B2');
-        if (foundKlasse) {
-            this.wedstrijd.regels.knbbKlasse = foundKlasse;
-            this.wedstrijd.regels.maxBeurten = 60;
+        if (this.wedstrijd.regels.idxOptie != 4) {
+            this.wedstrijd.regels.vastAantBrt = 1;
+            this.wedstrijd.regels.vastAantCar = 1;
+            this.wedstrijd.regels.moyAantBrt = 1;
+            const foundKlasse = this.knbbKlassen.find(klasse => klasse == 'B2');
+            if (foundKlasse) {
+                this.wedstrijd.regels.knbbKlasse = foundKlasse;
+                this.wedstrijd.regels.maxBeurten = 60;
+            }
+            this.wedstrijd.telling.winstPunten = 2;
+            this.wedstrijd.telling.gelijkPunten = 1;
+            this.wedstrijd.telling.bovenMoyPunten = 1;
+            this.wedstrijd.regels.idxOptie = 0;
+            this.wedstrijd.telling.idxOptie = 0;
         }
-        this.wedstrijd.telling.winstPunten = 2;
-        this.wedstrijd.telling.gelijkPunten = 1;
-        this.wedstrijd.telling.bovenMoyPunten = 1;
-        this.wedstrijd.regels.idxOptie = 0;
-        this.wedstrijd.telling.idxOptie = 0;
         this.helper.clearWedstrijdResultaten(this.wedstrijd);
     }
 
@@ -407,6 +409,9 @@ export class WedSpelersComponent extends BaseComponent implements OnInit {
             this.filterSpelerLijst();
             if (results[2].gevonden) {
                 this.wedOrig = results[2].wedstrijd;
+                if (this.wedOrig.regels.idxOptie == 4) {
+                    this.subtitle = 'Wedstrijd';
+                }
                 this.subtitle += ' - ' + this.aantalTekst[this.wedOrig.aantSpelers];
             }
             if (this.wedOrig.aantSpelers == 0) {

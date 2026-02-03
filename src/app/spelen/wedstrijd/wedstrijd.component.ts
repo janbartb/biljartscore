@@ -23,6 +23,7 @@ import { Wedstrijd } from '../../model/wedstrijd';
 export class WedstrijdComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
 
+    subtitle: string = 'Oefen wedstrijd';
     wedstrijd: Wedstrijd = new Wedstrijd();
     namesValid: boolean = true;
     wedGestart: boolean = false;
@@ -173,6 +174,10 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
             }
             this.wedstrijd = resp.wedstrijd;
             console.log(this.wedstrijd);
+            if (this.wedstrijd.regels.idxOptie == 4 && (this.wedstrijd.regels.vijfdeAantCar <= 0 || this.wedstrijd.regels.vijfdeAantCar % 5 != 0)) {
+                this.router.navigate(['wedstrijd/aantspl']);
+                return;
+            }
             if (!this.helper.areWedstrijdSpelersFilled(this.wedstrijd)) {
                 this.router.navigate(['wedstrijd/aantspl']);
                 return;
@@ -181,7 +186,9 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
                 this.router.navigate(['wedstrijd/config']);
                 return;
             }
-            console.log(this.wedstrijd);
+            if (this.wedstrijd.regels.idxOptie == 4) {
+                this.subtitle = 'Wedstrijd';
+            }
             this.namesValid = true;
             this.wedGestart = this.isWedstrijdGestart();
             if (!this.wedGestart) {
@@ -202,54 +209,6 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
             this.alert.showError(err);
         });
     }
-
-    // private aanvullenTeamEnSpelerData() {
-    //     this.wedstrijd.teams.forEach(team => {
-    //         team.teamTsMoy = Math.round(1000 * ((team.spelers[0].splTsMoy + team.spelers[1].splTsMoy) / 2)) / 1000;
-    //     });
-    //     if (this.wedstrijd.regels.idxOptie == 1) {
-    //         this.wedstrijd.teams.forEach(team => {
-    //             team.teamTsBrt = 2 * this.wedstrijd.regels.vastAantBrt;
-    //             team.spelers.forEach(spl => {
-    //                 spl.splTsBrt = this.wedstrijd.regels.vastAantBrt;
-    //             });
-    //         });
-    //         this.wedstrijd.spelers.forEach(spl => {
-    //             spl.splTsBrt = this.wedstrijd.regels.vastAantBrt;
-    //         });
-    //     }
-    //     else {
-    //         if (this.wedstrijd.regels.idxOptie == 2) {
-    //             this.wedstrijd.teams.forEach(team => {
-    //                 team.teamTsCar = 2 * this.wedstrijd.regels.vastAantCar;
-    //                 team.spelers.forEach(spl => {
-    //                     spl.splTsCar = this.wedstrijd.regels.vastAantCar;
-    //                 });
-    //             });
-    //             this.wedstrijd.spelers.forEach(spl => {
-    //                 spl.splTsCar = this.wedstrijd.regels.vastAantCar;
-    //             });
-    //         }
-    //         else {
-    //             this.wedstrijd.teams.forEach(team => {
-    //                 team.spelers.forEach(spl => {
-    //                     spl.splTsCar = Math.round(this.wedstrijd.regels.moyAantBrt * spl.splTsMoy);
-    //                 });
-    //                 team.teamTsCar = team.spelers[0].splTsCar + team.spelers[1].splTsCar;
-    //             });
-    //             this.wedstrijd.spelers.forEach(spl => {
-    //                 spl.splTsCar = Math.round(this.wedstrijd.regels.moyAantBrt * spl.splTsMoy);
-    //             });
-    //         }
-    //     }
-    //     if (this.wedstrijd.teams.length) {
-    //         this.wedstrijd.teams[0].actief = true;
-    //         this.wedstrijd.teams[0].spelers[0].actief = true;
-    //     }
-    //     else {
-    //         this.wedstrijd.spelers[0].actief = true;
-    //     }
-    // }
 
     private isWedstrijdGestart(): boolean {
         if (this.wedstrijd.teams.length) {
@@ -282,7 +241,7 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
             }
             return true;
         }
-        else {
+        else if (this.wedstrijd.regels.idxOptie == 3) {
             if (this.wedstrijd.regels.moyAantBrt <= 0) {
                 return false;
             }
@@ -290,6 +249,12 @@ export class WedstrijdComponent extends BaseComponent implements OnInit {
                 return this.isEigenTellingOk();
             }
             return true;
+        }
+        else {
+            if (this.wedstrijd.regels.vijfdeAantCar <= 0 || this.wedstrijd.regels.vijfdeAantCar % 5 != 0) {
+                return false;
+            }
+            return true
         }
     }
 

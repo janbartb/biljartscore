@@ -95,6 +95,7 @@ export class KnbbTeamMatchScorebordComponent extends BaseComponent implements On
 
     private createWedstrijdFromKnbbTeamMatch(): Wedstrijd {
         let result = new Wedstrijd();
+        result.aantSpelers = 2;
         result.regels.idxOptie = 0;
         result.regels.knbbKlasse = this.match.klasse;
         result.regels.maxBeurten = this.match.maxBeurten;
@@ -112,8 +113,6 @@ export class KnbbTeamMatchScorebordComponent extends BaseComponent implements On
             });
             result.spelers.push(speler);
         });
-        console.log(this.match);
-        console.log(result);
         return result;
     }
 

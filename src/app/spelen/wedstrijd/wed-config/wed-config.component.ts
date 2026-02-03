@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Wedstrijd } from '../../../model/wedstrijd';
 import { MoyenneTabel } from '../../../model/moyenne-tabel';
 import { HelperService } from '../../../services/helper.service';
+import { isModuloVijf } from '../../../directives/validators.directive';
 
 @Component({
     selector: 'app-wed-config',
@@ -102,9 +103,13 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         this.wedIdxRegels?.setValue(idx);
         if (idx == 0) {
             this.wedMaxBrt?.setValue(60);
+            this.wedIdxTelling?.setValue(0);
         }
         else {
             this.wedMaxBrt?.setValue(0);
+        }
+        if (idx == 1) {
+            this.wedIdxTelling?.setValue(1);
         }
         this.enableDisableFields();
         this.checkInput();
@@ -161,6 +166,9 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
                 this.router.navigate(['wedstrijd/aantspl']);
                 return;
             } 
+            if (this.wedstrijd.regels.idxOptie == 4) {
+                this.subtitle = 'Wedstrijd - instellingen';
+            }
             this.knbbKlassen = results[1];
             this.createConfigForm();
             if (this.wedstrijd.aantSpelers == 5) {
@@ -168,16 +176,19 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
                 this.regelOpties.push('Vast aantal beurten voor iedere speler');
                 this.regelOpties.push('Vast aantal caramboles voor ieder team');
                 this.regelOpties.push('Aantal caramboles o.b.v. moyenne team en');
+                this.regelOpties.push('caramboles libre met iedere 5e carambole een driebander');
             }
             else {
                 this.regelOpties.push('Aantal caramboles spelers o.b.v. KNBB tabel driebanden klein, klasse');
                 this.regelOpties.push('Vast aantal beurten voor iedere speler');
                 this.regelOpties.push('Vast aantal caramboles voor iedere speler');
                 this.regelOpties.push('Aantal caramboles o.b.v. moyenne speler en');
+                this.regelOpties.push('caramboles libre met iedere 5e carambole een driebander');
             }
 
             this.telOpties.push('KNBB match telling (1 punt per 10% van te spelen caramboles)');
             this.telOpties.push('Eigen telling');
+            this.telOpties.push('1 punt per 5 caramboles');
         })
         .catch(err => {
             this.alert.showError(err);
@@ -198,6 +209,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
                         this.wedKlasse?.value != this.wedstrijd.regels.knbbKlasse ||
                         this.wedAantBrt?.value != this.wedstrijd.regels.vastAantBrt ||
                         this.wedAantCar?.value != this.wedstrijd.regels.vastAantCar ||
+                        this.wedVijfdeCar?.value != this.wedstrijd.regels.vijfdeAantCar ||
                         this.wedMoyBrt?.value != this.wedstrijd.regels.moyAantBrt ||
                         this.wedMaxBrt?.value != this.wedstrijd.regels.maxBeurten ||
                         this.wedIdxTelling?.value != this.wedstrijd.telling.idxOptie ||
@@ -208,7 +220,6 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     }
 
     private inputOk(): boolean {
-        let result = false;
         if (this.wedIdxRegels?.value == 0) {
             if (this.wedKlasse?.value == '') {
                 return false;
@@ -229,6 +240,11 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
                 return false;
             }
         }
+        else if (this.wedIdxRegels?.value == 4) {
+            if (this.wedVijfdeCar?.value <= 0 || this.wedVijfdeCar?.value % 5 != 0) {
+                return false;
+            }
+        }
         if (this.wedIdxTelling?.value == 1) {
             if (this.wedPntWinst?.value < 0 || this.wedPntGelijk?.value < 0 || this.wedPntBovenMoy?.value < 0) {
                 return false;
@@ -246,24 +262,35 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             this.wedAantBrt?.disable();
             this.wedAantCar?.disable();
             this.wedMoyBrt?.disable();
-            }
+            this.wedVijfdeCar?.disable();
+        }
         else if (this.wedIdxRegels?.value == 1) {
             this.wedKlasse?.disable();
             this.wedAantBrt?.enable();
             this.wedAantCar?.disable();
             this.wedMoyBrt?.disable();
-            }
+            this.wedVijfdeCar?.disable();
+        }
         else if (this.wedIdxRegels?.value == 2) {
             this.wedKlasse?.disable();
             this.wedAantBrt?.disable();
             this.wedAantCar?.enable();
             this.wedMoyBrt?.disable();
-            }
+            this.wedVijfdeCar?.disable();
+        }
         else if (this.wedIdxRegels?.value == 3) {
             this.wedKlasse?.disable();
             this.wedAantBrt?.disable();
             this.wedAantCar?.disable();
             this.wedMoyBrt?.enable();
+            this.wedVijfdeCar?.disable();
+        }
+        else if (this.wedIdxRegels?.value == 4) {
+            this.wedKlasse?.disable();
+            this.wedAantBrt?.disable();
+            this.wedAantCar?.disable();
+            this.wedMoyBrt?.disable();
+            this.wedVijfdeCar?.enable();
         }
     }
 
@@ -283,6 +310,10 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         }
         else if (this.wedstrijd.regels.idxOptie == 3) {
             this.wedstrijd.regels.moyAantBrt = this.wedMoyBrt?.value;
+            this.wedstrijd.regels.maxBeurten = this.wedMaxBrt?.value;            
+        }
+        else if (this.wedstrijd.regels.idxOptie == 4) {
+            this.wedstrijd.regels.vijfdeAantCar = this.wedVijfdeCar?.value;
             this.wedstrijd.regels.maxBeurten = this.wedMaxBrt?.value;            
         }
         this.wedstrijd.telling.idxOptie = this.wedIdxTelling?.value;
@@ -307,6 +338,11 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         }
         if (this.wedstrijd.regels.idxOptie == 3) {
             this.berekenAantalCaramboles();
+            this.saveWedstrijdEnGaVerder();
+            return;
+        }
+        if (this.wedstrijd.regels.idxOptie == 4) {
+            this.setVastCarambolesAndBeurten(this.wedstrijd.regels.vijfdeAantCar, 0);
             this.saveWedstrijdEnGaVerder();
             return;
         }
@@ -374,6 +410,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     private setVastCarambolesAndBeurten(car: number, brt: number) {
         if (this.wedstrijd.aantSpelers == 5) {
             this.wedstrijd.teams.forEach(team => {
+                team.teamTsMoy = (team.spelers[0].splTsMoy + team.spelers[1].splTsMoy) / 2;
                 if (car > 0) {
                     team.teamTsCar = car;
                     team.teamTsBrt = 0;
@@ -381,6 +418,12 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
                     team.spelers[0].splTsCar = Math.round(ratio * car);
                     team.spelers[1].splTsCar = car - team.spelers[0].splTsCar;
                     team.spelers[0].splTsBrt = team.spelers[1].splTsBrt = 0;
+                    if (this.wedstrijd.regels.idxOptie == 4) {
+                        team.teamTsMoy = 2 * team.teamTsMoy;
+                        team.spelers.forEach(spl => {
+                            spl.splTsMoy = 2 * spl.splTsMoy;
+                        });
+                    }
                 }
                 else {
                     team.teamTsBrt = 2 * brt;
@@ -394,6 +437,9 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
         }
         else {
             this.wedstrijd.spelers.forEach(spl => {
+                if (this.wedstrijd.regels.idxOptie == 4) {
+                    spl.splTsMoy = 2 * spl.splTsMoy;
+                }
                 spl.splTsCar = car;
                 spl.splTsBrt = brt;
             });
@@ -428,6 +474,7 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
             wedKlasse: [this.wedstrijd.regels.knbbKlasse],
             wedAantBrt: [this.wedstrijd.regels.vastAantBrt, [Validators.required, Validators.min(1)]],
             wedAantCar: [this.wedstrijd.regels.vastAantCar, [Validators.required, Validators.min(1)]],
+            wedVijfdeCar: [this.wedstrijd.regels.vijfdeAantCar, [Validators.required, Validators.min(5), isModuloVijf()]],
             wedMaxBrt: [this.wedstrijd.regels.maxBeurten, [Validators.required, Validators.min(0)]],
             wedMoyBrt: [this.wedstrijd.regels.moyAantBrt, [Validators.required, Validators.min(1)]],
             wedPntWinst: [this.wedstrijd.telling.winstPunten, [Validators.required, Validators.min(0)]],
@@ -447,6 +494,9 @@ export class WedConfigComponent extends BaseComponent implements OnInit {
     }
     get wedAantCar() {
         return this.configForm.get('wedAantCar');
+    }
+    get wedVijfdeCar() {
+        return this.configForm.get('wedVijfdeCar');
     }
     get wedMaxBrt() {
         return this.configForm.get('wedMaxBrt');

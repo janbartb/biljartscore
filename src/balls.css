@@ -71,8 +71,17 @@
 .biljartbal[data-kleur="blue"] {
     --_color: var(--_color-blue);
 }
+.biljartbal.roze {
+    --_color: var(--_color-pink);
+}
 .biljartbal[data-kleur="pink"] {
     --_color: var(--_color-pink);
+}
+.biljartbal.oranje {
+    --_color: var(--_color-orange);
+}
+.biljartbal[data-kleur="orange"] {
+    --_color: var(--_color-orange);
 }
 .biljartbal.zwart {
     --_color: var(--_color-black);

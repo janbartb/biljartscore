@@ -3,6 +3,7 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { MenuComponent } from '../../shared/menu/menu.component';
 import { BaseComponent } from '../../base/base.component';
 import { Menu, MenuItem } from '../../model/menu';
+import { Wedstrijd } from '../../model/wedstrijd';
 
 @Component({
     selector: 'app-spelkeuze',
@@ -16,6 +17,7 @@ import { Menu, MenuItem } from '../../model/menu';
 })
 export class SpelkeuzeComponent extends BaseComponent implements OnInit {
     menu: Menu = new Menu();
+    wedstrijd: Wedstrijd = new Wedstrijd();
 
     buttonPressed(shortcut: string) {
         let item = this.menu.getSelectedItem();
@@ -38,8 +40,72 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
     menuItemClicked(item: MenuItem) {
         this.menu.selectedIdx = this.menu.getIndex(item);
         console.log('menu item clicked : ' + item.text);
-        //this.appData.gotoPage(this.router.url, item.navigateTo);
+        if (item.shortcut == '3' || item.shortcut == '4') {
+            this.menuItem34clicked(Number(item.shortcut));
+            return;
+        }
         this.router.navigate([item.navigateTo]);
+    }
+
+    private menuItem34clicked(shortcut: number) {
+        this.bssApi.getWedstrijd()
+        .then(resp => {
+            if (!resp.gevonden) {
+                if (shortcut == 3) {
+                    this.router.navigate(['wedstrijd']);
+                }
+                else {
+                    this.wedstrijd.regels.idxOptie = 4;
+                    this.wedstrijd.telling.idxOptie = 2;
+                    this.bssApi.saveWedstrijd(this.wedstrijd)
+                    .then(resp2 => {
+                        this.router.navigate(['wedstrijd']);
+                    })
+                    .catch(err => {
+                        this.alert.showError(err);
+                    });
+                }
+            }
+            else {
+                this.wedstrijd = resp.wedstrijd;
+                if (shortcut == 4) {
+                    if (this.wedstrijd.regels.idxOptie == 4) {
+                        this.router.navigate(['wedstrijd']);
+                    }
+                    else {
+                        this.wedstrijd.regels.idxOptie = 4;
+                        this.wedstrijd.regels.vijfdeAantCar = 0;
+                        this.wedstrijd.telling.idxOptie = 2;
+                        this.wedstrijd.aantSpelers = 0;
+                        this.bssApi.saveWedstrijd(this.wedstrijd)
+                        .then(resp2 => {
+                            this.router.navigate(['wedstrijd']);
+                        })
+                        .catch(err => {
+                            this.alert.showError(err);
+                        });
+                    }
+                }
+                else {
+                    if (this.wedstrijd.regels.idxOptie == 4) {
+                        this.wedstrijd = new Wedstrijd();
+                        this.bssApi.saveWedstrijd(this.wedstrijd)
+                        .then(resp2 => {
+                            this.router.navigate(['wedstrijd']);
+                        })
+                        .catch(err => {
+                            this.alert.showError(err);
+                        });
+                    }
+                    else {
+                        this.router.navigate(['wedstrijd']);
+                    }
+                }
+            }
+        })
+        .catch(err => {
+            this.alert.showError(err);
+        });
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -84,6 +150,10 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
             this.buttonPressed('5');
             return false;
         }
+        if (event.code === 'Digit6' || event.code === 'Numpad6') {
+            this.buttonPressed('6');
+            return false;
+        }
         if (event.key === 'Home') {
             this.homePressed();
             return false;
@@ -98,8 +168,9 @@ export class SpelkeuzeComponent extends BaseComponent implements OnInit {
         this.menu.addItem(new MenuItem('2', 'KNBB competitie single match', 'match'));
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('3', 'Oefen wedstrijd', 'wedstrijd'));
-        this.menu.addItem(new MenuItem('4', 'Pentathlon / Annonceren', 'annon'));
+        this.menu.addItem(new MenuItem('4', 'Libre met iedere 5e een driebander', 'wedstrijd'));
+        this.menu.addItem(new MenuItem('5', 'Pentathlon / Annonceren', 'annon'));
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('5', 'Eigen competitie', 'eigencomps'));
+        this.menu.addItem(new MenuItem('6', 'Eigen competitie', 'eigencomps'));
     }
 }

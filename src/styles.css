@@ -8,6 +8,7 @@
 .fullheight { height: 100%; }
 
 .arial { font-family: Arial, Helvetica, sans-serif; }
+.arial-nw { font-family: "Arial Narrow"; }
 
 .scrollable { overflow-y: scroll; }
 .clickable { cursor: pointer; }

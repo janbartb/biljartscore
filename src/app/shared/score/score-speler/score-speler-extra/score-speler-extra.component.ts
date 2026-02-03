@@ -17,6 +17,7 @@ export class ScoreSpelerExtraComponent {
     @Input() hoogSer: number = 0;
     @Input() punten: number = 0;
     @Input() oldPunten: number = 0;
+    @Input() perc: number = 0;
     @Input() percView: string = '0,00';
     @Input() formatSer: string = '009';
     @Input() position: string = 'left';

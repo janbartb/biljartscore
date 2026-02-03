@@ -6,6 +6,7 @@
                             [position]="position"></app-score-speler-info>
     <app-score-speler-stand [aantCar]="meteenToev ? (speler.stand.aantCar + speler.stand.serie) : speler.stand.aantCar"
                             [aantBrt]="speler.stand.aantBrt"
+                            [moy]="speler.stand.gemiddelde"
                             [serie]="speler.stand.serie"
                             [moyView]="speler.stand.moyView"
                             [enNog]="speler.stand.enNog"
@@ -20,13 +21,18 @@
                             [position]="position"></app-score-speler-voortgang>
     <app-score-speler-laatste5 [actief]="speler.actief"
                             [serView]="speler.stand.serView"
+                            [serie]="speler.stand.serie"
                             [formatSer]="formatSer"
                             [laatste5]="speler.stand.laatste5brt"
+                            [isVijfde]="isVijfde"
+                            [aantCar]="speler.stand.aantCar + speler.stand.serie"
+                            [metWit]="speler.metWit"
                             [position]="position"></app-score-speler-laatste5>
     <app-score-speler-extra [serie]="speler.stand.serie"
                             [hoogSer]="speler.stand.hoogSer"
                             [punten]="speler.stand.punten"
                             [oldPunten]="oldPunten"
+                            [perc]="100 * speler.stand.gemiddelde / speler.splTsMoy"
                             [percView]="speler.stand.percView"
                             [formatSer]="formatSer"
                             [position]="position"></app-score-speler-extra>

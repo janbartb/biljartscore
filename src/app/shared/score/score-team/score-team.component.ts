@@ -28,6 +28,7 @@ export class ScoreTeamComponent implements OnInit {
     appData = inject(StatusService);
     @Input() team: WedTeam = new WedTeam();
     @Input() maxBrt: number = 0;
+    @Input() isVijfde: boolean = false;
     @Input() position: string = 'left';
     meteenToev: boolean = false;
 

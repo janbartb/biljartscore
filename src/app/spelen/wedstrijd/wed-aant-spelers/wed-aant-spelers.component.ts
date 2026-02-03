@@ -19,6 +19,7 @@ import { WedSpeler, Wedstrijd, WedTeam } from '../../../model/wedstrijd';
     styleUrl: './wed-aant-spelers.component.css'
 })
 export class WedAantSpelersComponent extends BaseComponent implements OnInit {
+    subtitle: string = 'Oefen wedstrijd - aantal spelers';
     wedstrijd: Wedstrijd = new Wedstrijd();
     aantalLijst: List<string> = new List<string>();
     wedstrijdChanged: boolean = false;
@@ -54,7 +55,7 @@ export class WedAantSpelersComponent extends BaseComponent implements OnInit {
             this.router.navigate(['wedstrijd/spelers']);
             return;
         }
-        this.initWedstrijd(aantSpl);
+        this.initWedstrijd(aantSpl, this.wedstrijd.regels.idxOptie == 4);
         this.saveWedstrijdAndContinue();
     }
 
@@ -97,6 +98,9 @@ export class WedAantSpelersComponent extends BaseComponent implements OnInit {
                 if (this.wedstrijd.aantSpelers > 0) {
                     this.aantalLijst.selectedIdx = this.aantalLijst.hoveredIdx = this.wedstrijd.aantSpelers - 1;
                 }
+                if (this.wedstrijd.regels.idxOptie == 4) {
+                    this.subtitle = 'Wedstrijd - aantal spelers';
+                }
             }
         })
         .catch(err => {
@@ -104,8 +108,12 @@ export class WedAantSpelersComponent extends BaseComponent implements OnInit {
         });
     }
 
-    private initWedstrijd(aantSpl: number) {
+    private initWedstrijd(aantSpl: number, isVijfde: boolean) {
         this.wedstrijd = new Wedstrijd();
+        if (isVijfde) {
+            this.wedstrijd.regels.idxOptie = 4;
+            this.wedstrijd.telling.idxOptie = 2;
+        }
         this.wedstrijd.aantSpelers = aantSpl;
         if (this.wedstrijd.aantSpelers == 5) {
             const team1 = new WedTeam();

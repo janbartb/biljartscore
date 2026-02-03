@@ -3,9 +3,11 @@
     overflow: hidden;
     transition: width 1s ease;
 }
+.getal-container.narrow {
+    font-family: "Arial Narrow";
+}
 
 .komma {
-    width: .15em;
     height: .8125em;
     line-height: .8125em; 
     letter-spacing: -.025em;

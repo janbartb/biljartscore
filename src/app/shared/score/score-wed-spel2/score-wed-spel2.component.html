@@ -4,11 +4,13 @@
                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                         [oldPunten]="oldPunten[0]"
                         [wedOver]="wedstrijd.wedGespeeld"
+                        [isVijfde]="wedstrijd.regels.idxOptie == 4 && wedstrijd.aantSpelers < 5"
                         [position]="'left'"></app-score-speler>
     <app-score-speler [speler]="tegenstander"
                         [maxBrt]="wedstrijd.regels.maxBeurten"
                         [showPunten]="wedstrijd.telling.idxOptie == 0"
                         [oldPunten]="oldPunten[1]"
                         [wedOver]="wedstrijd.wedGespeeld"
+                        [isVijfde]="wedstrijd.regels.idxOptie == 4 && wedstrijd.aantSpelers < 5"
                         [position]="'right'"></app-score-speler>
 </div>

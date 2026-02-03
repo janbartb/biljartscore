@@ -5,7 +5,7 @@
                 <span style="font-size: 2em; line-height: 1;">PERC</span>
             </div>
             <div class="flexbox flexcenter flexstretch" style="height: 4em; padding-top: .25em;">
-                <app-getal-var style="font-size: 3.5em;" [naam]="'prc'" [getal]="percView" [format]="'0009,99'"></app-getal-var>
+                <app-getal-var style="font-size: 3.5em;" [naam]="'prc'" [getal]="percView" [format]="'0009,99'" [narrow]="perc >= 10000"></app-getal-var>
             </div>
         </div>
         <div style="padding: 0 .5em;">
@@ -15,7 +15,7 @@
             <div class="flexbox flexcenter" style="height: 4em; padding-top: .25em;">
                 <app-getal-var style="font-size: 3.5em;" [style.color]="serie > hoogSer ? '#00ccff' : ''" 
                     [getal]="(serie > hoogSer) ? '' + serie : '' + hoogSer"
-                    [naam]="'hoogser'" [format]="formatSer"></app-getal-var>
+                    [naam]="'hoogser'" [format]="formatSer" [narrow]="serie >= 100 || hoogSer >= 100"></app-getal-var>
             </div>
         </div>
         <div style="padding: 0 .5em; width: 8em; min-width: 8em;">
@@ -41,7 +41,7 @@
             <div class="flexbox flexcenter" style="height: 4em; padding-top: .25em;">
                 <app-getal-var style="font-size: 3.5em;" [style.color]="serie > hoogSer ? '#00ccff' : ''" 
                     [getal]="(serie > hoogSer) ? '' + serie : '' + hoogSer"
-                    [naam]="'hoogser'" [format]="formatSer"></app-getal-var>
+                    [naam]="'hoogser'" [format]="formatSer" [narrow]="serie >= 100 || hoogSer >= 100"></app-getal-var>
             </div>
         </div>
         <div style="padding: 0 .5em;">
@@ -49,7 +49,7 @@
                 <span style="font-size: 2em; line-height: 1;">PERC</span>
             </div>
             <div class="flexbox flexcenter flexstretch" style="height: 4em; padding-top: .25em;">
-                <app-getal-var style="font-size: 3.5em;" [naam]="'prc'" [getal]="percView" [format]="'0009,99'"></app-getal-var>
+                <app-getal-var style="font-size: 3.5em;" [naam]="'prc'" [getal]="percView" [format]="'0009,99'" [narrow]="perc >= 10000"></app-getal-var>
             </div>
         </div>
     }

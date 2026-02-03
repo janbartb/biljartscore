@@ -1,0 +1,10 @@
+.vijfde-check {
+    padding-left: .5em; 
+    padding-top: .5em; 
+    color: #163317;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+.vijfde-check.visible {
+    opacity: 1;
+}

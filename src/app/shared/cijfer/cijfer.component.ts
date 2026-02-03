@@ -15,6 +15,7 @@ export class CijferComponent {
     @Input() isSerie: boolean = false;
     @Input() useZero: boolean = true;
     @Input() moveUp: boolean = true;
+    @Input() cijferWidth: number = .53125;
     //top: number = 0;
     cijferRol: string[] = [' ', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     oldCijfer: string = ' ';

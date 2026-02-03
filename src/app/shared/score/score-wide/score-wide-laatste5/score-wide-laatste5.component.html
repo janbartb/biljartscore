@@ -1,10 +1,31 @@
-<div class="flexbox flexstretch arial" style="height: 9em; background-color: #1e461f;">
-    @if (position == 'left') {
-        <div class="flexgrow1">
-            @if (actief) {
-                <div class="fullheight flexbox flexmiddle flexright" style="padding-right: 1em;">
-                    @for (cars of laatste5; track $index) {
-                        @if (laatste5.length < 5 || $index > 0) {
+@if (!isVijfde) {
+    <div class="flexbox flexstretch arial" style="height: 9em; background-color: #1e461f;">
+        @if (position == 'left') {
+            <div class="flexgrow1">
+                @if (actief) {
+                    <div class="fullheight flexbox flexmiddle flexright" style="padding-right: 1em;">
+                        @for (cars of laatste5; track $index) {
+                            @if (laatste5.length < 5 || $index > 0) {
+                                <div style="padding-right: 2em;" 
+                                        [style.opacity]="1 - ((laatste5.length - $index - 1) * .15)">
+                                    @if (cars == 0) {
+                                        <span style="font-size: 4.5em;">­•</span>
+                                    }
+                                    @else {
+                                        <span style="font-size: 4.5em;">{{cars}}</span>
+                                    }
+                                </div>
+                            }
+                        }
+                        <div style="padding: .5em .5em 0 .5em;">
+                            <app-getal-var style="font-size: 8em; color: #00ccff;" 
+                                        [naam]="'ser'" [getal]="serView" [format]="formatSer"></app-getal-var>
+                        </div>
+                    </div>
+                }
+                @else {
+                    <div class="fullheight flexbox flexmiddle flexright">
+                        @for (cars of laatste5; track $index) {
                             <div style="padding-right: 2em;" 
                                     [style.opacity]="1 - ((laatste5.length - $index - 1) * .15)">
                                 @if (cars == 0) {
@@ -15,56 +36,52 @@
                                 }
                             </div>
                         }
-                    }
-                    <div style="padding: .5em .5em 0 .5em;">
-                        <app-getal-var style="font-size: 8em; color: #00ccff;" 
-                                    [naam]="'ser'" [getal]="serView" [format]="formatSer"></app-getal-var>
                     </div>
+                }
+            </div>
+            <div class="flexbox flexmiddle">
+                <div style="padding-right: .5em; color: #93cf95;">
+                    <span style="font-size: 2em;">◄</span>
                 </div>
-            }
-            @else {
-                <div class="fullheight flexbox flexmiddle flexright">
-                    @for (cars of laatste5; track $index) {
-                        <div style="padding-right: 2em;" 
-                                [style.opacity]="1 - ((laatste5.length - $index - 1) * .15)">
-                            @if (cars == 0) {
-                                <span style="font-size: 4.5em;">­•</span>
-                            }
-                            @else {
-                                <span style="font-size: 4.5em;">{{cars}}</span>
-                            }
+                <div style="letter-spacing: -.06em; padding-right: 1.25em; color: #93cf95;">
+                    <span style="font-size: 3em;">laatste 5</span>
+                </div>
+            </div>
+        }
+        @else {
+            <div class="flexbox flexmiddle">
+                <div style="letter-spacing: -.06em; padding-left: 1em; color: #93cf95;">
+                    <span style="font-size: 3em;">laatste 5</span>
+                </div>
+                <div style="padding-left: .5em; color: #93cf95;">
+                    <span style="font-size: 2em;">►</span>
+                </div>
+            </div>
+            <div class="flexgrow1">
+                @if (actief) {
+                    <div class="fullheight flexbox flexmiddle" style="padding-left: 1.5em;">
+                        <div style="padding-top: .5em; padding-right: .5em;">
+                            <app-getal-var style="font-size: 8em; color: #00ccff;" 
+                                        [naam]="'ser'" [getal]="serView" [format]="formatSer"></app-getal-var>
                         </div>
-                    }
-                </div>
-            }
-        </div>
-        <div class="flexbox flexmiddle">
-            <div style="padding-right: .5em; color: #93cf95;">
-                <span style="font-size: 2em;">◄</span>
-            </div>
-            <div style="letter-spacing: -.06em; padding-right: 1.25em; color: #93cf95;">
-                <span style="font-size: 3em;">laatste 5</span>
-            </div>
-        </div>
-    }
-    @else {
-        <div class="flexbox flexmiddle">
-            <div style="letter-spacing: -.06em; padding-left: 1em; color: #93cf95;">
-                <span style="font-size: 3em;">laatste 5</span>
-            </div>
-            <div style="padding-left: .5em; color: #93cf95;">
-                <span style="font-size: 2em;">►</span>
-            </div>
-        </div>
-        <div class="flexgrow1">
-            @if (actief) {
-                <div class="fullheight flexbox flexmiddle" style="padding-left: 1.5em;">
-                    <div style="padding-top: .5em; padding-right: .5em;">
-                        <app-getal-var style="font-size: 8em; color: #00ccff;" 
-                                    [naam]="'ser'" [getal]="serView" [format]="formatSer"></app-getal-var>
+                        @for (cars of laatste5.slice().reverse(); track $index) {
+                            @if ($index < 4) {
+                                <div style="padding-left: 2em;" 
+                                        [style.opacity]="1 - ($index * .15)">
+                                    @if (cars == 0) {
+                                        <span style="font-size: 4.5em;">­•</span>
+                                    }
+                                    @else {
+                                        <span style="font-size: 4.5em;">{{cars}}</span>
+                                    }
+                                </div>
+                            }
+                        }
                     </div>
-                    @for (cars of laatste5.slice().reverse(); track $index) {
-                        @if ($index < 4) {
+                }
+                @else {
+                    <div class="fullheight flexbox flexmiddle" style="padding-right: .5em;">
+                        @for (cars of laatste5.slice().reverse(); track $index) {
                             <div style="padding-left: 2em;" 
                                     [style.opacity]="1 - ($index * .15)">
                                 @if (cars == 0) {
@@ -75,24 +92,67 @@
                                 }
                             </div>
                         }
-                    }
-                </div>
-            }
-            @else {
-                <div class="fullheight flexbox flexmiddle" style="padding-right: .5em;">
-                    @for (cars of laatste5.slice().reverse(); track $index) {
-                        <div style="padding-left: 2em;" 
-                                [style.opacity]="1 - ($index * .15)">
-                            @if (cars == 0) {
-                                <span style="font-size: 4.5em;">­•</span>
-                            }
-                            @else {
-                                <span style="font-size: 4.5em;">{{cars}}</span>
-                            }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+@else {
+    <div class="flexbox flexstretch arial" style="height: 9em; background-color: #1e461f;">
+        @if (position == 'left') {
+            <div class="flexgrow1" style="padding-left: 1em;">
+                <div class="fullheight flexbox flexmiddle">
+                    @for (nr of [1,2,3,4,5]; track $index) {
+                        <div style="padding-right: .25em;">
+                            <div data-kleur="" class="cat-bullet biljartbal" style="height: 6em; width: 6em;" 
+                                [ngClass]="{'lichtgroen': !actief && nr < 5, 
+                                            'donkergroen': !actief && nr == 5,
+                                            'wit': actief && nr < 5 && metWit,
+                                            'geel': actief && nr < 5 && !metWit,
+                                            'rood': actief && nr == 5,
+                                            'blink-fast': actief && nr == 5 && (aantCar % 5) == 4}">
+                                    <div class="vijfde-check" [ngClass]="{'visible': nr <= (aantCar % 5)}">
+                                        <i class="fas fa-check" style="font-size: 4em;"></i>
+                                    </div>
+                            </div>
                         </div>
                     }
                 </div>
+            </div>
+            @if (actief) {
+                <div style="padding: 1.25em 1em 0 .5em;">
+                    <app-getal-var style="font-size: 8em; color: #00ccff;" 
+                                [naam]="'ser'" [getal]="serView" [format]="formatSer"></app-getal-var>
+                </div>
             }
-        </div>
-    }
-</div>
+        }
+        @else {
+            @if (actief) {
+                <div style="padding: 1.25em .5em 0 1em;">
+                    <app-getal-var style="font-size: 8em; color: #00ccff;" 
+                                [naam]="'ser'" [getal]="serView" [format]="formatSer"></app-getal-var>
+                </div>
+            }
+            <div class="flexgrow1" style="padding-right: 1em;">
+                <div class="fullheight flexbox flexmiddle flexright">
+                    @for (nr of [1,2,3,4,5]; track $index) {
+                        <div style="padding-right: .25em;">
+                            <div data-kleur="" class="cat-bullet biljartbal" style="height: 6em; width: 6em;" 
+                                [ngClass]="{'lichtgroen': !actief && nr < 5, 
+                                            'donkergroen': !actief && nr == 5,
+                                            'wit': actief && nr < 5 && metWit,
+                                            'geel': actief && nr < 5 && !metWit,
+                                            'rood': actief && nr == 5,
+                                            'blink-fast': actief && nr == 5 && (aantCar % 5) == 4}">
+                                    <div class="vijfde-check" [ngClass]="{'visible': nr <= (aantCar % 5)}">
+                                        <i class="fas fa-check" style="font-size: 4em;"></i>
+                                    </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>            
+        }
+    </div>
+}

@@ -15,6 +15,7 @@ import { NgClass } from '@angular/common';
 export class ScoreSpelerStandComponent {
     @Input() aantCar: number = 0;
     @Input() aantBrt: number = 0;
+    @Input() moy: number = 0;
     @Input() serie: number = 0;
     @Input() enNog: number = 0;
     @Input() moyView: string = '0,000';
