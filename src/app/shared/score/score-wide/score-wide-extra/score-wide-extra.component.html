@@ -3,7 +3,7 @@
         [getal]="(serie > hoogSer) ? '' + serie : '' + hoogSer" [naam]="'hoogser'" [format]="formatSer"></app-getal-var>
 </div>
 <div class="arial flexbox flexcenter" style="height: 5.75em; padding-top: .5em;">
-    <app-getal-var style="font-size: 4em;" [naam]="'prc'" [getal]="percView" [format]="'0009,99'"></app-getal-var>
+    <app-getal-var style="font-size: 4em;" [naam]="'prc'" [getal]="percView" [format]="'0009,99'" [narrow]="perc >= 1000"></app-getal-var>
 </div>
 <div style="height: 9em; padding: .5em 2em 1em 2em;">
     <div class="speler-punten wide flexbox flexcenter flexmiddle arial" style="padding: 0 1em;">

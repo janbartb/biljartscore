@@ -6,6 +6,7 @@
             <app-score-wide-extra [serie]="speler.stand.serie"
                                 [hoogSer]="speler.stand.hoogSer"
                                 [punten]="speler.stand.punten"
+                                [perc]="100 * speler.stand.gemiddelde / speler.splTsMoy"
                                 [percView]="speler.stand.percView"
                                 [formatSer]="formatSer"></app-score-wide-extra>
         </div>
@@ -63,6 +64,7 @@
             <app-score-wide-extra [serie]="speler.stand.serie"
                                 [hoogSer]="speler.stand.hoogSer"
                                 [punten]="speler.stand.punten"
+                                [perc]="100 * speler.stand.gemiddelde / speler.splTsMoy"
                                 [percView]="speler.stand.percView"
                                 [formatSer]="formatSer"></app-score-wide-extra>
         </div>
