@@ -1,0 +1,52 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'B.S.S. informatie'" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1 flexbox flexstretch">
+            <div style="padding: .5em 0; border-right: .25em solid green;">
+                @for (hoofdstuk of hoofdstukken; track $index) {
+                    <div style="padding: .125em .5em;">
+                        <div class="hoofdstuk" [ngClass]="{'selected': $index == idxSelected}" (click)="hoofdstukClicked($index)">
+                            <span>{{hoofdstuk.tekst}}</span>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (hoofdSelected.subs.length > 0) {
+                <div style="padding: .5em 0; border-right: .25em solid green;">
+                    @for (sub1Hoofdstuk of hoofdSelected.subs; track $index) {
+                        <div style="padding: .125em .5em;">
+                            <div class="hoofdstuk" [ngClass]="{'selected': $index == hoofdSelected.idxSubSelected}" 
+                                        (click)="sub1HoofdstukClicked($index)">
+                                <span>{{sub1Hoofdstuk.tekst}}</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            @if (sub1Selected.subs.length > 0) {
+                <div style="padding: .5em 0; border-right: .25em solid green;">
+                    @for (sub2Hoofdstuk of sub1Selected.subs; track $index) {
+                        <div style="padding: .125em .5em;">
+                            <div class="hoofdstuk" [ngClass]="{'selected': $index == sub1Selected.idxSubSelected}" 
+                                        (click)="sub2HoofdstukClicked($index)">
+                                <span>{{sub2Hoofdstuk.tekst}}</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            <div class="flexgrow1" style="overflow-y: scroll; background-color: white;">
+                @if (selected == '100') {
+                    <div class="flexbox flexcenter" style="padding-top: 1em;">
+                        <div>
+                            <img src="images/layout-staand.png" alt="">
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

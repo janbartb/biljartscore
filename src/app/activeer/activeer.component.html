@@ -1,0 +1,69 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'B.S.S.'" [subtitle]="'App activeren'" [spel]="appData.getSpelNaam()" [escCount]="escapeCount" 
+                    (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        <div class="flexgrow1">
+            <div class="flexbox flexcenter" style="padding-top: 2em;">
+                <div>
+                    @if (activeerForm) {
+                        <form [formGroup]="activeerForm">
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label for="userId">ID<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <input #userid type="text" id="userId" style="width: 6em;" formControlName="userId" autocomplete="off"
+                                                [ngClass]="{'invalid': userId?.invalid && userId?.dirty, 'valid': userId?.valid && userId?.dirty}"
+                                                (blur)="userId?.setValue(userId?.value.trim())">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="role">Rol<span class="req"> *</span></label>
+                                        </td>
+                                        <td>
+                                            <span style="padding-left: .25em;">{{account.role}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr><td style="height: .5em;"></td></tr>
+                                    <tr>
+                                        <td>
+                                            <label for="verId">Vereniging</label>
+                                        </td>
+                                        <td>
+                                            <select id="verId" formControlName="verId">
+                                                <option value=""></option>
+                                                @for (ver of verenigingen; track $index) {
+                                                    <option [ngValue]="ver.verId">{{ver.naam}}</option>
+                                                }
+                                            </select>                                
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="klasse">Klasse</label>
+                                        </td>
+                                        <td>
+                                            <select id="klasse" formControlName="klasse">
+                                                <option value=""></option>
+                                                @for (klas of klassen; track $index) {
+                                                    <option [ngValue]="klas">{{klas}}</option>
+                                                }
+                                            </select>                                
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+        <app-section-footer-btns [buttons]="buttons" (clickedButton)="enterClicked()" [btnsDisabled]="[!(activeerForm && activeerForm.valid)]"
+                        [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+    </div>
+</div>

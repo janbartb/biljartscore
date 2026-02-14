@@ -25,24 +25,39 @@ export class ApiService {
     private helper = inject(HelperService);
 
     private apiUrl: string;
-    private webUrl: string;
+    //private webUrl: string;
     private myHeaders: Headers = new Headers();
     private options = {};
     private allowed = false;
 
     constructor() {
         this.apiUrl = 'http://localhost:8080/bssapi';
-        this.webUrl = 'http://localhost:8081/bssweb';
+        //this.webUrl = 'http://localhost:8081/bssweb';
         this.myHeaders.append("Content-Type", "application/json");
     }
 
-    async getRemoteMode(): Promise<boolean> {
-        const response: Response = await fetch(this.webUrl);
-        const json: ApiResponse = await response.json();
-        if (!response.ok) {
-            throw new Error(json.message);
+    // async getRemoteMode(): Promise<boolean> {
+    //     const response: Response = await fetch(this.webUrl);
+    //     const json: ApiResponse = await response.json();
+    //     if (!response.ok) {
+    //         throw new Error(json.message);
+    //     }
+    //     return true;
+    // }
+
+    async isGeactiveerd(): Promise<boolean> {
+        const accounts: Account[] = await this.getAccounts();
+        if (!accounts || accounts.length == 0) {
+            return false;
         }
-        return true;
+        const account = accounts[0];
+        if (account.activatieCode == '') {
+            return false;
+        }
+        if (account.host == '') {
+            return true;
+        }
+        return (account.activatieCode == this.helper.transform(account.host));
     }
 
     async getTeamFromBiljartpoint(teamId: string, compId: string, poule: string, distId: string): Promise<TeamPageData> {
@@ -90,15 +105,13 @@ export class ApiService {
         return result;
     }
 
-    async getAccounts(local?: boolean): Promise<Account[]> {
-        const url = (this.stat.isRemote() && !local) ? this.webUrl : this.apiUrl;
-        const result: Account[] = await this.getResource(url + '/accounts');
+    async getAccounts(): Promise<Account[]> {
+        const result: Account[] = await this.getResource(this.apiUrl + '/accounts');
         return result;
     }
 
-    async getAccount(id: string, local?: boolean): Promise<Account> {
-        const url = (this.stat.isRemote() && !local) ? this.webUrl : this.apiUrl;
-        const result: Account = await this.getResource(url + '/Accounts/' + id);
+    async getAccount(id: string): Promise<Account> {
+        const result: Account = await this.getResource(this.apiUrl + '/Accounts/' + id);
         return result;
     }
 
@@ -330,9 +343,8 @@ export class ApiService {
 
     // ACCOUNT
 
-    async addAccount(account: Account, local?: boolean): Promise<ApiResponse> {
-        const url = (this.stat.isRemote() && !local) ? this.webUrl : this.apiUrl;
-        const response: Response = await fetch(url + '/accounts', {
+    async addAccount(account: Account): Promise<ApiResponse> {
+        const response: Response = await fetch(this.apiUrl + '/accounts', {
             method: 'POST',
             body: JSON.stringify(account),
             headers: this.myHeaders
@@ -344,10 +356,9 @@ export class ApiService {
         return json;
     }
 
-    async updateAccount(account: Account, local?: boolean): Promise<ApiResponse> {
+    async updateAccount(account: Account): Promise<ApiResponse> {
         account.dlw = this.helper.getDateTimeAsString(new Date());
-        const url = (this.stat.isRemote() && !local) ? this.webUrl : this.apiUrl;
-        const response: Response = await fetch(url + `/accounts/${account.userId}`, {
+        const response: Response = await fetch(this.apiUrl + `/accounts/${account.userId}`, {
             method: 'PUT',
             body: JSON.stringify(account),
             headers: this.myHeaders
@@ -359,9 +370,8 @@ export class ApiService {
         return json;
     }
 
-    async deleteAccount(account: Account, local?: boolean): Promise<ApiResponse> {
-        const url = (this.stat.isRemote() && !local) ? this.webUrl : this.apiUrl;
-        const response: Response = await fetch(url + `/accounts/${account.userId}`, {
+    async deleteAccount(account: Account): Promise<ApiResponse> {
+        const response: Response = await fetch(this.apiUrl + `/accounts/${account.userId}`, {
             method: 'DELETE'
         });
         const json: ApiResponse = await response.json();

@@ -4,7 +4,7 @@ import { StatusService } from '../services/status.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
     const appData = inject(StatusService);
-    if (appData.isNotLoggedIn()) {
+    if (!appData.isGeactiveerd()) {
         const router = inject(Router);
         const loginPath = router.parseUrl('/login');
         return new RedirectCommand(loginPath);

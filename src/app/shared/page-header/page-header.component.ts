@@ -6,9 +6,7 @@ import { NgClass } from '@angular/common';
 @Component({
     selector: 'app-page-header',
     standalone: true,
-    imports: [
-        NgClass
-    ],
+    imports: [],
     templateUrl: './page-header.component.html',
     styleUrl: './page-header.component.css'
 })

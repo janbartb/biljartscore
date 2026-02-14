@@ -6,4 +6,6 @@ export class Account {
     verId: string = '';
     klasse: string = '';
     dlw: string = '';
+    activatieCode: string = '';
+    host: string = '';
 }

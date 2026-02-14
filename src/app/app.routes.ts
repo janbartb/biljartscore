@@ -71,17 +71,20 @@ import { BpTeamComponent } from './biljartpoint/bp-competitie-team/bp-team/bp-te
 import { TryoutComponent } from './tryout/tryout.component';
 import { RandApparatuurComponent } from './onderhoud/config/rand-apparatuur/rand-apparatuur.component';
 import { BpDelSeizoenComponent } from './biljartpoint/bp-del-seizoen/bp-del-seizoen.component';
-import { AccountsComponent } from './onderhoud/accounts/accounts.component';
-import { AccountAddComponent } from './onderhoud/accounts/account-add/account-add.component';
-import { AccountEditComponent } from './onderhoud/accounts/account-edit/account-edit.component';
+// import { AccountsComponent } from './onderhoud/accounts/accounts.component';
+// import { AccountAddComponent } from './onderhoud/accounts/account-add/account-add.component';
+// import { AccountEditComponent } from './onderhoud/accounts/account-edit/account-edit.component';
 import { AccountComponent } from './onderhoud/account/account.component';
 import { authGuard } from './guards/auth.guard';
-import { adminGuard } from './guards/admin.guard';
 import { AccountResetComponent } from './onderhoud/account/account-reset/account-reset.component';
+import { ActiveerComponent } from './activeer/activeer.component';
+import { AboutComponent } from './about/about.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
+    { path: 'activeer', component: ActiveerComponent },
     { path: 'home', component: HomeComponent, canActivate: [authGuard] },
+    { path: 'about', component: AboutComponent },
     { path: 'probeer', component: TryoutComponent },
     { path: 'match/lijst/:wedNr', component: KnbbMatchLijstComponent },
     { path: 'match/lijst', component: KnbbMatchLijstComponent },
@@ -102,9 +105,9 @@ export const routes: Routes = [
     { path: 'teammatch', component: KnbbTeamMatchComponent, canActivate: [authGuard] },
     { path: 'account/reset/:userId', component: AccountResetComponent },
     { path: 'onderhoud/account', component: AccountComponent, canActivate: [authGuard] },
-    { path: 'onderhoud/accounts/toevoegen', component: AccountAddComponent, canActivate: [authGuard, adminGuard] },
-    { path: 'onderhoud/accounts/:userId', component: AccountEditComponent, canActivate: [authGuard, adminGuard] },
-    { path: 'onderhoud/accounts', component: AccountsComponent, canActivate: [authGuard, adminGuard] },
+//    { path: 'onderhoud/accounts/toevoegen', component: AccountAddComponent, canActivate: [authGuard] },
+//    { path: 'onderhoud/accounts/:userId', component: AccountEditComponent, canActivate: [authGuard] },
+//    { path: 'onderhoud/accounts', component: AccountsComponent, canActivate: [authGuard] },
     { path: 'onderhoud/verenigingen/toevoegen', component: VerenigingAddComponent },
     { path: 'onderhoud/verenigingen/:verId/team/:teamId', component: VerenigingTeamComponent },
     { path: 'onderhoud/verenigingen/:verId/edit', component: VerenigingEditComponent },

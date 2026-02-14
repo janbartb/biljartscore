@@ -9,7 +9,6 @@ import { HelperService } from '../../services/helper.service';
 import { confirmPassword, notEmpty } from '../../directives/validators.directive';
 import { NgClass } from '@angular/common';
 import { Button } from '../../model/button';
-import { ButtonComponent } from '../../shared/button-group/button/button.component';
 import { VerenigingKort } from '../../model/vereniging';
 
 @Component({
@@ -78,15 +77,7 @@ export class AccountComponent extends BaseComponent implements OnInit {
         if (this.klasse?.value != this.account.klasse) {
             this.account.klasse = this.klasse?.value;
         }
-        let promises: Promise<any>[] = [];
-        if (this.appData.isRemote()) {
-            promises.push(this.bssApi.updateAccount(this.account));
-            promises.push(this.bssApi.updateAccount(this.account, true));
-        }
-        else {
-            promises.push(this.bssApi.updateAccount(this.account));
-        }
-        Promise.all(promises)
+        this.bssApi.updateAccount(this.account)
         .then(resp => {
             this.alert.showAlert('Account succesvol gewijzigd.', 'success', 4);
             this.createAccountForm();

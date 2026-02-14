@@ -1,6 +1,5 @@
 import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild } from '@angular/core';
 import { BaseComponent } from '../base/base.component';
-import { Config } from '../model/config';
 import { Button } from '../model/button';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from "../shared/button-group/button/button.component";
@@ -25,232 +24,131 @@ export class LoginComponent extends BaseComponent implements OnInit {
     helper = inject(HelperService);
     fb = inject(FormBuilder);
 
-    localAccount: Account = new Account();
-    remoteAccount: Account = new Account();
-    updateLocalAccount: boolean = false;
-    updateRemoteAccount: boolean = false;
+    geactiveerd: boolean = false;
     version: string = '1.0.0';
 
     loginForm!: FormGroup;
 
-    button: Button = new Button('Enter', 'Login', true);
+    homeButton: Button = new Button('Enter', 'Naar hoofdmenu', true);
+    actButton: Button = new Button('Enter', 'Activeer', true);
 
-    htmlInputId = viewChild<ElementRef<HTMLInputElement>>("loginid");
     htmlInputPw = viewChild<ElementRef<HTMLInputElement>>("loginpw");
 
     constructor() {
         super();
         effect(() => {
             this.htmlInputPw()?.nativeElement;
-            this.htmlInputId()?.nativeElement;
-            if (this.loginId?.value > '') {
-                this.htmlInputPw()?.nativeElement.focus();
-            }
-            else {
-                this.htmlInputId()?.nativeElement.focus();
-            }
+            this.htmlInputPw()?.nativeElement.focus();
         });
     }
 
-    enterPressed() {
-        if (!(this.loginForm && this.loginForm.valid)) {
-            return;
+    enterPressed(button: Button) {
+        if (this.geactiveerd || (this.loginForm && this.loginForm.valid)) {
+            button.selected = true;
+            setTimeout(() => {
+                button.selected = false;
+                this.enterClicked();
+            }, 300);
         }
-        this.button.selected = true;
-        setTimeout(() => {
-            this.button.selected = false;
-            this.enterClicked();
-        }, 300);
     }
 
     enterClicked() {
-        if (this.loginId?.value != this.localAccount.userId) {
-            if (this.appData.isRemote()) {
-                this.bssApi.getAccount(this.loginId?.value)
-                .then(result => {
-                    if (result.role == 'beheerder') {
-                        this.localAccount = result;
-                        this.remoteAccount = result;
-                        this.checkLogin();
-                    }
-                    else {
-                        this.alert.showAlert(`U kunt alleen inloggen met account ID '${this.localAccount.userId}'.`, 'warning', 6);
-                        this.loginId?.setValue(this.localAccount.userId);
-                        this.loginPw?.setValue('');
-                    }
-                })
-                .catch(err => {
-                    this.alert.showAlert(`Account met ID '${this.loginId?.value}' niet gevonden.`, 'warning', 5);
-                });
-            }
-            else {
-                this.alert.showAlert(`U kunt alleen inloggen met account ID '${this.localAccount.userId}'.`, 'warning', 6);
-                this.loginId?.setValue(this.localAccount.userId);
-                this.loginPw?.setValue('');
-            }
-        }
-        else {
-            this.checkLogin();
-        }
-    }
-
-    private checkLogin() {
-        if (this.localAccount.password == '') {
-            this.alert.showAlert(`Wachtwoord account '${this.localAccount.userId}' is reset! Neem contact op met beheerder.`, 'error', 8);
+        if (this.geactiveerd) {
+            this.openFullscreen();
+            this.router.navigate(['home']);
             return;
         }
-        const pwToCheck = this.helper.transform(this.loginPw?.value);
-        console.log(pwToCheck + ' - ' + this.localAccount.password);
-        if (this.localAccount.password != pwToCheck) {
-            this.alert.showAlert('Wachtwoord is niet juist.', 'warning', 5);
+        if (!(this.loginForm && this.loginForm.valid)) {
             return;
         }
-        // login geldig
-        localStorage.setItem('bssLoginId', this.localAccount.userId);
-        sessionStorage.setItem('accountId', this.localAccount.userId);
-        sessionStorage.setItem('accountRole', this.localAccount.role);
-        this.localAccount.lastLogin = this.helper.getDateTimeAsString(new Date());
-        this.bssApi.updateAccount(this.localAccount)
-        .then()
-        .catch(err => {
-            this.alert.showError(err);
-        });
-        this.openFullscreen();
-        this.router.navigate(['home']);
+        if (this.helper.transform(this.loginPw?.value) == '1275450') {
+            sessionStorage.setItem('notify', 'true');
+            this.openFullscreen();
+            this.router.navigate(['activeer']);
+        }
     }
 
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent): boolean {
         //console.log(event.code + ' : ' + event.key);
         if (event.key === 'Enter') {
-            this.enterPressed();
+            if (this.geactiveerd) {
+                this.enterPressed(this.homeButton);
+            }
+            else {
+                this.enterPressed(this.actButton);
+            }
             return false;
         }
         return true;
     }
 
     ngOnInit(): void {
-        this.bssApi.getAccounts(true) // get local account
-        .then(result => {
-            this.localAccount = result[0];
-            this.bssApi.getRemoteMode()
-            .then(resp => {
-                this.appData.setRemote(true);
-                this.bssApi.getAccount(this.localAccount.userId) // get remote account
-                .then(result => {
-                    this.remoteAccount = result;
-                    if (this.remoteAccount.password == '' && this.localAccount.password != '') {
-                        this.localAccount.password = '';
-                        this.updateLocalAccount = true;
+        this.geactiveerd = this.appData.isGeactiveerd();
+        if (!this.geactiveerd) {
+            console.log('nog niet actief');
+            this.bssApi.getAccounts() // get local account
+            .then(results => {
+                if (results.length == 1) {
+                    const account: Account = results[0];
+                    console.log(account.activatieCode);
+                    if (account.activatieCode && account.activatieCode != '') {
+                        this.geactiveerd = (account.host == '' || account.activatieCode == this.helper.transform(account.host));
+                        if (this.geactiveerd) {
+                            account.host = '';
+                            sessionStorage.setItem('account', JSON.stringify(account));
+                        }
                     }
-                    this.compareAndAjustAccounts();
-                    let promises: Promise<any>[] = [];
-                    if (this.updateLocalAccount) {
-                        promises.push(this.bssApi.updateAccount(this.localAccount, true))
-                    }
-                    if (this.updateRemoteAccount) {
-                        promises.push(this.bssApi.updateAccount(this.remoteAccount))
-                    }
-                    if (promises.length) {
-                        Promise.all(promises)
-                        .then(resps => {
-                            this.initLogin();
-                        })
-                        .catch(err => {
-                            this.alert.showError(err);
-                        });
-                    }
-                    else {
-                        this.initLogin();
-                    }
-                })
-                .catch(err => {
-                    this.alert.showError(err);
-                });
-            })
-            .catch(err => {
-                this.appData.setRemote(false);
-                this.initLogin();
-            });
-        })
-        .catch(err => {
-            this.alert.showError(err);
-        });
-    }
-
-    private initLogin() {
-        this.createLoginForm(this.localAccount.userId);
-        this.htmlInputId()?.nativeElement.focus();
-        this.closeFullscreen();
-    }
-
-    private compareAndAjustAccounts(): void {
-        let result = false;
-        if (this.remoteAccount.password != this.localAccount.password) {
-            if (this.remoteAccount.dlw > this.localAccount.dlw) {
-                this.localAccount.password = this.remoteAccount.password;
-                this.updateRemoteAccount = true;
-            }
-            else {
-                this.remoteAccount.password = this.localAccount.password;
-                this.updateLocalAccount = true;
-            }
-        }
-        if (this.remoteAccount.verId != this.localAccount.verId) {
-            if (this.remoteAccount.dlw > this.localAccount.dlw) {
-                this.localAccount.verId = this.remoteAccount.verId;
-                this.updateRemoteAccount = true;
-            }
-            else {
-                this.remoteAccount.verId = this.localAccount.verId;
-                this.updateLocalAccount = true;
-            }
-        }
-        if (this.remoteAccount.klasse != this.localAccount.klasse) {
-            if (this.remoteAccount.dlw > this.localAccount.dlw) {
-                this.localAccount.klasse = this.remoteAccount.klasse;
-                this.updateRemoteAccount = true;
-            }
-            else {
-                this.remoteAccount.klasse = this.localAccount.klasse;
-                this.updateLocalAccount = true;
-            }
-        }
-    }
-
-    private createLoginForm(defaultId?: string) {
-        if (!defaultId) {
-            defaultId = '';
-        }
-        this.loginForm = this.fb.nonNullable.group({
-            loginId: [defaultId, [Validators.required, Validators.minLength(3), notEmpty()]],
-            loginPw: ['', [Validators.required, Validators.minLength(3), notEmpty()]]
-        });
-    }
-
-    private createStats() {
-        this.bssApi.createStats()
-        .then(resp => {
-            //console.log(resp.data);
-            let config: Config | undefined = this.appData.getConfig();
-            if (!config) {
-                return;
-            }
-            config.id = resp.data.birthtimeMs;
-            this.appData.setConfig(config);
-            this.bssApi.saveConfig(config)
-            .then(resp2 => {
-                localStorage.removeItem('notifications');
-                this.router.navigate(['home']);
+                }
+                if (this.geactiveerd) {
+                    this.appData.activeer();
+                }
+                else {
+                    this.appData.deactiveer();
+                    this.initActivatie();
+                }
             })
             .catch(err => {
                 this.alert.showError(err);
             });
-        })
-        .catch(err => {
-            this.alert.showError(err);
+        }
+    }
+
+    private initActivatie() {
+        this.createLoginForm();
+        this.htmlInputPw()?.nativeElement.focus();
+        this.closeFullscreen();
+    }
+
+    private createLoginForm() {
+        this.loginForm = this.fb.nonNullable.group({
+            loginPw: ['', [Validators.required, Validators.minLength(3), notEmpty()]]
         });
     }
+
+    // private createStats() {
+    //     this.bssApi.createStats()
+    //     .then(resp => {
+    //         //console.log(resp.data);
+    //         let config: Config | undefined = this.appData.getConfig();
+    //         if (!config) {
+    //             return;
+    //         }
+    //         config.id = resp.data.birthtimeMs;
+    //         this.appData.setConfig(config);
+    //         this.bssApi.saveConfig(config)
+    //         .then(resp2 => {
+    //             localStorage.removeItem('notifications');
+    //             this.router.navigate(['home']);
+    //         })
+    //         .catch(err => {
+    //             this.alert.showError(err);
+    //         });
+    //     })
+    //     .catch(err => {
+    //         this.alert.showError(err);
+    //     });
+    // }
 
     openFullscreen() {
         if (!this.document.fullscreenElement) {
@@ -264,9 +162,6 @@ export class LoginComponent extends BaseComponent implements OnInit {
         }
     }
 
-    get loginId() {
-        return this.loginForm?.get('loginId');
-    }
     get loginPw() {
         return this.loginForm?.get('loginPw');
     }

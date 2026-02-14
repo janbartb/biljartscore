@@ -11,11 +11,8 @@
                         <div class="flexbox flexbetween w3-green-col-d3" style="font-size: .75rem;">
                             <div style="padding-left: .25rem;">
                                 <span>v{{version}}</span>
-                                @if (!appData.isRemote()) {
-                                    <span style="font-weight: normal; padding-left: .5rem;">(local)</span>
-                                }
                             </div>
-                            <div>&copy; Jan Bart Biemans</div>    
+                            <div>&copy; Jan Bart Biemans</div>
                         </div>
                     </div>
                 </div>
@@ -29,7 +26,7 @@
     @if (loginForm) {
         <div>
             <div style="text-align: center; padding-top: 1em;">
-                <span style="font-size: 1.25em; color: #265728;">Inloggen</span>
+                <span style="font-size: 1.25em; color: red;">De BSS app is nog niet geactiveerd.</span>
             </div>
             <div class="flexbox flexcenter" style="padding-top: 1em;">
                 <div>
@@ -38,17 +35,7 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <label for="loginId">ID<span class="req"> *</span></label>
-                                    </td>
-                                    <td>
-                                        <input #loginid type="text" id="loginId" style="width: 10em;" formControlName="loginId" autocomplete="off"
-                                            [ngClass]="{'invalid': loginId?.invalid && (loginId?.dirty), 'valid': loginId?.valid && (loginId?.dirty)}"
-                                            (blur)="loginId?.setValue(loginId?.value.trim())">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label for="password">Wachtwoord<span class="req"> *</span></label>
+                                        <label for="password">Activatie wachtwoord<span class="req"> *</span></label>
                                     </td>
                                     <td>
                                         <input #loginpw type="password" id="loginPw" style="width: 10em;" formControlName="loginPw" autocomplete="off"
@@ -62,18 +49,20 @@
                 </div>
             </div>
             <div class="flexbox flexcenter" style="margin-top: 1em;">
-                <div>
-                    <app-button [button]="button" [disabled]="!(loginForm && loginForm.valid)" (buttonClicked)="enterClicked()"></app-button>
+                <div style="font-size: 1.25em;">
+                    <app-button [button]="actButton" [disabled]="!(loginForm && loginForm.valid)" (buttonClicked)="enterClicked()"></app-button>
                 </div>
             </div>
+        </div>
+    }
+    @else {
+        <div>
+            <div style="text-align: center; padding-top: 2em;">
+                <span style="font-size: 1.25em; color: #265728;">De BSS app is geactiveerd.</span>
+            </div>
             <div class="flexbox flexcenter" style="margin-top: 2em;">
-                <div style="font-weight: normal; text-align: center;">
-                    <div>
-                        <a class="bsslink" href="">Wachtwoord vergeten?</a>
-                    </div>
-                    <div>
-                        <a class="bsslink" href="">Account aanvragen.</a>
-                    </div>
+                <div style="font-size: 1.25em;">
+                    <app-button [button]="homeButton" (buttonClicked)="enterClicked()"></app-button>
                 </div>
             </div>
         </div>

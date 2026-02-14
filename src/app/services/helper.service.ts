@@ -22,7 +22,7 @@ export class HelperService {
 
     getDateAsString(d: Date): string {
         const result = d.toLocaleDateString('nl-NL');
-        return result.substring(6) + '-' + result.substring(3, 5) + '-' + result.substring(0, 2);
+        return result;
     }
 
     getTimeAsString(d: Date): string {

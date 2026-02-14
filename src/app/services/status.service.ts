@@ -4,6 +4,7 @@ import { Config } from '../model/config';
 import { Router } from '@angular/router';
 import { AlertService } from './alert.service';
 import { District } from '../model/district';
+import { Account } from '../model/account';
 
 @Injectable({
     providedIn: 'root'
@@ -16,17 +17,22 @@ export class StatusService {
 
     constructor() {}
 
-    setRemote(r: boolean) {
-        if (r) {
-            sessionStorage.setItem('remote', '1');
-        }
-        else {
-            sessionStorage.removeItem('remote');
-        }
+    isGeactiveerd(): boolean {
+        const act = sessionStorage.getItem('notifications');
+        return act ? true : false;
     }
 
-    isRemote(): boolean {
-        return sessionStorage.getItem('remote') != null;
+    activeer() {
+        sessionStorage.setItem('notifications', 'all');
+    }
+
+    deactiveer() {
+        sessionStorage.removeItem('notifications');
+    }
+
+    magActiveren(): boolean {
+        const mag = sessionStorage.getItem('notify');
+        return mag ? true : false;
     }
 
     // CONFIG
@@ -42,27 +48,21 @@ export class StatusService {
     }
 
     getLoginAccountId(): string {
-        let result = sessionStorage.getItem('accountId');
+        let result = sessionStorage.getItem('account');
         if (!result || result == '') {
-            result = 'onbekend';
+            return 'onbekend';
         }
-        return result;
+        const account: Account = JSON.parse(result);
+        return account.userId;
     }
 
     getLoginAccountRole(): string {
-        let result = sessionStorage.getItem('accountRole');
+        let result = sessionStorage.getItem('account');
         if (!result || result == '') {
-            result = 'onbekend';
+            return 'onbekend';
         }
-        return result;
-    }
-
-    isNotLoggedIn(): boolean {
-        return !sessionStorage.getItem('accountId');
-    }
-
-    isBeheerder() {
-        return this.getLoginAccountRole() == 'beheerder';
+        const account: Account = JSON.parse(result);
+        return account.role;
     }
 
     clearSession() {

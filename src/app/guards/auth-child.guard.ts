@@ -4,7 +4,7 @@ import { StatusService } from '../services/status.service';
 
 export const authChildGuard: CanActivateChildFn = (childRoute, state) => {
     const appData = inject(StatusService);
-    if (appData.isNotLoggedIn()) {
+    if (!appData.isGeactiveerd()) {
         const router = inject(Router);
         const loginPath = router.parseUrl('/login');
         return new RedirectCommand(loginPath);

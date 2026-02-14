@@ -141,10 +141,6 @@ export class HomeComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (this.appData.isNotLoggedIn()) {
-            this.router.navigate(['login']);
-            return;
-        }
         this.appData.resetHistory();
         const filler = true;
         this.menu.addItem(new MenuItem('1', 'Wedstrijd spelen', 'spelkeuze'));
@@ -152,6 +148,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
         this.menu.addItem(new MenuItem('3', 'Biljartpoint (Kempenland)', 'bpoint/home'));    
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('4', 'Instellingen', 'config'));    
+        this.menu.addItem(new MenuItem('', '', '', filler));
+        this.menu.addItem(new MenuItem('5', 'Over B.S.S.', 'about'));    
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('0', 'Uitloggen', 'login'));    
     }
