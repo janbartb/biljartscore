@@ -72,6 +72,10 @@ export class HomeComponent extends BaseComponent implements OnInit {
             this.router.navigate([item.navigateTo]);
             return;
         }
+        if (item.shortcut == '5') {
+            window.open(item.navigateTo, '_blank');
+            return;
+        }
         this.appData.gotoPage(this.router.url, item.navigateTo);
     }
 
@@ -149,7 +153,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('4', 'Instellingen', 'config'));    
         this.menu.addItem(new MenuItem('', '', '', filler));
-        this.menu.addItem(new MenuItem('5', 'Over B.S.S.', 'about'));    
+        this.menu.addItem(new MenuItem('5', 'Over B.S.S.', 'https://bsswebprod-431b057b46b6.herokuapp.com/'));    
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('0', 'Uitloggen', 'login'));    
     }

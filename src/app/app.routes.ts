@@ -78,13 +78,11 @@ import { AccountComponent } from './onderhoud/account/account.component';
 import { authGuard } from './guards/auth.guard';
 import { AccountResetComponent } from './onderhoud/account/account-reset/account-reset.component';
 import { ActiveerComponent } from './activeer/activeer.component';
-import { AboutComponent } from './about/about.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'activeer', component: ActiveerComponent },
     { path: 'home', component: HomeComponent, canActivate: [authGuard] },
-    { path: 'about', component: AboutComponent },
     { path: 'probeer', component: TryoutComponent },
     { path: 'match/lijst/:wedNr', component: KnbbMatchLijstComponent },
     { path: 'match/lijst', component: KnbbMatchLijstComponent },
