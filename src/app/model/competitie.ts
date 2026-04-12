@@ -44,6 +44,7 @@ export class CompRegels {
     vastAantCar: number = 0;
     maxBeurten: number = 0;
     moyAantBrt: number = 0;
+    vijfdeAantCar: number = 0;
     knbbKlasse: string = '';
 }
 

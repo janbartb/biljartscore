@@ -7,7 +7,7 @@ import { PageHeaderComponent } from '../../../shared/page-header/page-header.com
 import { Button } from '../../../model/button';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
 import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
-import { notEmpty } from '../../../directives/validators.directive';
+import { isModuloVijf, notEmpty } from '../../../directives/validators.directive';
 import { NgClass } from '@angular/common';
 import { Spelsoort } from '../../../model/spelsoort';
 import { Alinea, ConfirmDialog } from '../../../model/dialogs';
@@ -205,7 +205,7 @@ export class CompetitieComponent extends BaseComponent implements OnInit {
         if (idx == 0) {
             this.cmpMaxBrt?.setValue(60);
         }
-        else if (idx == 1) {
+        else if (idx == 1 || idx == 4) {
             this.cmpMaxBrt?.setValue(0);
         }
         this.enableDisableFields();
@@ -316,6 +316,7 @@ export class CompetitieComponent extends BaseComponent implements OnInit {
         this.regelOpties.push('Vast aantal beurten voor iedere speler');
         this.regelOpties.push('Vast aantal caramboles voor iedere speler');
         this.regelOpties.push('Aantal caramboles o.b.v. moyenne speler en');
+        this.regelOpties.push('Vijfde een 3band o.b.v. moyenne speler of');
 
         this.telOpties.push('KNBB match telling (1 punt per 10% van te spelen caramboles)');
         this.telOpties.push('Eigen telling');
@@ -391,24 +392,35 @@ export class CompetitieComponent extends BaseComponent implements OnInit {
             this.cmpAantBrt?.disable();
             this.cmpAantCar?.disable();
             this.cmpMoyBrt?.disable();
-            }
+            this.cmpVijfCar?.disable();
+        }
         else if (this.cmpIdxRegels?.value == 1) {
             this.cmpKlasse?.disable();
             this.cmpAantBrt?.enable();
             this.cmpAantCar?.disable();
             this.cmpMoyBrt?.disable();
-            }
+            this.cmpVijfCar?.disable();
+        }
         else if (this.cmpIdxRegels?.value == 2) {
             this.cmpKlasse?.disable();
             this.cmpAantBrt?.disable();
             this.cmpAantCar?.enable();
             this.cmpMoyBrt?.disable();
-            }
+            this.cmpVijfCar?.disable();
+        }
         else if (this.cmpIdxRegels?.value == 3) {
             this.cmpKlasse?.disable();
             this.cmpAantBrt?.disable();
             this.cmpAantCar?.disable();
             this.cmpMoyBrt?.enable();
+            this.cmpVijfCar?.disable();
+        }
+        else if (this.cmpIdxRegels?.value == 4) {
+            this.cmpKlasse?.disable();
+            this.cmpAantBrt?.disable();
+            this.cmpAantCar?.disable();
+            this.cmpMoyBrt?.disable();
+            this.cmpVijfCar?.enable();
         }
     }
 
@@ -441,6 +453,10 @@ export class CompetitieComponent extends BaseComponent implements OnInit {
             result.cmpRegels.moyAantBrt = this.cmpMoyBrt?.value;
             result.cmpRegels.maxBeurten = this.cmpMaxBrt?.value;            
         }
+        else if (result.cmpRegels.idxOptie == 4) {
+            result.cmpRegels.vijfdeAantCar = this.cmpVijfCar?.value;
+            result.cmpRegels.maxBeurten = this.cmpMaxBrt?.value;
+        }
         result.cmpTelling.idxOptie = this.cmpIdxTelling?.value;
         if (result.cmpTelling.idxOptie == 1) {
             result.cmpTelling.winstPunten = this.cmpPntWinst?.value;
@@ -462,6 +478,7 @@ export class CompetitieComponent extends BaseComponent implements OnInit {
             cmpAantCar: [this.competitie.cmpRegels.vastAantCar, [Validators.required, Validators.min(1)]],
             cmpMaxBrt: [this.competitie.cmpRegels.maxBeurten, [Validators.required, Validators.min(0)]],
             cmpMoyBrt: [this.competitie.cmpRegels.moyAantBrt, [Validators.required, Validators.min(1)]],
+            cmpVijfCar: [this.competitie.cmpRegels.vijfdeAantCar, [Validators.required, Validators.min(0), isModuloVijf()]],
             cmpPntWinst: [this.competitie.cmpTelling.winstPunten, [Validators.required, Validators.min(0)]],
             cmpPntGelijk: [this.competitie.cmpTelling.gelijkPunten, [Validators.required, Validators.min(0)]],
             cmpPntBovenMoy: [this.competitie.cmpTelling.bovenMoyPunten, [Validators.required, Validators.min(0)]],
@@ -511,6 +528,9 @@ export class CompetitieComponent extends BaseComponent implements OnInit {
     }
     get cmpMoyBrt() {
         return this.compForm.get('cmpMoyBrt');
+    }
+    get cmpVijfCar() {
+        return this.compForm.get('cmpVijfCar');
     }
     get cmpKlasse() {
         return this.compForm.get('cmpKlasse');

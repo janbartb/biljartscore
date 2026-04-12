@@ -1042,7 +1042,7 @@ export class ScoreComponent implements OnInit {
 
     private getPunten(spl: WedSpeler, idx?: number): number {
         let punten = 0;
-        if (this.wedstrijd.regels.idxOptie == 4) {
+        if (this.wedstrijd.regels.idxOptie == 4 && this.wedstrijd.regels.vijfdeAantCar > 0) {
             punten = Math.floor((spl.stand.aantCar + spl.stand.serie) / 5);
             return punten;
         }

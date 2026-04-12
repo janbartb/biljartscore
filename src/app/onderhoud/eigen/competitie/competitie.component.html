@@ -183,6 +183,19 @@
                                                     <label for="cmpMoyBrt" style="padding-left: 1em;">beurten</label>
                                                 </td>
                                             </tr>
+                                            <tr (click)="regelOptieClicked(4)">
+                                                <td style="padding-right: .5em;">
+                                                    <i [ngClass]="cmpIdxRegels?.value == 4 ? 'fas fa-check-circle' : 'far fa-circle'"
+                                                            ></i>
+                                                </td>
+                                                <td style="cursor: pointer;">
+                                                    <label for="cmpVijfCar">{{regelOpties[4]}}</label>
+                                                    <input type="number" id="cmpVijfCar" style="width: 3.5em;" formControlName="cmpVijfCar" autocomplete="off"
+                                                            [ngClass]="{'invalid': cmpVijfCar?.invalid && (cmpVijfCar?.dirty), 
+                                                                        'valid': cmpVijfCar?.valid && (cmpVijfCar?.dirty)}">
+                                                    <label for="cmpMoyBrt" style="padding-left: 1em;">caramboles</label>
+                                                </td>
+                                            </tr>
                                             @if (cmpIdxRegels?.value != 1) {
                                                 <tr>
                                                     <td></td>

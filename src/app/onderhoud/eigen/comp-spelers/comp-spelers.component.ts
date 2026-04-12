@@ -252,6 +252,15 @@ export class CompSpelersComponent extends BaseComponent implements OnInit {
         else if (this.competitie.cmpRegels.idxOptie == 3) {
             spl.splTeSpelenCar = Math.round(spl.splMoyenne * this.competitie.cmpRegels.moyAantBrt);
         }
+        else if (this.competitie.cmpRegels.idxOptie == 4) {
+            if (this.competitie.cmpRegels.vijfdeAantCar > 0) {
+                spl.splTeSpelenCar = this.competitie.cmpRegels.vijfdeAantCar;
+            }
+            else {
+                spl.splTeSpelenCar = Math.round(spl.splMoyenne * 20) * 5;
+            }
+            spl.splMoyenne = 2.5 * spl.splMoyenne;
+        }
     }
 
     private getAantalCarsFromTabel(moy: number): number {

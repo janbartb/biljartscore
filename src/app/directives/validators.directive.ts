@@ -41,7 +41,7 @@ export function greaterZero(): ValidatorFn {
 
 export function isModuloVijf(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        return Number(control.value) && Number(control.value) % 5 == 0 ? null : {isModuloVijf: {valid: false}};
+        return Number(control.value) % 5 == 0 ? null : {isModuloVijf: {valid: false}};
     };
 }
 

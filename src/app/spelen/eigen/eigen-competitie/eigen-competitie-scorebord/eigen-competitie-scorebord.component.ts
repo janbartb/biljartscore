@@ -168,6 +168,7 @@ export class EigenCompetitieScorebordComponent extends BaseComponent implements 
 
     private createWedFromCompMatch(match: CompetitieMatch): Wedstrijd {
         let result = new Wedstrijd();
+        result.aantSpelers = 2;
         Object.assign(result.regels, match.regels);
         Object.assign(result.telling, match.telling);
         result.opslaanInComp = true;
