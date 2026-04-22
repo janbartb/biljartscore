@@ -257,7 +257,12 @@ export class CompSpelersComponent extends BaseComponent implements OnInit {
                 spl.splTeSpelenCar = this.competitie.cmpRegels.vijfdeAantCar;
             }
             else {
-                spl.splTeSpelenCar = Math.round(spl.splMoyenne * 20) * 5;
+                if (this.competitie.cmpRegels.maxBeurten > 0) {
+                    spl.splTeSpelenCar = Math.round(spl.splMoyenne * this.competitie.cmpRegels.maxBeurten / 2) * 5;
+                }
+                else {
+                    spl.splTeSpelenCar = Math.round(spl.splMoyenne * 20) * 5;
+                }
             }
             spl.splMoyenne = 2.5 * spl.splMoyenne;
         }
