@@ -379,9 +379,28 @@ export class EigenCompetitieMatchComponent extends BaseComponent implements OnIn
         const teg = this.match.spelers[1];
         if (this.match.telling.idxOptie == 0) {
             spl.stand.punten = Math.floor(10 * spl.stand.aantCar / spl.tsCar);
-            spl.stand.punten += (spl.stand.gemiddelde > spl.tsMoy) ? 1 : 0;
+            spl.stand.punten += (spl.stand.gemiddelde > spl.tsMoy) ? this.match.telling.bovenMoyPunten : 0;
             teg.stand.punten = Math.floor(10 * teg.stand.aantCar / teg.tsCar);
-            teg.stand.punten += (teg.stand.gemiddelde > teg.tsMoy) ? 1 : 0;
+            teg.stand.punten += (teg.stand.gemiddelde > teg.tsMoy) ? this.match.telling.bovenMoyPunten : 0;
+        }
+        else if (this.match.regels.idxOptie == 1) {
+            // vast aantal beurten
+            const splRend = 100 * spl.stand.gemiddelde / spl.tsMoy;
+            const tegRend = 100 * teg.stand.gemiddelde / teg.tsMoy;
+            if (splRend == tegRend) {
+                spl.stand.punten = this.match.telling.gelijkPunten;
+                teg.stand.punten = this.match.telling.gelijkPunten;
+            }
+            else if (splRend > tegRend) {
+                spl.stand.punten = this.match.telling.winstPunten;
+                teg.stand.punten = 0;
+            }
+            else {
+                spl.stand.punten = 0;
+                teg.stand.punten = this.match.telling.winstPunten;
+            }
+            spl.stand.punten += (splRend > 100) ? this.match.telling.bovenMoyPunten : 0;
+            teg.stand.punten += (tegRend > 100) ? this.match.telling.bovenMoyPunten : 0;
         }
     }
 
