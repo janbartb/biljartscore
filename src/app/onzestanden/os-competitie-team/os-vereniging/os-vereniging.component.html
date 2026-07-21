@@ -1,0 +1,197 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'Onzestanden'" 
+                        [subtitle]="'Competitie ' + bpComp.knbbId + '&nbsp; - &nbsp;Team ' + bpTeam.knbbId + ' : ' + bpTeam.naam" 
+                        [spel]="appData.getSpelNaam()" [escCount]="escapeCount" [help]="true" (escClicked)="escapePressed()" 
+                        (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()" (hlpClicked)="helpClicked()"></app-page-header>
+        </div>
+        @if (status == 'loading') {
+            <div class="flexgrow1 flexbox flexcenter flexmiddle" style="background-color: white;">
+                <div>
+                    <div style="text-align: center;">Gegevens ophalen...</div>
+                    <img src="images/Loading_icon.gif" alt="">
+                </div>
+            </div>
+        }
+        @if (status == 'error') {
+            <div class="flexgrow1 flexbox flexcenter flexmiddle">
+                <div>
+                    <div style="text-align: center;">Fout bij ophalen OnzeStanden pagina. <br> Probeer het over enkele seconden opnieuw.</div>
+                </div>
+            </div>
+        }
+        @if (status == 'success') {
+            <app-section-header [title]="'Vereniging in BSS'" [cssClasses]="'w3-green-d1'"></app-section-header>
+            <!-- <div class="flexbox flexcenter flexmiddle" style="height: 2.5em; border-bottom: .25em solid green;">
+                <div>
+                    <span class="label">Lokaliteit in BSS : </span>
+                    <span>{{lokaliteit.knbbId}} - {{lokaliteit.naam}}</span>
+                </div>
+            </div> -->
+            <div class="flexgrow1">
+                <app-section-header [title]="sectTitleVer" [cssClasses]="'w3-green-l3'"></app-section-header>
+                @if (verenigingForm) {
+                    <div class="flexbox flexcenter">
+                        <div style="padding-top: 1em;">
+                            <form [formGroup]="verenigingForm">
+                                <table class="tbl-normal tbl-input">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <label for="verId">ID<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                @if (modeVer == 'view') {
+                                                    <span>{{verId?.value}}</span>
+                                                }
+                                                @else {
+                                                    <input type="text" id="verId" style="width: 4em;" formControlName="verId" autocomplete="off"
+                                                            [ngClass]="{'invalid': (verId?.invalid) && verId?.dirty, 
+                                                                        'valid': (verId?.valid) && verId?.dirty}">
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="verNaam">Naam<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                @if (modeVer == 'view') {
+                                                    <span>{{verNaam?.value}}</span>
+                                                }
+                                                @else {
+                                                    <input type="text" id="verNaam" style="width: 12em;" formControlName="verNaam" autocomplete="off"
+                                                            [ngClass]="{'invalid': (verNaam?.invalid) && verNaam?.dirty, 
+                                                                        'valid': (verNaam?.valid) && verNaam?.dirty}">
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="lokId">Lokaliteit<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                <span>{{lokId?.value}} - {{lokaliteit.naam}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="korteNaam">Korte naam<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                @if (modeVer == 'view') {
+                                                    <span>{{korteNaam?.value}}</span>
+                                                }
+                                                @else {
+                                                    <input type="text" id="korteNaam" style="width: 5em;" formControlName="korteNaam" autocomplete="off"
+                                                            [ngClass]="{'invalid': (korteNaam?.invalid) && korteNaam?.dirty, 
+                                                                        'valid': (korteNaam?.valid) && korteNaam?.dirty}">
+                                                }
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                }
+                @else {
+                    <!-- selecteer vereniging of maak een nieuwe -->
+                    <div class="label" style="text-align: center; padding: 1em 0;">
+                        <span>Geef eerst aan bij welke vereniging team '{{bpTeam.naam}}' thuishoort.</span><br>
+                        <span>Er zijn 1 of meer verenigingen gevonden die spelen op lokatie '{{lokaliteit.naam}}'.</span><br>
+                        <span>Selecteer een van die verenigingen of klik op 'Nieuwe vereniging' indien de goede er niet bij staat.</span>
+                    </div>
+                    <div class="flexbox flexcenter">
+                        <div>
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label for="selVer">Selecteer vereniging</label>
+                                        </td>
+                                        <td>
+                                            <select id="selVer" [(ngModel)]="vereniging" (change)="verenigingChanged()" style="width: 12em;">
+                                                @for (ver of verenigingen; track $index) {
+                                                    <option [ngValue]="ver">{{ver.naam}}</option>
+                                                }
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><label for="" style="padding-left: .5em;">of</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <app-button [button]="verButton" (buttonClicked)="nieuweVerenigingClicked()"></app-button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (!verenigingForm) {
+                @if (vereniging.verId != '') {
+                    <app-section-footer-btns [buttons]="pageButtons" (clickedButton)="naarTeamClicked()"
+                            [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+            }
+            @else {
+                @if (verenigingForm.valid) {
+                    <app-section-footer-btns [buttons]="saveButtons" (clickedButton)="opslaanClicked()"
+                            [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+            }
+        }
+    </div>
+</div>
+<app-help [title]="verenigingForm ? 'BSS vereniging toevoegen' : 'BSS vereniging selecteren of toevoegen'">
+    @if (verenigingForm) {
+        <div>
+            Via dit scherm kan een vereniging aan BSS worden toegevoegd.
+        </div>
+        <div class="help-card-alinea">
+            1. ID - het BSS ID van de vereniging (een vereniging heeft geen KNBB ID). De default waarde is meestal ok. <br>
+            2. Naam - initieel staat hier de team naam, maar als die bv. een volgnummer heeft dan zeker wijzigen. <br>
+            3. Lokaliteit - deze staat al vast en kan niet gewijzigd worden. <br>
+            4. Korte naam - vul hier een (herkenbare) korte naam van de vereniging in (max 5 a 6 tekens)
+        </div>
+        <div class="help-card-alinea">
+            Voorbeeld : het toe te voegen team is 'Biljart Na Arbeid 2' <br>
+            Dan wordt initieel <br>
+            1. ID : BNA2 <br>
+            2. Naam : Biljart Na Arbeid 2
+        </div>
+        <div class="help-card-alinea">
+            Verwijder dan in beide gevallen het volgnummer, dus ID : BNA en Naam : Biljart Na Arbeid <br>
+            De korte naam kan dan BNA worden.
+        </div>
+        <div class="help-card-alinea">
+            Wanneer alle rubrieken correct zijn gevuld, verschijnt onderin de button 'Opslaan'. <br>
+            Na klikken op 'Opslaan' wordt de vereniging toegevoegd en ga je naar het 'Team in BSS' scherm om het team toe te voegen.
+        </div>
+    }
+    @else {
+        <div>
+            Op dit scherm kan een vereniging worden aangemaakt of geselecteerd.
+        </div>
+        <div class="help-card-alinea">
+            Het systeem heeft geconstateerd dat er al verenigingen in BSS aanwezig zijn die spelen op lokaliteit 
+            '{{lokaliteit.naam}}' en heeft die in de dropdown box gezet. <br>
+            Je kan een vereniging uit de lijst selecteren of, indien de goede er niet bij staat, op de button 'Nieuwe vereniging' klikken.
+        </div>
+        <div class="help-card-header">Vereniging selecteren</div>
+        <div>
+            Wanneer een vereniging geselecteerd is verschijnt onderin de button 'Naar team' om naar het scherm te gaan om het team toe te voegen.
+        </div>
+        <div class="help-card-header">Nieuwe vereniging</div>
+        <div>
+            Wanneer je op 'Nieuwe vereniging' klikt wordt het scherm getoond om een nieuwe vereniging toe te voegen.
+        </div>
+    }
+</app-help>

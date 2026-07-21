@@ -137,6 +137,10 @@ export class HomeComponent extends BaseComponent implements OnInit {
             this.buttonPressed('4');
             return false;
         }
+        if (event.code === 'Digit5' || event.code === 'Numpad5') {
+            this.buttonPressed('5');
+            return false;
+        }
         if (event.code === 'Digit0' || event.code === 'Numpad0') {
             this.buttonPressed('0');
             return false;
@@ -149,7 +153,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
         const filler = true;
         this.menu.addItem(new MenuItem('1', 'Wedstrijd spelen', 'spelkeuze'));
         this.menu.addItem(new MenuItem('2', 'Onderhoud gegevens', 'onderhoud'));
-        this.menu.addItem(new MenuItem('3', 'Biljartpoint (Kempenland)', 'bpoint/home'));    
+        this.menu.addItem(new MenuItem('3', 'OnzeStanden (Kempenland)', 'onzestanden/home'));    
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('4', 'Instellingen', 'config'));    
         this.menu.addItem(new MenuItem('', '', '', filler));
@@ -157,69 +161,6 @@ export class HomeComponent extends BaseComponent implements OnInit {
         this.menu.addItem(new MenuItem('', '', '', filler));
         this.menu.addItem(new MenuItem('0', 'Uitloggen', 'login'));    
     }
-
-    // ngOnInitOld(): void {
-    //     console.log(this.helper.transform('verlopen'));
-    //     this.bssApi.statsExists()
-    //     .then(exists => {
-    //         if (!exists) {
-    //             this.router.navigate(['login']);
-    //             return;
-    //         }
-    //         this.screenReady = true;
-    //         this.bssApi.getStats()
-    //         .then(stats => {
-    //             let config: Config | undefined = this.appData.getConfig();
-    //             if (!config) {
-    //                 this.router.navigate(['error/config']);
-    //                 //this.alert.showError('Configuratie niet gevonden in App data.');
-    //                 return;
-    //             }
-    //             if (config.id != stats.birthtimeMs) {
-    //                 this.notAllowed = true;
-    //                 localStorage.setItem('notifications', '0');
-    //                 this.router.navigate(['error/illegal']);
-    //                 return;
-    //             }
-    //             localStorage.removeItem('notifications');
-    //             this.version = config.version;
-    //             this.bssApi.getSpelsoorten()
-    //             .then(data => {
-    //                 this.spelsoorten = data;
-    //                 const gekozenSpel = this.appData.getSpel();
-    //                 if (!gekozenSpel) {
-    //                     console.log('Voorkeur spelsoort niet gevonden. Gezet op driebanden.');
-    //                     this.spelId = '3BA';
-    //                     this.spelsoortChanged();
-    //                 }
-    //                 else {
-    //                     this.spelId = gekozenSpel.spelsoortId;
-    //                 }
-    //             })
-    //             .catch(err => {
-    //                 this.alert.showError(err);
-    //             });
-    //         })
-    //         .catch(err => {
-    //             this.alert.showError(err);
-    //         });
-    //     })
-    //     .catch(err => {
-    //         this.alert.showError(err);
-    //     });
-        
-    //     this.appData.resetHistory();
-    //     const filler = true;
-    //     this.menu.addItem(new MenuItem('1', 'Wedstrijd spelen', 'spelkeuze'));
-    //     this.menu.addItem(new MenuItem('2', 'Onderhoud gegevens', 'onderhoud'));
-    //     if (this.spelId == '3BA') {
-    //         this.menu.addItem(new MenuItem('', '', '', filler));
-    //         this.menu.addItem(new MenuItem('3', 'Biljartpoint (Kempenland)', 'bpoint/home'));    
-    //     }
-    //     this.menu.addItem(new MenuItem('', '', '', filler));
-    //     this.menu.addItem(new MenuItem('4', 'Instellingen', 'config'));    
-    //     this.closeFullscreen();
-    // }
 
     getSpelsoort(id: string): Spelsoort {
         const found = this.spelsoorten.find(spel => spel.spelsoortId == id);

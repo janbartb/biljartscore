@@ -27,6 +27,7 @@ export class Team {
     klasse: string = '';
     volgNr: number = 0;
     naam: string = '';
+    locatie: string = '';
     teamLeden: string[] = [];
     inBpoint?: boolean = false;
 }

@@ -45,6 +45,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
     competities: KnbbCompetitie[] = [];
     competitie: KnbbCompetitie = new KnbbCompetitie();
     biljartPointLink: string = '';
+    onzestandenLink: string = '';
     naamFilterInit: string = localStorage.getItem('spelersNaamFilter') || '';
     naamFilter: string = localStorage.getItem('spelersNaamFilter') || '';
     verenigingFilterInit: string = '';
@@ -81,16 +82,15 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         if (!comp) {
             return;
         }
-        const compId = comp.knbbId;
+        const orgId = comp.osOrg;
+        const compId = comp.osComp;
         const team = this.vereniging.teams.find(tm => tm.teamId == this.teamFilter);
         const teamId = team ? team.knbbId : '';
-        const poule = comp.poule == 0 ? '' : '' + comp.poule;
-        const distrId = this.appData.getDistrict().knbbId;
-        if (compId == '' || teamId == '' || poule == '' || distrId == '') {
+        if (compId == '' || orgId == '' || compId == '') {
             return;
         }
         try {
-            this.knbbTeamData = await this.bssApi.getTeamFromBiljartpoint(teamId, compId, poule, distrId);
+            this.knbbTeamData = await this.bssApi.getTeamFromOnzestanden(teamId, orgId, compId);
             console.log(this.knbbTeamData);
         }
         catch (err) {
@@ -189,7 +189,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             this.aantMoyVerschillen = 0;
         }
         else {
-            if (this.biljartPointLink != '') {
+            if (this.onzestandenLink != '') {
                 this.aantMoyVerschillen = 0;
                 await this.getTeamFromKnbbSite();
                 this.spelerList.filtered.forEach(spl => {
@@ -300,6 +300,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
         localStorage.setItem('spelersVerenigingFilter', this.verenigingFilter);
         this.teamFilter = '';
         this.biljartPointLink = '';
+        this.onzestandenLink = '';
         if (this.verenigingFilter == '' || this.verenigingFilter == '0') {
             this.vereniging = new Vereniging();
         }
@@ -315,6 +316,7 @@ export class SpelersComponent extends BaseComponent implements OnInit {
 
     teamFilterChanged() {
         this.biljartPointLink = this.teamFilter == '' ? '' : this.getBiljartpointLink();
+        this.onzestandenLink = this.teamFilter == '' ? '' : this.getOnzestandenLink();
         this.filtersChanged();
         this.sortSpelers();
     }
@@ -535,6 +537,23 @@ export class SpelersComponent extends BaseComponent implements OnInit {
             return '';
         }
         return `https://biljartpoint.nl/index.php?page=teamdetail&team_id=${teamId}&compid=${compId}&poule=${poule}&district=${distrId}`;
+    }
+
+    private getOnzestandenLink(): string {
+        const comp = this.competities.find(cmp => {
+            return cmp.teams.some(tm => tm.verId == this.verenigingFilter && tm.teamId == this.teamFilter);
+        });
+        if (!comp) {
+            return '';
+        }
+        const org = comp.osOrg;
+        const cmp = comp.osComp;
+        const team = this.vereniging.teams.find(tm => tm.teamId == this.teamFilter);
+        const teamId = team ? team.knbbId : '';
+        if (teamId == '' || org == '' || cmp == '') {
+            return '';
+        }
+        return `https://kempenland.onzestanden.nl/team.php?team=${teamId}&organisatie=${org}&competitie=${cmp}`;
     }
 
     sortSpelers() {

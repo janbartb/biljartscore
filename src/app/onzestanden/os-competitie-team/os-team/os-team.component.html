@@ -1,0 +1,240 @@
+<div class="fullviewheight">
+    @if (dataReady) {
+        <div class="fullheight flexbox flexcolumn">
+            <div>
+                <app-page-header [title]="'Onzestanden'" 
+                            [subtitle]="'Competitie ' + bpComp.knbbId + '&nbsp; - &nbsp;Team ' + bpTeam.knbbId + ' : ' + bpTeam.naam" 
+                            [spel]="appData.getSpelNaam()" [escCount]="escapeCount" [help]="true" (escClicked)="escapePressed()" 
+                            (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()" (hlpClicked)="helpClicked()"></app-page-header>
+            </div>
+            <app-section-header [title]="'Team in BSS'" [cssClasses]="'w3-green-d1'"></app-section-header>
+            <div class="flexbox flexcenter flexmiddle" style="height: 2.5em; border-bottom: .25em solid green;">
+                <div>
+                    <span class="label">Vereniging in BSS : </span>
+                    <span>{{vereniging.naam}}</span>
+                </div>
+            </div>
+            <div class="flexgrow1">
+                <app-section-header [title]="sectTitleTeam" [cssClasses]="'w3-green-l3'"></app-section-header>
+                @if (teamForm) {
+                    <div class="flexbox flexcenter">
+                        <div style="padding-top: 1em;">
+                            <form [formGroup]="teamForm">
+                                <table class="tbl-normal tbl-input">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <label for="teamId">BSS ID<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                <span>{{teamId?.value}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="knbbId">KNBB ID<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                <span>{{knbbId?.value}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="klasse">Klasse<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                <span>{{klasse?.value}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="volgNr">Volgnr<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                @if (modeTeam == 'view') {
+                                                    <span>{{volgNr?.value}}</span>
+                                                }
+                                                @else {
+                                                    <input type="number" id="volgNr" style="width: 3em;" formControlName="volgNr" autocomplete="off"
+                                                            [ngClass]="{'invalid': (volgNr?.invalid && volgNr?.dirty) || !teamIdOk, 
+                                                                        'valid': volgNr?.valid && teamIdOk && volgNr?.dirty}">
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="teamNaam">Naam<span class="req"> *</span></label>
+                                            </td>
+                                            <td>
+                                                @if (modeTeam == 'view') {
+                                                    <span>{{teamNaam?.value}}</span>
+                                                }
+                                                @else {
+                                                    <input type="text" id="teamNaam" style="width: 12em;" formControlName="teamNaam" autocomplete="off"
+                                                        [ngClass]="{'invalid': teamNaam?.invalid && (teamNaam?.dirty), 'valid': teamNaam?.valid && (teamNaam?.dirty)}"
+                                                        (blur)="teamNaam?.setValue(teamNaam?.value.trim())">
+                                                }
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                            @if (modeTeam == 'view') {
+                                <div style="margin-top: 1em;">
+                                    <table class="tbl-normal tbl-input">
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <span>Aantal spelers :</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="">Onzestanden</label>
+                                                </td>
+                                                <td>
+                                                    <span>{{bpSpelers.length}}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label for="">BSS</label>
+                                                </td>
+                                                <td>
+                                                    <span>{{bssTeam.teamLeden.length}}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                @else {
+                    <!-- selecteer vereniging of maak een nieuwe -->
+                    <div class="label" style="text-align: center; padding: 1em 0;">
+                        <span>Toevoegen team '{{bpTeam.naam}}'.</span><br>
+                        <span>Er zijn 1 of meer teams gevonden behorende bij vereniging '{{vereniging.naam}}'.</span><br>
+                        <span>Selecteer een van die teams of klik op 'Nieuw team' indien de goede er niet bij staat.</span>
+                    </div>
+                    <div class="flexbox flexcenter">
+                        <div>
+                            <table class="tbl-normal tbl-input">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label for="selVer">Team</label>
+                                        </td>
+                                        <td>
+                                            <select id="selTeam" [(ngModel)]="bssTeam" (change)="selectedTeamChanged()" style="width: 12em;">
+                                                @for (team of bssTeams; track $index) {
+                                                    <option [ngValue]="team">{{team.teamId.substring(4)}} : {{team.naam}}</option>
+                                                }
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <app-button [button]="teamButton" (buttonClicked)="nieuwTeamClicked()"></app-button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (!teamForm || modeTeam == 'view') {
+                @if (teamInComp) {
+                    <app-section-footer-btns [buttons]="pageButtons" (clickedButton)="naarSpelersClicked()"
+                            [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+                @else {
+                    <div class="flexbox flexcenter flexmiddle" style="height: 2.5em;">
+                        <div class="label">
+                            <span>Indien je het geselecteerde team wil toevoegen aan de competitie, druk dan op 'Opslaan'.</span>
+                        </div>
+                    </div>
+                    <app-section-footer-btns [buttons]="saveButtons" (clickedButton)="opslaanClicked()"
+                            [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+            }
+            @else {
+                @if (teamForm.valid) {
+                    <app-section-footer-btns [buttons]="saveButtons" (clickedButton)="opslaanClicked()"
+                            [cssFooter]="'w3-green-bdr-l1'" [cssButtons]="'font125'"></app-section-footer-btns>
+                }
+            }
+        </div>
+    }
+</div>
+<app-help [title]="teamForm ? 'BSS Team toevoegen' : 'BSS Team selecteren of toevoegen'">
+    @if (teamForm) {
+        @if (modeTeam != 'view') {
+            <div>
+                Op dit scherm kan een team aan BSS worden toegevoegd.
+            </div>
+            <div class="help-card-header">BSS team toevoegen</div>
+            <div>
+                De volgende rubrieken van een team moeten worden gevuld.
+            </div>
+            <div class="help-card-alinea">
+                1. BSS ID - wordt door het systeem gevuld. <br>
+                2. KNBB ID - wordt door het systeem gevuld. <br>
+                3. Klasse - wordt door het systeem gevuld. <br>
+                4. Volgnr. - wordt default door het systeem gevuld, verder zie hieronder. <br>
+                5. Naam - wordt default door het systeem gevuld met de teamnaam in Onzestanden, verder zie hieronder.
+            </div>
+            <div class="help-card-header">Volgnr.</div>
+            <div>
+                Wanneer een vereniging bv. 2 klasse B2 teams heeft dan krijgt het ene team volgnr 1 en het andere volgnr 2. <br>
+                Het BSS ID van het ene team wordt dan 3BA-B2-1 en van het andere team 3BA-B2-2. <br>
+                Het volgnr. kan gewijzigd worden maar mag niet al in gebruik zijn. Het systeem controleert dit.
+            </div>
+            <div class="help-card-header">Naam</div>
+            <div>
+                De teamnaam wordt standaard gevuld met de teamnaam uit Onzestanden. <br>
+                Deze naam kan ooit erg lang zijn (bv. doordat er 'Biljartvereniging' voor staat, wat overbodige informatie is). <br>
+                Aangezien de naam getoond wordt op het 'KNBB team match' scherm is het verstandig om lange namen wat in te korten. Max. 20 tekens 
+                wordt aanbevolen.
+            </div>
+            <div class="help-card-header">Opslaan</div>
+            <div>
+                Na klikken op button 'Opslaan' is het team in BSS toegevoegd en wordt het resultaat scherm getoond met onderin de button 
+                'Naar spelers'. Klik op deze button om de spelers van het team te gaan verwerken. 
+            </div>
+        }
+        @else {
+            <div>
+                Het systeem heeft een team in BSS gevonden met hetzelfde KNBB ID als in biljartpoint (of je hebt het team net toegevoegd). 
+                Dit wordt getoond op het scherm.
+            </div>
+            <div class="help-card-alinea">
+                Klik op 'Naar spelers' om de spelers van het team te verwerken.
+            </div>
+        }
+    }
+    @else {
+        <div>
+            Op dit scherm kan een team worden geselecteerd of een nieuw team worden toegevoegd.
+        </div>
+        <div class="help-card-alinea">
+            Het systeem heeft geconstateerd dat er al teams aanwezig zijn die onderdeel zijn van vereniging '{{vereniging.naam}}' en 
+            deze in de dropdown box gezet.
+        </div>
+        <div class="help-card-alinea">
+            je kan een van deze teams selecteren om die aan de competitie toe te voegen of, indien het gewenste team er niet bij 
+            staat, op 'Nieuw team' klikken om een nieuw team aan te maken.
+        </div>
+        <div class="help-card-alinea">
+            Wanneer een team geselecteerd is kan onderin op 'Opslaan' worden geklikt om het geselecteerde team aan de competitie 
+            toe te voegen. Na opslaan wordt het resultaatscherm getoond met onderin de button 'Naar spelers' om de spelers van het 
+            team te gaan verwerken.
+        </div>
+        <div class="help-card-alinea">
+            Wanneer op 'Nieuw team' geklikt wordt ga je naar het scherm om een nieuw team toe te voegen.
+        </div>
+    }
+</app-help>

@@ -1,18 +1,17 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { BaseComponent } from '../../base/base.component';
 import { BpCompetitie, BpTeam } from '../../model/bpoint';
-import { Team, Vereniging } from '../../model/vereniging';
 import { KnbbCompetitie, KnbbCompTeam } from '../../model/knbb-competitie';
-import { List } from '../../model/list';
+import { Team, Vereniging } from '../../model/vereniging';
+import { Alinea, ConfirmDialog } from '../../model/dialogs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { SectionHeaderComponent } from '../../shared/section-header/section-header.component';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
-import { Alinea, ConfirmDialog } from '../../model/dialogs';
 import { HelpComponent } from '../../shared/help/help.component';
 import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-bp-competitie-teams',
+    selector: 'app-os-competitie-teams',
     standalone: true,
     imports: [
         PageHeaderComponent,
@@ -21,10 +20,10 @@ import { NgClass } from '@angular/common';
         HelpComponent,
         NgClass
     ],
-    templateUrl: './bp-competitie-teams.component.html',
-    styleUrl: './bp-competitie-teams.component.css'
+    templateUrl: './os-competitie-teams.component.html',
+    styleUrl: './os-competitie-teams.component.css'
 })
-export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit {
+export class OsCompetitieTeamsComponent extends BaseComponent implements OnInit {
     bpComp: BpCompetitie = new BpCompetitie();
     bssComp: KnbbCompetitie = new KnbbCompetitie();
     bssTeams: Team[] = [];
@@ -34,11 +33,11 @@ export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit 
     dataReady: boolean = false;
 
     override escapePressed(): void {
-        this.router.navigate(['bpoint/competities']);
+        this.router.navigate(['onzestanden/competities']);
     }
 
     override previousPressed(): void {
-        this.router.navigate(['bpoint/competities']);
+        this.router.navigate(['onzestanden/competities']);
     }
 
     bpTeamClicked(idx: number) {
@@ -46,7 +45,7 @@ export class BpCompetitieTeamsComponent extends BaseComponent implements OnInit 
             return;
         }
         localStorage.setItem('bpTeam', JSON.stringify(this.bpComp.teams[idx]));
-        this.router.navigate(['bpoint/lokaliteit']);
+        this.router.navigate(['onzestanden/vereniging']);
     }
 
     bssTeamVerwijderenClicked(event: MouseEvent, idx: number) {

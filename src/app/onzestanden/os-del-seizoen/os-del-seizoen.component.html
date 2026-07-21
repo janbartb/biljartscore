@@ -1,0 +1,111 @@
+<div class="fullviewheight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="'OnzeStanden'" [subtitle]="'Oude seizoenen verwijderen'" [spel]="appData.getSpelNaam()" 
+                    [help]="true" (hlpClicked)="helpClicked()" (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" 
+                    (prevClicked)="previousPressed()"></app-page-header>
+        </div>
+        @if (!seizoenen.length) {
+            <div class="flexgrow1 flexbox flexcenter flexmiddle">
+                <div class="label" style="font-size: 1.25em;">Er zijn geen te verwijderen seizoenen.</div>
+            </div>
+        }
+        @else {
+            <div class="flexbox flexcenter flexmiddle" style="padding: .5em;">
+                <div class="label" style="padding-right: .5em;">Selecteer seizoen</div>
+                <div>
+                    <select [(ngModel)]="seizoen" (change)="seizoenSelected()">
+                        @for (item of seizoenen; track $index) {
+                            <option [value]="item">{{item}}</option>
+                        }
+                    </select>
+                </div>
+                @if (seizoen == huidigSeizoen) {
+                    <div style="color: red; text-align: center; padding-left: 1em;">
+                        <span>Let op! Dit is het huidige seizoen.</span>
+                    </div>
+                }
+            </div>
+            @if (compsToDelete.length) {
+                <div class="label" style="padding-bottom: .5em; text-align: center;">
+                    Alle onderstaande KNBB competities en teams zullen worden verwijderd.
+                </div>
+            }
+            <div class="flexgrow1 scroll-container" style="border-top: .125em solid green;">
+                <div #complijst class="scroll-content">
+                    <div class="flexbox flexcenter">
+                        <div>
+                            <table class="tbl-normal tbl-list">
+                                <tbody>
+                                    @for (comptd of compsToDelete; track $index) {
+                                        <tr class="w3-green-col-d7">
+                                            <td>{{comptd.comp.seizoen}}</td>
+                                            <td>{{comptd.comp.knbbId}}</td>
+                                            <td>{{comptd.comp.klasse}}</td>
+                                            <td colspan="2" [ngClass]="{'verwijderd': comptd.verwijderd}">{{comptd.comp.naam}}</td>
+                                            <!-- <td>
+                                                @if (comptd.verwijderd) {
+                                                    <i class="fas fa-check"></i>
+                                                }
+                                                @else {
+                                                    <i class="fas fa-minus"></i>
+                                                }
+                                            </td> -->
+                                        </tr>
+                                        @for (teamtd of comptd.teams; track $index) {
+                                            <tr class="w3-green-col-d3">
+                                                <td colspan="3"></td>
+                                                <td style="width: 5em;">{{teamtd.team.knbbId}}</td>
+                                                <td [ngClass]="{'verwijderd': teamtd.verwijderd}">{{teamtd.team.naam}}</td>
+                                                <!-- <td>
+                                                    @if (teamtd.verwijderd) {
+                                                        <i class="fas fa-check"></i>
+                                                    }
+                                                    @else {
+                                                        <i class="fas fa-minus"></i>
+                                                    }
+                                                </td> -->
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (compsToDelete.length) {
+                <app-section-footer-btns [buttons]="buttons" (clickedButton)="confirmVerwijderen()" 
+                            [cssFooter]="'w3-green-bdr-d3'" [cssButtons]="'font125'"></app-section-footer-btns>
+
+            }
+        }
+    </div>
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}
+<app-help [title]="'Oude seizoen(en) verwijderen'">
+    <div>
+        Omdat bij een nieuw seizoen in OnzeStanden de competities en de teams allemaal een nieuw ID krijgen, komen deze niet meer overeen
+        met de KNBB ID's die in BSS staan. <br>
+        Daarom is het het beste om bij wisseling van het seizoen eerst de competities en teams van het oude seizoen te verwijderen voordat
+        de data van het nieuwe seizoen ingelezen wordt.
+    </div>
+    <div class="help-card-header">Selecteer seizoen</div>
+    <div>
+        Selecteer hier het seizoen dat verwijderd moet worden. <br>
+        Na selectie verschijnt een lijst met alle te verwijderen competities en teams van het geselecteerde seizoen en eventuele voorgaande seizoenen.
+    </div>
+    <div class="help-card-alinea">
+        Indien er competities en/of teams in de lijst staan dan zal onderin de button 'Verwijderen' tevoorschijn komen.
+    </div>
+    <div class="help-card-header">Verwijderen</div>
+    <div>
+        Na het klikken op de 'Verwijderen' button verschijnt eerst nog een bevestigingsscherm. Pas na bevestiging zullen de competities en teams
+        daadwerkelijk verwijderd worden.
+    </div>
+    <div class="help-card-alinea">
+        De spelers van de verwijderde teams blijven wel bestaan in BSS omdat hun ID in OnzeStanden altijd hetzelfde blijft.
+    </div>
+</app-help>

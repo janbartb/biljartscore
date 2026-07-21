@@ -1,0 +1,147 @@
+<div class="fullviewheight">
+    @if (dataReady) {
+        <div class="fullheight flexbox flexcolumn">
+            <div>
+                <app-page-header [title]="'Onzestanden'" 
+                            [subtitle]="'Competitie ' + bpComp.knbbId + '&nbsp; - &nbsp;Team ' + bpTeam.knbbId + ' : ' + bssTeam.naam" 
+                            [spel]="appData.getSpelNaam()" [escCount]="escapeCount" [help]="true" (escClicked)="escapePressed()" 
+                            (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()" (hlpClicked)="helpClicked()"></app-page-header>
+            </div>
+            <app-section-header [title]="'Spelers'" [cssClasses]="'w3-green-d1'"></app-section-header>
+            <div class="flexgrow1 flexbox flexstretch">
+                <div class="flex40perc flexbox flexcolumn" style="border-right: .125em solid #459c48;">
+                    <app-section-header [title]="'in Onzestanden'" [cssClasses]="'w3-green-l3'"></app-section-header>
+                    <div class="flexgrow1 scroll-container">
+                        <div #pbspelers class="scroll-content">
+                            <div class="flexbox flexcenter">
+                                <div class="lijst">
+                                    @for (spl of spelersToProcess; track $index) {
+                                        <div class="lijst-row selectable">
+                                            <div class="lijst-col" style="width: 5em;">
+                                                <span>{{spl.bpSpeler.splKnbbId}}</span>
+                                            </div>
+                                            <div class="lijst-col ellipsed" style="width: 12em;">
+                                                <span>{{spl.bpSpeler.splNaam}}</span>
+                                            </div>
+                                            <div class="lijst-col num" style="width: 4em;">
+                                                <span>{{+spl.bpSpeler.splMoyenne | number:'1.3-3':'nl-NL'}}</span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex60perc flexbox flexcolumn" style="border-left: .125em solid #459c48;">
+                    <app-section-header [title]="'in BSS'" [cssClasses]="'w3-green-l3'"></app-section-header>
+                    <div class="flexgrow1 scroll-container">
+                        <div #bssspelers class="scroll-content">
+                            <div class="flexbox flexcenter">
+                                <div class="lijst">
+                                    @for (spl of spelersToProcess; track $index) {
+                                        <div class="lijst-row" style="color: gray;">
+                                            <div class="lijst-col flexbox flexmiddle" style="width: 6em;">
+                                                @if (spl.inBp) {
+                                                    @if (spl.inBSS) {
+                                                        @if (spl.inTeam && !spl.toUpd) {
+                                                            <div class="clr-ok" title="Speler is in orde"><i class="fas fa-user-check"></i></div>
+                                                        }
+                                                        @else {
+                                                            @if (spl.toUpd) {
+                                                                <div class="padr clr-mod" title="Speler wordt gewijzigd in BSS"><i class="fas fa-user-edit"></i></div>
+                                                            }
+                                                            @if (!spl.inTeam) {
+                                                                <div class="padr clr-mod" title="Speler wordt toegevoegd aan team"><i class="fas fa-user-plus"></i></div>
+                                                            }    
+                                                        }
+                                                    }
+                                                    @else {
+                                                        <div class="padr clr-mod" title="Speler wordt aangemaakt in BSS"><i class="fas fa-user-cog"></i></div>
+                                                        <div class="padr clr-mod" title="Speler wordt toegevoegd aan team"><i class="fas fa-user-plus"></i></div>
+                                                    }
+                                                }
+                                                @else {
+                                                    <div class="padr clr-del" title="Speler wordt verwijderd uit team"><i class="fas fa-user-minus"></i></div>
+                                                }
+                                            </div>
+                                            <div class="lijst-col" [ngClass]="{'clr-mod': !spl.inBSS, 'clr-del': !spl.inBp}" style="width: 5em;">
+                                                <span>{{spl.bssSpeler.speler.id}}</span>
+                                            </div>
+                                            <div class="lijst-col" style="width: 5em;"
+                                                    [ngClass]="{
+                                                        'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.speler.knbbId != spl.bpSpeler.splKnbbId),
+                                                        'clr-del': !spl.inBp
+                                                    }">
+                                                <span>{{spl.bssSpeler.speler.knbbId}}</span>
+                                            </div>
+                                            <div class="lijst-col ellipsed" style="width: 12em;"
+                                                    [ngClass]="{
+                                                        'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.getNaam() != spl.bpSpeler.splNaam),
+                                                        'clr-del': !spl.inBp
+                                                    }">
+                                                <span [title]="spl.bssSpeler.getNaam()">{{spl.bssSpeler.getNaam()}}</span>
+                                            </div>
+                                            <div class="lijst-col num" style="width: 4em;"
+                                                    [ngClass]="{
+                                                        'clr-mod': !spl.inBSS || (spl.inBp && spl.bssSpeler.getGemiddeldeVanSpel() != +spl.bpSpeler.splMoyenne),
+                                                        'clr-del': !spl.inBp
+                                                    }">
+                                                <span>{{spl.bssSpeler.getGemiddeldeVanSpel() | number:'1.3-3':'nl-NL'}}</span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (spelersToAdd.length || spelersToUpd.length || !bssTeamSpelersOk) {
+                <app-section-footer-btns [buttons]="procButtons" (clickedButton)="verwerkSpelers()"
+                            [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+            }
+            @else {
+                <div class="flexbox flexcenter flexmiddle" style="height: 2em; border-top: .25em solid #459c48;">
+                    <div class="label">Verwerken niet nodig. Alle data van dit team in BSS is in orde.</div>
+                </div>
+                <app-section-footer-btns [buttons]="backButtons" (clickedButton)="terugNaarTeams()"
+                            [cssFooter]="'w3-green-bdr-d1'" [cssButtons]="'font125'"></app-section-footer-btns>
+            }
+        </div>
+    }
+</div>
+<app-help [title]="'Spelers in team'">
+    <div>
+        Op dit scherm worden de spelers van een team verwerkt. <br>
+        In de linker kolom staan de spelergegevens zoals ze in Onzestanden staan. <br>
+        In de rechter kolom zoals ze in BSS staan of zoals ze gaan worden indien de speler nog niet in BSS aanwezig is.
+    </div>
+    <div class="help-card-header">Spelers verwerken</div>
+    <div>
+        Wanneer het systeem verschillen constateert tussen de linker en rechter kolom verschijnt onderin de button 
+        'Spelers verwerken in BSS'. Klik op deze button om alle verschillen weer ongedaan te maken, m.a.w. de spelergegevens in BSS 
+        worden aangepast zodat ze weer identiek zijn aan de gegevens in Onzestanden.
+    </div>
+    <div class="help-card-alinea">
+        Na verwerking verschijnt onderin de button 'Terug naar teams' waarmee je kan terugkeren naar het 'Teams' scherm. <br>
+        Deze button zal meteen verschijnen wanneer het systeem initieel geen verschillen constateert tussen Onzestanden en BSS en 
+        er dus niets verwerkt hoeft te worden.
+    </div>
+    <div class="help-card-header">Actie icons</div>
+    <div>
+        Links van de spelers in BSS staan 1 of meerdere actie icons. Hieronder staat de betekenis van deze icons.
+    </div>
+    <div class="help-card-alinea">
+        <i class="fas fa-user-check"></i>
+        <span style="padding-left: 1em;">De gegevens van de speler in BSS zijn in orde.</span><br>
+        <i class="fas fa-user-cog"></i>
+        <span style="padding-left: 1em;">Speler nog niet aanwezig in BSS - wordt aangemaakt.</span><br>
+        <i class="fas fa-user-edit"></i>
+        <span style="padding-left: 1em;">Verschillen geconstateerd - speler gegevens worden aangepast.</span><br>
+        <i class="fas fa-user-plus"></i>
+        <span style="padding-left: 1em;">Speler aanwezig in BSS maar zit nog niet in competitie-team - wordt toegevoegd aan team.</span><br>
+        <i class="fas fa-user-minus"></i>
+        <span style="padding-left: 1em;">Speler zit niet meer in competitie-team - wordt verwijderd uit het BSS team.</span>
+    </div>
+</app-help>

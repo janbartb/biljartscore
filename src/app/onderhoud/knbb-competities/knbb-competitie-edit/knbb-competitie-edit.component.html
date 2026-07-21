@@ -72,7 +72,19 @@
                                     </tbody>
                                 </table>        
                             </form>
-                            @if (biljartPointLink != '') {
+                            @if (onzestandenLink != '') {
+                                <div class="flexbox flexmiddle" style="margin-top: 1em;">
+                                    <div style="padding-right: .5em;">
+                                        <span class="label">Bekijk competitie in</span>
+                                    </div>
+                                    <div style="border-radius: .5em; overflow: hidden; border: 1px solid black;">
+                                        <a [href]="onzestandenLink" target="_blank">
+                                            <img src="images/onzestanden.png" alt="" style="height: 2em;">
+                                        </a>
+                                    </div>    
+                                </div>
+                            }
+                            <!-- @if (biljartPointLink != '') {
                                 <div class="flexbox flexmiddle" style="margin-top: 1em;">
                                     <div style="padding-right: .5em;">
                                         <span class="label">Bekijk competitie in</span>
@@ -83,7 +95,7 @@
                                         </a>
                                     </div>    
                                 </div>
-                            }
+                            } -->
                         }
                     </div>
                 </div>

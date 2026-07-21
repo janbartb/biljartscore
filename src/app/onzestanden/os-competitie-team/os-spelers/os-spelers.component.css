@@ -1,0 +1,12 @@
+.clr-ok {
+    color: green;
+}
+.clr-mod {
+    color: red;
+}
+.clr-del {
+    color: firebrick;
+}
+.padr {
+    padding-right: .25em;
+}

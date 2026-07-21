@@ -44,7 +44,10 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     inComps: KnbbCompetitie[] = [];
     compKnbbId: string = '';
     compPoule: string = '';
+    compOsOrg: string = '';
+    compOsComp: string = '';
     biljartPointLink: string = '';
+    onzestandenLink: string = '';
     aantalLeden: number = 0;
     activeSection: number = 0;
     mode: string = 'edit';
@@ -273,50 +276,50 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
             this.bssApi.getMoyenneKlassenLijst(this.spelId),
             this.bssApi.getKnbbCompetities(this.appData.getDistrict().disId, this.spelId)
         ])
-            .then(results => {
-                this.klassen = results[2];
-                this.sortKlassen();
-                this.vereniging = results[0];
-                this.subtitle = `Vereniging ${this.vereniging.naam}`;
-                if (teamId == 'toevoegen') {
-                    this.mode = 'add';
-                    this.teamChanged = false;
-                    this.teamTitle = 'Team toevoegen';
-                    this.createdId = this.spelId;
-                    this.existingIds = this.vereniging.teams
-                        .filter(tm => tm.spelsoort == this.spelId)
-                        .map(x => x.teamId);
+        .then(results => {
+            this.klassen = results[2];
+            this.sortKlassen();
+            this.vereniging = results[0];
+            this.subtitle = `Vereniging ${this.vereniging.naam}`;
+            if (teamId == 'toevoegen') {
+                this.mode = 'add';
+                this.teamChanged = false;
+                this.teamTitle = 'Team toevoegen';
+                this.createdId = this.spelId;
+                this.existingIds = this.vereniging.teams
+                    .filter(tm => tm.spelsoort == this.spelId)
+                    .map(x => x.teamId);
+            }
+            else {
+                let team = this.vereniging.teams.find(team => team.teamId == teamId);
+                if (!team) {
+                    this.alert.showError(`Team '${teamId}' niet gevonden in vereniging '${verId}'`);
+                    return;
                 }
-                else {
-                    let team = this.vereniging.teams.find(team => team.teamId == teamId);
-                    if (!team) {
-                        this.alert.showError(`Team '${teamId}' niet gevonden in vereniging '${verId}'`);
-                        return;
-                    }
-                    this.team = team;
-                    this.teamTitle = `Team '${this.team.naam}' wijzigen`;
-                    this.createdId = this.team.teamId;
-                    this.fillCompKnbbIdAndPoule(results[3]);
-                    this.inComps = this.teamZitInCompetities(results[3]);
-                }
-                this.aantalLeden = this.team.teamLeden.length;
-                this.ledenLijst.fillItems(results[1]);
-                this.sortLeden();
-                this.fillSelectieLijst();
-                this.subtitle = `Vereniging '${this.vereniging.naam}'`;
-                this.createTeamForm();
+                this.team = team;
+                this.teamTitle = `Team '${this.team.naam}' wijzigen`;
+                this.createdId = this.team.teamId;
+                this.fillCompKnbbIdAndPoule(results[3]);
+                this.inComps = this.teamZitInCompetities(results[3]);
+            }
+            this.aantalLeden = this.team.teamLeden.length;
+            this.ledenLijst.fillItems(results[1]);
+            this.sortLeden();
+            this.fillSelectieLijst();
+            this.subtitle = `Vereniging '${this.vereniging.naam}'`;
+            this.createTeamForm();
 
-                const elm = this.htmlLedenLijst()?.nativeElement;
-                if (elm) {
-                    this.scrollElm = elm;
-                    new ResizeObserver(() => { 
-                        this.initSelectieLijstScrolling(this.scrollElm);
-                    }).observe(elm);
-                }
-            })
-            .catch((err) => {
-                this.alert.showError(err);
-            });
+            const elm = this.htmlLedenLijst()?.nativeElement;
+            if (elm) {
+                this.scrollElm = elm;
+                new ResizeObserver(() => { 
+                    this.initSelectieLijstScrolling(this.scrollElm);
+                }).observe(elm);
+            }
+        })
+        .catch((err) => {
+            this.alert.showError(err);
+        });
     }
 
     private fillCompKnbbIdAndPoule(comps: KnbbCompetitie[]): void {
@@ -328,6 +331,8 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
             if (foundComp.poule > 0) {
                 this.compPoule = '' + foundComp.poule;
             }
+            this.compOsOrg = foundComp.osOrg;
+            this.compOsComp = foundComp.osComp;
         }
     }
 
@@ -340,15 +345,22 @@ export class VerenigingTeamComponent extends BaseComponent implements OnInit {
     }
 
     private createBiljartpointLink() {
+        // biljartpoint
         this.biljartPointLink = '';
         const compId = this.compKnbbId;
         const teamId = this.knbbId?.value;
         const poule = this.compPoule;
         const distrId = this.appData.getDistrict().knbbId;
-        if (compId == '' || !teamId || teamId == '' || poule == '' || distrId == '') {
-            return;
+        if (!(compId == '' || !teamId || teamId == '' || poule == '' || distrId == '')) {
+            this.biljartPointLink = `https://biljartpoint.nl/index.php?page=teamdetail&team_id=${teamId}&compid=${compId}&poule=${poule}&district=${distrId}`;
         }
-        this.biljartPointLink = `https://biljartpoint.nl/index.php?page=teamdetail&team_id=${teamId}&compid=${compId}&poule=${poule}&district=${distrId}`;
+        // onzestanden
+        this.onzestandenLink = '';
+        const org = this.compOsOrg;
+        const cmp = this.compOsComp;
+        if (!(!teamId || teamId == '' || org == '' || cmp == '')) {
+            this.onzestandenLink = `https://kempenland.onzestanden.nl/team.php?team=${teamId}&organisatie=${org}&competitie=${cmp}`;
+        }
     }
 
     private initSelectieLijstScrolling(elm: HTMLDivElement) {

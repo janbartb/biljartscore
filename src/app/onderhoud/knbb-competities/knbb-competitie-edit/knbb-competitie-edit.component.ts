@@ -2,7 +2,7 @@ import { Component, effect, ElementRef, HostListener, inject, OnInit, viewChild 
 import { BaseComponent } from '../../../base/base.component';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { NgClass } from '@angular/common';
-import { KnbbCompetitie, KnbbCompTeam } from '../../../model/knbb-competitie';
+import { KnbbCompetitie } from '../../../model/knbb-competitie';
 import { ActivatedRoute } from '@angular/router';
 import { List } from '../../../model/list';
 import { Button } from '../../../model/button';
@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { notEmpty } from '../../../directives/validators.directive';
 import { SectionHeaderComponent } from '../../../shared/section-header/section-header.component';
 import { SectionFooterBtnsComponent } from '../../../shared/section-footer-btns/section-footer-btns.component';
-import { Team, Vereniging } from '../../../model/vereniging';
+import { Team } from '../../../model/vereniging';
 import { HelperService } from '../../../services/helper.service';
 import { Scrolling } from '../../../model/scrolling';
 
@@ -38,6 +38,7 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
     subtitle2: string = '';
     activeSection: number = 0;
     biljartPointLink: string = '';
+    onzestandenLink: string = '';
     dataChanged: boolean = false;
     scrollElm!: HTMLDivElement;
     teamScroll!: Scrolling;
@@ -289,14 +290,22 @@ export class KnbbCompetitieEditComponent extends BaseComponent implements OnInit
     }
 
     private createBiljartpointLink() {
+        // biljartpoint
         this.biljartPointLink = '';
         const compId = this.knbbId?.value;
         const poule = this.competitie.poule > 0 ? '' + this.competitie.poule : '';
         const distrId = this.appData.getDistrict().knbbId;
-        if (!compId || compId == '' || poule == '' || distrId == '') {
-            return;
+        if (!(!compId || compId == '' || poule == '' || distrId == '')) {
+            this.biljartPointLink = `https://biljartpoint.nl/index.php?page=stand&poule=${poule}&compid=${compId}&district=${distrId}`;
         }
-        this.biljartPointLink = `https://biljartpoint.nl/index.php?page=stand&poule=${poule}&compid=${compId}&district=${distrId}`;
+        // onzestanden
+        this.onzestandenLink = '';
+        const kls = this.competitie.osKlasse;
+        const org = this.competitie.osOrg;
+        const cmp = this.competitie.osComp;
+        if (!(kls == '' || org == '' || cmp == '')) {
+            this.onzestandenLink = `https://kempenland.onzestanden.nl/stand.php?klasse=${kls}&organisatie=${org}&competitie=${cmp}`;
+        }
     }
 
     private initTeamLijstScrolling(elm: HTMLDivElement) {

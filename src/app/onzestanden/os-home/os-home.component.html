@@ -1,0 +1,46 @@
+<div class="fullPageHeight">
+    <div class="fullheight flexbox flexcolumn">
+        <div>
+            <app-page-header [title]="title" [subtitle]="subtitle" [spel]="appData.getSpelNaam()" [help]="true" 
+                    (prevClicked)="previousPressed()" (hlpClicked)="helpClicked()"></app-page-header>
+        </div>
+        <div class="label" style="padding: 1em 0; text-align: center;">
+            Via deze opties kunt u gegevens ophalen van de OnzeStanden site<br>en deze opslaan in de B.S.S. applicatie.
+            <br>
+            Dit werkt momenteel alleen voor driebanden-klein en district Kempenland.
+        </div>
+        <div class="flexbox flexcenter" style="font-size: 1.25em; margin-top: 3em;">
+            <app-menu [menu]="menu" (menuItemClicked)="menuItemClicked($event)"></app-menu>
+        </div>
+    </div>
+</div>
+<app-help [title]="'OnzeStanden - menu'">
+    <div>
+        Dit scherm toont het OnzeStanden hoofdmenu met onderstaande opties.<br>
+    </div>
+    <div class="help-card-header">1. Districten</div>
+    <div>
+        Met deze functie kunnen districten vanuit OnzeStanden aan het systeem worden toegevoegd.<br>
+        Aangezien de OnzeStanden functies momenteel alleen werken voor district Kempenland is dat district voldoende.
+    </div>
+    <div class="help-card-header">2. Moyenne tabellen</div>
+    <div>
+        Met deze functie kunnen de moyenne tabellen (voor driebanden klein, klasse B1 en B2) vanuit OnzeStanden worden 
+        opgehaald en aan het systeem worden toegevoegd of, indien ze al bestaan, worden gewijzigd.
+    </div>
+    <div class="help-card-header">3. Competities</div>
+    <div>
+        Via deze optie kunnen competities en bijbehorende teams vanuit OnzeStanden aan het systeem worden toegevoegd of, indien ze al bestaan,
+        worden gewijzigd. <br>
+        Dit betreft dus momenteel alleen competities driebanden klein, klasse B1 of B2 van district Kempenland.
+    </div>
+    <div class="help-card-header">4. Oude seizoen verwijderen (vóór inlezen nieuw seizoen)</div>
+    <div>
+        Aangezien de competities en teams in OnzeStanden bij een nieuw seizoen allemaal nieuwe ID's toegewezen krijgen en deze
+        daardoor niet meer overeenkomen met de ID's in het BSS systeem wordt het (om fouten te voorkomen) aanbevolen om voordat de
+        nieuwe gegevens ingelezen worden eerst de oude gegevens (competities en teams) te verwijderen.
+    </div>
+    <div class="help-card-alinea" style="font-weight: bold;">
+        Dit is dus alleen maar nodig bij wisseling van het seizoen!
+    </div>
+</app-help>

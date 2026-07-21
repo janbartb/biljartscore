@@ -90,6 +90,30 @@ export class ApiService {
         return result;
     }
 
+    async getCompsFromOnzestanden(): Promise<BpCompetitie[]> {
+        const url = `/onzestanden/comps`;
+        const result: BpCompetitie[] = await this.getResource(this.apiUrl + url);
+        return result;
+    }
+
+    async getCompFromOnzestanden(osKlasse: string, osOrg: string, osComp: string): Promise<CompTemp> {
+        const url = `/onzestanden/comp/${osKlasse}/${osOrg}/${osComp}`;
+        const result: CompTemp = await this.getResource(this.apiUrl + url);
+        return result;
+    }
+
+    async getTeamFromOnzestanden(osTeam: string, osOrg: string, osComp: string): Promise<TeamPageData> {
+        const url = `/onzestanden/team/${osTeam}/${osOrg}/${osComp}`;
+        const result: TeamPageData = await this.getResource(this.apiUrl + url);
+        return result;
+    }
+
+    async getMoyenneTabelFromOnzestanden(klasse: string, osKlasse: string, comp: string): Promise<BpMoyTabel> {
+        const url = `/onzestanden/moyennes/${klasse}/${osKlasse}/${comp}`;
+        const result: BpMoyTabel = await this.getResource(this.apiUrl + url);
+        return result;
+    }
+
     async configExists(): Promise<boolean> {
         const result: boolean = await this.getResource(this.apiUrl + `/config/exists`, true);
         return result;

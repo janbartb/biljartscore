@@ -11,6 +11,9 @@ export class KnbbCompetitie {
     poule: number = 0;
     naam: string = '';
     maxBeurten: number = 0;
+    osKlasse: string = '';
+    osOrg: string = '';
+    osComp: string = '';
     teams: KnbbCompTeam[] = [];
 }
 

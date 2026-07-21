@@ -8,6 +8,9 @@ export class BpCompetitie {
     seizoen: string = '';
     poule: string = '';
     klasse: string = '';
+    osKlasse: string = '';
+    osOrg: string = '';
+    osComp: string = '';
     volgNr: string = '';
     naam: string = '';
     bpUrl: string = '';

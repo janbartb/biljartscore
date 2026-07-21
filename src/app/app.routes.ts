@@ -78,6 +78,15 @@ import { AccountComponent } from './onderhoud/account/account.component';
 import { authGuard } from './guards/auth.guard';
 import { AccountResetComponent } from './onderhoud/account/account-reset/account-reset.component';
 import { ActiveerComponent } from './activeer/activeer.component';
+import { OsHomeComponent } from './onzestanden/os-home/os-home.component';
+import { OsCompetitiesComponent } from './onzestanden/os-competities/os-competities.component';
+import { OsCompetitieComponent } from './onzestanden/os-competitie/os-competitie.component';
+import { OsCompetitieTeamsComponent } from './onzestanden/os-competitie-teams/os-competitie-teams.component';
+import { OsVerenigingComponent } from './onzestanden/os-competitie-team/os-vereniging/os-vereniging.component';
+import { OsTeamComponent } from './onzestanden/os-competitie-team/os-team/os-team.component';
+import { OsSpelersComponent } from './onzestanden/os-competitie-team/os-spelers/os-spelers.component';
+import { OsMoyennesComponent } from './onzestanden/os-moyennes/os-moyennes.component';
+import { OsDelSeizoenComponent } from './onzestanden/os-del-seizoen/os-del-seizoen.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -169,6 +178,15 @@ export const routes: Routes = [
     { path: 'bpoint/spelers', component: BpSpelersComponent },
     { path: 'bpoint/moyennes', component: BpMoyennesComponent },
     { path: 'bpoint/opschonen', component: BpDelSeizoenComponent },
+    { path: 'onzestanden/home', component: OsHomeComponent, canActivate: [authGuard] },
+    { path: 'onzestanden/competities', component: OsCompetitiesComponent },
+    { path: 'onzestanden/competitie', component: OsCompetitieComponent },
+    { path: 'onzestanden/compteams', component: OsCompetitieTeamsComponent },
+    { path: 'onzestanden/vereniging', component: OsVerenigingComponent },
+    { path: 'onzestanden/team', component: OsTeamComponent },
+    { path: 'onzestanden/spelers', component: OsSpelersComponent },
+    { path: 'onzestanden/moyennes', component: OsMoyennesComponent },
+    { path: 'onzestanden/opschonen', component: OsDelSeizoenComponent },
     { path: 'error/:condition', component: ErrorPageComponent },
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: '**', redirectTo: 'login', pathMatch: 'full' }

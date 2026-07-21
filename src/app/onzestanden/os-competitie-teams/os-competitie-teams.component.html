@@ -1,0 +1,151 @@
+<div class="fullviewheight">
+    @if (dataReady) {
+        <div class="fullheight flexbox flexcolumn">
+            <div>
+                <app-page-header [title]="'Onzestanden'" [subtitle]="'Competitie ' + bpComp.knbbId + ' - Teams'" [spel]="appData.getSpelNaam()" 
+                        [help]="true" (escClicked)="escapePressed()" (hdrClicked)="headerClicked($event)" (prevClicked)="previousPressed()"
+                        (hlpClicked)="helpClicked()"></app-page-header>
+            </div>
+            <div class="flexgrow1 flexbox flexstretch">
+                <div class="flex40perc flexbox flexcolumn" style="border-right: .125em solid green;">
+                    <app-section-header [title]="'in Onzestanden'" [cssClasses]="'w3-green-l3'"></app-section-header>
+                    <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+                        <div class="lijst-row">
+                            <div class="lijst-col" style="width: 6em;">KNBB ID</div>
+                            <div class="lijst-col" style="width: 14em;">Naam</div>
+                        </div>
+                    </div>
+                    <div class="flexgrow1 scroll-container">
+                        <div #teamlijst class="scroll-content">
+                            <div class="flexbox flexcenter">
+                                <div class="lijst">
+                                    @for (team of bpComp.teams; track $index) {
+                                        <div class="lijst-row" [ngClass]="{'selectable': !areTeamsInBssCompButNotInBpComp}" (click)="bpTeamClicked($index)">
+                                            <div class="lijst-col" style="width: 6em;">
+                                                <span>{{team.knbbId}}</span>
+                                            </div>
+                                            <div class="lijst-col" style="width: 14em;">
+                                                <span [title]="team.naam">{{team.naam}}</span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex60perc flexbox flexcolumn" style="border-left: .125em solid green;">
+                    <app-section-header [title]="'in BSS'" [cssClasses]="'w3-green-l3'"></app-section-header>
+                    @if (bssTeams.length == 0) {
+                        <div class="flexgrow1">
+                            <div style="margin-top: 5em; text-align: center;">
+                                <span class="label">Nog geen teams in BSS</span>
+                            </div>
+                        </div>
+                    }
+                    @else {
+                        <div class="flexbox flexcenter flexmiddle lijst-header" style="min-height: 2em;">
+                            <div class="lijst-row">
+                                <div class="lijst-col" style="width: 7em;"> BSS ID</div>
+                                <div class="lijst-col" style="width: 6em;">KNBB ID</div>
+                                <div class="lijst-col" style="width: 12em;">Naam</div>
+                                <div class="lijst-col" style="width: 4em;" title="Aantal spelers">#Spl</div>
+                                <div class="lijst-col" style="width: 3em;"></div>
+                            </div>
+                        </div>
+                        <div class="flexgrow1 scroll-container">
+                            <div #teamlijst class="scroll-content">
+                                <div class="flexbox flexcenter">
+                                    <div class="lijst">
+                                        @for (team of bssTeams; track $index) {
+                                            <div class="lijst-row" [style.color]="team.inBpoint ? 'black' : 'red'">
+                                                <div class="lijst-col" style="width: 7em;">
+                                                    <span>{{team.verId}} {{team.teamId.substring(4)}}</span>
+                                                </div>
+                                                <div class="lijst-col" style="width: 6em;">
+                                                    <span>{{team.knbbId}}</span>
+                                                </div>
+                                                <div class="lijst-col" style="width: 12em;">
+                                                    <span [title]="team.naam">{{team.naam}}</span>
+                                                </div>
+                                                <div class="lijst-col center" style="width: 4em;">
+                                                    <span>{{team.teamLeden.length}}</span>
+                                                </div>
+                                                <div class="lijst-col" style="width: 3em;">
+                                                    @if (!team.inBpoint) {
+                                                        <i class="fas fa-trash-alt iconbtn" (click)="bssTeamVerwijderenClicked($event, $index)"></i>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>    
+                    }
+                </div>
+            </div>
+            <div class="flexbox flexcenter flexmiddle" style="height: 3em; border-top: .25em solid green;">
+                <div class="label">
+                    @if (areTeamsInBssCompButNotInBpComp) {
+                        <span style="color: red;">Verwijder eerst de roodgekleurde teams uit de BSS competitie.</span>
+                    }
+                    @else {
+                        <span>Selecteer een Onzestanden team om deze verder te verwerken.</span>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@if (isDialogOpen) {
+    <app-confirm [dialog]="confirmDialog" (reply)="confirmReplied($event)"></app-confirm>
+}
+<app-help [title]="'Onzestanden competitie - teams'">
+    <div>
+        Op dit scherm worden links de teams van de competitie getoond zoals die in Onzestanden staan en rechts de teams die al in de BSS
+        competitie aanwezig zijn.
+    </div>
+    <div class="help-card-alinea">
+        Door links op een Onzestanden team te klikken kan dit team verder worden verwerkt (toegevoegd of gewijzigd).
+    </div>
+    <div class="help-card-alinea">
+        Let op! Het kan voorkomen dat er teams in de BSS kolom staan die roodgekleurd zijn. Dat zijn teams die in de BSS competitie zitten 
+        maar niet in de Onzestanden competitie (op basis van het KNBB ID). Deze teams moeten eerst verwijderd worden (klik op de vuilnisbak) 
+        voordat je met de normale verwerking door kan gaan.
+    </div>
+    <div class="help-card-header">De opzet van teams in BSS</div>
+    <div>
+        Een team in BSS is (in tegenstelling tot Onzestanden) altijd onderdeel van een vereniging. Die vereniging is weer gelinked aan
+        een lokaliteit (daar waar de thuiswedstrijden worden gespeeld). <br>
+        In Onzestanden bestaan geen verenigingen, alleen teams waarbij ieder team gelinked is aan een lokaliteit.
+    </div>
+    <div class="help-card-alinea">
+        De check of een Onzestanden team of lokaliteit al aanwezig is in BSS wordt gedaan op basis van het KNBB ID. Iedere lokaliteit of
+        team in Onzestanden heeft een ID en het systeem checkt of er een team of lokaliteit in BSS aanwezig is met een KNBB ID dat gelijk
+        is aan het ID in Onzestanden.
+    </div>
+    <div class="help-card-header">Team verwerken</div>
+    <div>
+        Bij het verwerken van een Onzestanden team gaat het systeem dus eerst kijken of er in BSS al een team is met datzelfde KNBB ID. <br>
+        Als dit het geval is dan wordt meteen het scherm getoond waarop de spelers van het team verwerkt kunnen worden. <br>
+        Als dit niet het geval is dan moet het team aan BSS worden toegevoegd.
+    </div>
+    <div class="help-card-header">Team toevoegen aan BSS</div>
+    <div>
+        Wanneer een Onzestanden team nog niet bestaat in BSS moet het worden toegevoegd. <br>
+        Maar een team in BSS is altijd onderdeel van een vereniging dus we zullen eerst moeten bepalen aan welke vereniging het team moet
+        worden toegevoegd.
+    </div>
+    <div class="help-card-alinea">
+        Dit gebeurt aan de hand van de lokaliteit waaraan het team is gekoppeld in Onzestanden. <br>
+        Het systeem gaat dus kijken of er in BSS al een lokaliteit aanwezig is met een KNBB ID gelijk aan het lokaliteit ID van het team in Onzestanden.
+    </div>
+    <div class="help-card-alinea">
+        Wanneer dit niet het geval is dan gaan we naar het scherm 'Lokaliteit' om de Onzestanden lokaliteit toe te voegen aan BSS.
+    </div>
+    <div class="help-card-alinea">
+        Wanneer dit wel het geval is dan gaan we naar het scherm 'Vereniging in BSS' waarop we of een vereniging kunnnen toevoegen of een bestaande
+        vereniging (die gelinked is aan bovenstaande lokaliteit) kunnen selecteren.
+    </div>
+</app-help>
