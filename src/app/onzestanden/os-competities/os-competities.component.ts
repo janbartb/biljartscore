@@ -42,6 +42,7 @@ export class OsCompetitiesComponent extends BaseComponent implements OnInit {
                 .then(results => {
                     this.bssCompetities = results[1];
                     if (results[0].length == 0) {
+                        this.status = 'success';
                         this.alert.showAlert('Geen competities gevonden voor dit district.', 'warning', 6);
                     }
                     else {
