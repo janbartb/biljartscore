@@ -3,7 +3,7 @@ import { PageHeaderComponent } from '../../../../shared/page-header/page-header.
 import { BaseComponent } from '../../../../base/base.component';
 import { ActivatedRoute } from '@angular/router';
 import { CmpSplWedstrijd, Competitie } from '../../../../model/competitie';
-import { NgClass } from '@angular/common';
+import { DecimalPipe, NgClass } from '@angular/common';
 import { Button } from '../../../../model/button';
 import { SectionFooterBtnsComponent } from '../../../../shared/section-footer-btns/section-footer-btns.component';
 import { List } from '../../../../model/list';
@@ -32,6 +32,7 @@ class WedSpl {
         PageHeaderComponent,
         SectionFooterBtnsComponent,
         FormsModule,
+        DecimalPipe,
         NgClass
     ],
     templateUrl: './eigen-competitie-weds.component.html',
