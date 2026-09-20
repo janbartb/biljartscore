@@ -40,6 +40,8 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     naamValid: boolean[][] = [[true, true, true], [true, true, true]];
     moyValid: boolean[][] = [[true, true, true], [true, true, true]];
     carValid: boolean[][] = [[true, true, true], [true, true, true]];
+    maxBeurten: number = 0;
+    maxbrtValid: boolean = true;
     cssSwitching: boolean[][] = [[false, false, false], [false, false, false]];
     wedStatus: number[] = [0, 0, 0];
     voortgang: string[] = ['0%', '0%', '0%'];
@@ -143,6 +145,8 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         this.idxTeam = -1;
         this.idxSpeler = -1;
         this.copyTeams();
+        this.maxBeurten = this.match.maxBeurten;
+        this.maxbrtValid = true;
         this.hasMatchChanged();
         this.isMatchValid();
         this.checkIfSpelerCanBeMoved();
@@ -193,6 +197,18 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
             this.matchValid = false;
         }
         this.hasMatchChanged();
+    }
+
+    keyupMaxBeurten() {
+        this.maxbrtValid = this.helper.isValidInteger('' + this.maxBeurten);
+        if (this.maxbrtValid) {
+            this.isMatchValid();
+        }
+        else {
+            this.matchValid = false;
+        }
+        this.hasMatchChanged();
+
     }
 
     stopPropagation(event: any) {
@@ -283,6 +299,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         .then(resp => {
             if (resp.gevonden) {
                 this.match = resp.match;
+                this.maxBeurten = this.match.maxBeurten;
                 this.isMatchAlGestart();
                 this.bssApi.getMoyenneTabel(this.spelId + '-' + this.match.klasse)
                 .then(result => {
@@ -354,6 +371,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
                 }
             });
         });
+        this.matchValid = this.matchValid && this.maxbrtValid;
     }
 
     private hasMatchChanged() {
@@ -371,6 +389,9 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
         })
         if (!this.matchChanged) {
             this.haveNamesChanged();
+            if (this.maxBeurten != this.match.maxBeurten) {
+                this.matchChanged = true;
+            }
         }
         this.setEscapeCount();
     }
@@ -526,6 +547,7 @@ export class KnbbTeamMatchCheckComponent extends BaseComponent implements OnInit
     }
 
     private saveMatchAndContinue() {
+        this.match.maxBeurten = Number(this.maxBeurten);
         this.bssApi.saveKnbbTeamMatch(this.match)
         .then(() => {
             this.router.navigate(['teammatch']);
