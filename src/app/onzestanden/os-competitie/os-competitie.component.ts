@@ -215,7 +215,8 @@ export class OsCompetitieComponent extends BaseComponent implements OnInit {
             const bssComps: KnbbCompetitie[] = results[0];
             this.existingCompIds = bssComps.map(cmp => cmp.competitieId);
             this.pageData = results[1];
-            this.bpComp.maxBeurten = '60';
+            console.log(this.pageData);
+            this.bpComp.maxBeurten = this.pageData.maxBeurten;
             let teams: BpTeam[] = [];
             this.pageData.teams.forEach(tm => teams.push(this.createBpTeam(tm)));
             this.bpComp.teams = teams;
